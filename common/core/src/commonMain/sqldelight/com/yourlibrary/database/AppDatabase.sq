@@ -1,0 +1,14 @@
+CREATE TABLE Template (
+    template TEXT NOT NULL
+);
+
+insertTemplate:
+INSERT INTO Template(template)
+VALUES(? );
+
+removeAllTemplates:
+DELETE FROM Template;
+
+selectAllTemplate:
+SELECT *
+FROM Template;
