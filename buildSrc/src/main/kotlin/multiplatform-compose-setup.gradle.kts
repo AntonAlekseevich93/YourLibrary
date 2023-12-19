@@ -20,7 +20,7 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.ui)
                 implementation(compose.uiTooling)
-                implementation("com.mikepenz:multiplatform-markdown-renderer:0.8.0")
+                implementation("com.mikepenz:multiplatform-markdown-renderer:0.8.0") //todo delete
             }
         }
 

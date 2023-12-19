@@ -50,4 +50,13 @@ object Dependencies {
         const val ios = "app.cash.sqldelight:native-driver:$version"
         const val desktop = "app.cash.sqldelight:sqlite-driver:$version"
     }
+
+    object Ksoup {
+        private const val version = "0.1.0"
+        const val ksoup = "com.fleeksoft.ksoup:ksoup:$version"
+
+        // Optional: Include only if you need to use network request functions such as
+        // Ksoup.parseGetRequest, Ksoup.parseSubmitRequest, and Ksoup.parsePostRequest
+        const val ksoupNetwork = "com.fleeksoft.ksoup:ksoup-network:$version"
+    }
 }
