@@ -31,21 +31,21 @@ class SearchViewModel(private val repository: SearchRepository) {
                         isEmptySearch.value = true
                     }
                     result.forEach { task ->
-                        val name = task.name.toHighlightText(
-                            searchText = searchText,
-                            style = style
-                        )
-                        val description = task.description.toHighlightText(
-                            searchText = searchText,
-                            style = style
-                        )
-                        searchedTasks.add(
-                            SearchTaskItemUiState(
-                                id = task.id,
-                                name = name,
-                                description = description
-                            )
-                        )
+//                        val name = task.name.toHighlightText(
+//                            searchText = searchText,
+//                            style = style
+//                        )
+//                        val description = task.description.toHighlightText(
+//                            searchText = searchText,
+//                            style = style
+//                        )
+//                        searchedTasks.add(
+//                            SearchTaskItemUiState(
+//                                id = task.id,
+//                                name = name,
+//                                description = description
+//                            )
+//                        )
                     }
                     isSearchingProcess.value = false
                 }

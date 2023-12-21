@@ -19,4 +19,8 @@ object Strings {
     const val collapse = "Свернуть"
     const val close = "Закрыть"
     const val structure = "Структура"
+    const val show_all = "Смотреть всё"
+    const val reading_status_planned = "Планирую"
+    const val reading_status_is_reading = "Читаю"
+    const val reading_status_done = "Прочитано"
 }

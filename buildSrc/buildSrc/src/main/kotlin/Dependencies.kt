@@ -51,6 +51,13 @@ object Dependencies {
         const val desktop = "app.cash.sqldelight:sqlite-driver:$version"
     }
 
+    //imageLoader
+    object Kamel {
+        private const val version = "0.9.0"
+        const val imageLoader = "media.kamel:kamel-image:$version"
+    }
+
+    //parsing html
     object Ksoup {
         private const val version = "0.1.0"
         const val ksoup = "com.fleeksoft.ksoup:ksoup:$version"

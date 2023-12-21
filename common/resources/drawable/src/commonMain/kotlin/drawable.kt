@@ -24,4 +24,5 @@ object Drawable {
     const val drawable_ic_collapse = "ic_collapse.png"
     const val drawable_ic_note_sidebar = "ic_note_sidebar.png"
     const val drawable_ic_structure = "ic_structure.png"
+    const val drawable_ic_expand_shape = "ic_expand_shape.png"
 }

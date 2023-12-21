@@ -13,10 +13,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import application_platform.ApplicationPlatform
-import application_platform.convert
-import application_platform.isDesktop
 import di.Inject
+import platform.Platform
+import platform.isDesktop
 import platform.isMobile
 import screens.BookScreen
 import screens.MainScreen
@@ -24,7 +23,7 @@ import tooltip_area.ShowTooltip
 import tooltip_area.TooltipItem
 
 @Composable
-fun Application(platform: ApplicationPlatform) {
+fun Application(platform: Platform) {
     val viewModel = remember { Inject.instance<ApplicationViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
     val leftDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -34,7 +33,7 @@ fun Application(platform: ApplicationPlatform) {
     val showSearch = remember { mutableStateOf(false) }
     val showNote = remember { mutableStateOf(false) }
     val fullScreenNote = remember { mutableStateOf(false) }
-    if (showNote.value && platform.convert().isMobile()) {
+    if (showNote.value && platform.isMobile()) {
         fullScreenNote.value = true
     }
     val tooltip = remember { mutableStateOf(TooltipItem()) }
@@ -49,7 +48,7 @@ fun Application(platform: ApplicationPlatform) {
             ) {
                 MainScreen(
                     uiState = uiState,
-                    platform = platform.convert(),
+                    platform = platform,
                     showLeftDrawer = showLeftDrawer,
                     showNote = showNote,
                     showSearch = showSearch,
@@ -68,7 +67,7 @@ fun Application(platform: ApplicationPlatform) {
             ) {
                 BookScreen(
                     uiState = uiState,
-                    platform = platform.convert(),
+                    platform = platform,
                     showLeftDrawer = showLeftDrawer,
                     showRightDrawer = showRightDrawer,
                     showNote = showNote,

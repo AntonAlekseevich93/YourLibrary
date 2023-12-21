@@ -33,13 +33,13 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowScope
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import application_platform.ApplicationPlatform
 import di.PlatformConfiguration
+import platform.Platform
 import java.awt.FileDialog
 import java.awt.Frame
 
 fun main() = application {
-    PlatformSDK.init(PlatformConfiguration())
+    PlatformSDK.init(PlatformConfiguration(), Platform.DESKTOP)
     val state = rememberWindowState(
         size = DpSize(1300.dp, 900.dp),
         position = WindowPosition(Alignment.Center)
@@ -65,7 +65,7 @@ fun main() = application {
                 if (fullScreenState.placement == WindowPlacement.Floating) {
                     isFullScreen.value = false
                 }
-                Application(ApplicationPlatform.DESKTOP)
+                Application(Platform.DESKTOP)
             }
         }
     } else {
@@ -91,7 +91,7 @@ fun main() = application {
                             isFullScreen.value = true
                         }
                     )
-                    Application(ApplicationPlatform.DESKTOP)
+                    Application(Platform.DESKTOP)
                 }
             }
         }

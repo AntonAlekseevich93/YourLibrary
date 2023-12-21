@@ -4,7 +4,7 @@ import ApplicationTheme
 import ApplicationUiState
 import ApplicationViewModel
 import CustomDockedSearchBar
-import StuffListUI
+import ShelfBoardScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -82,7 +82,6 @@ fun MainScreen(
                         .padding(start = if (leftDrawerState.isClosed) 0.dp else 0.dp)
                         .fillMaxSize()
                         .background(ApplicationTheme.colors.mainBackgroundColor),
-                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     SubAppBar(
                         modifier = Modifier.padding(start = 16.dp, top = 6.dp),
@@ -107,8 +106,9 @@ fun MainScreen(
                         },
                         tooltipCallback = tooltipCallback,
                     )
-                    StuffListUI(
-                        openCard = {
+                    ShelfBoardScreen(
+                        platform = platform,
+                        openBookListener = {
                             showNote.value = true
                         }
                     )
