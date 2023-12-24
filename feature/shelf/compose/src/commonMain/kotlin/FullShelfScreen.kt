@@ -39,7 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import io.kamel.core.Resource
 import kotlinx.coroutines.launch
 import main_models.BookItemVo
 import models.BookItemCardConfig
@@ -56,6 +58,7 @@ fun FullShelfScreen(
     config: BookItemCardConfig,
     index: Int,
     searchListener: (text: String, shelfIndex: Int) -> Unit,
+    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: Int) -> Unit,
     closeListener: () -> Unit,
 ) {
     val searchText = remember { mutableStateOf("") }
@@ -164,10 +167,10 @@ fun FullShelfScreen(
                     state = lazyGridState
                 ) {
                     items(bookList) { bookItem ->
-                        BookItemCard(
+                        BookItemShelfCard(
                             config = config,
                             bookItem = bookItem,
-                            openBookListener = {},
+                            openBookListener = openBookListener,
                         )
                     }
                 }

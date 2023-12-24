@@ -23,4 +23,6 @@ object Strings {
     const val reading_status_planned = "Планирую"
     const val reading_status_is_reading = "Читаю"
     const val reading_status_done = "Прочитано"
+    const val page_short = "стр."
+    const val isbn = "ISBN:"
 }

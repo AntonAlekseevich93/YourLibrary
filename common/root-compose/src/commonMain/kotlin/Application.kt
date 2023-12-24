@@ -8,16 +8,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import di.Inject
+import io.kamel.core.Resource
 import platform.Platform
 import platform.isDesktop
 import platform.isMobile
-import screens.BookScreen
 import screens.MainScreen
 import tooltip_area.ShowTooltip
 import tooltip_area.TooltipItem
@@ -37,7 +39,8 @@ fun Application(platform: Platform) {
         fullScreenNote.value = true
     }
     val tooltip = remember { mutableStateOf(TooltipItem()) }
-
+    val painterSelectedBookInCache: MutableState<Resource<Painter>?> = mutableStateOf(null)
+    val selectedBookId: MutableState<Int> = mutableStateOf(-1)
 
     AppTheme {
         Box(modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundColor)) {
@@ -50,10 +53,14 @@ fun Application(platform: Platform) {
                     uiState = uiState,
                     platform = platform,
                     showLeftDrawer = showLeftDrawer,
-                    showNote = showNote,
                     showSearch = showSearch,
                     leftDrawerState = leftDrawerState,
                     viewModel = viewModel,
+                    openBookListener = { painter, bookId ->
+                        painterSelectedBookInCache.value = painter
+                        selectedBookId.value = bookId
+                        showNote.value = true
+                    },
                     tooltipCallback = {
                         tooltip.value = it
                     }
@@ -66,16 +73,15 @@ fun Application(platform: Platform) {
                 exit = fadeOut()
             ) {
                 BookScreen(
-                    uiState = uiState,
                     platform = platform,
+                    bookItemId = selectedBookId.value,
                     showLeftDrawer = showLeftDrawer,
                     showRightDrawer = showRightDrawer,
-                    showNote = showNote,
                     showSearch = showSearch,
                     leftDrawerState = leftDrawerState,
                     rightDrawerState = rightDrawerState,
-                    viewModel = viewModel,
                     fullScreenNote = fullScreenNote,
+                    painterInCache = painterSelectedBookInCache.value,
                     tooltipCallback = {
                         tooltip.value = it
                     },

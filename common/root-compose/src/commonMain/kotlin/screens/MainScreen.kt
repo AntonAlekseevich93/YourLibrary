@@ -17,7 +17,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import io.kamel.core.Resource
 import kotlinx.coroutines.launch
 import menu_bar.LeftMenuBar
 import navigation_drawer.PlatformLeftDrawerContent
@@ -32,11 +34,11 @@ fun MainScreen(
     uiState: ApplicationUiState,
     platform: Platform,
     showLeftDrawer: MutableState<Boolean>,
-    showNote: MutableState<Boolean>,
     showSearch: MutableState<Boolean>,
     leftDrawerState: DrawerState,
     viewModel: ApplicationViewModel,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
+    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: Int) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     Row {
@@ -46,7 +48,6 @@ fun MainScreen(
                     showSearch.value = true
                 },
                 open = {
-                    showNote.value = true
                 },
                 tooltipCallback = tooltipCallback,
             )
@@ -108,9 +109,7 @@ fun MainScreen(
                     )
                     ShelfBoardScreen(
                         platform = platform,
-                        openBookListener = {
-                            showNote.value = true
-                        }
+                        openBookListener = openBookListener,
                     )
                 }
 

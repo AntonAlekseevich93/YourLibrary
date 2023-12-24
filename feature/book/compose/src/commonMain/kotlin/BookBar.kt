@@ -36,7 +36,16 @@ fun FullBookBar(
 ) {
     when (platform) {
         Platform.MOBILE -> {
-
+            BookBar(
+                isFullscreen = isFullscreen,
+                showLeftDrawer = showLeftDrawer,
+                showRightDrawer = showRightDrawer,
+                onFullscreen = onFullscreen,
+                openLeftDrawerListener = openLeftDrawerListener,
+                openRightDrawerListener = openRightDrawerListener,
+                onClose = onClose,
+                tooltipCallback = tooltipCallback
+            )
         }
 
         Platform.DESKTOP -> {

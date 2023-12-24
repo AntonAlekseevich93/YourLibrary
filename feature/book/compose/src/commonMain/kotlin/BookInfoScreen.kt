@@ -17,18 +17,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import di.Inject
+import io.kamel.core.Resource
+import main_models.BookItemVo
 import navigation_drawer.PlatformNavigationDrawer
 import navigation_drawer.PlatformRightDrawerContent
 import navigation_drawer.SelectedRightDrawerItem
@@ -38,7 +37,9 @@ import tooltip_area.TooltipItem
 @Composable
 fun BookInfoScreen(
     platform: Platform,
+    bookItem: BookItemVo,
     fullScreenNote: MutableState<Boolean>,
+    painterInCache: Resource<Painter>? = null,
     showLeftDrawer: State<Boolean>,
     showRightDrawer: MutableState<Boolean>,
     openLeftDrawerListener: () -> Unit,
@@ -47,8 +48,6 @@ fun BookInfoScreen(
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     onClose: () -> Unit,
 ) {
-    val viewModel = remember { Inject.instance<BookViewModel>() }
-    val uiState by viewModel.uiState.collectAsState()
 
     val targetVerticalPadding = if (fullScreenNote.value) 0.dp else 65.dp
     val targetHorizontalPadding =
@@ -149,14 +148,11 @@ fun BookInfoScreen(
                         modifier = Modifier.fillMaxWidth().height(1.dp),
                         color = ApplicationTheme.colors.divider
                     )
-                    Box() {
-                        Text(
-                            modifier = Modifier.padding(start = 55.dp, end = 55.dp, top = 32.dp),
-                            text = "",
-                            style = ApplicationTheme.typography.bodyRegular,
-                            color = ApplicationTheme.colors.mainPlaceholderTextColor
-                        )
-                    }
+                    BookInfoContent(
+                        platform = platform,
+                        bookItem = bookItem,
+                        painterInCache = painterInCache,
+                    )
                 }
             }
         }

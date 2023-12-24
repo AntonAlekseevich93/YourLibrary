@@ -1,10 +1,3 @@
-package screens
-
-import ApplicationTheme
-import ApplicationUiState
-import ApplicationViewModel
-import BookInfoScreen
-import CustomDockedSearchBar
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,36 +9,48 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import di.Inject
+import io.kamel.core.Resource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import menu_bar.LeftMenuBar
 import navigation_drawer.PlatformLeftDrawerContent
 import navigation_drawer.PlatformNavigationDrawer
 import platform.Platform
+import platform.isDesktop
 import tooltip_area.TooltipItem
 
 @Composable
 fun BookScreen(
-    uiState: ApplicationUiState,
     platform: Platform,
-    showNote: MutableState<Boolean>,
+    bookItemId: Int,
     fullScreenNote: MutableState<Boolean>,
     showSearch: MutableState<Boolean>,
     showLeftDrawer: MutableState<Boolean>,
     showRightDrawer: MutableState<Boolean>,
     leftDrawerState: DrawerState,
     rightDrawerState: DrawerState,
-    viewModel: ApplicationViewModel,
+    painterInCache: Resource<Painter>? = null,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     onClose: () -> Unit,
 ) {
+    val viewModel = remember { Inject.instance<BookViewModel>() }
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = bookItemId) {
+        viewModel.getBookItem(bookItemId)
+    }
+
     val scope = rememberCoroutineScope()
     val leftMenuVisible = remember { mutableStateOf(false) }
     val background = if (fullScreenNote.value || leftMenuVisible.value)
@@ -71,23 +76,26 @@ fun BookScreen(
         AnimatedVisibility(
             visible = fullScreenNote.value,
         ) {
-            if (fullScreenNote.value) {
-                /** this is necessary to get rid of the white blinking effect due
-                 * to the background transparent when collapsing and expanding */
-                scope.launch {
-                    delay(200)
-                    leftMenuVisible.value = true
+            if (platform.isDesktop()) {
+                if (fullScreenNote.value) {
+                    /** this is necessary to get rid of the white blinking effect due
+                     * to the background transparent when collapsing and expanding */
+                    scope.launch {
+                        delay(200)
+                        leftMenuVisible.value = true
+                    }
                 }
+
+                LeftMenuBar(
+                    searchListener = {
+                        showSearch.value = true
+                    },
+                    tooltipCallback = tooltipCallback,
+                    open = {
+
+                    },
+                )
             }
-            LeftMenuBar(
-                searchListener = {
-                    showSearch.value = true
-                },
-                tooltipCallback = tooltipCallback,
-                open = {
-                    showNote.value = true
-                },
-            )
         }
 
         PlatformNavigationDrawer(
@@ -122,50 +130,53 @@ fun BookScreen(
             showLeftDrawer = showLeftDrawer,
         ) {
             Box(
-                contentAlignment = Alignment.TopCenter,
+                contentAlignment = if (platform.isDesktop()) Alignment.TopCenter else Alignment.TopStart,
             ) {
-                BookInfoScreen(
-                    platform = platform,
-                    onClose = onClose,
-                    fullScreenNote = fullScreenNote,
-                    showLeftDrawer = showLeftDrawer,
-                    showRightDrawer = showRightDrawer,
-                    openLeftDrawerListener = {
-                        scope.launch {
-                            if (!showLeftDrawer.value) {
-                                showLeftDrawer.value = true
-                                leftDrawerState.open()
-                            } else {
-                                showLeftDrawer.value = false
-                                leftDrawerState.close()
+                if (uiState.bookItem.value != null) {
+                    BookInfoScreen(
+                        platform = platform,
+                        painterInCache = painterInCache,
+                        bookItem = uiState.bookItem.value!!,
+                        onClose = onClose,
+                        fullScreenNote = fullScreenNote,
+                        showLeftDrawer = showLeftDrawer,
+                        showRightDrawer = showRightDrawer,
+                        openLeftDrawerListener = {
+                            scope.launch {
+                                if (!showLeftDrawer.value) {
+                                    showLeftDrawer.value = true
+                                    leftDrawerState.open()
+                                } else {
+                                    showLeftDrawer.value = false
+                                    leftDrawerState.close()
+                                }
                             }
-                        }
-                    },
-                    openRightDrawerListener = {
-                        scope.launch {
-                            if (!showRightDrawer.value) {
-                                showRightDrawer.value = true
-                                rightDrawerState.open()
-                            } else {
-                                showRightDrawer.value = false
-                                rightDrawerState.close()
+                        },
+                        openRightDrawerListener = {
+                            scope.launch {
+                                if (!showRightDrawer.value) {
+                                    showRightDrawer.value = true
+                                    rightDrawerState.open()
+                                } else {
+                                    showRightDrawer.value = false
+                                    rightDrawerState.close()
+                                }
                             }
-                        }
-                    },
-                    closeRightDrawerListener = {
-                        scope.launch {
-                            if (!showRightDrawer.value) {
-                                showRightDrawer.value = true
-                                rightDrawerState.open()
-                            } else {
-                                showRightDrawer.value = false
-                                rightDrawerState.close()
+                        },
+                        closeRightDrawerListener = {
+                            scope.launch {
+                                if (!showRightDrawer.value) {
+                                    showRightDrawer.value = true
+                                    rightDrawerState.open()
+                                } else {
+                                    showRightDrawer.value = false
+                                    rightDrawerState.close()
+                                }
                             }
-                        }
-                    },
-                    tooltipCallback = tooltipCallback
-                )
-
+                        },
+                        tooltipCallback = tooltipCallback
+                    )
+                }
                 CustomDockedSearchBar(
                     showSearch = showSearch,
                     closeSearch = {

@@ -18,6 +18,7 @@ data class AppColors(
     val searchDividerColor: Color,
     val pointerIsActiveCardColor: Color,
     val pointerIsActiveCardColorDark: Color,
+    val linkColor: Color,
 )
 
 val lightPaletteTheme = AppColors(
@@ -38,6 +39,7 @@ val lightPaletteTheme = AppColors(
     searchDividerColor = Color(0xFF3b3b3b),
     pointerIsActiveCardColor = Color(0xFF4D4D50),
     pointerIsActiveCardColorDark = Color(0xFF3d3d40),
+    linkColor = Color(0xFF4282D3),
 )
 
 val darkPaletteTheme = AppColors(
@@ -58,4 +60,5 @@ val darkPaletteTheme = AppColors(
     searchDividerColor = Color(0xFF9f9f9f),
     pointerIsActiveCardColor = Color(0xFF4D4D50),
     pointerIsActiveCardColorDark = Color(0xFF3d3d40),
+    linkColor = Color(0xFF4282D3),
 )

@@ -20,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.kamel.core.Resource
 import main_models.ShelfVo
 import models.BookItemCardConfig
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -33,7 +35,7 @@ fun HorizontalShelfScreen(
     shelfVo: ShelfVo,
     config: BookItemCardConfig,
     expandShelfListener: () -> Unit,
-    openBookListener: () -> Unit,
+    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: Int) -> Unit,
 ) {
     val firstElements =
         remember(shelfVo.booksList) { shelfVo.booksList.take(config.maxItemsInHorizontalShelf) }
@@ -71,7 +73,7 @@ fun HorizontalShelfScreen(
         ) {
             LazyRow(modifier = Modifier, state = state) {
                 items(firstElements) { bookItem ->
-                    BookItemCard(
+                    BookItemShelfCard(
                         config = config,
                         bookItem = bookItem,
                         openBookListener = openBookListener,

@@ -16,8 +16,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import di.Inject
+import io.kamel.core.Resource
 import kotlinx.coroutines.launch
 import platform.Platform
 import platform.isDesktop
@@ -27,7 +29,7 @@ import platform.isDesktop
 @Composable
 fun ShelfBoardScreen(
     platform: Platform,
-    openBookListener: () -> Unit
+    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: Int) -> Unit,
 ) {
     val viewModel = remember { Inject.instance<ShelfViewModel>() }
     val uiState = viewModel.uiState.collectAsState()
@@ -55,6 +57,7 @@ fun ShelfBoardScreen(
                         config = uiState.value.config,
                         index = uiState.value.fullShelfIndex.value,
                         searchListener = viewModel::searchInShelf,
+                        openBookListener = openBookListener,
                         closeListener = {
                             scope.launch {
                                 bottomSheetState.bottomSheetState.collapse()
