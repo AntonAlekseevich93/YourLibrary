@@ -10,7 +10,7 @@ val viewModelsModule = DI.Module("viewModelsModule") {
     bind<SearchViewModel>() with singleton {
         SearchViewModel(instance())
     }
-    bind<BookViewModel>() with singleton {
-        BookViewModel(instance())
+    bind<BookInfoViewModel>() with singleton {
+        BookInfoViewModel(instance())
     }
 }

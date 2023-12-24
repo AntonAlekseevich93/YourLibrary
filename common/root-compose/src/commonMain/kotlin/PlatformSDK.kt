@@ -27,7 +27,8 @@ object PlatformSDK {
                     coreModule,
                     shelfModule,
                     searchModule,
-                    bookModule,
+                    bookInfoModule,
+                    bookCreatorModule,
                     viewModelsModule,
                 )
             }.direct

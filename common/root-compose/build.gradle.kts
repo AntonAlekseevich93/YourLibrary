@@ -23,6 +23,7 @@ kotlin {
                 implementation(project(":feature:search:data"))
                 implementation(project(":feature:book-info:compose"))
                 implementation(project(":feature:book-info:data"))
+                implementation(project(":feature:book-creator:data"))
             }
         }
     }

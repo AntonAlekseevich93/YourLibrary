@@ -5,12 +5,12 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import main_models.BookItemVo
-import models.BookUiState
+import models.BookInfoUiState
 
-class BookViewModel(private val repository: BookRepository) {
+class BookInfoViewModel(private val repository: BookInfoRepository) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
-    private val _uiState: MutableStateFlow<BookUiState> = MutableStateFlow(BookUiState())
+    private val _uiState: MutableStateFlow<BookInfoUiState> = MutableStateFlow(BookInfoUiState())
     val uiState = _uiState.asStateFlow()
 
     fun getBookItem(id: Int){

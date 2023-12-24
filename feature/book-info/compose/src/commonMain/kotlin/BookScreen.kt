@@ -44,7 +44,7 @@ fun BookScreen(
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     onClose: () -> Unit,
 ) {
-    val viewModel = remember { Inject.instance<BookViewModel>() }
+    val viewModel = remember { Inject.instance<BookInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(key1 = bookItemId) {
