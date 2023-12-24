@@ -13,5 +13,5 @@ kotlin {
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.book.api"
+    namespace = "ru.yourlibrary.yourlibrary.book_info.api"
 }

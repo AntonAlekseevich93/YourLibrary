@@ -21,8 +21,8 @@ kotlin {
                 implementation(project(":feature:shelf:compose"))
                 implementation(project(":feature:search:compose"))
                 implementation(project(":feature:search:data"))
-                implementation(project(":feature:book:compose"))
-                implementation(project(":feature:book:data"))
+                implementation(project(":feature:book-info:compose"))
+                implementation(project(":feature:book-info:data"))
             }
         }
     }

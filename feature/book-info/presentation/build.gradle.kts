@@ -7,13 +7,14 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":feature:book:api"))
                 implementation(project(":common:core"))
+                implementation(project(":common:models"))
+                implementation(project(":feature:book-info:api"))
             }
         }
     }
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.book.data"
+    namespace = "ru.yourlibrary.yourlibrary.book_info.presentation"
 }

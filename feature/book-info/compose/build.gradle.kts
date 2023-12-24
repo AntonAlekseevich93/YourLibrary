@@ -14,8 +14,8 @@ kotlin {
                 implementation(project(":common:ui"))
                 implementation(project(":common:resources:drawable"))
                 implementation(project(":common:resources:strings"))
-                implementation(project(":feature:book:api"))
-                implementation(project(":feature:book:presentation"))
+                implementation(project(":feature:book-info:api"))
+                implementation(project(":feature:book-info:presentation"))
                 implementation(project(":feature:search:compose"))
             }
         }
@@ -23,5 +23,5 @@ kotlin {
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.book.api"
+    namespace = "ru.yourlibrary.yourlibrary.book_info.api"
 }
