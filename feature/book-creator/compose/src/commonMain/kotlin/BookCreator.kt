@@ -28,6 +28,7 @@ import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.ReadingStatus
+import main_models.getStatusColor
 import platform.Platform
 import platform.isMobile
 import text_fields.TextFieldWithTitleAndSuggestion
@@ -163,12 +164,7 @@ fun BookCreator(
                 showSuggestionAsTag = true,
                 freezeFocusWhenOnClick = true,
                 suggestionList = mutableStateOf(statusesList.value.map { it.nameValue }),
-                tagColor = when (bookValues.selectedStatus.value) {
-                    ReadingStatus.PLANNED -> ApplicationTheme.colors.readingStatusesColor.plannedStatusColor
-                    ReadingStatus.READING -> ApplicationTheme.colors.readingStatusesColor.readingStatusColor
-                    ReadingStatus.DONE -> ApplicationTheme.colors.readingStatusesColor.doneStatusColor
-                    ReadingStatus.DEFERRED -> ApplicationTheme.colors.readingStatusesColor.deferredStatusColor
-                }
+                tagColor = bookValues.selectedStatus.value.getStatusColor()
             )
 
             TextFieldWithTitleAndSuggestion(

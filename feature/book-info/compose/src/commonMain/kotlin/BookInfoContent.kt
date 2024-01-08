@@ -27,9 +27,11 @@ import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.BookItemVo
+import main_models.getStatusColor
 import platform.Platform
 import platform.isDesktop
 import platform.isMobile
+import tags.CustomTag
 
 @Composable
 fun BookInfoContent(
@@ -86,6 +88,15 @@ fun BookInfoContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = if (platform.isMobile()) Alignment.CenterHorizontally else Alignment.Start
                 ) {
+                    CustomTag(
+                        text = bookItem.readingStatus.nameValue,
+                        color = bookItem.readingStatus.getStatusColor(),
+                        modifier = Modifier.padding(bottom = 12.dp),
+                        onClick = {
+                            //todo
+                        }
+                    )
+
                     SelectionContainer {
                         Text(
                             text = bookItem.authorName,

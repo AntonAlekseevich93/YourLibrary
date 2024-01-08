@@ -22,8 +22,6 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.TextFieldDefaults
@@ -51,6 +49,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import platform.Platform
 import platform.isDesktop
+import tags.CustomTag
 
 const val DELAY_FOR_LISTENER_PROCESSING = 150L
 
@@ -214,22 +213,13 @@ fun TextFieldWithTitleAndSuggestion(
 
                                 )
                         } else {
-                            Chip(
-                                shape = RoundedCornerShape(4.dp),
-                                modifier = textModifier.sizeIn(maxHeight = 24.dp),
-                                border = BorderStroke(1.dp, color = tagColor),
-                                colors = ChipDefaults.chipColors(backgroundColor = Color.Transparent),
-                                onClick = {
-                                    isFocused = true
-                                }
-                            ) {
-                                Text(
-                                    text = textFieldValue?.value?.text ?: text?.value
-                                    ?: textState.value.text,
-                                    style = ApplicationTheme.typography.footnoteRegular,
-                                    color = tagColor
-                                )
-                            }
+                            CustomTag(
+                                text = textFieldValue?.value?.text ?: text?.value
+                                ?: textState.value.text,
+                                color = tagColor,
+                                modifier = textModifier,
+                                onClick = { isFocused = true }
+                            )
                         }
 
                         if (showClearButton.value) {
