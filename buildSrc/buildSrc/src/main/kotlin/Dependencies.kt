@@ -66,4 +66,10 @@ object Dependencies {
         // Ksoup.parseGetRequest, Ksoup.parseSubmitRequest, and Ksoup.parsePostRequest
         const val ksoupNetwork = "com.fleeksoft.ksoup:ksoup-network:$version"
     }
+
+    //navigation
+    object PreCompose{
+        private const val version = "1.5.10"
+        const val preComposeWithNavigation = "moe.tlaster:precompose:$version"
+    }
 }

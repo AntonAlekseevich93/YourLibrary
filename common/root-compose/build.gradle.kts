@@ -12,6 +12,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(Dependencies.Kamel.imageLoader)
+                implementation(Dependencies.PreCompose.preComposeWithNavigation)
                 api(project(":common:core"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:resources:drawable")) //todo возможно потом удалить
