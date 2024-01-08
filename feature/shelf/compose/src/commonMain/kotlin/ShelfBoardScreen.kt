@@ -34,8 +34,8 @@ fun ShelfBoardScreen(
     val viewModel = remember { Inject.instance<ShelfViewModel>() }
     val uiState = viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
-    val verticalPadding: Int = remember { if (platform.isDesktop()) 40 else 6 }
-    val horizontalPadding: Int = remember { if (platform.isDesktop()) 50 else 10 }
+    val verticalPadding: Int = remember { if (platform.isDesktop()) 0 else 6 }
+    val horizontalPadding: Int = remember { if (platform.isDesktop()) 24 else 10 }
     val lazyListState = rememberLazyListState()
     val bottomSheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberBottomSheetState(

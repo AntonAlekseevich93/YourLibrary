@@ -38,7 +38,7 @@ import tooltip_area.TooltipItem
 fun BookInfoScreen(
     platform: Platform,
     bookItem: BookItemVo,
-    fullScreenNote: MutableState<Boolean>,
+    fullScreenBookInfo: MutableState<Boolean>,
     painterInCache: Resource<Painter>? = null,
     showLeftDrawer: State<Boolean>,
     showRightDrawer: MutableState<Boolean>,
@@ -49,9 +49,9 @@ fun BookInfoScreen(
     onClose: () -> Unit,
 ) {
 
-    val targetVerticalPadding = if (fullScreenNote.value) 0.dp else 65.dp
+    val targetVerticalPadding = if (fullScreenBookInfo.value) 0.dp else 65.dp
     val targetHorizontalPadding =
-        if (fullScreenNote.value || platform == Platform.MOBILE) 0.dp else if (showRightDrawer.value) 100.dp else 220.dp
+        if (fullScreenBookInfo.value || platform == Platform.MOBILE) 0.dp else if (showRightDrawer.value) 100.dp else 220.dp
     val animatedVerticalPadding by animateDpAsState(
         targetValue = targetVerticalPadding,
         animationSpec = tween(
@@ -68,7 +68,7 @@ fun BookInfoScreen(
             easing = FastOutSlowInEasing
         )
     )
-    val shapeInDp = if (fullScreenNote.value) 0.dp else 8.dp
+    val shapeInDp = if (fullScreenBookInfo.value) 0.dp else 8.dp
 
     Box(
         modifier = Modifier
@@ -116,12 +116,12 @@ fun BookInfoScreen(
                             )
                             PlatformRightDrawerContent(
                                 platform = platform,
-                                isFullscreen = fullScreenNote,
+                                isFullscreen = fullScreenBookInfo,
                                 isCanClose = true,
                                 selectedItem = SelectedRightDrawerItem.STRUCTURE,
                                 closeSidebarListener = closeRightDrawerListener,
                                 expandOrCollapseListener = {
-                                    fullScreenNote.value = !fullScreenNote.value
+                                    fullScreenBookInfo.value = !fullScreenBookInfo.value
                                 },
                                 closeWindow = onClose,
                                 tooltipCallback = tooltipCallback
@@ -138,8 +138,8 @@ fun BookInfoScreen(
                         showLeftDrawer = showLeftDrawer,
                         showRightDrawer = showRightDrawer,
                         onClose = onClose,
-                        onFullscreen = { fullScreenNote.value = !fullScreenNote.value },
-                        isFullscreen = fullScreenNote,
+                        onFullscreen = { fullScreenBookInfo.value = !fullScreenBookInfo.value },
+                        isFullscreen = fullScreenBookInfo,
                         openLeftDrawerListener = openLeftDrawerListener,
                         openRightDrawerListener = openRightDrawerListener,
                         tooltipCallback = tooltipCallback

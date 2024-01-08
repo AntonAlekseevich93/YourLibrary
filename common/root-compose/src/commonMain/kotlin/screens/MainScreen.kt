@@ -39,6 +39,7 @@ fun MainScreen(
     viewModel: ApplicationViewModel,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: Int) -> Unit,
+    createBookListener: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     Row {
@@ -50,6 +51,7 @@ fun MainScreen(
                 open = {
                 },
                 tooltipCallback = tooltipCallback,
+                createBookListener = createBookListener,
             )
         }
 

@@ -25,6 +25,7 @@ fun LeftMenuBar(
     searchListener: () -> Unit,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     open: () -> Unit,
+    createBookListener: () -> Unit,
 ) {
     Row(modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundWindowDarkColor)) {
         Column(
@@ -32,7 +33,7 @@ fun LeftMenuBar(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TooltipIconArea(
-                text = "Поиск",//todo
+                text = Strings.search,
                 drawableResName = Drawable.drawable_ic_search,
                 modifier = Modifier.padding(top = 10.dp),
                 tooltipCallback = {
@@ -42,10 +43,21 @@ fun LeftMenuBar(
             )
 
             TooltipIconArea(
-                text = "Теги",//todo
+                text = Strings.add_book,
+                drawableResName = Drawable.drawable_ic_add,
+                tooltipCallback = {
+                    tooltipCallback.invoke(it.apply { position = TooltipPosition.RIGHT })
+                },
+                modifier = Modifier.padding(top = 10.dp),
+            ) {
+                createBookListener.invoke()
+            }
+
+            TooltipIconArea(
+                text = Strings.tags,
                 drawableResName = Drawable.drawable_ic_tag,
                 tooltipCallback = {
-                    tooltipCallback?.invoke(it.apply { position = TooltipPosition.RIGHT })
+                    tooltipCallback.invoke(it.apply { position = TooltipPosition.RIGHT })
                 },
                 modifier = Modifier.padding(top = 10.dp),
             ) {
@@ -53,7 +65,7 @@ fun LeftMenuBar(
             }
 
             TooltipIconArea(
-                text = "Время",//todo
+                text = Strings.time,
                 drawableResName = Drawable.drawable_ic_timer_off,
                 modifier = Modifier.padding(top = 10.dp),
                 iconSize = 22.dp,

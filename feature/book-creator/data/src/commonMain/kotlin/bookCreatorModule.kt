@@ -7,7 +7,7 @@ import org.kodein.di.singleton
 
 val bookCreatorModule = DI.Module("bookCreatorModule") {
     bind<BookCreatorRepository>() with singleton {
-        BookCreatorRepositoryImpl(instance())
+        BookCreatorRepositoryImpl(instance(), instance())
     }
 
     bind<LocalBookCreatorDataSource>() with provider {

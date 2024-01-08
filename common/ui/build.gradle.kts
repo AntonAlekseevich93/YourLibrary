@@ -8,6 +8,8 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":common:core"))
+                implementation(project(":common:utils:date"))
+                implementation(project(":common:models"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:resources:strings"))
                 implementation(project(":common:resources:drawable"))

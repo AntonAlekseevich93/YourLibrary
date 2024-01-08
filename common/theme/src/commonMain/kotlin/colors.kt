@@ -1,4 +1,5 @@
 import androidx.compose.ui.graphics.Color
+import component_colors.DatePickerColors
 
 data class AppColors(
     val mainBackgroundColor: Color,
@@ -19,6 +20,15 @@ data class AppColors(
     val pointerIsActiveCardColor: Color,
     val pointerIsActiveCardColorDark: Color,
     val linkColor: Color,
+    val datePickerColors: DatePickerColors,
+    val errorColor: Color,
+    val successColor: Color,
+    val readingStatusesColor: ReadingStatusesColor,
+    val textFieldColor: Color,
+    val hintColor: Color,
+    val focusedTextFillBackground: Color,
+    val dropdownBackground: Color,
+    val tooltipSelectedBackground: Color,
 )
 
 val lightPaletteTheme = AppColors(
@@ -40,6 +50,25 @@ val lightPaletteTheme = AppColors(
     pointerIsActiveCardColor = Color(0xFF4D4D50),
     pointerIsActiveCardColorDark = Color(0xFF3d3d40),
     linkColor = Color(0xFF4282D3),
+    datePickerColors = DatePickerColors(
+        containerColor = Color(0xFF212121),
+        textColor = Color(0xFFe5e5e5),
+        selectedTextColor = Color(0xFF0093ff),
+        selectedContainerColor = Color(0xFF545454),
+    ),
+    errorColor = Color(0xFFFA8072),
+    successColor = Color(0xFF4BB543),
+    readingStatusesColor = ReadingStatusesColor(
+        plannedStatusColor = Color(0xFFffbe0b),
+        readingStatusColor = Color(0xFF3a86ff),
+        doneStatusColor = Color(0xFFccff33),
+        deferredStatusColor = Color(0xFFd5b9b2),
+    ),
+    textFieldColor = Color(0xFF3f3f3f),
+    hintColor = Color(0xFF949494),
+    focusedTextFillBackground = Color(0xFF212121),
+    dropdownBackground = Color(0xFF252525),
+    tooltipSelectedBackground = Color(0xFF4D4D50),
 )
 
 val darkPaletteTheme = AppColors(
@@ -61,4 +90,30 @@ val darkPaletteTheme = AppColors(
     pointerIsActiveCardColor = Color(0xFF4D4D50),
     pointerIsActiveCardColorDark = Color(0xFF3d3d40),
     linkColor = Color(0xFF4282D3),
+    datePickerColors = DatePickerColors(
+        containerColor = Color(0xFF212121),
+        textColor = Color(0xFFe5e5e5),
+        selectedTextColor = Color(0xFF0093ff),
+        selectedContainerColor = Color(0xFF545454),
+    ),
+    errorColor = Color(0xFFFA8072),
+    successColor = Color(0xFF4BB543),
+    readingStatusesColor = ReadingStatusesColor(
+        plannedStatusColor = Color(0xFFffbe0b),
+        readingStatusColor = Color(0xFF3a86ff),
+        doneStatusColor = Color(0xFFccff33),
+        deferredStatusColor = Color(0xFFd5b9b2),
+    ),
+    textFieldColor = Color(0xFF3f3f3f),
+    hintColor = Color(0xFF949494),
+    focusedTextFillBackground = Color(0xFF212121),
+    dropdownBackground = Color(0xFF252525),
+    tooltipSelectedBackground = Color(0xFF4D4D50),
+)
+
+class ReadingStatusesColor(
+    val plannedStatusColor: Color,
+    val readingStatusColor: Color,
+    val doneStatusColor: Color,
+    val deferredStatusColor: Color,
 )

@@ -179,10 +179,10 @@ private fun BookCoverWithInfo(
 private fun BookInfo(bookItem: BookItemVo) {
     SelectionContainer {
         Column {
-            if (bookItem.numbersOfPage > 0) {
+            if (bookItem.numbersOfPages > 0) {
                 Text(
                     modifier = Modifier.padding(bottom = 4.dp),
-                    text = "${bookItem.numbersOfPage} ${Strings.page_short}",
+                    text = "${bookItem.numbersOfPages} ${Strings.page_short}",
                     style = ApplicationTheme.typography.footnoteBold,
                     color = ApplicationTheme.colors.mainTextColor,
                 )
@@ -191,7 +191,7 @@ private fun BookInfo(bookItem: BookItemVo) {
                 Row {
                     Text(
                         modifier = Modifier,
-                        text = "${Strings.isbn} ",
+                        text = "${Strings.isbn}: ",
                         style = ApplicationTheme.typography.footnoteBold,
                         color = ApplicationTheme.colors.mainTextColor,
                     )

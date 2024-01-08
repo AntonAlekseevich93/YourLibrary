@@ -1,3 +1,5 @@
+import main_models.BookItemResponse
+
 interface UrlParserInteractor {
-    suspend fun parseUrl(url: String)
+    suspend fun parseBookUrl(url: String): BookItemResponse
 }

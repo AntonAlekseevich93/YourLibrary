@@ -1,10 +1,37 @@
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequest
+import main_models.BookError
+import main_models.BookItemResponse
+import main_models.BookItemVo
+import main_models.ErrorType
 
 class UrlParserInteractorImpl : UrlParserInteractor {
 
-    override suspend fun parseUrl(url: String) {
-        TODO("Not yet implemented")
+    val bookItemForTesting = BookItemVo(
+        id = 1,
+        shelfId = 2,
+        bookName = "Кто нашёл берет себе",
+        authorName = "Стивен Кинг",
+        description = "Четверо восьмиклассников, еще не знающих, что скоро станут друзьями, ведут обычную для подростков начала девяностых жизнь: учатся, дерутся, влюбляются, изучают карате по фильмам из видеосалонов, охотятся за джинсами-варенками или зарубежной фантастикой… Их случайно пролитая кровь разбудит того, кто спит под курганами.",
+        coverUrl = "",
+        coverUrlFromParsing = "https://cdn.book24.ru/v2/ASE000000000848034/COVER/cover13d__w820.jpg",
+        numbersOfPages = 234,
+        isbn = "978-5-17-148330-2"
+    )
+
+    override suspend fun parseBookUrl(url: String): BookItemResponse {
+        return if (isUrlCorrect(url)) {
+            BookItemResponse(
+                bookItem = bookItemForTesting,
+                bookError = null
+            )
+
+        } else {
+            BookItemResponse(
+                bookItem = null,
+                bookError = BookError(type = ErrorType.PARSE_ERROR_NOT_CORRECT_URL)
+            )
+        }
     }
 
     private suspend fun parseLiveLibUrl() {
@@ -65,4 +92,16 @@ class UrlParserInteractorImpl : UrlParserInteractor {
         }
     }
 
+    private fun isUrlCorrect(url: String): Boolean {
+        if (url.contains(LITRES_LINK)) return true
+        if (url.contains(AMAZON_LINK)) return true
+        if (url.contains(LIVE_LIB_LINK)) return true
+        return false
+    }
+
+    companion object {
+        private const val LITRES_LINK = "litres.ru"
+        private const val AMAZON_LINK = "amazon.com"
+        private const val LIVE_LIB_LINK = "livelib.ru"
+    }
 }

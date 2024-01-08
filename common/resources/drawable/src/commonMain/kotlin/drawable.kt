@@ -25,4 +25,9 @@ object Drawable {
     const val drawable_ic_note_sidebar = "ic_note_sidebar.png"
     const val drawable_ic_structure = "ic_structure.png"
     const val drawable_ic_expand_shape = "ic_expand_shape.png"
+    const val drawable_ic_add = "ic_add.png"
+    const val drawable_ic_info = "ic_info.png"
+    const val drawable_ic_error = "ic_error.png"
+    const val drawable_ic_check = "ic_check.png"
+    const val drawable_ic_close_128px = "ic_close_128.png"
 }

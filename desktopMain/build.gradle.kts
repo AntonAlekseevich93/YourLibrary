@@ -13,6 +13,8 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.desktop.currentOs)
                 api(project(":common:root-compose"))
+                api(project(":common:root-compose"))
+                api(project(":common:ui"))
             }
         }
     }

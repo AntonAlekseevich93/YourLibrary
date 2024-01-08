@@ -44,13 +44,17 @@ fun TooltipIconArea(
     iconTint: Color = ApplicationTheme.colors.mainIconsColor,
     isSelected: Boolean = false,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit)? = null,
+    isClickable: Boolean = true,
+    disableSelection: Boolean = false,
     onClick: () -> Unit = {},
 ) {
     val offset = remember { mutableStateOf(Offset(0f, 0f)) }
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered = interactionSource.collectIsHoveredAsState()
-    val cardBackground = if (isSelected) {
-        Color(0xFF4D4D50) //todo переделать токен цвет)
+    val cardBackground = if (disableSelection) {
+        pointerEventBackgroundDisable
+    } else if (isSelected) {
+        ApplicationTheme.colors.tooltipSelectedBackground
     } else if (isHovered.value) {
         pointerIsActiveCardColor
     } else {
@@ -71,7 +75,7 @@ fun TooltipIconArea(
             .onGloballyPositioned { coordinates ->
                 offset.value = coordinates.positionInWindow()
             }
-            .clickable { onClick.invoke() }
+            .clickable(enabled = isClickable) { onClick.invoke() }
             .hoverable(
                 interactionSource = interactionSource,
                 enabled = true,
@@ -96,7 +100,7 @@ fun ShowTooltip(
     backgroundColor: Color = ApplicationTheme.colors.tooltipAreaBackground,
 ) {
     val offsetShiftX = when (tooltip.position) {
-        TooltipPosition.TOP -> 0
+        TooltipPosition.TOP -> -40
         TooltipPosition.BOTTOM -> 0
         TooltipPosition.LEFT -> 0
         TooltipPosition.RIGHT -> 80
@@ -104,7 +108,7 @@ fun ShowTooltip(
     }
 
     val offsetShiftY = when (tooltip.position) {
-        TooltipPosition.TOP -> 0
+        TooltipPosition.TOP -> 180
         TooltipPosition.BOTTOM -> 20
         TooltipPosition.LEFT -> 0
         TooltipPosition.RIGHT -> 100

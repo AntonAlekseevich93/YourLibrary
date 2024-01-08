@@ -8,8 +8,8 @@ data class BookItemVo(
     var description: String = "",
     var coverUrl: String = "",
     var coverUrlFromParsing: String = "",
-    var numbersOfPage: Int = 0,
+    var numbersOfPages: Int = 0,
     var isbn: String = "",
     var quotes: String = "",
-    var readingStatus: ReadingStatus = ReadingStatus.PLANNED
+    var readingStatus: ReadingStatus = ReadingStatus.PLANNED,
 )

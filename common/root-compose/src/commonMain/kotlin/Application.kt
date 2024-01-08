@@ -33,10 +33,10 @@ fun Application(platform: Platform) {
     val showLeftDrawer = remember { mutableStateOf(false) }
     val showRightDrawer = remember { mutableStateOf(false) }
     val showSearch = remember { mutableStateOf(false) }
-    val showNote = remember { mutableStateOf(false) }
-    val fullScreenNote = remember { mutableStateOf(false) }
-    if (showNote.value && platform.isMobile()) {
-        fullScreenNote.value = true
+    val selectedScreen = remember { mutableStateOf(ScreenType.MAIN_SCREEN) }
+    val fullScreenBookInfo = remember { mutableStateOf(false) }
+    if (selectedScreen.value == ScreenType.BOOK_INFO && platform.isMobile()) {
+        fullScreenBookInfo.value = true
     }
     val tooltip = remember { mutableStateOf(TooltipItem()) }
     val painterSelectedBookInCache: MutableState<Resource<Painter>?> = mutableStateOf(null)
@@ -45,7 +45,7 @@ fun Application(platform: Platform) {
     AppTheme {
         Box(modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundColor)) {
             AnimatedVisibility(
-                visible = !fullScreenNote.value,
+                visible = !fullScreenBookInfo.value,
                 enter = fadeIn(),
                 exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
             ) {
@@ -59,16 +59,19 @@ fun Application(platform: Platform) {
                     openBookListener = { painter, bookId ->
                         painterSelectedBookInCache.value = painter
                         selectedBookId.value = bookId
-                        showNote.value = true
+                        selectedScreen.value = ScreenType.BOOK_INFO
                     },
                     tooltipCallback = {
                         tooltip.value = it
+                    },
+                    createBookListener = {
+                        selectedScreen.value = ScreenType.BOOK_CREATOR
                     }
                 )
             }
 
             AnimatedVisibility(
-                visible = showNote.value,
+                visible = selectedScreen.value == ScreenType.BOOK_INFO,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -80,14 +83,33 @@ fun Application(platform: Platform) {
                     showSearch = showSearch,
                     leftDrawerState = leftDrawerState,
                     rightDrawerState = rightDrawerState,
-                    fullScreenNote = fullScreenNote,
+                    fullScreenBookInfo = fullScreenBookInfo,
                     painterInCache = painterSelectedBookInCache.value,
                     tooltipCallback = {
                         tooltip.value = it
                     },
                     onClose = {
-                        showNote.value = false
-                        fullScreenNote.value = false
+                        selectedScreen.value = ScreenType.MAIN_SCREEN
+                        fullScreenBookInfo.value = false
+                    },
+                    createBookListener = {
+                        selectedScreen.value = ScreenType.BOOK_CREATOR
+                    }
+                )
+            }
+
+            AnimatedVisibility(
+                visible = selectedScreen.value == ScreenType.BOOK_CREATOR,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                BookCreatorScreen(
+                    platform = platform,
+                    fullScreenBookCreator = mutableStateOf(false),
+                    showRightDrawer = showRightDrawer,
+                    tooltipCallback = { tooltip.value = it },
+                    closeBookCreatorListener = {
+                        selectedScreen.value = ScreenType.MAIN_SCREEN
                     }
                 )
             }
@@ -97,4 +119,10 @@ fun Application(platform: Platform) {
             }
         }
     }
+}
+
+private enum class ScreenType {
+    MAIN_SCREEN,
+    BOOK_INFO,
+    BOOK_CREATOR
 }

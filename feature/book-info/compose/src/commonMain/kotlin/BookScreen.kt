@@ -34,7 +34,7 @@ import tooltip_area.TooltipItem
 fun BookScreen(
     platform: Platform,
     bookItemId: Int,
-    fullScreenNote: MutableState<Boolean>,
+    fullScreenBookInfo: MutableState<Boolean>,
     showSearch: MutableState<Boolean>,
     showLeftDrawer: MutableState<Boolean>,
     showRightDrawer: MutableState<Boolean>,
@@ -43,6 +43,7 @@ fun BookScreen(
     painterInCache: Resource<Painter>? = null,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     onClose: () -> Unit,
+    createBookListener: () -> Unit,
 ) {
     val viewModel = remember { Inject.instance<BookInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
@@ -53,7 +54,7 @@ fun BookScreen(
 
     val scope = rememberCoroutineScope()
     val leftMenuVisible = remember { mutableStateOf(false) }
-    val background = if (fullScreenNote.value || leftMenuVisible.value)
+    val background = if (fullScreenBookInfo.value || leftMenuVisible.value)
         ApplicationTheme.colors.mainBackgroundWindowDarkColor
     else {
         Color.Transparent
@@ -61,8 +62,8 @@ fun BookScreen(
 
     /** this is necessary to get rid of the white blinking effect due
      * to the background transparent when collapsing and expanding */
-    LaunchedEffect(fullScreenNote.value) {
-        if (!fullScreenNote.value && leftMenuVisible.value) {
+    LaunchedEffect(fullScreenBookInfo.value) {
+        if (!fullScreenBookInfo.value && leftMenuVisible.value) {
             scope.launch {
                 delay(300)
                 leftMenuVisible.value = false
@@ -74,10 +75,10 @@ fun BookScreen(
         modifier = Modifier.background(background)
     ) {
         AnimatedVisibility(
-            visible = fullScreenNote.value,
+            visible = fullScreenBookInfo.value,
         ) {
             if (platform.isDesktop()) {
-                if (fullScreenNote.value) {
+                if (fullScreenBookInfo.value) {
                     /** this is necessary to get rid of the white blinking effect due
                      * to the background transparent when collapsing and expanding */
                     scope.launch {
@@ -94,6 +95,7 @@ fun BookScreen(
                     open = {
 
                     },
+                    createBookListener = createBookListener
                 )
             }
         }
@@ -101,7 +103,7 @@ fun BookScreen(
         PlatformNavigationDrawer(
             platform = platform,
             leftDrawerContent = {
-                AnimatedVisibility(visible = fullScreenNote.value) {
+                AnimatedVisibility(visible = fullScreenBookInfo.value) {
                     Row {
                         PlatformLeftDrawerContent(
                             platform = platform,
@@ -138,7 +140,7 @@ fun BookScreen(
                         painterInCache = painterInCache,
                         bookItem = uiState.bookItem.value!!,
                         onClose = onClose,
-                        fullScreenNote = fullScreenNote,
+                        fullScreenBookInfo = fullScreenBookInfo,
                         showLeftDrawer = showLeftDrawer,
                         showRightDrawer = showRightDrawer,
                         openLeftDrawerListener = {

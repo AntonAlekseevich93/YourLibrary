@@ -7,6 +7,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":common:resources:strings"))
+                implementation(project(":common:theme"))
             }
         }
     }

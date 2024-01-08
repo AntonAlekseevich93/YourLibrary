@@ -33,6 +33,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowScope
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import buttons.ButtonThemeSwitcher
 import di.PlatformConfiguration
 import platform.Platform
 import java.awt.FileDialog
@@ -175,6 +176,7 @@ private fun WindowScope.AppWindowTitleBar(
     fullscreenListener: () -> Unit,
 ) = WindowDraggableArea {
     val showIconState = remember { mutableStateOf(false) }
+    val isDarkMode = remember { mutableStateOf(true) }
     Box(Modifier.fillMaxWidth().height(48.dp).background(Color(0xFF2E2E2E))) {
         Row(
             Modifier.fillMaxWidth().padding(top = 8.dp, start = 8.dp),
@@ -203,6 +205,12 @@ private fun WindowScope.AppWindowTitleBar(
                 color = Color(0xFF29C940),
                 onClick = fullscreenListener,
                 showIconCallback = { showIconState.value = it }
+            )
+        }
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd){
+            ButtonThemeSwitcher(
+                modifier = Modifier.size(60.dp),
+                isDarkMode = isDarkMode,
             )
         }
     }

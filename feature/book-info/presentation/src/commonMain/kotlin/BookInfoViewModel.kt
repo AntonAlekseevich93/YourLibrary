@@ -18,7 +18,7 @@ class BookInfoViewModel(private val repository: BookInfoRepository) {
         _uiState.value.bookItem.value = BookItemVo(
             id = 1,
             shelfId = 1,
-            numbersOfPage = 265,
+            numbersOfPages = 265,
             isbn = "978-5-6044959-5-7",
             bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
             authorName = "Стивен кинг",

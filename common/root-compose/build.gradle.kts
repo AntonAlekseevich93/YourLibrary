@@ -24,6 +24,8 @@ kotlin {
                 implementation(project(":feature:book-info:compose"))
                 implementation(project(":feature:book-info:data"))
                 implementation(project(":feature:book-creator:data"))
+                implementation(project(":feature:book-creator:compose"))
+                implementation(project(":common:utils:url-parser:data"))
             }
         }
     }
