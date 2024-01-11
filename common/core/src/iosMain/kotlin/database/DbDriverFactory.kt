@@ -6,7 +6,7 @@ import di.PlatformConfiguration
 import sqldelight.com.yourlibrary.database.AppDatabase
 
 actual class DbDriverFactory actual constructor(private val platformConfiguration: PlatformConfiguration) {
-    actual fun createDriver(): SqlDriver {
+    actual fun createDriver(path: String?, isPathDb: Boolean, dbName: String?): SqlDriver {
         return NativeSqliteDriver(AppDatabase.Schema, di.database.nameDb)
     }
 }

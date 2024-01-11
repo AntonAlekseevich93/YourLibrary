@@ -8,4 +8,8 @@ class BookCreatorRepositoryImpl(
     override suspend fun parseBookUrl(url: String): BookItemResponse =
         urlParserInteractor.parseBookUrl(url)
 
+    override suspend fun createBook() {
+
+    }
+
 }

@@ -4,6 +4,7 @@ import di.coreModule
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.direct
+import org.kodein.di.instance
 import org.kodein.di.singleton
 import platform.Platform
 
@@ -16,7 +17,7 @@ object PlatformSDK {
             name = "rootComposeModule",
             init = {
                 bind<PlatformConfiguration>() with singleton { configuration }
-                bind<ApplicationViewModel>() with singleton { ApplicationViewModel() }
+                bind<ApplicationViewModel>() with singleton { ApplicationViewModel(instance()) }
                 bind<Platform>() with singleton { platform }
             })
 
