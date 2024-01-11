@@ -68,8 +68,13 @@ object Dependencies {
     }
 
     //navigation
-    object PreCompose{
+    object PreCompose {
         private const val version = "1.5.10"
         const val preComposeWithNavigation = "moe.tlaster:precompose:$version"
+    }
+
+    object FilePicker {
+        private const val version = "2.1.0"
+        const val filePicker = "com.darkrockstudios:mpfilepicker:$version"
     }
 }

@@ -64,4 +64,6 @@ object Strings {
     const val or = "или"
     const val search = "Поиск"
     const val time = "Время"
+    const val select_path_for_save_data_title = "Укажите расположение для хранение данных"
+    const val select_path_for_save_data_description = "Выбирите папку, где будут храниться данные вашей библиотеки"
 }

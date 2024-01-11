@@ -36,12 +36,23 @@ compose.desktop {
 //            jvmArgs(
 //                "-Dapple.awt.application.appearance=system"
 //            )
+            macOS {
+                bundleID = "org.jetbrains.compose.examples.deeplinking"
+                infoPlist {
+                    extraKeysRawXml = macExtraPlistKeys
 
-            packageName = "yourLibrary"
-            packageVersion = "1.0.0"
+                }
+                packageName = "yourLibrary"
+                packageVersion = "1.0.0"
+            }
         }
     }
 }
+val macExtraPlistKeys: String
+    get() = """
+      <key>NSDocumentsFolderUsageDescription</key>
+      <string>This app requires access to the documents folder to save files.</string>
+    """
 
 
 

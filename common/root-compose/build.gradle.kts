@@ -13,9 +13,11 @@ kotlin {
             dependencies {
                 implementation(Dependencies.Kamel.imageLoader)
                 implementation(Dependencies.PreCompose.preComposeWithNavigation)
+                implementation(Dependencies.FilePicker.filePicker)
                 api(project(":common:core"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:resources:drawable")) //todo возможно потом удалить
+                implementation(project(":common:resources:strings"))
                 implementation(project(":common:ui"))
                 implementation(project(":common:di:compose"))
                 implementation(project(":feature:shelf:data")) //используется из-за модуля

@@ -6,7 +6,10 @@ import main_models.ShelfVo
 import models.ShelfUiState
 import platform.Platform
 
-class ShelfViewModel(private val platform: Platform) {
+class ShelfViewModel(
+    private val platform: Platform,
+    private val repository: ShelfRepository
+) {
 
     val bookList = mutableStateListOf<BookItemVo>(
         BookItemVo(
