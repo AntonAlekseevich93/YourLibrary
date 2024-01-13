@@ -78,4 +78,7 @@ SELECT * FROM BooksTable WHERE shelfId =:shelfId;
 deleteAllBooks:
 DELETE FROM BooksTable;
 
+getBookById:
+SELECT * FROM BooksTable WHERE id =:id;
+
 

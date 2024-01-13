@@ -13,6 +13,6 @@ internal val databaseModule = DI.Module("databaseModule") {
     }
 
     bind<SqlDelightDataSource>() with singleton {
-        SqlDelightDataSource(instance())
+        SqlDelightDataSource(instance(), instance())
     }
 }

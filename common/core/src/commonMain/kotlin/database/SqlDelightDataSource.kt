@@ -4,21 +4,45 @@ import app.cash.sqldelight.db.SqlDriver
 import com.yourlibrary.database.AppDatabaseQueries
 import di.database.DEFAULT_DB_NAME
 import platform.Platform
+import platform.isDesktop
 import platform.isMobile
 import sqldelight.com.yourlibrary.database.AppDatabase
 import java.io.File
 
 
-class SqlDelightDataSource(private val dbDriverFactory: DbDriverFactory) {
+class SqlDelightDataSource(
+    private val platform: Platform,
+    private val dbDriverFactory: DbDriverFactory
+) {
     private var pathDriver: SqlDriver = dbDriverFactory.createDriver(null, true, null)
     private var pathDatabase: AppDatabase = AppDatabase(pathDriver)
     private var pathDbQuery: AppDatabaseQueries = pathDatabase.appDatabaseQueries
 
     //todo сломается когда удалим бд. т.к .пути не будет
-    private val pathDb = getCurrentPath()
-    private var appDriver = dbDriverFactory.createDriver(pathDb, false, null)
-    val appDatabase = AppDatabase(appDriver)
-    val appQuery = appDatabase.appDatabaseQueries
+    private val pathDb: String by lazy { getCurrentPath() }
+    private val appDriver by lazy {
+        if(platform.isDesktop()) {
+            dbDriverFactory.createDriver(pathDb, false, null)
+        }else {
+            pathDriver
+        }
+    }
+
+    val appDatabase by lazy {
+        if(platform.isDesktop()) {
+            AppDatabase(appDriver)
+        }else {
+            pathDatabase
+        }
+    }
+
+    val appQuery by lazy {
+        if(platform.isDesktop()) {
+            appDatabase.appDatabaseQueries
+        }else {
+            pathDbQuery
+        }
+    }
 
     fun pathIsExist(platform: Platform): Boolean {
         return if (platform.isMobile()) true

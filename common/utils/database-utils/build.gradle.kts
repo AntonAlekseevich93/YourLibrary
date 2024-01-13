@@ -15,5 +15,5 @@ kotlin {
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.common.utils.database-utils"
+    namespace = "ru.yourlibrary.yourlibrary.common.utils.database_utils"
 }

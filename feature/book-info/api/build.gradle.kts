@@ -7,6 +7,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(Dependencies.SqlDelight.coroutinesExtension)
+                implementation(project(":common:models"))
             }
         }
     }

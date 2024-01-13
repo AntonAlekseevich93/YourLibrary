@@ -123,6 +123,7 @@ fun Application(platform: Platform) {
                                 },
                                 onClose = {
                                     fullScreenBookInfo.value = false
+                                    tooltip.value.showTooltip = false
                                     navigator.goBack()
                                 },
                                 createBookListener = {

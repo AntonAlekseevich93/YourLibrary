@@ -148,7 +148,7 @@ enum class TooltipPosition {
 class TooltipItem(
     val text: String = "",
     val offset: Offset = Offset(0f, 0f),
-    val showTooltip: Boolean = false,
+    var showTooltip: Boolean = false,
     var position: TooltipPosition = TooltipPosition.NONE
 )
 
