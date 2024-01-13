@@ -1,6 +1,7 @@
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
+import main_models.BookItemVo
 import main_models.ReadingStatus
 
 class BookValues(
@@ -31,5 +32,38 @@ class BookValues(
         endDateInString.value = ""
         coverUrl.value = TextFieldValue()
         isbn.value = TextFieldValue()
+    }
+
+    private fun getNumberOfPagesAsIntOrNull(): Int? {
+        val onlyNumbers = StringBuilder()
+        numberOfPages.value.text.forEach {
+            if (it.isDigit()) {
+                onlyNumbers.append(it)
+            }
+        }
+        if (onlyNumbers.isNotEmpty()) {
+            try {
+                return onlyNumbers.toString().toIntOrNull()
+            } catch (_: Throwable) {
+
+            }
+        }
+        return null
+    }
+
+    fun getBookItemVoOrNull(shelfId: String): BookItemVo? {
+        return BookItemVo(
+            id = BookItemVo.generateId(),
+            shelfId = shelfId,
+            bookName = bookName.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            authorName = authorName.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            description = description.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            coverUrl = "",
+            coverUrlFromParsing = coverUrl.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            numbersOfPages = getNumberOfPagesAsIntOrNull() ?: 0,
+            isbn = isbn.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            quotes = "",
+            readingStatus = selectedStatus.value
+        )
     }
 }

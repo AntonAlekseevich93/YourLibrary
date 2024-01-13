@@ -29,7 +29,7 @@ import platform.isDesktop
 @Composable
 fun ShelfBoardScreen(
     platform: Platform,
-    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: Int) -> Unit,
+    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: String) -> Unit,
 ) {
     val viewModel = remember { Inject.instance<ShelfViewModel>() }
     val uiState = viewModel.uiState.collectAsState()
@@ -75,7 +75,7 @@ fun ShelfBoardScreen(
                 )
             ) {
                 LazyColumn(state = lazyListState) {
-                    itemsIndexed(uiState.value.shelfList) { index, item ->
+                    itemsIndexed(uiState.value.shelfList.value) { index, item ->
                         HorizontalShelfScreen(
                             shelfVo = item,
                             config = uiState.value.config,
@@ -87,6 +87,7 @@ fun ShelfBoardScreen(
                             },
                             openBookListener = openBookListener
                         )
+                        //todo нужно добавить зероскрин когда у нас нету книг
                     }
                 }
             }

@@ -1,286 +1,43 @@
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import main_models.BookItemVo
-import main_models.ShelfVo
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import models.ShelfUiState
+import models.defaultShelves
 import platform.Platform
 
 class ShelfViewModel(
     private val platform: Platform,
     private val repository: ShelfRepository
 ) {
-
-    val bookList = mutableStateListOf<BookItemVo>(
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-
-
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",
-            authorName = "Стивен Кинг",
-            coverUrl = "https://libcat.ru/uploads/posts/book/dzhillian-bratstvo-konnora.jpg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Почему звёзды умирают",
-            authorName = "Агата Кристи",
-            coverUrl = " https://www.bookvoed.ru/files/1836/12/56/97/04.jpeg"
-        ),
-        BookItemVo(
-            id = 1,
-            shelfId = 1,
-            bookName = "Оно",
-            authorName = "Стивен кинг",
-            coverUrl = "https://woody-comics.ru/images/detailed/31/c73b1e8b1f63850e835232cb1a07be0d.jpg"
-        ),
+    private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
+    private val _uiState = MutableStateFlow(
+        ShelfUiState(
+            platform = platform,
+            shelfList = mutableStateOf(mutableListOf())
+        )
     )
-
-
-    val first = ShelfVo(
-        id = 1,
-        name = "Хочу прочитать",
-        booksList = bookList
-    )
-
-    val shelfList: MutableList<ShelfVo> = mutableStateListOf(first, first, first)
-
-    private val _uiState =
-        MutableStateFlow(ShelfUiState(platform = platform, shelfList = shelfList))
     val uiState = _uiState.asStateFlow()
+
+    init {
+        scope.launch {
+            repository.createDefaultShelvesIfNotExist(defaultShelves)
+            repository.getAllShelves().collect { shelf ->
+                _uiState.value.addShelf(shelf)
+                launch {
+                    repository.getBooksByShelfId(shelf.id).collect {
+                        withContext(Dispatchers.Main) {
+                            _uiState.value.addBooksToShelf(shelfId = shelf.id, books = it)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     fun searchInShelf(searchedText: String, shelfIndex: Int) {
         _uiState.value.searchInFullShelf(searchedText, shelfIndex)

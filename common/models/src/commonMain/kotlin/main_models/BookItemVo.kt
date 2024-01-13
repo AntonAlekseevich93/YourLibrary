@@ -1,8 +1,10 @@
 package main_models
 
+import java.util.UUID
+
 data class BookItemVo(
-    val id: Int,
-    var shelfId: Int,
+    val id: String,
+    var shelfId: String,
     var bookName: String,
     var authorName: String,
     var description: String = "",
@@ -12,4 +14,8 @@ data class BookItemVo(
     var isbn: String = "",
     var quotes: String = "",
     var readingStatus: ReadingStatus = ReadingStatus.PLANNED,
-)
+) {
+    companion object {
+        fun generateId() = UUID.randomUUID().toString() //todo подумать над другой реализацией id
+    }
+}

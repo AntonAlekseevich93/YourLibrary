@@ -19,13 +19,14 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CustomTag(
     text: String,
-    color: Color,
+    color: Color = Color.White,
     modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(4.dp),
     maxHeight: Dp = 24.dp,
     textStyle: TextStyle = ApplicationTheme.typography.footnoteRegular,
     onClick: () -> Unit,
-){
+) {
     Chip(
         shape = shape,
         modifier = modifier.sizeIn(maxHeight = maxHeight),
@@ -36,7 +37,8 @@ fun CustomTag(
         Text(
             text = text,
             style = textStyle,
-            color = color
+            color = color,
+            modifier = textModifier
         )
     }
 }

@@ -23,7 +23,7 @@ import models.BookItemCardConfig
 fun BookItemShelfCard(
     config: BookItemCardConfig,
     bookItem: BookItemVo,
-    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: Int) -> Unit,
+    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: String) -> Unit,
 ) {
     val url =
         if (bookItem.coverUrlFromParsing.isNotEmpty()) bookItem.coverUrlFromParsing else bookItem.coverUrl

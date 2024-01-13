@@ -29,6 +29,7 @@ data class AppColors(
     val focusedTextFillBackground: Color,
     val dropdownBackground: Color,
     val tooltipSelectedBackground: Color,
+    val mainAddButtonColor: Color,
 )
 
 val lightPaletteTheme = AppColors(
@@ -69,6 +70,7 @@ val lightPaletteTheme = AppColors(
     focusedTextFillBackground = Color(0xFF212121),
     dropdownBackground = Color(0xFF252525),
     tooltipSelectedBackground = Color(0xFF4D4D50),
+    mainAddButtonColor = Color(0xFF1CD3A2),
 )
 
 val darkPaletteTheme = AppColors(
@@ -109,6 +111,7 @@ val darkPaletteTheme = AppColors(
     focusedTextFillBackground = Color(0xFF212121),
     dropdownBackground = Color(0xFF252525),
     tooltipSelectedBackground = Color(0xFF4D4D50),
+    mainAddButtonColor = Color(0xFF1CD3A2),
 )
 
 class ReadingStatusesColor(

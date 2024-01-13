@@ -5,7 +5,6 @@ import database.SqlDelightDataSource
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.instance
-import org.kodein.di.provider
 import org.kodein.di.singleton
 
 internal val databaseModule = DI.Module("databaseModule") {
@@ -13,7 +12,7 @@ internal val databaseModule = DI.Module("databaseModule") {
         DbDriverFactory(instance())
     }
 
-    bind<SqlDelightDataSource>() with provider {
+    bind<SqlDelightDataSource>() with singleton {
         SqlDelightDataSource(instance())
     }
 }

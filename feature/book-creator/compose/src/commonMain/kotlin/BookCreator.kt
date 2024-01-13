@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import containters.CenterBoxContainer
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -31,6 +32,7 @@ import main_models.ReadingStatus
 import main_models.getStatusColor
 import platform.Platform
 import platform.isMobile
+import tags.CustomTag
 import text_fields.TextFieldWithTitleAndSuggestion
 
 @Composable
@@ -43,6 +45,7 @@ fun BookCreator(
     showDataPickerListener: (type: DatePickerType) -> Unit,
     onAuthorTextChanged: (TextFieldValue) -> Unit,
     onSuggestionAuthorClickListener: (author: String) -> Unit,
+    saveBook: () -> Unit,
 ) {
     val showImage = remember { mutableStateOf(false) }
     val painter =
@@ -99,6 +102,24 @@ fun BookCreator(
             }
 
             Spacer(modifier = Modifier.padding(10.dp))
+        }
+    }
+
+    AnimatedVisibility(
+        visible = bookValues.bookName.value.text.isNotEmpty() &&
+                bookValues.authorName.value.text.isNotEmpty(),
+        enter = fadeIn() + slideInVertically(),
+        exit = fadeOut() + slideOutVertically()
+    ) {
+        CenterBoxContainer(modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)) {
+            CustomTag(
+                text = Strings.add_book,
+                color = ApplicationTheme.colors.mainAddButtonColor,
+                textStyle = ApplicationTheme.typography.footnoteBold,
+                textModifier = Modifier.padding(vertical = 8.dp),
+                maxHeight = 50.dp,
+                onClick = saveBook
+            )
         }
     }
 
@@ -223,7 +244,8 @@ fun BookCreator(
                     bookValues.description.value = it
                 },
                 disableSingleLineIfFocused = true,
-                textFieldValue = bookValues.description
+                textFieldValue = bookValues.description,
+                maxLines = 40
             )
 
             TextFieldWithTitleAndSuggestion(

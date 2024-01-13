@@ -7,30 +7,26 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import main_models.BookItemVo
+import main_models.ReadingStatus
+import main_models.ShelfVo
 import models.BookCreatorUiState
 
 class BookCreatorViewModel(private val repository: BookCreatorRepository) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var parsingJob: Job? = null
     private var searchJob: Job? = null
+    private val shelvesWithoutBooks: MutableList<ShelfVo> = mutableListOf()
     private val _uiState: MutableStateFlow<BookCreatorUiState> =
         MutableStateFlow(BookCreatorUiState())
     val uiState = _uiState.asStateFlow()
 
-    val list = listOf<String>(
-        "Агата Кристи",
-        "Стивен Кинг",
-        "Михаил Булгаков",
-        "Фредрих Агата",
-        "Агафония",
-        "Илиза Агатовна",
-        "Агазаран Еран",
-        "Фискур Агатан",
-        "Евгений Агатын"
-    )
-
-    fun getBookItem(id: Int) {
-        //todo получаем книгу из бд
+    init {
+        scope.launch {
+            repository.getShelvesWithoutBooks().collect {
+                shelvesWithoutBooks.addAll(it)
+            }
+        }
     }
 
     fun startParseBook(url: String) {
@@ -59,8 +55,9 @@ class BookCreatorViewModel(private val repository: BookCreatorRepository) {
     }
 
     fun searchAuthor(authorName: String) {
-        val list = list.filter { it.contains(authorName, ignoreCase = true) }
-        _uiState.value.addSimilarAuthor(list)
+        //todo реализовать поиск по авторам
+//        val list = list.filter { it.contains(authorName, ignoreCase = true) }
+//        _uiState.value.addSimilarAuthor(list)
     }
 
     fun clearSearchAuthor() {
@@ -75,4 +72,18 @@ class BookCreatorViewModel(private val repository: BookCreatorRepository) {
         _uiState.value.clearAllBookData()
     }
 
+    fun createBook(bookItemVoOrNull: BookItemVo?) {
+        if (bookItemVoOrNull != null) {
+            scope.launch {
+                repository.createBook(bookItemVoOrNull)
+            }
+        }
+    }
+
+    fun getShelfIdOrNullByReadingStatus(status: ReadingStatus): String? {
+        shelvesWithoutBooks.find { it.name == status.nameValue }?.let {
+            return it.id
+        }
+        return null
+    }
 }

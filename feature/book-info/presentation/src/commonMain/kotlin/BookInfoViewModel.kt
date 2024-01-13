@@ -13,11 +13,11 @@ class BookInfoViewModel(private val repository: BookInfoRepository) {
     private val _uiState: MutableStateFlow<BookInfoUiState> = MutableStateFlow(BookInfoUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun getBookItem(id: Int){
+    fun getBookItem(id: String) {
         //todo получаем книгу из бд
         _uiState.value.bookItem.value = BookItemVo(
-            id = 1,
-            shelfId = 1,
+            id = "",
+            shelfId = "",
             numbersOfPages = 265,
             isbn = "978-5-6044959-5-7",
             bookName = "Секс. Все, что вы хотели узнать о сексе, но боялись спросить: от анатомии до психологии",

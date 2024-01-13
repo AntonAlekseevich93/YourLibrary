@@ -1,5 +1,5 @@
 plugins {
-    id("multiplatform-setup")
+    id("multiplatform-compose-setup")
     id("android-setup")
 }
 
@@ -8,12 +8,12 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":common:models"))
-                implementation(Dependencies.SqlDelight.coroutinesExtension)
+                implementation(project(":common:core"))
             }
         }
     }
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.book_creator.api"
+    namespace = "ru.yourlibrary.yourlibrary.common.utils.database-utils"
 }

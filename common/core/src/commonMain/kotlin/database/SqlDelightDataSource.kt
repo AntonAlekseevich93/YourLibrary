@@ -10,13 +10,20 @@ import java.io.File
 
 
 class SqlDelightDataSource(private val dbDriverFactory: DbDriverFactory) {
-    private var driver: SqlDriver = dbDriverFactory.createDriver(null, true, null)
-    private var database: AppDatabase = AppDatabase(driver)
-    private var dbQuery: AppDatabaseQueries = database.appDatabaseQueries
+    private var pathDriver: SqlDriver = dbDriverFactory.createDriver(null, true, null)
+    private var pathDatabase: AppDatabase = AppDatabase(pathDriver)
+    private var pathDbQuery: AppDatabaseQueries = pathDatabase.appDatabaseQueries
+
+    //todo сломается когда удалим бд. т.к .пути не будет
+    private val pathDb = getCurrentPath()
+    private var appDriver = dbDriverFactory.createDriver(pathDb, false, null)
+    val appDatabase = AppDatabase(appDriver)
+    val appQuery = appDatabase.appDatabaseQueries
+
     fun pathIsExist(platform: Platform): Boolean {
         return if (platform.isMobile()) true
         else {
-            val pathItem = dbQuery.selectAllFilesInfo().executeAsList()
+            val pathItem = pathDbQuery.selectAllFilesInfo().executeAsList()
                 .firstOrNull() //todo исправить если будет несколько бд
             val file = File(
                 pathItem?.dbPath,
@@ -25,7 +32,7 @@ class SqlDelightDataSource(private val dbDriverFactory: DbDriverFactory) {
             if (file.exists()) {
                 return true
             } else if (pathItem != null) {
-                dbQuery.removeFileInfo(pathItem.dbPath)
+                pathDbQuery.removeFileInfo(pathItem.dbPath)
             }
             return false
         }
@@ -33,7 +40,7 @@ class SqlDelightDataSource(private val dbDriverFactory: DbDriverFactory) {
     }
 
     fun createDbPath(path: String): Boolean {
-        dbQuery.insertFileInfo(
+        pathDbQuery.insertFileInfo(
             1,
             path,
             DEFAULT_DB_NAME
@@ -42,7 +49,7 @@ class SqlDelightDataSource(private val dbDriverFactory: DbDriverFactory) {
         return true
     }
 
-    fun getCurrentPath(): String = dbQuery.selectAllFilesInfo().executeAsList()[0].dbPath
-
+    private fun getCurrentPath(): String =
+        pathDbQuery.selectAllFilesInfo().executeAsList()[0].dbPath
 }
 

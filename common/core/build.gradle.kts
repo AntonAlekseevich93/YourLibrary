@@ -21,6 +21,7 @@ kotlin {
                 api(Dependencies.Kodein.core)
 
                 implementation(Dependencies.SqlDelight.runtime)
+                api(Dependencies.SqlDelight.coroutinesExtension)
             }
         }
 

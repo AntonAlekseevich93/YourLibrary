@@ -58,7 +58,7 @@ fun FullShelfScreen(
     config: BookItemCardConfig,
     index: Int,
     searchListener: (text: String, shelfIndex: Int) -> Unit,
-    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: Int) -> Unit,
+    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: String) -> Unit,
     closeListener: () -> Unit,
 ) {
     val searchText = remember { mutableStateOf("") }

@@ -35,7 +35,7 @@ fun HorizontalShelfScreen(
     shelfVo: ShelfVo,
     config: BookItemCardConfig,
     expandShelfListener: () -> Unit,
-    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: Int) -> Unit,
+    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: String) -> Unit,
 ) {
     val firstElements =
         remember(shelfVo.booksList) { shelfVo.booksList.take(config.maxItemsInHorizontalShelf) }
@@ -66,7 +66,7 @@ fun HorizontalShelfScreen(
             )
         }
         Card(
-            modifier = Modifier,
+            modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
                 containerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor
             )

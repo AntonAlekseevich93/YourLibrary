@@ -38,7 +38,7 @@ fun MainScreen(
     leftDrawerState: DrawerState,
     viewModel: ApplicationViewModel,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
-    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: Int) -> Unit,
+    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: String) -> Unit,
     createBookListener: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()

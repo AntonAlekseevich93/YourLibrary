@@ -293,6 +293,13 @@ fun BookCreatorScreen(
                                         viewModel.clearSearchAuthor()
                                     }
                                 },
+                                saveBook = {
+                                    viewModel.getShelfIdOrNullByReadingStatus(
+                                        bookValues.selectedStatus.value
+                                    )?.let { shelfId ->
+                                        viewModel.createBook(bookValues.getBookItemVoOrNull(shelfId))
+                                    }
+                                },
                             )
                         }
                     }

@@ -11,6 +11,6 @@ val bookCreatorModule = DI.Module("bookCreatorModule") {
     }
 
     bind<LocalBookCreatorDataSource>() with provider {
-        LocalBookCreatorDataSource(instance(), instance())
+        LocalBookCreatorDataSource(instance())
     }
 }

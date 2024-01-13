@@ -1,3 +1,6 @@
+
+-- ------------------------------------------------------------------FILES INFO TABLE:
+
 CREATE TABLE FilesInfo (
     id INTEGER NOT NULL,
     dbPath TEXT NOT NULL,
@@ -17,3 +20,62 @@ DELETE FROM FilesInfo WHERE dbPath =:dbPath;
 selectAllFilesInfo:
 SELECT *
 FROM FilesInfo;
+
+
+-- ------------------------------------------------------------------SHELVES TABLE:
+
+CREATE TABLE IF NOT EXISTS ShelvesTable (
+  id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  description Text
+);
+
+addShelf:
+INSERT INTO ShelvesTable (id, name, description)
+VALUES(?,? ,? );
+
+deleteShelfById:
+DELETE FROM ShelvesTable WHERE id =:id;
+
+getAllShelves:
+SELECT * FROM ShelvesTable;
+
+-- ------------------------------------------------------------------BOOKS TABLE:
+
+CREATE TABLE IF NOT EXISTS BooksTable (
+  id TEXT NOT NULL,
+  shelfId TEXT NOT NULL,
+  bookName Text NOT NULL,
+  authorName Text NOT NULL,
+  description Text,
+  coverUrl Text,
+  coverUrlFromParsing Text,
+  numbersOfPages INTEGER,
+  isbn Text,
+  quotes Text,
+  readingStatus Text
+);
+
+addBook:
+INSERT INTO BooksTable (id, shelfId, bookName, authorName, description, coverUrl,
+ coverUrlFromParsing, numbersOfPages, isbn, quotes, readingStatus)
+VALUES(?,? ,? , ?, ?, ?,
+?, ?, ?, ?, ?);
+
+updateShelfIdForAllBooks:
+UPDATE BooksTable
+SET `shelfId`=? WHERE shelfId=?;
+
+deleteBook:
+DELETE FROM BooksTable WHERE id =:id;
+
+getAllBooks:
+SELECT * FROM BooksTable;
+
+getAllBooksByShelfId:
+SELECT * FROM BooksTable WHERE shelfId =:shelfId;
+
+deleteAllBooks:
+DELETE FROM BooksTable;
+
+

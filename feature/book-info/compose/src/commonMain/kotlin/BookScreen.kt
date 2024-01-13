@@ -33,7 +33,7 @@ import tooltip_area.TooltipItem
 @Composable
 fun BookScreen(
     platform: Platform,
-    bookItemId: Int,
+    bookItemId: String,
     fullScreenBookInfo: MutableState<Boolean>,
     showSearch: MutableState<Boolean>,
     showLeftDrawer: MutableState<Boolean>,

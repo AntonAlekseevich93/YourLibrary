@@ -49,6 +49,7 @@ object Dependencies {
         const val android = "app.cash.sqldelight:android-driver:$version"
         const val ios = "app.cash.sqldelight:native-driver:$version"
         const val desktop = "app.cash.sqldelight:sqlite-driver:$version"
+        const val coroutinesExtension = "app.cash.sqldelight:coroutines-extensions:$version"
     }
 
     //imageLoader

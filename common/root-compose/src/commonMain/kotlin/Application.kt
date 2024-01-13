@@ -51,7 +51,7 @@ fun Application(platform: Platform) {
     val fullScreenBookInfo = remember { mutableStateOf(false) }
     val tooltip = remember { mutableStateOf(TooltipItem()) }
     val painterSelectedBookInCache: MutableState<Resource<Painter>?> = mutableStateOf(null)
-    val selectedBookId: MutableState<Int> = mutableStateOf(-1)
+    val selectedBookId: MutableState<String> = mutableStateOf("")
     val dbPathExist = remember { mutableStateOf(viewModel.dbPathIsExist(platform)) }
 
     AppTheme {
