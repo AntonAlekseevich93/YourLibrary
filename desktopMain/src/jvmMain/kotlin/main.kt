@@ -13,6 +13,8 @@ import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,11 +28,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.AwtWindow
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowScope
+import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import buttons.ButtonThemeSwitcher
@@ -40,12 +44,29 @@ import java.awt.FileDialog
 import java.awt.Frame
 
 fun main() = application {
-    PlatformSDK.init(PlatformConfiguration(), Platform.DESKTOP)
     val state = rememberWindowState(
         size = DpSize(1300.dp, 900.dp),
         position = WindowPosition(Alignment.Center)
     )
 
+    val applicationState = remember { MyApplicationState() }
+
+    for (window in applicationState.windows) {
+        key(window) {
+            MainWindow(state, restart = {
+                applicationState.exit()
+                applicationState.openNewWindow()
+            })
+        }
+    }
+}
+
+@Composable
+private fun ApplicationScope.MainWindow(
+    state: WindowState,
+    restart: () -> Unit,
+) {
+    PlatformSDK.init(PlatformConfiguration(), Platform.DESKTOP)
     val isFullScreen = remember { mutableStateOf(false) }
     val windowCloseListener = ::exitApplication
 
@@ -55,7 +76,7 @@ fun main() = application {
             size = state.size,
             position = state.position
         )
-        Window(
+        return Window(
             title = "YourLibrary",
             onCloseRequest = windowCloseListener,
             undecorated = false,
@@ -66,11 +87,11 @@ fun main() = application {
                 if (fullScreenState.placement == WindowPlacement.Floating) {
                     isFullScreen.value = false
                 }
-                Application(Platform.DESKTOP)
+                Application(Platform.DESKTOP, restartWindow = restart)
             }
         }
     } else {
-        Window(
+        return Window(
             onCloseRequest = windowCloseListener,
             undecorated = true,
             transparent = true,
@@ -92,12 +113,41 @@ fun main() = application {
                             isFullScreen.value = true
                         }
                     )
-                    Application(Platform.DESKTOP)
+                    Application(Platform.DESKTOP, restartWindow = restart)
                 }
             }
         }
     }
 }
+
+private class MyApplicationState {
+    val windows = mutableStateListOf<MyWindowState>()
+
+    init {
+        windows += MyWindowState()
+    }
+
+    fun openNewWindow() {
+        windows += MyWindowState()
+    }
+
+    fun exit() {
+        windows.clear()
+    }
+
+    private fun MyWindowState(
+    ) = MyWindowState(
+        openNewWindow = ::openNewWindow,
+        exit = ::exit,
+        windows::remove
+    )
+}
+
+private class MyWindowState(
+    val openNewWindow: () -> Unit,
+    val exit: () -> Unit,
+    private val close: (MyWindowState) -> Unit
+)
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -207,7 +257,7 @@ private fun WindowScope.AppWindowTitleBar(
                 showIconCallback = { showIconState.value = it }
             )
         }
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd){
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
             ButtonThemeSwitcher(
                 modifier = Modifier.size(60.dp),
                 isDarkMode = isDarkMode,

@@ -20,6 +20,7 @@ kotlin {
                 implementation(project(":common:resources:strings"))
                 implementation(project(":common:ui"))
                 implementation(project(":common:di:compose"))
+                implementation(project(":common:file-manager"))
                 implementation(project(":feature:shelf:data")) //используется из-за модуля
                 implementation(project(":feature:shelf:compose"))
                 implementation(project(":feature:search:compose"))
@@ -29,6 +30,10 @@ kotlin {
                 implementation(project(":feature:book-creator:data"))
                 implementation(project(":feature:book-creator:compose"))
                 implementation(project(":common:utils:url-parser:data"))
+                implementation(project(":common:utils:json-utils"))
+                implementation(project(":feature:settings:data"))
+                implementation(project(":feature:settings:compose"))
+                implementation(project(":feature:settings:presentation"))
             }
         }
     }

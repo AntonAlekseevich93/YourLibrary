@@ -14,6 +14,18 @@ class BookInfoViewModel(private val repository: BookInfoRepository) {
     private val _uiState: MutableStateFlow<BookInfoUiState> = MutableStateFlow(BookInfoUiState())
     val uiState = _uiState.asStateFlow()
 
+    init {
+        scope.launch {
+            repository.getSelectedPathInfo().collect { pathInfo ->
+                pathInfo?.let {
+                    withContext(Dispatchers.Main) {
+                        _uiState.value.selectedPathInfo.value = it
+                    }
+                }
+            }
+        }
+    }
+
     fun getBookItem(id: String) {
         scope.launch {
             repository.getBookById(bookId = id).collect { book ->

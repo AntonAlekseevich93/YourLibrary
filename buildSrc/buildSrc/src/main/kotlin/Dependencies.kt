@@ -78,4 +78,9 @@ object Dependencies {
         private const val version = "2.1.0"
         const val filePicker = "com.darkrockstudios:mpfilepicker:$version"
     }
+
+    object Okio {
+        private const val version = "3.7.0"
+        const val fileManager = "com.squareup.okio:okio:$version"
+    }
 }

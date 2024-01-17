@@ -24,6 +24,7 @@ import tooltip_area.TooltipPosition
 
 @Composable
 fun PlatformLeftDrawerContent(
+    title: String,
     platform: Platform,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit)? = null,
     closeSidebarListener: () -> Unit
@@ -33,7 +34,7 @@ fun PlatformLeftDrawerContent(
             DismissibleDrawerSheet(
                 drawerContainerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor,
             ) {
-                LeftDrawerContent(closeSidebarListener,tooltipCallback)
+                LeftDrawerContent(title, closeSidebarListener, tooltipCallback)
             }
         }
 
@@ -42,7 +43,7 @@ fun PlatformLeftDrawerContent(
             DismissibleDrawerSheet(
                 drawerContainerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor,
             ) {
-                LeftDrawerContent(closeSidebarListener,tooltipCallback)
+                LeftDrawerContent(title, closeSidebarListener, tooltipCallback)
             }
         }
     }
@@ -50,6 +51,7 @@ fun PlatformLeftDrawerContent(
 
 @Composable
 fun LeftDrawerContent(
+    title: String,
     closeSidebarListener: () -> Unit,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit)? = null,
 ) {
@@ -60,7 +62,7 @@ fun LeftDrawerContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Проекты", //todo текст передается
+                    text = title,
                     modifier = Modifier.padding(start = 32.dp),
                     style = ApplicationTheme.typography.title3Bold,
                     color = ApplicationTheme.colors.mainTextColor,

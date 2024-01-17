@@ -40,6 +40,7 @@ import text_fields.RussianKeys.Companion.KEY_COMMAND
 import text_fields.RussianKeys.Companion.KEY_V
 import text_fields.RussianKeys.Companion.KEY_X
 
+@Deprecated("Remove this. This is from another app")
 @Composable
 fun InputTextField(
     keyboardType: KeyboardType = KeyboardType.Text,

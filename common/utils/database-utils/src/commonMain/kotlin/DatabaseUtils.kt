@@ -1,7 +1,9 @@
 import com.yourlibrary.database.BooksTable
+import com.yourlibrary.database.FilesInfo
 import com.yourlibrary.database.ShelvesTable
 import main_models.BookItemLocalDto
 import main_models.ShelfLocalDto
+import main_models.path.PathInfoDto
 
 class DatabaseUtils {
     companion object {
@@ -23,6 +25,14 @@ class DatabaseUtils {
             isbn = isbn,
             quotes = quotes,
             readingStatus = readingStatus
+        )
+
+        fun FilesInfo.toPathInfoDto() = PathInfoDto(
+            id = id.toInt(),
+            path = dbPath,
+            libraryName = libraryName,
+            dbName = dbName,
+            isSelected = isSelected.toInt()
         )
     }
 }

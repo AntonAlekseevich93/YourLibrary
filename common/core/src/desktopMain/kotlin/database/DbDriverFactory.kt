@@ -3,7 +3,8 @@ package database
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import di.PlatformConfiguration
-import di.database.DEFAULT_DB_NAME
+import di.database.DEFAULT_DB_NAME_POSTFIX
+import di.database.DEFAULT_DB_NAME_PREFIX
 import di.database.PATH_DB_NAME
 import sqldelight.com.yourlibrary.database.AppDatabase
 import java.io.File
@@ -12,7 +13,7 @@ import java.util.Locale
 actual class DbDriverFactory actual constructor(private val platformConfiguration: PlatformConfiguration) {
     actual fun createDriver(path: String?, isPathDb: Boolean, dbName: String?): SqlDriver {
         val file = if (path != null && !isPathDb) {
-            File(path, dbName ?: DEFAULT_DB_NAME)
+            File(path, dbName ?: (DEFAULT_DB_NAME_PREFIX + DEFAULT_DB_NAME_POSTFIX))
         } else {
             getCacheFolder(PATH_DB_NAME)
         }

@@ -26,6 +26,7 @@ fun LeftMenuBar(
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     open: () -> Unit,
     createBookListener: () -> Unit,
+    selectAnotherVaultListener: () -> Unit,
 ) {
     Row(modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundWindowDarkColor)) {
         Column(
@@ -70,7 +71,7 @@ fun LeftMenuBar(
                 modifier = Modifier.padding(top = 10.dp),
                 iconSize = 22.dp,
                 tooltipCallback = {
-                    tooltipCallback?.invoke(it.apply { position = TooltipPosition.RIGHT })
+                    tooltipCallback.invoke(it.apply { position = TooltipPosition.RIGHT })
                 },
                 pointerInnerPadding = 4.dp
             ) {
@@ -81,7 +82,7 @@ fun LeftMenuBar(
                 text = "Активность",//todo
                 drawableResName = Drawable.drawable_ic_activity,
                 tooltipCallback = {
-                    tooltipCallback?.invoke(it.apply { position = TooltipPosition.RIGHT })
+                    tooltipCallback.invoke(it.apply { position = TooltipPosition.RIGHT })
                 },
                 modifier = Modifier.padding(top = 10.dp),
             ) {
@@ -89,10 +90,10 @@ fun LeftMenuBar(
             }
 
             TooltipIconArea(
-                text = "Открыть случайную заметку",//todo
+                text = "Открыть случайную цитату",//todo
                 drawableResName = Drawable.drawable_ic_random,
                 tooltipCallback = {
-                    tooltipCallback?.invoke(it.apply { position = TooltipPosition.RIGHT })
+                    tooltipCallback.invoke(it.apply { position = TooltipPosition.RIGHT })
                 },
                 modifier = Modifier.padding(top = 10.dp),
             ) {
@@ -105,17 +106,16 @@ fun LeftMenuBar(
                 text = Strings.another_storage,
                 drawableResName = Drawable.drawable_ic_folder,
                 tooltipCallback = {
-                    tooltipCallback?.invoke(it.apply { position = TooltipPosition.RIGHT })
+                    tooltipCallback.invoke(it.apply { position = TooltipPosition.RIGHT })
                 },
-                modifier = Modifier.padding(bottom = 4.dp)
-            ) {
-                println("открыли меню")
-            }
+                modifier = Modifier.padding(bottom = 4.dp),
+                onClick = selectAnotherVaultListener,
+            )
             TooltipIconArea(
                 text = Strings.settings,
                 drawableResName = Drawable.drawable_ic_settings,
                 tooltipCallback = {
-                    tooltipCallback?.invoke(it.apply { position = TooltipPosition.RIGHT })
+                    tooltipCallback.invoke(it.apply { position = TooltipPosition.RIGHT })
                 },
                 modifier = Modifier.padding(bottom = 10.dp)
             ) {

@@ -1,5 +1,5 @@
 object Drawable {
-    const val drawable_ic_more_button = "ic_more_button.png"
+    const val drawable_ic_menu_button = "ic_more_button.png"
     const val drawable_ic_calendar = "ic_calendar.png"
     const val drawable_ic_kanban = "ic_kanban.png"
     const val drawable_ic_list = "ic_list.png"
@@ -30,4 +30,5 @@ object Drawable {
     const val drawable_ic_error = "ic_error.png"
     const val drawable_ic_check = "ic_check.png"
     const val drawable_ic_close_128px = "ic_close_128.png"
+    const val drawable_app_logo = "app_logo.png"
 }

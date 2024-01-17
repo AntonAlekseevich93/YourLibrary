@@ -44,6 +44,7 @@ fun BookScreen(
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     onClose: () -> Unit,
     createBookListener: () -> Unit,
+    selectAnotherVaultListener: () -> Unit,
 ) {
     val viewModel = remember { Inject.instance<BookInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
@@ -95,7 +96,8 @@ fun BookScreen(
                     open = {
 
                     },
-                    createBookListener = createBookListener
+                    createBookListener = createBookListener,
+                    selectAnotherVaultListener = selectAnotherVaultListener,
                 )
             }
         }
@@ -106,6 +108,7 @@ fun BookScreen(
                 AnimatedVisibility(visible = fullScreenBookInfo.value) {
                     Row {
                         PlatformLeftDrawerContent(
+                            title = uiState.selectedPathInfo.value.libraryName,
                             platform = platform,
                             tooltipCallback = tooltipCallback,
                             closeSidebarListener = {

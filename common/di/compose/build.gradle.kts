@@ -16,6 +16,8 @@ kotlin {
                 implementation(project(":feature:book-creator:data")) //todo remove?
                 implementation(project(":feature:shelf:presentation"))
                 implementation(project(":feature:shelf:data")) //todo remove?
+                implementation(project(":feature:settings:presentation"))
+                implementation(project(":feature:settings:data")) //todo remove?
                 implementation(project(":common:core"))
             }
         }

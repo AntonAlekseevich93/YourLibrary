@@ -101,7 +101,6 @@ fun CustomDockedSearchBar(
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(ApplicationTheme.colors.searchIconColor),
                         modifier = Modifier.size(20.dp)
-
                     )
                 },
                 trailingIcon = {

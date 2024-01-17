@@ -40,6 +40,7 @@ fun MainScreen(
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: String) -> Unit,
     createBookListener: () -> Unit,
+    selectAnotherVaultListener: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     Row {
@@ -52,6 +53,7 @@ fun MainScreen(
                 },
                 tooltipCallback = tooltipCallback,
                 createBookListener = createBookListener,
+                selectAnotherVaultListener = selectAnotherVaultListener,
             )
         }
 
@@ -59,6 +61,7 @@ fun MainScreen(
             platform = platform,
             leftDrawerContent = {
                 PlatformLeftDrawerContent(
+                    title = uiState.selectedPathInfo.value.libraryName,
                     platform = platform,
                     closeSidebarListener = {
                         scope.launch {

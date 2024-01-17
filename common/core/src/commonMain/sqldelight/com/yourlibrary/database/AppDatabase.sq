@@ -4,12 +4,14 @@
 CREATE TABLE FilesInfo (
     id INTEGER NOT NULL,
     dbPath TEXT NOT NULL,
-    dbName TEXT NOT NULL
+    dbName TEXT NOT NULL,
+    libraryName TEXT NOT NULL,
+    isSelected INTEGER NOT NULL
 );
 
 insertFileInfo:
-INSERT INTO FilesInfo(id, dbPath, dbName)
-VALUES(?,? ,? );
+INSERT INTO FilesInfo(id, dbPath, dbName, libraryName, isSelected)
+VALUES(?,? ,?, ?, ?);
 
 removeAllFilesInfo:
 DELETE FROM FilesInfo;
@@ -21,6 +23,20 @@ selectAllFilesInfo:
 SELECT *
 FROM FilesInfo;
 
+getSelectedPathInfo:
+SELECT * FROM FilesInfo WHERE isSelected =:isSelected;
+
+updateSelectedPathInfo:
+UPDATE FilesInfo
+SET `dbPath`=?, `libraryName`=?  WHERE id=?;
+
+setAllPathAsNonSelected:
+UPDATE FilesInfo
+SET `isSelected` = 1;
+
+setPathAsSelected:
+UPDATE FilesInfo
+SET `id`=?, `isSelected` = 0;
 
 -- ------------------------------------------------------------------SHELVES TABLE:
 
