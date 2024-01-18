@@ -1,5 +1,6 @@
 package main_models.path
 
+/** need update DatabaseUtils if change values **/
 class PathInfoDto(
     val id: Int?,
     val path: String?,

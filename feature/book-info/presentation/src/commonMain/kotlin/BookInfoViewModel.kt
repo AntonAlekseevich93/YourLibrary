@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import main_models.BookItemVo
 import models.BookInfoUiState
 
 class BookInfoViewModel(private val repository: BookInfoRepository) {
@@ -30,9 +31,19 @@ class BookInfoViewModel(private val repository: BookInfoRepository) {
         scope.launch {
             repository.getBookById(bookId = id).collect { book ->
                 withContext(Dispatchers.Main) {
-                    _uiState.value.bookItem.value = book
+                    _uiState.value.setBookItem(book)
                 }
             }
+        }
+    }
+
+    fun clearSearchAuthor() {
+        _uiState.value.clearSimilarAuthorList()
+    }
+
+    fun updateBook(bookItem: BookItemVo) {
+        scope.launch {
+            repository.updateBook(bookItem)
         }
     }
 

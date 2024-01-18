@@ -18,7 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
+import book_editor.BookValues
 import di.Inject
 import io.kamel.core.Resource
 import kotlinx.coroutines.delay
@@ -28,6 +30,7 @@ import navigation_drawer.PlatformLeftDrawerContent
 import navigation_drawer.PlatformNavigationDrawer
 import platform.Platform
 import platform.isDesktop
+import text_fields.DELAY_FOR_LISTENER_PROCESSING
 import tooltip_area.TooltipItem
 
 @Composable
@@ -48,6 +51,10 @@ fun BookScreen(
 ) {
     val viewModel = remember { Inject.instance<BookInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
+    val bookValues = remember { mutableStateOf(BookValues()) }
+    uiState.bookItem.value?.let {
+        bookValues.value.setBookItem(it)
+    }
 
     LaunchedEffect(key1 = bookItemId) {
         viewModel.getBookItem(bookItemId)
@@ -60,6 +67,7 @@ fun BookScreen(
     else {
         Color.Transparent
     }
+    val isEditMode = remember { mutableStateOf(false) }
 
     /** this is necessary to get rid of the white blinking effect due
      * to the background transparent when collapsing and expanding */
@@ -142,10 +150,13 @@ fun BookScreen(
                         platform = platform,
                         painterInCache = painterInCache,
                         bookItem = uiState.bookItem.value!!,
+                        bookValues = bookValues,
                         onClose = onClose,
                         fullScreenBookInfo = fullScreenBookInfo,
                         showLeftDrawer = showLeftDrawer,
                         showRightDrawer = showRightDrawer,
+                        isEditMode = isEditMode,
+                        similarAuthorList = uiState.similarAuthorList,
                         openLeftDrawerListener = {
                             scope.launch {
                                 if (!showLeftDrawer.value) {
@@ -179,7 +190,40 @@ fun BookScreen(
                                 }
                             }
                         },
-                        tooltipCallback = tooltipCallback
+                        tooltipCallback = tooltipCallback,
+                        editBookCallback = {
+                            if (isEditMode.value && uiState.bookItem.value != null) {
+                                bookValues.value.updateBook(
+                                    bookId = uiState.bookItem.value!!.id
+                                )?.let {
+                                    viewModel.updateBook(it)
+                                }
+                            }
+
+                            isEditMode.value = !isEditMode.value
+                        },
+                        onAuthorTextChanged = {
+                            bookValues.value.authorName.value =
+                                bookValues.value.authorName.value.copy(
+                                    it.text,
+                                    selection = TextRange(it.text.length)
+                                )
+                            scope.launch {
+                                delay(DELAY_FOR_LISTENER_PROCESSING)
+                                viewModel.clearSearchAuthor()
+                            }
+                        },
+                        onSuggestionAuthorClickListener = {
+                            bookValues.value.authorName.value =
+                                bookValues.value.authorName.value.copy(
+                                    it,
+                                    selection = TextRange(it.length)
+                                )
+                            scope.launch {
+                                delay(DELAY_FOR_LISTENER_PROCESSING)
+                                viewModel.clearSearchAuthor()
+                            }
+                        }
                     )
                 }
                 CustomDockedSearchBar(

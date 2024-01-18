@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import main_models.ReadingStatus
 import models.ShelfUiState
-import models.defaultShelves
 import platform.Platform
 
 class ShelfViewModel(
@@ -18,21 +18,17 @@ class ShelfViewModel(
     private val _uiState = MutableStateFlow(
         ShelfUiState(
             platform = platform,
-            shelfList = mutableStateOf(mutableListOf())
+            shelvesList = mutableStateOf(mutableListOf())
         )
     )
     val uiState = _uiState.asStateFlow()
 
     init {
-        scope.launch {
-            repository.createDefaultShelvesIfNotExist(defaultShelves)
-            repository.getAllShelves().collect { shelf ->
-                _uiState.value.addShelf(shelf)
-                launch {
-                    repository.getBooksByShelfId(shelf.id).collect {
-                        withContext(Dispatchers.Main) {
-                            _uiState.value.addBooksToShelf(shelfId = shelf.id, books = it)
-                        }
+        ReadingStatus.entries.forEach { status ->
+            scope.launch {
+                repository.getBooksByStatusId(status.id).collect {
+                    withContext(Dispatchers.Main) {
+                        _uiState.value.addBooksToShelf(shelfId = status.id, books = it)
                     }
                 }
             }

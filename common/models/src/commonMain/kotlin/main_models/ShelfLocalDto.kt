@@ -1,5 +1,7 @@
 package main_models
 
+
+/** need update DatabaseUtils if change values **/
 data class ShelfLocalDto(
     val id: String,
     val name: String,

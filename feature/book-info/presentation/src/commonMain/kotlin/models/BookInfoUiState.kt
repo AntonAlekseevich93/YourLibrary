@@ -7,7 +7,15 @@ import main_models.path.PathInfoVo
 
 class BookInfoUiState(
     val bookItem: MutableState<BookItemVo?> = mutableStateOf(null),
-    val selectedPathInfo: MutableState<PathInfoVo> = mutableStateOf(PathInfoVo())
+    val selectedPathInfo: MutableState<PathInfoVo> = mutableStateOf(PathInfoVo()),
+    val similarAuthorList: MutableState<List<String>> = mutableStateOf(emptyList()),
 ) {
+    fun setBookItem(book: BookItemVo) {
+        bookItem.value = book
+    }
+
+    fun clearSimilarAuthorList() {
+        similarAuthorList.value = emptyList()
+    }
 
 }

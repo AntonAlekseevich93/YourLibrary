@@ -75,7 +75,7 @@ fun ShelfBoardScreen(
                 )
             ) {
                 LazyColumn(state = lazyListState) {
-                    itemsIndexed(uiState.value.shelfList.value) { index, item ->
+                    itemsIndexed(uiState.value.shelvesList.value) { index, item ->
                         HorizontalShelfScreen(
                             shelfVo = item,
                             config = uiState.value.config,

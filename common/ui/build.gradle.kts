@@ -7,6 +7,7 @@ kotlin {
     sourceSets{
         commonMain {
             dependencies {
+                implementation(Dependencies.Kamel.imageLoader)
                 api(project(":common:core"))
                 implementation(project(":common:utils:date"))
                 implementation(project(":common:models"))

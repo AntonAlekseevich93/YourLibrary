@@ -53,7 +53,6 @@ import tags.CustomTag
 
 const val DELAY_FOR_LISTENER_PROCESSING = 150L
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TextFieldWithTitleAndSuggestion(
     platform: Platform,

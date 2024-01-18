@@ -11,7 +11,6 @@ class BookCreatorUiState(
     val showLoadingIndicator: MutableState<Boolean> = mutableStateOf(false),
     val loadingStatus: MutableState<LoadingStatus> = mutableStateOf(LoadingStatus.LOADING),
     val similarAuthorList: MutableState<List<String>> = mutableStateOf(emptyList()),
-    val statusesList: MutableState<List<ReadingStatus>> = mutableStateOf(ReadingStatus.entries),
     val defaultStatus: MutableState<ReadingStatus> = mutableStateOf(ReadingStatus.PLANNED),
     val needUpdateBookInfo: MutableState<Boolean> = mutableStateOf(false)
 ) {

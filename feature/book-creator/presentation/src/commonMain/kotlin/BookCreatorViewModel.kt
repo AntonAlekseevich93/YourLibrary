@@ -8,26 +8,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import main_models.BookItemVo
-import main_models.ReadingStatus
-import main_models.ShelfVo
 import models.BookCreatorUiState
 
 class BookCreatorViewModel(private val repository: BookCreatorRepository) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var parsingJob: Job? = null
     private var searchJob: Job? = null
-    private val shelvesWithoutBooks: MutableList<ShelfVo> = mutableListOf()
     private val _uiState: MutableStateFlow<BookCreatorUiState> =
         MutableStateFlow(BookCreatorUiState())
     val uiState = _uiState.asStateFlow()
-
-    init {
-        scope.launch {
-            repository.getShelvesWithoutBooks().collect {
-                shelvesWithoutBooks.addAll(it)
-            }
-        }
-    }
 
     fun startParseBook(url: String) {
         parsingJob?.cancel()
@@ -78,12 +67,5 @@ class BookCreatorViewModel(private val repository: BookCreatorRepository) {
                 repository.createBook(bookItemVoOrNull)
             }
         }
-    }
-
-    fun getShelfIdOrNullByReadingStatus(status: ReadingStatus): String? {
-        shelvesWithoutBooks.find { it.name == status.nameValue }?.let {
-            return it.id
-        }
-        return null
     }
 }

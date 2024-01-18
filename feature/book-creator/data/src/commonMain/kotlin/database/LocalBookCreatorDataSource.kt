@@ -1,11 +1,6 @@
 package database
 
-import DatabaseUtils.Companion.map
-import app.cash.sqldelight.coroutines.asFlow
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import main_models.BookItemLocalDto
-import main_models.ShelfLocalDto
 
 class LocalBookCreatorDataSource(
     private val db: SqlDelightDataSource
@@ -14,6 +9,7 @@ class LocalBookCreatorDataSource(
         bookItem.apply {
             db.appQuery.addBook(
                 id = id,
+                statusId = statusId,
                 shelfId = shelfId,
                 bookName = bookName,
                 authorName = authorName,
@@ -23,13 +19,12 @@ class LocalBookCreatorDataSource(
                 numbersOfPages = numbersOfPages?.toLong(),
                 isbn = isbn,
                 quotes = quotes,
-                readingStatus = readingStatus
+                readingStatus = readingStatus,
+                startDateInString = startDateInString,
+                endDateInString = endDateInString,
+                startDateInMillis = startDateInMillis,
+                endDateInMillis = endDateInMillis
             )
         }
     }
-
-    fun getShelves(): Flow<List<ShelfLocalDto>> =
-        db.appQuery.getAllShelves().asFlow()
-            .map { it.executeAsList().map { shelves -> shelves.map() } }
-
 }

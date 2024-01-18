@@ -28,10 +28,13 @@ fun FullBookBar(
     isFullscreen: State<Boolean>,
     showLeftDrawer: State<Boolean>,
     showRightDrawer: State<Boolean>,
+    isEditMode: State<Boolean>,
+    hideSaveButton: State<Boolean>,
     onFullscreen: () -> Unit,
     openLeftDrawerListener: () -> Unit,
     openRightDrawerListener: () -> Unit,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
+    editBookCallback: () -> Unit,
     onClose: () -> Unit,
 ) {
     when (platform) {
@@ -40,11 +43,14 @@ fun FullBookBar(
                 isFullscreen = isFullscreen,
                 showLeftDrawer = showLeftDrawer,
                 showRightDrawer = showRightDrawer,
+                isEditMode = isEditMode,
                 onFullscreen = onFullscreen,
+                hideSaveButton = hideSaveButton,
                 openLeftDrawerListener = openLeftDrawerListener,
                 openRightDrawerListener = openRightDrawerListener,
+                editBookCallback = editBookCallback,
                 onClose = onClose,
-                tooltipCallback = tooltipCallback
+                tooltipCallback = tooltipCallback,
             )
         }
 
@@ -53,9 +59,12 @@ fun FullBookBar(
                 isFullscreen = isFullscreen,
                 showLeftDrawer = showLeftDrawer,
                 showRightDrawer = showRightDrawer,
+                isEditMode = isEditMode,
                 onFullscreen = onFullscreen,
+                hideSaveButton = hideSaveButton,
                 openLeftDrawerListener = openLeftDrawerListener,
                 openRightDrawerListener = openRightDrawerListener,
+                editBookCallback = editBookCallback,
                 onClose = onClose,
                 tooltipCallback = tooltipCallback
             )
@@ -68,9 +77,12 @@ internal fun BookBar(
     isFullscreen: State<Boolean>,
     showLeftDrawer: State<Boolean>,
     showRightDrawer: State<Boolean>,
+    hideSaveButton: State<Boolean>,
+    isEditMode: State<Boolean>,
     onFullscreen: () -> Unit,
     openLeftDrawerListener: () -> Unit,
     openRightDrawerListener: () -> Unit,
+    editBookCallback: () -> Unit,
     onClose: () -> Unit,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
 ) {
@@ -111,6 +123,21 @@ internal fun BookBar(
             }
         }
 
+        AnimatedVisibility(visible = !hideSaveButton.value) {
+            TooltipIconArea(
+                text = if (isEditMode.value) Strings.save else Strings.edit,
+                drawableResName = if (isEditMode.value) Drawable.drawable_ic_save else Drawable.drawable_ic_edit,
+                modifier = Modifier.padding(start = 10.dp),
+                iconSize = 18.dp,
+                iconTint = if (isEditMode.value) ApplicationTheme.colors.successColor else ApplicationTheme.colors.mainIconsColor,
+                pointerInnerPadding = 4.dp,
+                tooltipCallback = {
+                    tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                },
+                onClick = editBookCallback
+            )
+        }
+
         TooltipIconArea(
             text = Strings.tags,
             drawableResName = Drawable.drawable_ic_tag,
@@ -135,30 +162,30 @@ internal fun BookBar(
         ) {
             //todo
         }
-        TooltipIconArea(
-            text = Strings.add_calendar,
-            drawableResName = Drawable.drawable_ic_calendar,
-            modifier = Modifier.padding(start = 10.dp),
-            iconSize = 18.dp,
-            pointerInnerPadding = 4.dp,
-            tooltipCallback = {
-                tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
-            },
-        ) {
-            //todo
-        }
-        TooltipIconArea(
-            text = Strings.add_bookmark,
-            drawableResName = Drawable.drawable_ic_bookmark,
-            modifier = Modifier.padding(start = 10.dp),
-            iconSize = 18.dp,
-            pointerInnerPadding = 4.dp,
-            tooltipCallback = {
-                tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
-            },
-        ) {
-            //todo
-        }
+//        TooltipIconArea(
+//            text = Strings.add_calendar,
+//            drawableResName = Drawable.drawable_ic_calendar,
+//            modifier = Modifier.padding(start = 10.dp),
+//            iconSize = 18.dp,
+//            pointerInnerPadding = 4.dp,
+//            tooltipCallback = {
+//                tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+//            },
+//        ) {
+//            //todo
+//        }
+//        TooltipIconArea(
+//            text = Strings.add_bookmark,
+//            drawableResName = Drawable.drawable_ic_bookmark,
+//            modifier = Modifier.padding(start = 10.dp),
+//            iconSize = 18.dp,
+//            pointerInnerPadding = 4.dp,
+//            tooltipCallback = {
+//                tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+//            },
+//        ) {
+//            //todo
+//        }
         Spacer(modifier = Modifier.weight(1f, fill = true))
         AnimatedVisibility(
             visible = !showRightDrawer.value,

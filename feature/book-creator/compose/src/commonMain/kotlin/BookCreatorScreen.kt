@@ -38,6 +38,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import book_editor.BookEditor
+import book_editor.BookValues
 import containters.CenterBoxContainer
 import date.CommonDatePicker
 import di.Inject
@@ -46,6 +48,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import loader.LoadingStatusIndicator
 import main_models.BookItemVo
+import main_models.DatePickerType
 import main_models.ReadingStatus
 import main_models.rest.LoadingStatus
 import platform.Platform
@@ -264,7 +267,7 @@ fun BookCreatorScreen(
                                 }
                             }
 
-                            BookCreator(
+                            BookEditor(
                                 platform = platform,
                                 bookValues = bookValues,
                                 similarAuthorList = uiState.similarAuthorList,
@@ -277,7 +280,6 @@ fun BookCreatorScreen(
                                     }
                                 },
                                 statusBookTextFieldValue = statusBookTextFieldValue,
-                                statusesList = uiState.statusesList,
                                 showDataPickerListener = {
                                     datePickerType = it
                                     showDataPicker.value = true
@@ -294,11 +296,8 @@ fun BookCreatorScreen(
                                     }
                                 },
                                 saveBook = {
-                                    viewModel.getShelfIdOrNullByReadingStatus(
-                                        bookValues.selectedStatus.value
-                                    )?.let { shelfId ->
-                                        viewModel.createBook(bookValues.getBookItemVoOrNull(shelfId))
-                                    }
+                                    viewModel.createBook(bookValues.getBookItemVoOrNull())
+                                    closeBookCreatorListener.invoke()
                                 },
                             )
                         }
@@ -427,9 +426,4 @@ internal fun CreateBookButton(
             textAlign = TextAlign.Center
         )
     }
-}
-
-enum class DatePickerType {
-    StartDate,
-    EndDate
 }

@@ -1,3 +1,5 @@
+package book_editor
+
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
@@ -51,19 +53,60 @@ class BookValues(
         return null
     }
 
-    fun getBookItemVoOrNull(shelfId: String): BookItemVo? {
+    fun getBookItemVoOrNull(): BookItemVo? {
         return BookItemVo(
             id = BookItemVo.generateId(),
-            shelfId = shelfId,
+            statusId = selectedStatus.value.id,
+            shelfId = null,//todo
             bookName = bookName.value.text.takeIf { it.isNotEmpty() } ?: return null,
             authorName = authorName.value.text.takeIf { it.isNotEmpty() } ?: return null,
-            description = description.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            description = description.value.text,
             coverUrl = "",
-            coverUrlFromParsing = coverUrl.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            coverUrlFromParsing = coverUrl.value.text,
             numbersOfPages = getNumberOfPagesAsIntOrNull() ?: 0,
-            isbn = isbn.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            isbn = isbn.value.text,
             quotes = "",
-            readingStatus = selectedStatus.value
+            readingStatus = selectedStatus.value,
+            startDateInString = startDateInString.value,
+            endDateInString = endDateInString.value,
+            startDateInMillis = startDateInMillis.value,
+            endDateInMillis = endDateInMillis.value
         )
+    }
+
+    fun updateBook(bookId: String): BookItemVo? {
+        return BookItemVo(
+            id = bookId,
+            statusId = selectedStatus.value.id,
+            shelfId = null, //todo
+            bookName = bookName.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            authorName = authorName.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            description = description.value.text,
+            coverUrl = "",
+            coverUrlFromParsing = coverUrl.value.text,
+            numbersOfPages = getNumberOfPagesAsIntOrNull() ?: 0,
+            isbn = isbn.value.text,
+            quotes = "",
+            readingStatus = selectedStatus.value,
+            startDateInString = startDateInString.value,
+            endDateInString = endDateInString.value,
+            startDateInMillis = startDateInMillis.value,
+            endDateInMillis = endDateInMillis.value
+        )
+    }
+
+    fun setBookItem(book: BookItemVo) {
+        authorName.value = TextFieldValue(book.authorName)
+        bookName.value = TextFieldValue(book.bookName)
+        numberOfPages.value = TextFieldValue(book.numbersOfPages.toString())
+        description.value = TextFieldValue(book.description)
+        selectedStatus.value = book.readingStatus
+        startDateInMillis.value = book.startDateInMillis
+        startDateInString.value = book.startDateInString
+        endDateInMillis.value = book.endDateInMillis
+        endDateInString.value = book.endDateInString
+        coverUrl.value =
+            TextFieldValue(book.coverUrl.takeIf { it.isNotEmpty() } ?: book.coverUrlFromParsing)
+        isbn.value = TextFieldValue(book.isbn)
     }
 }

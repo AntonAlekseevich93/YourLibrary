@@ -2,7 +2,7 @@ object Strings {
     const val list = "Список"
     const val kanban = "Доска"
     const val calendar = "Календарь"
-    const val edit = "Изменить"
+    const val change = "Изменить"
     const val to_main = "На главную"
     const val menu = "Меню"
     const val settings = "Настройки"
@@ -80,4 +80,5 @@ object Strings {
     const val reboot = "Перезагрузить"
     const val open_folder_as_library = "Открыть папку как библиотеку"
     const val open_folder_as_library_description = "Выберите папку содержащую файл библиотеки"
+    const val edit = "Редактировать"
 }

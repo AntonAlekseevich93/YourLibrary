@@ -15,6 +15,7 @@ class DatabaseUtils {
 
         fun BooksTable.map() = BookItemLocalDto(
             id = id,
+            statusId = statusId,
             shelfId = shelfId,
             bookName = bookName,
             authorName = authorName,
@@ -24,7 +25,11 @@ class DatabaseUtils {
             numbersOfPages = numbersOfPages?.toInt(),
             isbn = isbn,
             quotes = quotes,
-            readingStatus = readingStatus
+            readingStatus = readingStatus,
+            startDateInString = startDateInString,
+            endDateInString = endDateInString,
+            startDateInMillis = startDateInMillis,
+            endDateInMillis = endDateInMillis,
         )
 
         fun FilesInfo.toPathInfoDto() = PathInfoDto(

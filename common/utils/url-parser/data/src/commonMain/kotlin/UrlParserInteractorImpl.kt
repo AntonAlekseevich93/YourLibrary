@@ -9,6 +9,7 @@ class UrlParserInteractorImpl : UrlParserInteractor {
 
     val bookItemForTesting = BookItemVo(
         id = "",
+        statusId = "",
         shelfId = "",
         bookName = "Кто нашёл берет себе",
         authorName = "Стивен Кинг",

@@ -171,7 +171,7 @@ fun ViewTypesBlock(
                     contentAlignment = Alignment.Center,
                 ) {
                     TooltipIconArea(
-                        text = Strings.edit,
+                        text = Strings.change,
                         drawableResName = Drawable.drawable_ic_plus,
                         iconSize = 8.dp,
                         onClick = {

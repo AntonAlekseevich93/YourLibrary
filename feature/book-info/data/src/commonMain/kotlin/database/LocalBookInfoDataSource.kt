@@ -22,4 +22,27 @@ class LocalBookInfoDataSource(
         db.appQuery.getSelectedPathInfo(0).asFlow().mapToOneOrNull(Dispatchers.IO)
             .map { it?.toPathInfoDto() }
 
+    suspend fun updateBook(bookItem: BookItemLocalDto) {
+        bookItem.apply {
+            db.appQuery.updateBook(
+                id = id,
+                statusId = statusId,
+                shelfId = shelfId,
+                bookName = bookName,
+                authorName = authorName,
+                description = description,
+                coverUrl = coverUrl,
+                coverUrlFromParsing = coverUrlFromParsing,
+                numbersOfPages = numbersOfPages?.toLong(),
+                isbn = isbn,
+                quotes = quotes,
+                readingStatus = readingStatus,
+                startDateInString = startDateInString,
+                endDateInString = endDateInString,
+                startDateInMillis = startDateInMillis,
+                endDateInMillis = endDateInMillis,
+            )
+        }
+    }
+
 }

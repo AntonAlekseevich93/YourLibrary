@@ -1,8 +1,10 @@
 package main_models
 
+/** need update DatabaseUtils if change values **/
 data class BookItemLocalDto(
     val id: String,
-    var shelfId: String,
+    var statusId: String,
+    var shelfId: String?,
     var bookName: String,
     var authorName: String,
     var description: String? = "",
@@ -12,10 +14,15 @@ data class BookItemLocalDto(
     var isbn: String? = "",
     var quotes: String? = "",
     var readingStatus: String?,
+    val startDateInString: String? = "",
+    val endDateInString: String? = "",
+    val startDateInMillis: Long? = -1,
+    val endDateInMillis: Long? = -1
 )
 
 fun BookItemVo.toLocalDto() = BookItemLocalDto(
     id = id,
+    statusId = statusId,
     shelfId = shelfId,
     bookName = bookName,
     authorName = authorName,
@@ -25,11 +32,16 @@ fun BookItemVo.toLocalDto() = BookItemLocalDto(
     numbersOfPages = numbersOfPages,
     isbn = isbn,
     quotes = quotes,
-    readingStatus = readingStatus.nameValue
+    readingStatus = readingStatus.nameValue,
+    startDateInString = startDateInString,
+    endDateInString = endDateInString,
+    startDateInMillis = startDateInMillis,
+    endDateInMillis = endDateInMillis,
 )
 
 fun BookItemLocalDto.toVo() = BookItemVo(
     id = id,
+    statusId = statusId,
     shelfId = shelfId,
     bookName = bookName,
     authorName = authorName,
@@ -47,5 +59,9 @@ fun BookItemLocalDto.toVo() = BookItemVo(
         else -> {
             ReadingStatus.PLANNED
         }
-    }
+    },
+    startDateInString = startDateInString ?: "",
+    endDateInString = endDateInString ?: "",
+    startDateInMillis = startDateInMillis ?: -1,
+    endDateInMillis = endDateInMillis ?: -1,
 )

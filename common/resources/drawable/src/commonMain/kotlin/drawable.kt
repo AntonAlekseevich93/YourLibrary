@@ -31,4 +31,6 @@ object Drawable {
     const val drawable_ic_check = "ic_check.png"
     const val drawable_ic_close_128px = "ic_close_128.png"
     const val drawable_app_logo = "app_logo.png"
+    const val drawable_ic_edit = "ic_edit.png"
+    const val drawable_ic_save = "ic_save.png"
 }
