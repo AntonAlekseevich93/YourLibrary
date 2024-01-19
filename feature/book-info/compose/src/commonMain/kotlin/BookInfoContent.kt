@@ -33,10 +33,10 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.BookItemVo
 import main_models.ReadingStatus
-import main_models.getStatusColor
 import platform.Platform
 import platform.isDesktop
 import platform.isMobile
+import reading_status.getStatusColor
 import tags.CustomTag
 
 @Composable

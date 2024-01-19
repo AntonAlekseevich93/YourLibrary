@@ -27,14 +27,15 @@ fun PlatformLeftDrawerContent(
     title: String,
     platform: Platform,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit)? = null,
-    closeSidebarListener: () -> Unit
+    closeSidebarListener: () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     when (platform) {
         Platform.DESKTOP -> {
             DismissibleDrawerSheet(
                 drawerContainerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor,
             ) {
-                LeftDrawerContent(title, closeSidebarListener, tooltipCallback)
+                LeftDrawerContent(title, closeSidebarListener, tooltipCallback, content)
             }
         }
 
@@ -43,7 +44,7 @@ fun PlatformLeftDrawerContent(
             DismissibleDrawerSheet(
                 drawerContainerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor,
             ) {
-                LeftDrawerContent(title, closeSidebarListener, tooltipCallback)
+                LeftDrawerContent(title, closeSidebarListener, tooltipCallback, content)
             }
         }
     }
@@ -54,6 +55,7 @@ fun LeftDrawerContent(
     title: String,
     closeSidebarListener: () -> Unit,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit)? = null,
+    content: @Composable () -> Unit,
 ) {
     Box(modifier = Modifier.widthIn(max = 300.dp)) {
         Column {
@@ -94,6 +96,7 @@ fun LeftDrawerContent(
                     closeSidebarListener.invoke()
                 }
             }
+            content.invoke()
         }
     }
 }

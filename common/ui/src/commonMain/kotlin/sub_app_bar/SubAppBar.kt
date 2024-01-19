@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import main_models.ViewsType
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import tooltip_area.TooltipIconArea
@@ -292,10 +293,4 @@ internal fun DropDownItemView(
             )
         )
     }
-}
-
-enum class ViewsType {
-    KANBAN,
-    LIST,
-    CALENDAR
 }

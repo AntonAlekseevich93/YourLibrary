@@ -9,6 +9,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project(":common:models"))
                 api(Dependencies.Kotlin.Serialization.serialization)
                 api(Dependencies.Kotlin.Coroutines.core)
 

@@ -1,10 +1,3 @@
-package screens
-
-import ApplicationTheme
-import ApplicationUiState
-import ApplicationViewModel
-import CustomDockedSearchBar
-import ShelfBoardScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -22,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import io.kamel.core.Resource
 import kotlinx.coroutines.launch
 import menu_bar.LeftMenuBar
+import models.MainScreenUiState
 import navigation_drawer.PlatformLeftDrawerContent
 import navigation_drawer.PlatformNavigationDrawer
 import platform.Platform
@@ -31,18 +26,23 @@ import tooltip_area.TooltipItem
 
 @Composable
 fun MainScreen(
-    uiState: ApplicationUiState,
+    uiState: MainScreenUiState,
     platform: Platform,
     showLeftDrawer: MutableState<Boolean>,
     showSearch: MutableState<Boolean>,
     leftDrawerState: DrawerState,
-    viewModel: ApplicationViewModel,
+    viewModel: MainScreenViewModel,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: String) -> Unit,
     createBookListener: () -> Unit,
     selectAnotherVaultListener: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(uiState.selectedPathInfo) {
+        viewModel.getSelectedPathInfo()
+    }
+
     Row {
         if (platform.isDesktop()) {
             LeftMenuBar(
@@ -74,7 +74,10 @@ fun MainScreen(
                             }
                         }
                     },
-                    tooltipCallback = tooltipCallback
+                    tooltipCallback = tooltipCallback,
+                    content = {
+
+                    }
                 )
             },
             leftDrawerState = leftDrawerState,
@@ -92,9 +95,9 @@ fun MainScreen(
                     SubAppBar(
                         modifier = Modifier.padding(start = 16.dp, top = 6.dp),
                         projectName = "Книжная полка",
-                        selectedViewsTypes = uiState.selectedViewTypes,
-                        isCheckedTypes = uiState.checkedViewTypes,
-                        isOpenedType = uiState.openedViewType.value,
+                        selectedViewsTypes = uiState.viewsTypes.selectedViewTypes,
+                        isCheckedTypes = uiState.viewsTypes.checkedViewTypes,
+                        isOpenedType = uiState.viewsTypes.openedViewType.value,
                         openViewType = viewModel::openViewType,
                         isOpenedSidebar = showLeftDrawer,
                         switchViewTypesListener = viewModel::switchViewTypesListener,

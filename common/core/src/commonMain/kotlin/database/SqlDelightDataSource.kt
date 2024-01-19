@@ -4,14 +4,14 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import app.cash.sqldelight.db.SqlDriver
 import com.yourlibrary.database.AppDatabaseQueries
+import com.yourlibrary.database.FilesInfo
 import di.database.DEFAULT_DB_NAME_POSTFIX
 import di.database.DEFAULT_DB_NAME_PREFIX
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import models.PathInfoVo
-import models.toPathInfoDto
-import models.toVo
+import main_models.path.PathInfoDto
+import main_models.path.PathInfoVo
 import platform.Platform
 import platform.isDesktop
 import platform.isMobile
@@ -123,6 +123,28 @@ class SqlDelightDataSource(
     private fun getCurrentPath(): String = pathDbQuery.selectAllFilesInfo().executeAsList()
         .firstOrNull { it.isSelected == DB_IS_SELECTED.toLong() }?.dbPath ?: ""
 
+    suspend fun getSelectedPathInfo(): Flow<PathInfoDto?> =
+        pathDbQuery.getSelectedPathInfo(0).asFlow().mapToOneOrNull(Dispatchers.IO)
+            .map { it?.toPathInfoDto() }
+
+    private fun FilesInfo.toPathInfoDto() = PathInfoDto(
+        id = id.toInt(),
+        path = dbPath,
+        libraryName = libraryName,
+        dbName = dbName,
+        isSelected = isSelected.toInt()
+    )
+
+    private fun PathInfoDto.toVo(): PathInfoVo? {
+        return if (id == null || path == null || libraryName == null || dbName == null || isSelected == null) null
+        else PathInfoVo(
+            id = id!!,
+            path = path!!,
+            libraryName = libraryName!!,
+            dbName = dbName!!,
+            isSelected = isSelected == DB_IS_SELECTED
+        )
+    }
 
     companion object {
         const val DB_IS_SELECTED = 0

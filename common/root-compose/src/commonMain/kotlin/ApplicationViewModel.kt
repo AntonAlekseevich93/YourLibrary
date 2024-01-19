@@ -6,9 +6,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import models.PathInfoVo
+import main_models.path.PathInfoVo
 import platform.Platform
-import sub_app_bar.ViewsType
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -29,19 +28,6 @@ class ApplicationViewModel(private val db: SqlDelightDataSource) {
                 }
             }
         }
-    }
-
-    fun switchViewTypesListener(isChecked: Boolean, viewsType: ViewsType) {
-        _uiState.value.changeViewTypes(isChecked, viewsType)
-    }
-
-    fun changeViewsTypes() {
-        _uiState.value.applyCheckedViewTypes()
-        //todo здесь изменить экран который открыт если этого item больше нет
-    }
-
-    fun openViewType(viewsType: ViewsType) {
-        _uiState.value.openedViewType.value = viewsType
     }
 
     fun isDbPathIsExist(platform: Platform): Boolean {

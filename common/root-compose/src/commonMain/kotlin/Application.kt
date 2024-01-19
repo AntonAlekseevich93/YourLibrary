@@ -29,7 +29,6 @@ import platform.Platform
 import platform.isDesktop
 import platform.isMobile
 import screens.selecting_project.CreationAndSelectionProjectFolderScreen
-import screens.MainScreen
 import tooltip_area.ShowTooltip
 import tooltip_area.TooltipItem
 
@@ -37,7 +36,9 @@ import tooltip_area.TooltipItem
 fun Application(platform: Platform, restartWindow: (() -> Unit)? = null) {
     val viewModel = remember { Inject.instance<ApplicationViewModel>() }
     val settingsViewModel = remember { Inject.instance<SettingsViewModel>() }
+    val mainScreenViewModel = remember { Inject.instance<MainScreenViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
+    val mainScreenUiState by mainScreenViewModel.uiState.collectAsState()
     val leftDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val rightDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val showLeftDrawer = remember { mutableStateOf(false) }
@@ -76,12 +77,12 @@ fun Application(platform: Platform, restartWindow: (() -> Unit)? = null) {
                         )
                     ) {
                         MainScreen(
-                            uiState = uiState,
+                            uiState = mainScreenUiState,
                             platform = platform,
                             showLeftDrawer = showLeftDrawer,
                             showSearch = showSearch,
                             leftDrawerState = leftDrawerState,
-                            viewModel = viewModel,
+                            viewModel = mainScreenViewModel,
                             openBookListener = { painter, bookId ->
                                 painterSelectedBookInCache.value = painter
                                 selectedBookId.value = bookId

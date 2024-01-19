@@ -19,7 +19,7 @@ object PlatformSDK {
                 bind<PlatformConfiguration>() with singleton { configuration }
                 bind<ApplicationViewModel>() with singleton { ApplicationViewModel(instance()) }
                 bind<Platform>() with singleton { platform }
-                bind<FileManager>() with singleton { FileManager()}
+                bind<FileManager>() with singleton { FileManager() }
             })
 
         Inject.createDependencies(
@@ -27,6 +27,7 @@ object PlatformSDK {
                 importAll(
                     rootComposeModule,
                     coreModule,
+                    mainScreenModule,
                     shelfModule,
                     searchModule,
                     bookCreatorModule,

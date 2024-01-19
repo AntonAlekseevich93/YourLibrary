@@ -14,14 +14,15 @@ kotlin {
                 implementation(project(":common:ui"))
                 implementation(project(":common:resources:drawable"))
                 implementation(project(":common:resources:strings"))
-                implementation(project(":feature:book-info:api"))
-                implementation(project(":feature:book-info:presentation"))
+                implementation(project(":feature:main-screen:api"))
+                implementation(project(":feature:main-screen:presentation"))
                 implementation(project(":feature:search:compose"))
+                implementation(project(":feature:shelf:compose"))
             }
         }
     }
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.book_info.compose"
+    namespace = "ru.yourlibrary.yourlibrary.main_screen.compose"
 }

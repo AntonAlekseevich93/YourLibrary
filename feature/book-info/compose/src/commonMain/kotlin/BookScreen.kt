@@ -129,6 +129,9 @@ fun BookScreen(
                                         leftDrawerState.close()
                                     }
                                 }
+                            },
+                            content = {
+
                             }
                         )
                         Divider(

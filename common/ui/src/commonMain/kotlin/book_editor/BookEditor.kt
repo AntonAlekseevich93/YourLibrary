@@ -34,9 +34,9 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.DatePickerType
 import main_models.ReadingStatus
-import main_models.getStatusColor
 import platform.Platform
 import platform.isMobile
+import reading_status.getStatusColor
 import tags.CustomTag
 import text_fields.TextFieldWithTitleAndSuggestion
 

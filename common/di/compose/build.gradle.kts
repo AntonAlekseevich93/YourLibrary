@@ -8,6 +8,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":feature:shelf:presentation"))
+                implementation(project(":feature:main-screen:presentation"))
+                implementation(project(":feature:main-screen:data")) //todo remove?
                 implementation(project(":feature:search:presentation"))
                 implementation(project(":feature:search:data")) //todo remove?
                 implementation(project(":feature:book-info:presentation"))

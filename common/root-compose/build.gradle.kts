@@ -21,6 +21,9 @@ kotlin {
                 implementation(project(":common:ui"))
                 implementation(project(":common:di:compose"))
                 implementation(project(":common:file-manager"))
+                implementation(project(":feature:main-screen:data")) //используется из-за модуля
+                implementation(project(":feature:main-screen:compose"))
+                implementation(project(":feature:main-screen:presentation"))
                 implementation(project(":feature:shelf:data")) //используется из-за модуля
                 implementation(project(":feature:shelf:compose"))
                 implementation(project(":feature:search:compose"))
