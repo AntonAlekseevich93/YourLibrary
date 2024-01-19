@@ -2,6 +2,7 @@ import database.LocalBookInfoDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import main_models.BookItemVo
+import main_models.ReadingStatus
 import main_models.path.PathInfoVo
 import main_models.path.toVo
 import main_models.toLocalDto
@@ -18,6 +19,14 @@ class BookInfoRepositoryImpl(
 
     override suspend fun updateBook(bookItem: BookItemVo) {
         localBookInfoDataSource.updateBook(bookItem.toLocalDto())
+    }
+
+    override suspend fun changeBookStatusId(readingStatus: ReadingStatus, bookId: String) {
+        localBookInfoDataSource.changeBookStatusId(
+            statusId = readingStatus.id,
+            readingStatus = readingStatus.nameValue,
+            bookId = bookId,
+        )
     }
 
 }

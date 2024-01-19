@@ -81,4 +81,5 @@ object Strings {
     const val open_folder_as_library = "Открыть папку как библиотеку"
     const val open_folder_as_library_description = "Выберите папку содержащую файл библиотеки"
     const val edit = "Редактировать"
+    const val change_reading_status = "Изменить статус"
 }

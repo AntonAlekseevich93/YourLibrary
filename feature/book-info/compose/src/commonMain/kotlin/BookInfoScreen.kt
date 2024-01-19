@@ -40,6 +40,7 @@ import date.CommonDatePicker
 import io.kamel.core.Resource
 import main_models.BookItemVo
 import main_models.DatePickerType
+import main_models.ReadingStatus
 import navigation_drawer.PlatformNavigationDrawer
 import navigation_drawer.PlatformRightDrawerContent
 import navigation_drawer.SelectedRightDrawerItem
@@ -65,6 +66,7 @@ fun BookInfoScreen(
     editBookCallback: () -> Unit,
     onAuthorTextChanged: (TextFieldValue) -> Unit,
     onSuggestionAuthorClickListener: (String) -> Unit,
+    changeReadingStatusListener: (selectedStatus: ReadingStatus) -> Unit,
     onClose: () -> Unit,
 ) {
 
@@ -89,7 +91,7 @@ fun BookInfoScreen(
     )
     val shapeInDp = if (fullScreenBookInfo.value) 0.dp else 8.dp
     val statusBookTextFieldValue =
-        remember { mutableStateOf(TextFieldValue(text = bookItem.readingStatus.nameValue)) }
+        remember(key1 = bookItem.readingStatus) { mutableStateOf(TextFieldValue(text = bookItem.readingStatus.nameValue)) }
     val showDataPicker = remember { mutableStateOf(false) }
     val dataPickerState = rememberDatePickerState()
     var datePickerType by remember { mutableStateOf(DatePickerType.StartDate) }
@@ -206,6 +208,7 @@ fun BookInfoScreen(
                             platform = platform,
                             bookItem = bookItem,
                             painterInCache = painterInCache,
+                            changeReadingStatusListener = changeReadingStatusListener,
                         )
                     }
                 }

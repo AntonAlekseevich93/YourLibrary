@@ -45,4 +45,8 @@ class LocalBookInfoDataSource(
         }
     }
 
+    suspend fun changeBookStatusId(statusId: String, readingStatus: String, bookId: String) {
+        db.appQuery.updateBookStatusId(statusId, readingStatus, bookId)
+    }
+
 }

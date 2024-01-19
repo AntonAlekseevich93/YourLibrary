@@ -116,6 +116,10 @@ UPDATE BooksTable SET
   endDateInMillis = :endDateInMillis
 WHERE id = :id;
 
+updateBookStatusId:
+UPDATE BooksTable
+SET statusId=?, readingStatus=? WHERE id=?;
+
 getAllBooksByShelfId:
 SELECT * FROM BooksTable WHERE shelfId =:shelfId;
 

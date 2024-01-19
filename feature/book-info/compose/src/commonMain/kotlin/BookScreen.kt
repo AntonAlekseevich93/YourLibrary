@@ -223,6 +223,9 @@ fun BookScreen(
                                 delay(DELAY_FOR_LISTENER_PROCESSING)
                                 viewModel.clearSearchAuthor()
                             }
+                        },
+                        changeReadingStatusListener = {
+                            viewModel.changeReadingStatus(it, bookItemId)
                         }
                     )
                 }

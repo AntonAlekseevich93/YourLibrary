@@ -1,3 +1,4 @@
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -13,20 +14,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import containters.CenterBoxContainer
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.BookItemVo
+import main_models.ReadingStatus
 import main_models.getStatusColor
 import platform.Platform
 import platform.isDesktop
@@ -38,6 +44,7 @@ fun BookInfoContent(
     platform: Platform,
     bookItem: BookItemVo,
     painterInCache: Resource<Painter>? = null,
+    changeReadingStatusListener: (selectedStatus: ReadingStatus) -> Unit,
 ) {
     val url =
         if (bookItem.coverUrlFromParsing.isNotEmpty()) bookItem.coverUrlFromParsing else bookItem.coverUrl
@@ -48,6 +55,7 @@ fun BookInfoContent(
     val descriptionMaxLines =
         if (showFullDescription.value) mutableStateOf(99) else mutableStateOf(maxLines)
     val scrollableState = rememberScrollState()
+    var showReadingStatusSelector by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(
@@ -88,14 +96,30 @@ fun BookInfoContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = if (platform.isMobile()) Alignment.CenterHorizontally else Alignment.Start
                 ) {
-                    CustomTag(
-                        text = bookItem.readingStatus.nameValue,
-                        color = bookItem.readingStatus.getStatusColor(),
-                        modifier = Modifier.padding(bottom = 12.dp),
-                        onClick = {
-                            //todo
-                        }
-                    )
+                    Column(modifier = Modifier.padding(bottom = 12.dp)) {
+                        CustomTag(
+                            text = bookItem.readingStatus.nameValue,
+                            color = bookItem.readingStatus.getStatusColor(),
+                            modifier = Modifier.padding(bottom = 8.dp),
+                            onClick = {
+                                showReadingStatusSelector = true
+                            }
+                        )
+
+                        ReadingStatusesDropDown(
+                            showMenu = showReadingStatusSelector,
+                            currentStatus = bookItem.readingStatus,
+                            onClose = {
+                                showReadingStatusSelector = false
+                            },
+                            selectedStatusListener = {
+                                showReadingStatusSelector = false
+                                if (it != bookItem.readingStatus) {
+                                    changeReadingStatusListener.invoke(it)
+                                }
+                            }
+                        )
+                    }
 
                     SelectionContainer {
                         Text(
@@ -212,6 +236,48 @@ private fun BookInfo(bookItem: BookItemVo) {
                         style = ApplicationTheme.typography.footnoteRegular,
                         color = ApplicationTheme.colors.mainTextColor,
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReadingStatusesDropDown(
+    showMenu: Boolean,
+    currentStatus: ReadingStatus,
+    onClose: () -> Unit,
+    selectedStatusListener: (status: ReadingStatus) -> Unit,
+) {
+    DropdownMenu(
+        expanded = showMenu,
+        onDismissRequest = onClose,
+        modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundColor)
+    ) {
+        Column {
+            CenterBoxContainer {
+                Text(
+                    text = Strings.change_reading_status,
+                    style = ApplicationTheme.typography.footnoteBold,
+                    color = ApplicationTheme.colors.mainTextColorLight,
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
+            }
+            Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) {
+                ReadingStatus.entries.forEachIndexed { index, status ->
+                    if (status != currentStatus) {
+                        val modifier =
+                            if (index == ReadingStatus.entries.size - 1) Modifier
+                            else Modifier.padding(end = 12.dp)
+                        CustomTag(
+                            text = status.nameValue,
+                            color = status.getStatusColor(),
+                            modifier = modifier,
+                            onClick = {
+                                selectedStatusListener.invoke(status)
+                            }
+                        )
+                    }
                 }
             }
         }

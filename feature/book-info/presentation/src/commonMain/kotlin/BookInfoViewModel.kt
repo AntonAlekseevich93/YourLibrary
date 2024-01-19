@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_models.BookItemVo
+import main_models.ReadingStatus
 import models.BookInfoUiState
 
 class BookInfoViewModel(private val repository: BookInfoRepository) {
@@ -44,6 +45,12 @@ class BookInfoViewModel(private val repository: BookInfoRepository) {
     fun updateBook(bookItem: BookItemVo) {
         scope.launch {
             repository.updateBook(bookItem)
+        }
+    }
+
+    fun changeReadingStatus(status: ReadingStatus, bookId: String) {
+        scope.launch {
+            repository.changeBookStatusId(status, bookId)
         }
     }
 
