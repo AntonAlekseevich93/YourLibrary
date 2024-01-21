@@ -36,6 +36,7 @@ object PlatformSDK {
                     bookInfoModule,
                     urlParserModule,
                     settingsModule,
+                    authorsModule,
                     viewModelsModule,
                 )
             }.direct

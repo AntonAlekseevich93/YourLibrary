@@ -37,6 +37,8 @@ kotlin {
                 implementation(project(":feature:settings:data"))
                 implementation(project(":feature:settings:compose"))
                 implementation(project(":feature:settings:presentation"))
+                implementation(project(":feature:authors:data"))
+                implementation(project(":feature:authors:compose"))
             }
         }
     }

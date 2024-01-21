@@ -14,13 +14,13 @@ kotlin {
                 implementation(project(":common:models"))
                 implementation(project(":common:resources:drawable"))
                 implementation(project(":common:resources:strings"))
-                implementation(project(":feature:shelf:data"))
-                implementation(project(":feature:shelf:presentation"))
+                implementation(project(":feature:authors:data"))
+                implementation(project(":feature:authors:presentation"))
             }
         }
     }
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.shelf.compose"
+    namespace = "ru.yourlibrary.yourlibrary.authors.compose"
 }

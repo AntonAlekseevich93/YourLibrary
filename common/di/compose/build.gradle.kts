@@ -20,6 +20,8 @@ kotlin {
                 implementation(project(":feature:shelf:data")) //todo remove?
                 implementation(project(":feature:settings:presentation"))
                 implementation(project(":feature:settings:data")) //todo remove?
+                implementation(project(":feature:authors:presentation"))
+                implementation(project(":feature:authors:data")) //todo remove?
                 implementation(project(":common:core"))
             }
         }
