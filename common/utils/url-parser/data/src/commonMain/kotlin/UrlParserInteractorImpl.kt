@@ -17,7 +17,9 @@ class UrlParserInteractorImpl : UrlParserInteractor {
         coverUrl = "",
         coverUrlFromParsing = "https://cdn.book24.ru/v2/ASE000000000848034/COVER/cover13d__w820.jpg",
         numbersOfPages = 234,
-        isbn = "978-5-17-148330-2"
+        isbn = "978-5-17-148330-2",
+        timestampOfCreating = 32,
+        timestampOfUpdating = 324
     )
 
     override suspend fun parseBookUrl(url: String): BookItemResponse {

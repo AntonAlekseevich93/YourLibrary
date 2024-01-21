@@ -10,7 +10,10 @@ import kotlinx.coroutines.launch
 import main_models.BookItemVo
 import models.BookCreatorUiState
 
-class BookCreatorViewModel(private val repository: BookCreatorRepository) {
+class BookCreatorViewModel(
+    private val platformInfo: PlatformInfo,
+    private val repository: BookCreatorRepository,
+) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var parsingJob: Job? = null
     private var searchJob: Job? = null
@@ -68,4 +71,6 @@ class BookCreatorViewModel(private val repository: BookCreatorRepository) {
             }
         }
     }
+
+    fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
 }

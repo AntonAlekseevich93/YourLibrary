@@ -30,6 +30,8 @@ class DatabaseUtils {
             endDateInString = endDateInString,
             startDateInMillis = startDateInMillis,
             endDateInMillis = endDateInMillis,
+            timestampOfCreating = timestampOfCreating,
+            timestampOfUpdating = timestampOfUpdating,
         )
 
         fun FilesInfo.toPathInfoDto() = PathInfoDto(

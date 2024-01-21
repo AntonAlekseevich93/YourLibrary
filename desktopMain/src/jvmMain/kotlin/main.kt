@@ -66,7 +66,11 @@ private fun ApplicationScope.MainWindow(
     state: WindowState,
     restart: () -> Unit,
 ) {
-    PlatformSDK.init(PlatformConfiguration(), Platform.DESKTOP)
+    PlatformSDK.init(
+        configuration = PlatformConfiguration(),
+        platformInfo = PlatformInfo(),
+        platform = Platform.DESKTOP
+    )
     val isFullScreen = remember { mutableStateOf(false) }
     val windowCloseListener = ::exitApplication
 

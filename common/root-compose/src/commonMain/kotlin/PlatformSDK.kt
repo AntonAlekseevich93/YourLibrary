@@ -11,6 +11,7 @@ import platform.Platform
 object PlatformSDK {
     fun init(
         configuration: PlatformConfiguration,
+        platformInfo: PlatformInfo,
         platform: Platform,
     ) {
         val rootComposeModule = DI.Module(
@@ -20,6 +21,7 @@ object PlatformSDK {
                 bind<ApplicationViewModel>() with singleton { ApplicationViewModel(instance()) }
                 bind<Platform>() with singleton { platform }
                 bind<FileManager>() with singleton { FileManager() }
+                bind<PlatformInfo>() with singleton { platformInfo }
             })
 
         Inject.createDependencies(

@@ -296,7 +296,12 @@ fun BookCreatorScreen(
                                     }
                                 },
                                 saveBook = {
-                                    viewModel.createBook(bookValues.getBookItemVoOrNull())
+                                    viewModel.createBook(
+                                        bookValues.getBookItemVoOrNull(
+                                            timestampOfCreating = viewModel.getCurrentTimeInMillis(),
+                                            timestampOfUpdating = viewModel.getCurrentTimeInMillis(),
+                                        )
+                                    )
                                     closeBookCreatorListener.invoke()
                                 },
                             )

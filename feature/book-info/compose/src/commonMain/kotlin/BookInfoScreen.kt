@@ -66,7 +66,7 @@ fun BookInfoScreen(
     editBookCallback: () -> Unit,
     onAuthorTextChanged: (TextFieldValue) -> Unit,
     onSuggestionAuthorClickListener: (String) -> Unit,
-    changeReadingStatusListener: (selectedStatus: ReadingStatus) -> Unit,
+    changeReadingStatusListener: (selectedStatus: ReadingStatus, oldStatusId: String) -> Unit,
     onClose: () -> Unit,
 ) {
 

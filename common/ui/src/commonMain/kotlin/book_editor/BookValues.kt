@@ -53,7 +53,10 @@ class BookValues(
         return null
     }
 
-    fun getBookItemVoOrNull(): BookItemVo? {
+    fun getBookItemVoOrNull(
+        timestampOfCreating: Long,
+        timestampOfUpdating: Long,
+    ): BookItemVo? {
         return BookItemVo(
             id = BookItemVo.generateId(),
             statusId = selectedStatus.value.id,
@@ -70,11 +73,17 @@ class BookValues(
             startDateInString = startDateInString.value,
             endDateInString = endDateInString.value,
             startDateInMillis = startDateInMillis.value,
-            endDateInMillis = endDateInMillis.value
+            endDateInMillis = endDateInMillis.value,
+            timestampOfCreating = timestampOfCreating,
+            timestampOfUpdating = timestampOfUpdating,
         )
     }
 
-    fun updateBook(bookId: String): BookItemVo? {
+    fun updateBook(
+        bookId: String,
+        timestampOfCreating: Long,
+        timestampOfUpdating: Long,
+    ): BookItemVo? {
         return BookItemVo(
             id = bookId,
             statusId = selectedStatus.value.id,
@@ -91,7 +100,9 @@ class BookValues(
             startDateInString = startDateInString.value,
             endDateInString = endDateInString.value,
             startDateInMillis = startDateInMillis.value,
-            endDateInMillis = endDateInMillis.value
+            endDateInMillis = endDateInMillis.value,
+            timestampOfCreating = timestampOfCreating,
+            timestampOfUpdating = timestampOfUpdating,
         )
     }
 

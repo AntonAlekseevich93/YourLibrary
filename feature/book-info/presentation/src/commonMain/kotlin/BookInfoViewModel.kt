@@ -10,7 +10,10 @@ import main_models.BookItemVo
 import main_models.ReadingStatus
 import models.BookInfoUiState
 
-class BookInfoViewModel(private val repository: BookInfoRepository) {
+class BookInfoViewModel(
+    private val platformInfo: PlatformInfo,
+    private val repository: BookInfoRepository,
+) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
     private val _uiState: MutableStateFlow<BookInfoUiState> = MutableStateFlow(BookInfoUiState())
@@ -53,5 +56,7 @@ class BookInfoViewModel(private val repository: BookInfoRepository) {
             repository.changeBookStatusId(status, bookId)
         }
     }
+
+    fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
 
 }

@@ -17,7 +17,9 @@ data class BookItemLocalDto(
     val startDateInString: String? = "",
     val endDateInString: String? = "",
     val startDateInMillis: Long? = -1,
-    val endDateInMillis: Long? = -1
+    val endDateInMillis: Long? = -1,
+    val timestampOfCreating: Long? = -1,
+    val timestampOfUpdating: Long? = -1,
 )
 
 fun BookItemVo.toLocalDto() = BookItemLocalDto(
@@ -37,6 +39,8 @@ fun BookItemVo.toLocalDto() = BookItemLocalDto(
     endDateInString = endDateInString,
     startDateInMillis = startDateInMillis,
     endDateInMillis = endDateInMillis,
+    timestampOfCreating = timestampOfCreating,
+    timestampOfUpdating = timestampOfUpdating,
 )
 
 fun BookItemLocalDto.toVo() = BookItemVo(
@@ -64,4 +68,6 @@ fun BookItemLocalDto.toVo() = BookItemVo(
     endDateInString = endDateInString ?: "",
     startDateInMillis = startDateInMillis ?: -1,
     endDateInMillis = endDateInMillis ?: -1,
+    timestampOfCreating = timestampOfCreating ?: -1,
+    timestampOfUpdating = timestampOfUpdating ?: -1,
 )

@@ -74,14 +74,16 @@ CREATE TABLE IF NOT EXISTS BooksTable (
   startDateInString TEXT,
   endDateInString TEXT,
   startDateInMillis INTEGER,
-  endDateInMillis INTEGER
+  endDateInMillis INTEGER,
+  timestampOfCreating INTEGER,
+  timestampOfUpdating INTEGER
 );
 
 addBook:
 INSERT INTO BooksTable (id, statusId, shelfId, bookName, authorName, description, coverUrl,
- coverUrlFromParsing, numbersOfPages, isbn, quotes, readingStatus, startDateInString, endDateInString, startDateInMillis, endDateInMillis)
-VALUES(?,?,? ,? , ?, ?, ?,
-?, ?, ?, ?, ?, ?, ? ,?, ?);
+ coverUrlFromParsing, numbersOfPages, isbn, quotes, readingStatus, startDateInString,
+  endDateInString, startDateInMillis, endDateInMillis, timestampOfCreating, timestampOfUpdating)
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 updateShelfIdForAllBooks:
 UPDATE BooksTable
@@ -113,7 +115,9 @@ UPDATE BooksTable SET
   startDateInString = :startDateInString,
   endDateInString = :endDateInString,
   startDateInMillis = :startDateInMillis,
-  endDateInMillis = :endDateInMillis
+  endDateInMillis = :endDateInMillis,
+  timestampOfCreating = :timestampOfCreating,
+  timestampOfUpdating = :timestampOfUpdating
 WHERE id = :id;
 
 updateBookStatusId:

@@ -19,6 +19,7 @@ import menu_bar.LeftMenuBar
 import models.MainScreenUiState
 import navigation_drawer.PlatformLeftDrawerContent
 import navigation_drawer.PlatformNavigationDrawer
+import navigation_drawer.contents.LeftDrawerBooksContent
 import platform.Platform
 import platform.isDesktop
 import sub_app_bar.SubAppBar
@@ -76,7 +77,11 @@ fun MainScreen(
                     },
                     tooltipCallback = tooltipCallback,
                     content = {
-
+                        LeftDrawerBooksContent(
+                            booksInfoUiState = uiState.booksInfoUiState,
+                            tooltipCallback = tooltipCallback,
+                            openBookListener = { openBookListener.invoke(null, it) }
+                        )
                     }
                 )
             },

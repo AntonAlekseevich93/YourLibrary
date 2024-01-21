@@ -37,6 +37,8 @@ class LocalBookInfoDataSource(
                 endDateInString = endDateInString,
                 startDateInMillis = startDateInMillis,
                 endDateInMillis = endDateInMillis,
+                timestampOfCreating = timestampOfCreating,
+                timestampOfUpdating = timestampOfUpdating,
             )
         }
     }

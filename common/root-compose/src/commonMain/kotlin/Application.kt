@@ -137,6 +137,12 @@ fun Application(platform: Platform, restartWindow: (() -> Unit)? = null) {
                                 navigator.popBackStack() //todo здесь происходит мигание анимации, но без этого баг. Подумать
                                 navigator.navigate(route = Routes.vault_route)
                             },
+                            changeReadingStatusListener = { oldStatusId, bookId ->
+                                mainScreenViewModel.changedReadingStatus(oldStatusId, bookId)
+                            },
+                            bookItemWasChangedListener = { oldItem, newItem ->
+                                mainScreenViewModel.checkIfNeedUpdateBookItem(oldItem, newItem)
+                            }
                         )
                     }
 

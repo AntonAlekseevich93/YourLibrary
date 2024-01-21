@@ -55,6 +55,19 @@ fun LeftMenuBar(
             }
 
             TooltipIconArea(
+                text = Strings.quotes,
+                drawableResName = Drawable.drawable_ic_quotes,
+                modifier = Modifier.padding(top = 10.dp),
+                iconSize = 18.dp,
+                tooltipCallback = {
+                    tooltipCallback.invoke(it.apply { position = TooltipPosition.RIGHT })
+                },
+                pointerInnerPadding = 4.dp
+            ) {
+                println("открыли меню")
+            }
+
+            TooltipIconArea(
                 text = Strings.tags,
                 drawableResName = Drawable.drawable_ic_tag,
                 tooltipCallback = {
@@ -63,19 +76,6 @@ fun LeftMenuBar(
                 modifier = Modifier.padding(top = 10.dp),
             ) {
                 open.invoke()
-            }
-
-            TooltipIconArea(
-                text = Strings.time,
-                drawableResName = Drawable.drawable_ic_timer_off,
-                modifier = Modifier.padding(top = 10.dp),
-                iconSize = 22.dp,
-                tooltipCallback = {
-                    tooltipCallback.invoke(it.apply { position = TooltipPosition.RIGHT })
-                },
-                pointerInnerPadding = 4.dp
-            ) {
-                println("открыли меню")
             }
 
             TooltipIconArea(

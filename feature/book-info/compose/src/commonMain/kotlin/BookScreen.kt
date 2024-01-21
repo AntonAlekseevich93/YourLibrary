@@ -25,6 +25,7 @@ import di.Inject
 import io.kamel.core.Resource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import main_models.BookItemVo
 import menu_bar.LeftMenuBar
 import navigation_drawer.PlatformLeftDrawerContent
 import navigation_drawer.PlatformNavigationDrawer
@@ -47,6 +48,8 @@ fun BookScreen(
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     onClose: () -> Unit,
     createBookListener: () -> Unit,
+    changeReadingStatusListener: (oldStatusId: String, bookId: String) -> Unit,
+    bookItemWasChangedListener: (oldItem: BookItemVo, newItem: BookItemVo) -> Unit,
     selectAnotherVaultListener: () -> Unit,
 ) {
     val viewModel = remember { Inject.instance<BookInfoViewModel>() }
@@ -197,8 +200,11 @@ fun BookScreen(
                         editBookCallback = {
                             if (isEditMode.value && uiState.bookItem.value != null) {
                                 bookValues.value.updateBook(
-                                    bookId = uiState.bookItem.value!!.id
+                                    bookId = uiState.bookItem.value!!.id,
+                                    timestampOfCreating = viewModel.getCurrentTimeInMillis(),
+                                    timestampOfUpdating = viewModel.getCurrentTimeInMillis(),
                                 )?.let {
+                                    bookItemWasChangedListener.invoke(uiState.bookItem.value!!, it)
                                     viewModel.updateBook(it)
                                 }
                             }
@@ -227,8 +233,9 @@ fun BookScreen(
                                 viewModel.clearSearchAuthor()
                             }
                         },
-                        changeReadingStatusListener = {
-                            viewModel.changeReadingStatus(it, bookItemId)
+                        changeReadingStatusListener = { selectedStatus, oldStatusId ->
+                            viewModel.changeReadingStatus(selectedStatus, bookItemId)
+                            changeReadingStatusListener.invoke(oldStatusId, bookItemId)
                         }
                     )
                 }

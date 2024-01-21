@@ -44,7 +44,7 @@ fun BookInfoContent(
     platform: Platform,
     bookItem: BookItemVo,
     painterInCache: Resource<Painter>? = null,
-    changeReadingStatusListener: (selectedStatus: ReadingStatus) -> Unit,
+    changeReadingStatusListener: (selectedStatus: ReadingStatus, oldStatusId: String) -> Unit,
 ) {
     val url =
         if (bookItem.coverUrlFromParsing.isNotEmpty()) bookItem.coverUrlFromParsing else bookItem.coverUrl
@@ -115,7 +115,7 @@ fun BookInfoContent(
                             selectedStatusListener = {
                                 showReadingStatusSelector = false
                                 if (it != bookItem.readingStatus) {
-                                    changeReadingStatusListener.invoke(it)
+                                    changeReadingStatusListener.invoke(it, bookItem.statusId)
                                 }
                             }
                         )

@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.DismissibleDrawerSheet
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -57,7 +60,7 @@ fun LeftDrawerContent(
     tooltipCallback: ((tooltip: TooltipItem) -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
-    Box(modifier = Modifier.widthIn(max = 300.dp)) {
+    Box(modifier = Modifier.widthIn(max = 400.dp)) {
         Column {
             Row(
                 modifier = Modifier.padding(top = 10.dp),
@@ -65,7 +68,7 @@ fun LeftDrawerContent(
             ) {
                 Text(
                     text = title,
-                    modifier = Modifier.padding(start = 32.dp),
+                    modifier = Modifier.padding(start = 16.dp, end = 6.dp),
                     style = ApplicationTheme.typography.title3Bold,
                     color = ApplicationTheme.colors.mainTextColor,
                     maxLines = 1,
@@ -96,6 +99,11 @@ fun LeftDrawerContent(
                     closeSidebarListener.invoke()
                 }
             }
+            Divider(
+                modifier = Modifier.padding(top = 6.dp).fillMaxWidth().height(1.dp),
+                thickness = 1.dp,
+                color = ApplicationTheme.colors.divider
+            )
             content.invoke()
         }
     }

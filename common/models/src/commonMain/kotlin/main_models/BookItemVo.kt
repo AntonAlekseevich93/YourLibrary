@@ -18,7 +18,9 @@ data class BookItemVo(
     val startDateInString: String = "",
     val endDateInString: String = "",
     val startDateInMillis: Long = -1,
-    val endDateInMillis: Long = -1
+    val endDateInMillis: Long = -1,
+    val timestampOfCreating: Long,
+    val timestampOfUpdating: Long,
 ) {
     companion object {
         fun generateId() = UUID.randomUUID().toString() //todo подумать над другой реализацией id

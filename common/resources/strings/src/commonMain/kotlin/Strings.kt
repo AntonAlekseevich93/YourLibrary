@@ -63,7 +63,6 @@ object Strings {
     const val link = "Ссылка"
     const val or = "или"
     const val search = "Поиск"
-    const val time = "Время"
     const val select_path_for_save_data_title = "Создать новую библиотеку"
     const val select_path_for_save_data_description = "Создайте новую библиотеку где будут храниться ваши данные"
     const val create = "Создать"
@@ -82,4 +81,8 @@ object Strings {
     const val open_folder_as_library_description = "Выберите папку содержащую файл библиотеки"
     const val edit = "Редактировать"
     const val change_reading_status = "Изменить статус"
+    const val all_books = "Все книги"
+    const val authors = "Авторы"
+    const val shelves = "Полки"
+    const val quotes = "Цитаты"
 }

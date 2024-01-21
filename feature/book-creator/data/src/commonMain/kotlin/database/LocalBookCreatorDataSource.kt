@@ -23,7 +23,9 @@ class LocalBookCreatorDataSource(
                 startDateInString = startDateInString,
                 endDateInString = endDateInString,
                 startDateInMillis = startDateInMillis,
-                endDateInMillis = endDateInMillis
+                endDateInMillis = endDateInMillis,
+                timestampOfCreating = timestampOfCreating,
+                timestampOfUpdating = timestampOfUpdating,
             )
         }
     }
