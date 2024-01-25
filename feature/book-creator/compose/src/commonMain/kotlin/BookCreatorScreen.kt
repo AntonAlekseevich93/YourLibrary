@@ -4,26 +4,36 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,12 +42,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import book_editor.AuthorIsNotSelectedInfo
 import book_editor.BookEditor
 import book_editor.BookValues
 import containters.CenterBoxContainer
@@ -51,20 +63,24 @@ import main_models.BookItemVo
 import main_models.DatePickerType
 import main_models.ReadingStatus
 import main_models.rest.LoadingStatus
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 import platform.Platform
 import platform.isDesktop
 import platform.isMobile
+import tags.CustomTag
 import text_fields.DELAY_FOR_LISTENER_PROCESSING
 import text_fields.TextFieldWithTitleAndSuggestion
 import tooltip_area.TooltipItem
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun BookCreatorScreen(
     platform: Platform,
     fullScreenBookCreator: MutableState<Boolean>,
     showRightDrawer: MutableState<Boolean>,
+    isKeyboardShown: State<Boolean>,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     closeBookCreatorListener: () -> Unit,
 ) {
@@ -89,6 +105,8 @@ fun BookCreatorScreen(
     val urlFieldIsWork = remember { mutableStateOf(true) }
     val showDialogClearAllData = remember { mutableStateOf(false) }
     val showClearButtonOfUrlElement = remember { mutableStateOf(false) }
+    val createNewAuthor = remember { mutableStateOf(false) }
+    val linkToAuthor = remember { mutableStateOf(false) }
 
     val animatedVerticalPadding by animateDpAsState(
         targetValue = targetVerticalPadding,
@@ -117,6 +135,18 @@ fun BookCreatorScreen(
         }
     }
 
+    uiState.authorWasSelectedProgrammatically.value = {
+        uiState.selectedAuthor.value?.let { author ->
+            val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
+                "(${author.relatedAuthors.joinToString { it.name }})"
+            } else ""
+            bookValues.setSelectedAuthorName(
+                author.name,
+                relatedAuthorsNames = textPostfix
+            )
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -124,6 +154,7 @@ fun BookCreatorScreen(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
+                        uiState.clearAllAuthorInfo()
                         closeBookCreatorListener.invoke()
                     },
                 )
@@ -151,19 +182,95 @@ fun BookCreatorScreen(
         ) {
             Column(
                 modifier = Modifier.padding(
-                    horizontal = if (platform.isDesktop()) 24.dp else 8.dp,
-                    vertical = 16.dp
+                    start = if (platform.isDesktop()) 24.dp else 8.dp,
+                    end = if (platform.isDesktop()) 24.dp else 8.dp,
+                    top = 2.dp,
+                    bottom = 16.dp
                 )
             ) {
-                CenterBoxContainer {
-                    Text(
-                        text = if (showParsingResult.value) bookValues.bookName.value.text else Strings.add_book,
-                        modifier = Modifier.padding(bottom = 8.dp, start = 16.dp, end = 16.dp),
-                        style = ApplicationTheme.typography.title2Bold,
-                        color = ApplicationTheme.colors.mainTextColor,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                Box(
+                    modifier = Modifier
+                        .sizeIn(maxHeight = 52.dp, minHeight = 52.dp)
+                        .padding(top = 4.dp)
+                ) {
+                    CenterBoxContainer {
+                        if (
+                            platform.isDesktop() &&
+                            uiState.selectedAuthor.value == null &&
+                            uiState.similarSearchAuthors.isNotEmpty() && !createNewAuthor.value
+                        ) {
+                            AuthorIsNotSelectedInfo()
+                        } else if (
+                            bookValues.isRequiredFieldsFilled() && createNewAuthor.value ||
+                            bookValues.isRequiredFieldsFilled() && uiState.selectedAuthor.value != null
+                        ) {
+                            CustomTag(
+                                text = Strings.save,
+                                color = ApplicationTheme.colors.mainAddButtonColor,
+                                textStyle = ApplicationTheme.typography.footnoteBold,
+                                textModifier = Modifier,
+                                maxHeight = 50.dp,
+                                onClick = {
+                                    viewModel.createBook(
+                                        bookItemVoOrNull = bookValues.createBookItemWithoutAuthorIdOrNull(
+                                            timestampOfCreating = viewModel.getCurrentTimeInMillis(),
+                                            timestampOfUpdating = viewModel.getCurrentTimeInMillis(),
+                                        ),
+                                        needCreateAuthor = createNewAuthor.value
+                                    )
+                                    uiState.clearAllAuthorInfo()
+                                    closeBookCreatorListener.invoke()
+                                }
+                            )
+                        } else {
+                            Text(
+                                text = if (showParsingResult.value) bookValues.bookName.value.text else Strings.add_book,
+                                modifier = Modifier.padding(top = 8.dp),
+                                style = ApplicationTheme.typography.title2Bold,
+                                color = ApplicationTheme.colors.mainTextColor,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Image(
+                            painter = painterResource(Drawable.drawable_ic_close_128px),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
+                            modifier = Modifier.size(22.dp).clickable(
+                                interactionSource = MutableInteractionSource(),
+                                indication = null,
+                                onClick = {
+                                    uiState.clearAllAuthorInfo()
+                                    closeBookCreatorListener.invoke()
+                                }
+                            )
+                        )
+                    }
+
+                    if (isCreateBookManually.value && !showParsingResult.value) {
+                        Box(
+                            modifier = Modifier.fillMaxSize().padding(start = 10.dp),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = ApplicationTheme.colors.mainIconsColor,
+                                modifier = Modifier.size(26.dp).clickable(
+                                    interactionSource = MutableInteractionSource(),
+                                    null
+                                ) {
+                                    isCreateBookManually.value = false
+                                }
+                            )
+                        }
+                    }
                 }
 
                 Column(
@@ -181,7 +288,7 @@ fun BookCreatorScreen(
                                 enabledInput = urlFieldIsWork.value,
                                 modifier = Modifier,
                                 hintText = Strings.hint_past_url_book,
-                                setAsSelected = true,
+                                setAsSelected = !showParsingResult.value,
                                 showClearButton = showClearButtonOfUrlElement,
                                 textFieldValue = bookValues.parsingUrl,
                                 onTextChanged = { url ->
@@ -196,10 +303,12 @@ fun BookCreatorScreen(
                                     showDialogClearAllData.value = true
                                 }
                             )
-                            InfoBlock(
-                                Strings.tooltip_parsing_book,
-                                modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
-                            )
+                            AnimatedVisibility(visible = !showParsingResult.value) {
+                                InfoBlock(
+                                    Strings.tooltip_parsing_book,
+                                    modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
+                                )
+                            }
                         }
                     }
 
@@ -250,33 +359,32 @@ fun BookCreatorScreen(
                             }
                         }
                     }
+
                     AnimatedVisibility(
                         isCreateBookManually.value || showParsingResult.value,
                         enter = fadeIn(),
                         exit = fadeOut()
                     ) {
                         Column {
-                            if (!showParsingResult.value) {
-                                CenterBoxContainer {
-                                    CreateBookButton(
-                                        title = Strings.use_url_title,
-                                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
-                                    ) {
-                                        isCreateBookManually.value = false
-                                    }
-                                }
-                            }
+                            Spacer(modifier = Modifier.padding(top = 12.dp))
 
                             BookEditor(
                                 platform = platform,
                                 bookValues = bookValues,
-                                similarAuthorList = uiState.similarAuthorList,
-                                onAuthorTextChanged = {
-                                    bookValues.authorName.value = it
-                                    if (it.text.isEmpty()) {
+                                similarSearchAuthors = uiState.similarSearchAuthors,
+                                selectedAuthor = uiState.selectedAuthor,
+                                createNewAuthor = createNewAuthor,
+                                linkToAuthor = linkToAuthor,
+                                isKeyboardShown = isKeyboardShown,
+                                onAuthorTextChanged = { newValue, textWasChanged ->
+                                    if (uiState.selectedAuthor.value != null && bookValues.isSelectedAuthorNameWasChanged()) {
+                                        uiState.clearSelectedAuthor()
+                                    }
+
+                                    if (newValue.text.isEmpty()) {
                                         viewModel.clearSearchAuthor()
-                                    } else {
-                                        viewModel.searchAuthor(it.text)
+                                    } else if (textWasChanged) {
+                                        viewModel.searchAuthor(newValue.text)
                                     }
                                 },
                                 statusBookTextFieldValue = statusBookTextFieldValue,
@@ -284,25 +392,12 @@ fun BookCreatorScreen(
                                     datePickerType = it
                                     showDataPicker.value = true
                                 },
-                                onSuggestionAuthorClickListener = {
-                                    bookValues.authorName.value =
-                                        bookValues.authorName.value.copy(
-                                            it,
-                                            selection = TextRange(it.length)
-                                        )
+                                onSuggestionAuthorClickListener = { author ->
+                                    viewModel.setSelectedAuthor(author)
                                     scope.launch {
                                         delay(DELAY_FOR_LISTENER_PROCESSING)
                                         viewModel.clearSearchAuthor()
                                     }
-                                },
-                                saveBook = {
-                                    viewModel.createBook(
-                                        bookValues.getBookItemVoOrNull(
-                                            timestampOfCreating = viewModel.getCurrentTimeInMillis(),
-                                            timestampOfUpdating = viewModel.getCurrentTimeInMillis(),
-                                        )
-                                    )
-                                    closeBookCreatorListener.invoke()
                                 },
                             )
                         }

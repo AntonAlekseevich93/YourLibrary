@@ -85,4 +85,7 @@ object Strings {
     const val authors = "Авторы"
     const val shelves = "Полки"
     const val quotes = "Цитаты"
+    const val error_author_can_exist = "Возможно такой автор уже есть.\nВыберите его из списка, либо создайте нового"
+    const val create_new_author = "Создать нового автора"
+    const val link_to_author = "Привязать автора к существующему"
 }

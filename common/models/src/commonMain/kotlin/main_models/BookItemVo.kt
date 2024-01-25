@@ -2,8 +2,10 @@ package main_models
 
 import java.util.UUID
 
+//todo we can`t use var values in data classes
 data class BookItemVo(
     val id: String,
+    val authorId: String,
     var statusId: String,
     var shelfId: String? = null,
     var bookName: String,

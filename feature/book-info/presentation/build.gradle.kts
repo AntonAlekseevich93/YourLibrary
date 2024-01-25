@@ -9,7 +9,7 @@ kotlin {
             dependencies {
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
-                implementation(project(":feature:book-info:api"))
+                implementation(project(":feature:book-info:domain"))
             }
         }
     }

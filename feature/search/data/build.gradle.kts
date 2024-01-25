@@ -10,6 +10,7 @@ kotlin {
                 api(project(":feature:search:api"))
                 api(project(":common:models"))
                 implementation(project(":common:core"))
+                implementation(project(":common:utils:database-utils"))
             }
         }
     }

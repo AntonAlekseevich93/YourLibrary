@@ -60,6 +60,7 @@ SELECT * FROM ShelvesTable;
 
 CREATE TABLE IF NOT EXISTS BooksTable (
   id TEXT NOT NULL,
+  authorId TEXT NOT NULL,
   statusId TEXT NOT NULL,
   shelfId TEXT,
   bookName Text NOT NULL,
@@ -80,10 +81,10 @@ CREATE TABLE IF NOT EXISTS BooksTable (
 );
 
 addBook:
-INSERT INTO BooksTable (id, statusId, shelfId, bookName, authorName, description, coverUrl,
+INSERT INTO BooksTable (id, authorId, statusId, shelfId, bookName, authorName, description, coverUrl,
  coverUrlFromParsing, numbersOfPages, isbn, quotes, readingStatus, startDateInString,
   endDateInString, startDateInMillis, endDateInMillis, timestampOfCreating, timestampOfUpdating)
-VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 updateShelfIdForAllBooks:
 UPDATE BooksTable
@@ -101,6 +102,7 @@ SELECT * FROM BooksTable;
 
 updateBook:
 UPDATE BooksTable SET
+  authorId = :authorId,
   statusId = :statusId,
   shelfId = :shelfId,
   bookName = :bookName,
@@ -135,5 +137,58 @@ DELETE FROM BooksTable;
 
 getBookById:
 SELECT * FROM BooksTable WHERE id =:id;
+
+-- ------------------------------------------------------------------AUTHORS TABLE:
+
+CREATE TABLE IF NOT EXISTS AuthorsTable (
+  id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  uppercaseName TEXT NOT NULL,
+  relatedToAuthorId TEXT,
+  isMainAuthor INTEGER NOT NULL,
+  timestampOfCreating INTEGER NOT NULL,
+  timestampOfUpdating INTEGER NOT NULL
+);
+
+createAuthor:
+INSERT INTO AuthorsTable (id, name, uppercaseName,  relatedToAuthorId, isMainAuthor, timestampOfCreating, timestampOfUpdating)
+VALUES(?,? , ?, ?, ?, ?, ?);
+
+deleteAuthor:
+DELETE FROM AuthorsTable WHERE id =:id;
+
+getAllAuthors:
+SELECT * FROM AuthorsTable;
+
+getAllRelatedAuthors:
+SELECT * FROM AuthorsTable WHERE relatedToAuthorId =:id;
+
+getAuthorById:
+SELECT * FROM AuthorsTable WHERE id =:id;
+
+updateAuthor:
+UPDATE AuthorsTable SET
+  name = :name,
+  uppercaseName = :uppercaseName,
+  relatedToAuthorId = :relatedToAuthorId,
+  isMainAuthor = :isMainAuthor,
+  timestampOfCreating = :timestampOfCreating,
+  timestampOfUpdating = :timestampOfUpdating
+WHERE id = :id;
+
+disableMainAuthor:
+UPDATE AuthorsTable
+SET `isMainAuthor`=1 WHERE id=?;
+
+setAsMainAuthor:
+UPDATE AuthorsTable
+SET `isMainAuthor`=0 WHERE id=?;
+
+updateRelatedToAuthorId:
+UPDATE AuthorsTable
+SET `relatedToAuthorId`=? WHERE relatedToAuthorId=?;
+
+getAllAuthorByName:
+SELECT * FROM AuthorsTable WHERE uppercaseName LIKE ?;
 
 

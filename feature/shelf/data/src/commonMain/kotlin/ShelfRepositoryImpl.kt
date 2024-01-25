@@ -3,7 +3,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ktor.RemoteShelfDataSource
 import main_models.BookItemVo
-import main_models.toVo
+import main_models.local_models.toVo
 
 class ShelfRepositoryImpl(
     private val remoteShelfDataSource: RemoteShelfDataSource,

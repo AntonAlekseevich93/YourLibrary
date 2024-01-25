@@ -51,7 +51,7 @@ import platform.Platform
 import platform.isDesktop
 import tags.CustomTag
 
-const val DELAY_FOR_LISTENER_PROCESSING = 150L
+const val DELAY_FOR_LISTENER_PROCESSING = 170L
 
 @Composable
 fun TextFieldWithTitleAndSuggestion(
@@ -67,6 +67,8 @@ fun TextFieldWithTitleAndSuggestion(
     disableSingleLineIfFocused: Boolean = false,
     maxLinesIfDisableSingleLineWhenFocused: Int = 5,
     suggestionList: State<List<String>> = mutableStateOf(emptyList()),
+    maxWidthSuggestions: Boolean = false,
+    disableHiddenSuggestion: Boolean = false,
     textFieldValue: MutableState<TextFieldValue>? = null,
     text: MutableState<String>? = null,
     showClearButton: MutableState<Boolean> = mutableStateOf(false),
@@ -76,7 +78,10 @@ fun TextFieldWithTitleAndSuggestion(
     onSuggestionClickListener: ((item: String) -> Unit)? = null,
     onClearButtonListener: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
-    suggestionMaxHeight: Dp = 320.dp
+    suggestionMaxHeight: Dp = 320.dp,
+    topContent: @Composable ((isFocused: Boolean) -> Unit)? = null,
+    innerContent: @Composable ((isFocused: Boolean) -> Unit)? = null,
+    bottomContent: @Composable ((isFocused: Boolean) -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered = interactionSource.collectIsHoveredAsState()
@@ -99,6 +104,8 @@ fun TextFieldWithTitleAndSuggestion(
     }
 
     Column {
+        topContent?.invoke(isFocused)
+
         Card(
             modifier = modifier
                 .fillMaxWidth()
@@ -161,6 +168,7 @@ fun TextFieldWithTitleAndSuggestion(
                             maxLines = maxLinesResult.value,
                             textStyle = ApplicationTheme.typography.bodyRegular,
                         )
+                        innerContent?.invoke(isFocused)
                         if (showClearButton.value) {
                             ClearButton(onClearButtonListener)
                         }
@@ -229,16 +237,22 @@ fun TextFieldWithTitleAndSuggestion(
             }
         }
 
+        bottomContent?.invoke(isFocused)
+
         AnimatedVisibility(
-            visible = suggestionList.value.isNotEmpty() && isFocused,
+            visible = suggestionList.value.isNotEmpty() && isFocused
+                    || disableHiddenSuggestion && suggestionList.value.isNotEmpty(),
             /**the delay is necessary because otherwise the listener does not have time to work out**/
             exit = fadeOut(animationSpec = tween(1, DELAY_FOR_LISTENER_PROCESSING.toInt()))
-
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, start = if (platform.isDesktop()) 136.dp else 116.dp)
+                    .padding(
+                        top = 8.dp,
+                        bottom = 4.dp,
+                        start = if (maxWidthSuggestions) 0.dp else if (platform.isDesktop()) 136.dp else 116.dp
+                    )
                     .sizeIn(maxHeight = suggestionMaxHeight),
                 contentAlignment = Alignment.Center
             ) {

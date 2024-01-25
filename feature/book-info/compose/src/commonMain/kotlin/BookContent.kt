@@ -40,14 +40,13 @@ import reading_status.getStatusColor
 import tags.CustomTag
 
 @Composable
-fun BookInfoContent(
+fun BookContent(
     platform: Platform,
     bookItem: BookItemVo,
     painterInCache: Resource<Painter>? = null,
     changeReadingStatusListener: (selectedStatus: ReadingStatus, oldStatusId: String) -> Unit,
 ) {
-    val url =
-        if (bookItem.coverUrlFromParsing.isNotEmpty()) bookItem.coverUrlFromParsing else bookItem.coverUrl
+    val url = bookItem.coverUrlFromParsing.ifEmpty { bookItem.coverUrl }
     val painter = painterInCache ?: asyncPainterResource(data = url)
     val hasDescriptionTextOverflow = remember { mutableStateOf(false) }
     val showFullDescription = remember { mutableStateOf(false) }

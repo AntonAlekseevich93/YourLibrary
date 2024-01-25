@@ -6,13 +6,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import main_models.AuthorVo
 import main_models.BookItemVo
 import main_models.ReadingStatus
 import models.BookInfoUiState
 
 class BookInfoViewModel(
     private val platformInfo: PlatformInfo,
-    private val repository: BookInfoRepository,
+    private val interactor: BookInfoInteractor,
 ) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
@@ -21,7 +22,7 @@ class BookInfoViewModel(
 
     init {
         scope.launch {
-            repository.getSelectedPathInfo().collect { pathInfo ->
+            interactor.getSelectedPathInfo().collect { pathInfo ->
                 pathInfo?.let {
                     withContext(Dispatchers.Main) {
                         _uiState.value.selectedPathInfo.value = it
@@ -33,9 +34,15 @@ class BookInfoViewModel(
 
     fun getBookItem(id: String) {
         scope.launch {
-            repository.getBookById(bookId = id).collect { book ->
+            interactor.getBookById(bookId = id).collect { book ->
                 withContext(Dispatchers.Main) {
                     _uiState.value.setBookItem(book)
+                }
+                launch {
+                    interactor.getAuthorWithRelatesWithoutBooks(book.authorId)?.let {
+                        _uiState.value.setSelectedAuthor(it)
+                        _uiState.value.authorWasSelectedProgrammatically.value.invoke()
+                    }
                 }
             }
         }
@@ -45,18 +52,63 @@ class BookInfoViewModel(
         _uiState.value.clearSimilarAuthorList()
     }
 
-    fun updateBook(bookItem: BookItemVo) {
+    fun updateBook(bookItem: BookItemVo, needCreateNewAuthor: Boolean) {
         scope.launch {
-            repository.updateBook(bookItem)
+            if (needCreateNewAuthor) {
+                val author = createNewAuthor(authorName = bookItem.authorName)
+                interactor.createAuthor(author)
+                interactor.updateBook(bookItem.copy(authorId = author.id))
+            } else {
+                interactor.updateBook(bookItem)
+            }
         }
     }
 
     fun changeReadingStatus(status: ReadingStatus, bookId: String) {
         scope.launch {
-            repository.changeBookStatusId(status, bookId)
+            interactor.changeBookStatusId(status, bookId)
         }
     }
 
     fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
 
+    fun setSelectedAuthor(author: AuthorVo) {
+        _uiState.value.setSelectedAuthor(author)
+    }
+
+    fun searchAuthor(authorName: String) {
+        searchJob?.cancel()
+        if (authorName.length >= 2) {
+            searchJob = scope.launch {
+                val result = interactor.searchInAuthorsNameWithRelates(authorName)
+                if (result.isNotEmpty()) {
+                    _uiState.value.addSimilarAuthors(result)
+                } else {
+                    clearSearchAuthor()
+                }
+            }
+        } else {
+            clearSearchAuthor()
+        }
+    }
+
+    fun clearSelectedAuthor() {
+        _uiState.value.clearSelectedAuthor()
+    }
+
+    private fun createNewAuthor(
+        authorName: String
+    ): AuthorVo {
+        _uiState.value.apply {
+            return AuthorVo(
+                id = AuthorVo.generateId(),
+                name = authorName,
+                isMainAuthor = true,
+                timestampOfCreating = platformInfo.getCurrentTime().timeInMillis,
+                timestampOfUpdating = platformInfo.getCurrentTime().timeInMillis,
+                relatedToAuthorId = null,
+                books = emptyList()
+            )
+        }
+    }
 }

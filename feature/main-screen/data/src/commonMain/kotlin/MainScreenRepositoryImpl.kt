@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.map
 import main_models.BookItemVo
 import main_models.path.PathInfoVo
 import main_models.path.toVo
-import main_models.toVo
+import main_models.local_models.toVo
 
 class MainScreenRepositoryImpl(
     private val localMainScreenDataSource: LocalMainScreenDataSource

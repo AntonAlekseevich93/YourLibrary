@@ -9,6 +9,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +34,11 @@ import tooltip_area.ShowTooltip
 import tooltip_area.TooltipItem
 
 @Composable
-fun Application(platform: Platform, restartWindow: (() -> Unit)? = null) {
+fun Application(
+    platform: Platform,
+    restartWindow: (() -> Unit)? = null,
+    isKeyboardShown: State<Boolean> = mutableStateOf(false)
+) {
     val viewModel = remember { Inject.instance<ApplicationViewModel>() }
     val settingsViewModel = remember { Inject.instance<SettingsViewModel>() }
     val mainScreenViewModel = remember { Inject.instance<MainScreenViewModel>() }
@@ -118,6 +123,7 @@ fun Application(platform: Platform, restartWindow: (() -> Unit)? = null) {
                             rightDrawerState = rightDrawerState,
                             fullScreenBookInfo = fullScreenBookInfo,
                             painterInCache = painterSelectedBookInCache.value,
+                            isKeyboardShown = isKeyboardShown,
                             tooltipCallback = {
                                 tooltip.value = it
                             },
@@ -150,6 +156,7 @@ fun Application(platform: Platform, restartWindow: (() -> Unit)? = null) {
                         BookCreatorScreen(
                             platform = platform,
                             fullScreenBookCreator = mutableStateOf(false),
+                            isKeyboardShown = isKeyboardShown,
                             showRightDrawer = showRightDrawer,
                             tooltipCallback = { tooltip.value = it },
                             closeBookCreatorListener = {

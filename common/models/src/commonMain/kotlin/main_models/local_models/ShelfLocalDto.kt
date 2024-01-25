@@ -1,4 +1,6 @@
-package main_models
+package main_models.local_models
+
+import main_models.ShelfVo
 
 
 /** need update DatabaseUtils if change values **/

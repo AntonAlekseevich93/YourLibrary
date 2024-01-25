@@ -5,8 +5,8 @@ import main_models.BookItemVo
 import main_models.ReadingStatus
 import main_models.path.PathInfoVo
 import main_models.path.toVo
-import main_models.toLocalDto
-import main_models.toVo
+import main_models.local_models.toLocalDto
+import main_models.local_models.toVo
 
 class BookInfoRepositoryImpl(
     private val localBookInfoDataSource: LocalBookInfoDataSource
@@ -28,5 +28,4 @@ class BookInfoRepositoryImpl(
             bookId = bookId,
         )
     }
-
 }

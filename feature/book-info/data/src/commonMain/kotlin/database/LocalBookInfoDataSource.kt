@@ -6,7 +6,7 @@ import app.cash.sqldelight.coroutines.mapToOne
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import main_models.BookItemLocalDto
+import main_models.local_models.BookItemLocalDto
 import main_models.path.PathInfoDto
 
 class LocalBookInfoDataSource(
@@ -22,6 +22,7 @@ class LocalBookInfoDataSource(
         bookItem.apply {
             db.appQuery.updateBook(
                 id = id,
+                authorId = authorId,
                 statusId = statusId,
                 shelfId = shelfId,
                 bookName = bookName,

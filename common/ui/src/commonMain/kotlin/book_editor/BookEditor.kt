@@ -3,62 +3,82 @@ package book_editor
 import ApplicationTheme
 import Strings
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckBox
+import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import containters.CenterBoxContainer
+import info.InfoBlock
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import main_models.AuthorVo
 import main_models.DatePickerType
 import main_models.ReadingStatus
 import platform.Platform
 import platform.isMobile
 import reading_status.getStatusColor
-import tags.CustomTag
+import text_fields.DELAY_FOR_LISTENER_PROCESSING
+import text_fields.DropdownSuggestionItem
 import text_fields.TextFieldWithTitleAndSuggestion
 
 @Composable
 fun BookEditor(
     platform: Platform,
     bookValues: BookValues,
-    similarAuthorList: State<List<String>>,
+    similarSearchAuthors: SnapshotStateList<AuthorVo>,
+    selectedAuthor: State<AuthorVo?>,
     statusBookTextFieldValue: MutableState<TextFieldValue>,
-    showDataPickerListener: (type: DatePickerType) -> Unit,
-    onAuthorTextChanged: (TextFieldValue) -> Unit,
-    onSuggestionAuthorClickListener: (author: String) -> Unit,
-    saveBook: () -> Unit,
+    isKeyboardShown: State<Boolean>,
+    createNewAuthor: MutableState<Boolean>,
+    linkToAuthor: MutableState<Boolean>,
     modifier: Modifier = Modifier,
-    buttonTitle: String = Strings.add_book,
+    canShowError: Boolean = false,
+    onAuthorTextChanged: (newValue: TextFieldValue, textWasChanged: Boolean) -> Unit,
+    onSuggestionAuthorClickListener: (author: AuthorVo) -> Unit,
+    showDataPickerListener: (type: DatePickerType) -> Unit,
 ) {
     val showImage = remember { mutableStateOf(false) }
-    val painter =
-        asyncPainterResource(
-            data = bookValues.coverUrl.value.text,
-            key = bookValues.coverUrl.value.text
-        )
+    val painter = asyncPainterResource(
+        data = bookValues.coverUrl.value.text,
+        key = bookValues.coverUrl.value.text
+    )
     when (painter) {
         is Resource.Loading -> {
 
@@ -72,6 +92,8 @@ fun BookEditor(
             showImage.value = false
         }
     }
+
+    val authorIsSelected by remember(key1 = selectedAuthor.value) { mutableStateOf(selectedAuthor.value != null) }
 
     Column(modifier = modifier) {
         AnimatedVisibility(
@@ -112,36 +134,108 @@ fun BookEditor(
             }
         }
 
-        AnimatedVisibility(
-            visible = bookValues.bookName.value.text.isNotEmpty() &&
-                    bookValues.authorName.value.text.isNotEmpty(),
-            enter = fadeIn() + slideInVertically(),
-            exit = fadeOut() + slideOutVertically()
-        ) {
-            CenterBoxContainer(modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)) {
-                CustomTag(
-                    text = buttonTitle,
-                    color = ApplicationTheme.colors.mainAddButtonColor,
-                    textStyle = ApplicationTheme.typography.footnoteBold,
-                    textModifier = Modifier.padding(vertical = 8.dp),
-                    maxHeight = 50.dp,
-                    onClick = saveBook
-                )
-            }
-        }
-
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
                 TextFieldWithTitleAndSuggestion(
                     platform = platform,
                     title = Strings.autor,
-                    modifier = Modifier,
                     hintText = Strings.hint_type_author,
                     textFieldValue = bookValues.authorName,
-                    onTextChanged = onAuthorTextChanged,
-                    suggestionList = similarAuthorList,
-                    suggestionMaxHeight = 120.dp,
-                    onSuggestionClickListener = onSuggestionAuthorClickListener,
+                    onTextChanged = {
+                        val oldText = bookValues.authorName.value.text
+                        bookValues.authorName.value = it
+                        onAuthorTextChanged.invoke(it, oldText != it.text)
+                    },
+                    setAsSelected = !authorIsSelected && similarSearchAuthors.isNotEmpty() && !createNewAuthor.value && !linkToAuthor.value,
+                    innerContent = {
+                        Row(
+                            modifier = Modifier.fillMaxSize().padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                modifier = Modifier,
+                                text = bookValues.authorName.value.text,
+                                style = ApplicationTheme.typography.bodyRegular,
+                                color = Color.Transparent
+                            )
+                            Text(
+                                modifier = Modifier.padding(start = 6.dp, top = 2.dp),
+                                text = bookValues.relatedAuthorsNames.value,
+                                style = ApplicationTheme.typography.footnoteRegular,
+                                color = ApplicationTheme.colors.hintColor
+                            )
+                        }
+                    },
+                    bottomContent = {
+                        AnimatedVisibility(
+                            visible = similarSearchAuthors.isNotEmpty() && selectedAuthor.value == null && !createNewAuthor.value && !linkToAuthor.value,
+                            exit = fadeOut(
+                                animationSpec = tween(
+                                    1,
+                                    DELAY_FOR_LISTENER_PROCESSING.toInt()
+                                )
+                            )
+                        ) {
+                            Card(
+                                shape = RoundedCornerShape(8.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = ApplicationTheme.colors.dropdownBackground
+                                ),
+                                modifier = Modifier.sizeIn(maxHeight = 140.dp)
+
+                            ) {
+                                LazyColumn(modifier = Modifier.padding(vertical = 8.dp)) {
+                                    items(similarSearchAuthors) { author ->
+                                        val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
+                                            "(${author.relatedAuthors.joinToString { it.name }})"
+                                        } else ""
+                                        val text = "${author.name}$textPostfix"
+                                        DropdownSuggestionItem(
+                                            text = text,
+                                            itemClickListener = {
+                                                bookValues.setSelectedAuthorName(
+                                                    author.name,
+                                                    relatedAuthorsNames = textPostfix
+                                                )
+                                                onSuggestionAuthorClickListener.invoke(author)
+                                            },
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        AnimatedVisibility(
+                            visible = (platform.isMobile() || canShowError) && selectedAuthor.value == null &&
+                                    similarSearchAuthors.isNotEmpty() && !createNewAuthor.value && !linkToAuthor.value
+                        ) {
+                            AuthorIsNotSelectedInfo(modifier = Modifier.padding(top = 8.dp))
+                        }
+
+                        AnimatedVisibility(visible = bookValues.authorName.value.text.length >= 2 && !authorIsSelected) {
+                            Row {
+                                NewAuthorButton(
+                                    createNewAuthor = createNewAuthor.value,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    createNewAuthor.value = !createNewAuthor.value
+                                    if (createNewAuthor.value) {
+                                        linkToAuthor.value = false
+                                    }
+                                }
+
+                                LinkToAuthorButton(
+                                    linkToAuthor = linkToAuthor.value,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    linkToAuthor.value = !linkToAuthor.value
+                                    if (linkToAuthor.value) {
+                                        createNewAuthor.value = false
+                                    }
+                                }
+                            }
+                        }
+                    }
                 )
 
                 TextFieldWithTitleAndSuggestion(
@@ -268,7 +362,11 @@ fun BookEditor(
 
                 /**this use for add padding if keyboard shown**/
                 if (platform.isMobile()) {
-                    Spacer(Modifier.padding(200.dp))
+                    if (isKeyboardShown.value) {
+                        Spacer(Modifier.padding(160.dp))
+                    } else {
+                        Spacer(Modifier.padding(50.dp))
+                    }
                 } else {
                     Spacer(Modifier.padding(30.dp))
                 }
@@ -276,3 +374,110 @@ fun BookEditor(
         }
     }
 }
+
+@Composable
+fun AuthorIsNotSelectedInfo(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        InfoBlock(
+            text = Strings.error_author_can_exist,
+            textColor = ApplicationTheme.colors.errorColor,
+        )
+    }
+}
+
+
+@Composable
+fun NewAuthorButton(
+    createNewAuthor: Boolean,
+    modifier: Modifier = Modifier,
+    createNewAuthorButtonListener: () -> Unit,
+) {
+    Card(
+        modifier = modifier
+            .padding(end = 16.dp, top = 8.dp, bottom = 4.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable {
+                createNewAuthorButtonListener.invoke()
+            },
+        colors = CardDefaults.cardColors(ApplicationTheme.colors.mainBackgroundColor),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(8.dp).fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Icon(
+                imageVector = if (createNewAuthor)
+                    Icons.Default.CheckBox
+                else
+                    Icons.Default.CheckBoxOutlineBlank,
+                contentDescription = null,
+                tint = if (createNewAuthor)
+                    ApplicationTheme.colors.primaryButtonColor
+                else
+                    ApplicationTheme.colors.mainIconsColor,
+                modifier = Modifier.padding().size(20.dp),
+            )
+
+            Text(
+                text = Strings.create_new_author,
+                style = ApplicationTheme.typography.footnoteRegular,
+                color = if (createNewAuthor)
+                    ApplicationTheme.colors.primaryButtonColor
+                else ApplicationTheme.colors.mainTextColor,
+                modifier = Modifier.padding(start = 8.dp, end = 2.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun LinkToAuthorButton(
+    linkToAuthor: Boolean,
+    modifier: Modifier = Modifier,
+    createNewAuthorButtonListener: () -> Unit,
+) {
+    Card(
+        modifier = modifier
+            .padding(top = 8.dp, bottom = 4.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable {
+                createNewAuthorButtonListener.invoke()
+            },
+        colors = CardDefaults.cardColors(ApplicationTheme.colors.mainBackgroundColor),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(8.dp).fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = if (linkToAuthor)
+                    Icons.Default.CheckBox
+                else
+                    Icons.Default.CheckBoxOutlineBlank,
+                contentDescription = null,
+                tint = if (linkToAuthor)
+                    ApplicationTheme.colors.primaryButtonColor
+                else
+                    ApplicationTheme.colors.mainIconsColor,
+                modifier = Modifier.padding().size(20.dp),
+            )
+
+            Text(
+                text = Strings.link_to_author,
+                style = ApplicationTheme.typography.footnoteRegular,
+                color = if (linkToAuthor)
+                    ApplicationTheme.colors.primaryButtonColor
+                else ApplicationTheme.colors.mainTextColor,
+                modifier = Modifier.padding(start = 8.dp, end = 2.dp)
+            )
+        }
+    }
+}
+

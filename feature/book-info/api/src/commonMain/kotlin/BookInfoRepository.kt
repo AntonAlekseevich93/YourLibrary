@@ -8,5 +8,4 @@ interface BookInfoRepository {
     suspend fun getBookById(bookId: String): Flow<BookItemVo>
     suspend fun updateBook(bookItem: BookItemVo)
     suspend fun changeBookStatusId(readingStatus: ReadingStatus, bookId: String)
-
 }

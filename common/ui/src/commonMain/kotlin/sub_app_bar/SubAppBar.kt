@@ -52,6 +52,7 @@ fun SubAppBar(
     openViewType: (type: ViewsType) -> Unit,
     switchViewTypesListener: (isChecked: Boolean, type: ViewsType) -> Unit,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
+    homeButtonListener: () -> Unit,
     closeViewsTypeDropdown: () -> Unit,
 ) {
     Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -63,10 +64,10 @@ fun SubAppBar(
                     modifier = Modifier.padding(end = 6.dp),
                     pointerEventBackgroundDisable = ApplicationTheme.colors.mainBackgroundColor,
                     tooltipCallback = {
-                        tooltipCallback?.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
                     },
-                ) {
-                }
+                    onClick = homeButtonListener
+                )
                 TooltipIconArea(
                     text = Strings.menu,
                     drawableResName = Drawable.drawable_ic_sidebar,
@@ -74,7 +75,7 @@ fun SubAppBar(
                     pointerEventBackgroundDisable = ApplicationTheme.colors.mainBackgroundColor,
                     imageModifier = Modifier.rotate(180f),
                     tooltipCallback = {
-                        tooltipCallback?.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
                     },
                 ) {
                     openSidebarListener.invoke()
@@ -116,7 +117,7 @@ fun ViewTypesBlock(
     Card(
         modifier = Modifier.padding(6.dp),
         colors = CardDefaults.cardColors(containerColor = ApplicationTheme.colors.cardBackgroundDark)
-    ) {//todo переделать токен цвет) {
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 8.dp)

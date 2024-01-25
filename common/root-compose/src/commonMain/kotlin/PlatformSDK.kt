@@ -1,6 +1,7 @@
 import di.Inject
 import di.PlatformConfiguration
 import di.coreModule
+import domain_module.domainModule
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.direct
@@ -37,6 +38,7 @@ object PlatformSDK {
                     urlParserModule,
                     settingsModule,
                     authorsModule,
+                    domainModule,
                     viewModelsModule,
                 )
             }.direct

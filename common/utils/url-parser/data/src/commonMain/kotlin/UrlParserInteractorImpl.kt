@@ -9,10 +9,11 @@ class UrlParserInteractorImpl : UrlParserInteractor {
 
     val bookItemForTesting = BookItemVo(
         id = "",
+        authorId = "",
         statusId = "",
         shelfId = "",
         bookName = "Кто нашёл берет себе",
-        authorName = "Стивен Кинг",
+        authorName = "Кинг",
         description = "Четверо восьмиклассников, еще не знающих, что скоро станут друзьями, ведут обычную для подростков начала девяностых жизнь: учатся, дерутся, влюбляются, изучают карате по фильмам из видеосалонов, охотятся за джинсами-варенками или зарубежной фантастикой… Их случайно пролитая кровь разбудит того, кто спит под курганами.",
         coverUrl = "",
         coverUrlFromParsing = "https://cdn.book24.ru/v2/ASE000000000848034/COVER/cover13d__w820.jpg",

@@ -1,8 +1,13 @@
-package main_models
+package main_models.local_models
 
+import main_models.BookItemVo
+import main_models.ReadingStatus
+
+//todo we can`t use var values in data classes
 /** need update DatabaseUtils if change values **/
 data class BookItemLocalDto(
     val id: String,
+    val authorId: String,
     var statusId: String,
     var shelfId: String?,
     var bookName: String,
@@ -24,6 +29,7 @@ data class BookItemLocalDto(
 
 fun BookItemVo.toLocalDto() = BookItemLocalDto(
     id = id,
+    authorId = authorId,
     statusId = statusId,
     shelfId = shelfId,
     bookName = bookName,
@@ -45,6 +51,7 @@ fun BookItemVo.toLocalDto() = BookItemLocalDto(
 
 fun BookItemLocalDto.toVo() = BookItemVo(
     id = id,
+    authorId = authorId,
     statusId = statusId,
     shelfId = shelfId,
     bookName = bookName,

@@ -1,6 +1,6 @@
-import main_models.BookItemVo
+import main_models.AuthorVo
 
 interface SearchRepository {
-    fun searchTasks(searchText: String): List<BookItemVo>
+    suspend fun searchInAuthorsName(searchedText: String): List<AuthorVo>
 
 }

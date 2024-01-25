@@ -1,6 +1,6 @@
 package database
 
-import main_models.BookItemLocalDto
+import main_models.local_models.BookItemLocalDto
 
 class LocalBookCreatorDataSource(
     private val db: SqlDelightDataSource
@@ -9,6 +9,7 @@ class LocalBookCreatorDataSource(
         bookItem.apply {
             db.appQuery.addBook(
                 id = id,
+                authorId = authorId,
                 statusId = statusId,
                 shelfId = shelfId,
                 bookName = bookName,

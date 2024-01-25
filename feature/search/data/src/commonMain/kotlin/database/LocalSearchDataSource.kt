@@ -1,11 +1,12 @@
 package database
 
-import sqldelight.com.yourlibrary.database.AppDatabase
+import DatabaseUtils.Companion.toAuthorLocalDto
+import main_models.local_models.AuthorLocalDto
 
-class LocalSearchDataSource(dbDriverFactory: DbDriverFactory) {
-    private val driver = dbDriverFactory.createDriver(null, false, null)
-    private val database = AppDatabase(driver)
-    private val dbQuery = database.appDatabaseQueries
-
-    fun test() = "HeLlo Man"
+class LocalSearchDataSource(
+    private val db: SqlDelightDataSource
+) {
+    suspend fun getAllMatchesByAuthorName(name: String): List<AuthorLocalDto> =
+        db.appQuery.getAllAuthorByName("%${name.uppercase()}%").executeAsList()
+            .map { item -> item.toAuthorLocalDto() }
 }

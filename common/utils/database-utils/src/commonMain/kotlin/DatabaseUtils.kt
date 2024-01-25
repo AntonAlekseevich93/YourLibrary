@@ -1,8 +1,10 @@
+import com.yourlibrary.database.AuthorsTable
 import com.yourlibrary.database.BooksTable
 import com.yourlibrary.database.FilesInfo
 import com.yourlibrary.database.ShelvesTable
-import main_models.BookItemLocalDto
-import main_models.ShelfLocalDto
+import main_models.local_models.AuthorLocalDto
+import main_models.local_models.BookItemLocalDto
+import main_models.local_models.ShelfLocalDto
 import main_models.path.PathInfoDto
 
 class DatabaseUtils {
@@ -15,6 +17,7 @@ class DatabaseUtils {
 
         fun BooksTable.map() = BookItemLocalDto(
             id = id,
+            authorId = authorId,
             statusId = statusId,
             shelfId = shelfId,
             bookName = bookName,
@@ -40,6 +43,16 @@ class DatabaseUtils {
             libraryName = libraryName,
             dbName = dbName,
             isSelected = isSelected.toInt()
+        )
+
+        fun AuthorsTable.toAuthorLocalDto() = AuthorLocalDto(
+            id = id,
+            name = name,
+            uppercaseName = uppercaseName,
+            relatedToAuthorId = relatedToAuthorId,
+            isMainAuthor = isMainAuthor.toInt(),
+            timestampOfCreating = timestampOfCreating,
+            timestampOfUpdating = timestampOfUpdating,
         )
     }
 }

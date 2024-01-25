@@ -6,7 +6,7 @@ import app.cash.sqldelight.coroutines.mapToList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import main_models.BookItemLocalDto
+import main_models.local_models.BookItemLocalDto
 
 class LocalShelfDataSource(
     private val db: SqlDelightDataSource

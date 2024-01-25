@@ -2,6 +2,7 @@ package book_editor
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import main_models.BookItemVo
 import main_models.ReadingStatus
@@ -20,6 +21,8 @@ class BookValues(
     var coverUrl: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
     var isbn: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
 ) {
+    private var selectedAuthorName: String = ""
+    val relatedAuthorsNames: MutableState<String> = mutableStateOf("")
 
     fun clearAll() {
         parsingUrl.value = TextFieldValue()
@@ -53,12 +56,13 @@ class BookValues(
         return null
     }
 
-    fun getBookItemVoOrNull(
+    fun createBookItemWithoutAuthorIdOrNull(
         timestampOfCreating: Long,
         timestampOfUpdating: Long,
     ): BookItemVo? {
         return BookItemVo(
             id = BookItemVo.generateId(),
+            authorId = "",
             statusId = selectedStatus.value.id,
             shelfId = null,//todo
             bookName = bookName.value.text.takeIf { it.isNotEmpty() } ?: return null,
@@ -79,13 +83,14 @@ class BookValues(
         )
     }
 
-    fun updateBook(
+    fun updateBookWithEmptyAuthorId(
         bookId: String,
         timestampOfCreating: Long,
         timestampOfUpdating: Long,
     ): BookItemVo? {
         return BookItemVo(
             id = bookId,
+            authorId = "",
             statusId = selectedStatus.value.id,
             shelfId = null, //todo
             bookName = bookName.value.text.takeIf { it.isNotEmpty() } ?: return null,
@@ -120,4 +125,22 @@ class BookValues(
             TextFieldValue(book.coverUrl.takeIf { it.isNotEmpty() } ?: book.coverUrlFromParsing)
         isbn.value = TextFieldValue(book.isbn)
     }
+
+    fun setSelectedAuthorName(authorName: String, relatedAuthorsNames: String) {
+        selectedAuthorName = authorName
+        this.relatedAuthorsNames.value = relatedAuthorsNames
+        this.authorName.value =
+            TextFieldValue(text = authorName, selection = TextRange(authorName.length))
+    }
+
+    fun isSelectedAuthorNameWasChanged(): Boolean {
+        return if (selectedAuthorName != authorName.value.text) {
+            selectedAuthorName = ""
+            relatedAuthorsNames.value = ""
+            true
+        } else false
+    }
+
+    fun isRequiredFieldsFilled(): Boolean =
+        authorName.value.text.length >= 2 && bookName.value.text.isNotEmpty()
 }

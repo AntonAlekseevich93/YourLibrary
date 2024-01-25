@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -38,6 +39,7 @@ import book_editor.BookEditor
 import book_editor.BookValues
 import date.CommonDatePicker
 import io.kamel.core.Resource
+import main_models.AuthorVo
 import main_models.BookItemVo
 import main_models.DatePickerType
 import main_models.ReadingStatus
@@ -49,23 +51,25 @@ import tooltip_area.TooltipItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookInfoScreen(
+fun BookScreenContent(
     platform: Platform,
     bookItem: BookItemVo,
     bookValues: MutableState<BookValues>,
-    similarAuthorList: MutableState<List<String>>,
+    similarAuthorList: SnapshotStateList<AuthorVo>,
+    selectedAuthor: State<AuthorVo?>,
     fullScreenBookInfo: MutableState<Boolean>,
     painterInCache: Resource<Painter>? = null,
     showLeftDrawer: State<Boolean>,
     showRightDrawer: MutableState<Boolean>,
     isEditMode: State<Boolean>,
+    isKeyboardShown: State<Boolean>,
     openLeftDrawerListener: () -> Unit,
     openRightDrawerListener: () -> Unit,
     closeRightDrawerListener: () -> Unit,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
-    editBookCallback: () -> Unit,
-    onAuthorTextChanged: (TextFieldValue) -> Unit,
-    onSuggestionAuthorClickListener: (String) -> Unit,
+    editBookModeCallback: (createNewAuthor: Boolean) -> Unit,
+    onAuthorTextChanged: (TextFieldValue, textWasChanged: Boolean) -> Unit,
+    onSuggestionAuthorClickListener: (author: AuthorVo) -> Unit,
     changeReadingStatusListener: (selectedStatus: ReadingStatus, oldStatusId: String) -> Unit,
     onClose: () -> Unit,
 ) {
@@ -97,6 +101,8 @@ fun BookInfoScreen(
     var datePickerType by remember { mutableStateOf(DatePickerType.StartDate) }
     val scrollableState = rememberScrollState()
     val hideSaveButton = remember { mutableStateOf(false) }
+    val createNewAuthor = remember { mutableStateOf(false) }
+    val linkToAuthor = remember { mutableStateOf(false) }
     hideSaveButton.value = bookValues.value.bookName.value.text.isEmpty() ||
             bookValues.value.authorName.value.text.isEmpty()
 
@@ -174,7 +180,7 @@ fun BookInfoScreen(
                         openLeftDrawerListener = openLeftDrawerListener,
                         openRightDrawerListener = openRightDrawerListener,
                         isEditMode = isEditMode,
-                        editBookCallback = editBookCallback,
+                        editBookCallback = { editBookModeCallback.invoke(createNewAuthor.value) },
                         tooltipCallback = tooltipCallback
                     )
 
@@ -188,23 +194,30 @@ fun BookInfoScreen(
                             BookEditor(
                                 platform = platform,
                                 bookValues = bookValues.value,
-                                similarAuthorList = similarAuthorList,
+                                similarSearchAuthors = similarAuthorList,
+                                selectedAuthor = selectedAuthor,
                                 statusBookTextFieldValue = statusBookTextFieldValue,
-                                buttonTitle = Strings.save,
-                                modifier = Modifier.padding(top = 24.dp),
+                                canShowError = true,
+                                modifier = Modifier.padding(
+                                    top = 24.dp,
+                                    start = 16.dp,
+                                    end = 16.dp
+                                ),
+                                createNewAuthor = createNewAuthor,
+                                linkToAuthor = linkToAuthor,
+                                isKeyboardShown = isKeyboardShown,
                                 showDataPickerListener = {
                                     datePickerType = it
                                     showDataPicker.value = true
                                 },
                                 onAuthorTextChanged = onAuthorTextChanged,
                                 onSuggestionAuthorClickListener = onSuggestionAuthorClickListener,
-                                saveBook = editBookCallback
                             )
                         }
                     }
 
                     AnimatedVisibility(!isEditMode.value) {
-                        BookInfoContent(
+                        BookContent(
                             platform = platform,
                             bookItem = bookItem,
                             painterInCache = painterInCache,

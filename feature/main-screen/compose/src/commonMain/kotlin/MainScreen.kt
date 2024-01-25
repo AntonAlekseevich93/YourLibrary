@@ -119,6 +119,7 @@ fun MainScreen(
                             }
                         },
                         tooltipCallback = tooltipCallback,
+                        homeButtonListener = createBookListener
                     )
                     ShelfBoardScreen(
                         platform = platform,

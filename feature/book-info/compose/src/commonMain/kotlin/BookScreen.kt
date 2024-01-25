@@ -9,6 +9,7 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +32,6 @@ import navigation_drawer.PlatformLeftDrawerContent
 import navigation_drawer.PlatformNavigationDrawer
 import platform.Platform
 import platform.isDesktop
-import text_fields.DELAY_FOR_LISTENER_PROCESSING
 import tooltip_area.TooltipItem
 
 @Composable
@@ -44,6 +44,7 @@ fun BookScreen(
     showRightDrawer: MutableState<Boolean>,
     leftDrawerState: DrawerState,
     rightDrawerState: DrawerState,
+    isKeyboardShown: State<Boolean>,
     painterInCache: Resource<Painter>? = null,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     onClose: () -> Unit,
@@ -80,6 +81,18 @@ fun BookScreen(
                 delay(300)
                 leftMenuVisible.value = false
             }
+        }
+    }
+
+    uiState.authorWasSelectedProgrammatically.value = {
+        uiState.selectedAuthor.value?.let { author ->
+            val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
+                "(${author.relatedAuthors.joinToString { it.name }})"
+            } else ""
+            bookValues.value.setSelectedAuthorName(
+                author.name,
+                relatedAuthorsNames = textPostfix
+            )
         }
     }
 
@@ -152,7 +165,7 @@ fun BookScreen(
                 contentAlignment = if (platform.isDesktop()) Alignment.TopCenter else Alignment.TopStart,
             ) {
                 if (uiState.bookItem.value != null) {
-                    BookInfoScreen(
+                    BookScreenContent(
                         platform = platform,
                         painterInCache = painterInCache,
                         bookItem = uiState.bookItem.value!!,
@@ -162,7 +175,9 @@ fun BookScreen(
                         showLeftDrawer = showLeftDrawer,
                         showRightDrawer = showRightDrawer,
                         isEditMode = isEditMode,
-                        similarAuthorList = uiState.similarAuthorList,
+                        isKeyboardShown = isKeyboardShown,
+                        similarAuthorList = uiState.similarSearchAuthors,
+                        selectedAuthor = uiState.selectedAuthor,
                         openLeftDrawerListener = {
                             scope.launch {
                                 if (!showLeftDrawer.value) {
@@ -197,41 +212,41 @@ fun BookScreen(
                             }
                         },
                         tooltipCallback = tooltipCallback,
-                        editBookCallback = {
+                        editBookModeCallback = { needCreateNewAuthor ->
                             if (isEditMode.value && uiState.bookItem.value != null) {
-                                bookValues.value.updateBook(
+                                bookValues.value.updateBookWithEmptyAuthorId(
                                     bookId = uiState.bookItem.value!!.id,
-                                    timestampOfCreating = viewModel.getCurrentTimeInMillis(),
+                                    timestampOfCreating = uiState.bookItem.value!!.timestampOfCreating,
                                     timestampOfUpdating = viewModel.getCurrentTimeInMillis(),
                                 )?.let {
                                     bookItemWasChangedListener.invoke(uiState.bookItem.value!!, it)
-                                    viewModel.updateBook(it)
+                                    viewModel.updateBook(
+                                        bookItem = it,
+                                        needCreateNewAuthor = needCreateNewAuthor
+                                    )
                                 }
                             }
 
                             isEditMode.value = !isEditMode.value
                         },
-                        onAuthorTextChanged = {
-                            bookValues.value.authorName.value =
-                                bookValues.value.authorName.value.copy(
-                                    it.text,
-                                    selection = TextRange(it.text.length)
-                                )
-                            scope.launch {
-                                delay(DELAY_FOR_LISTENER_PROCESSING)
+                        onAuthorTextChanged = { newValue, textWasChanged ->
+                            if (uiState.selectedAuthor.value != null && bookValues.value.isSelectedAuthorNameWasChanged()) {
+                                viewModel.clearSelectedAuthor()
+                            }
+                            if (newValue.text.isEmpty()) {
                                 viewModel.clearSearchAuthor()
+                            } else if (textWasChanged) {
+                                viewModel.searchAuthor(newValue.text)
                             }
                         },
-                        onSuggestionAuthorClickListener = {
+                        onSuggestionAuthorClickListener = { author ->
+                            viewModel.setSelectedAuthor(author)
                             bookValues.value.authorName.value =
                                 bookValues.value.authorName.value.copy(
-                                    it,
-                                    selection = TextRange(it.length)
+                                    author.name,
+                                    selection = TextRange(author.name.length)
                                 )
-                            scope.launch {
-                                delay(DELAY_FOR_LISTENER_PROCESSING)
-                                viewModel.clearSearchAuthor()
-                            }
+                            viewModel.clearSearchAuthor()
                         },
                         changeReadingStatusListener = { selectedStatus, oldStatusId ->
                             viewModel.changeReadingStatus(selectedStatus, bookItemId)

@@ -1,7 +1,10 @@
 package models
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import main_models.AuthorVo
 import main_models.BookItemVo
 import main_models.ReadingStatus
 import main_models.rest.LoadingStatus
@@ -10,9 +13,11 @@ class BookCreatorUiState(
     val bookItem: MutableState<BookItemVo?> = mutableStateOf(null),
     val showLoadingIndicator: MutableState<Boolean> = mutableStateOf(false),
     val loadingStatus: MutableState<LoadingStatus> = mutableStateOf(LoadingStatus.LOADING),
-    val similarAuthorList: MutableState<List<String>> = mutableStateOf(emptyList()),
     val defaultStatus: MutableState<ReadingStatus> = mutableStateOf(ReadingStatus.PLANNED),
-    val needUpdateBookInfo: MutableState<Boolean> = mutableStateOf(false)
+    val needUpdateBookInfo: MutableState<Boolean> = mutableStateOf(false),
+    val selectedAuthor: MutableState<AuthorVo?> = mutableStateOf<AuthorVo?>(null),
+    val similarSearchAuthors: SnapshotStateList<AuthorVo> = mutableStateListOf(),
+    val authorWasSelectedProgrammatically: MutableState<() -> Unit> = mutableStateOf({})
 ) {
     fun startParsing() {
         loadingStatus.value = LoadingStatus.LOADING
@@ -31,15 +36,30 @@ class BookCreatorUiState(
         loadingStatus.value = LoadingStatus.SUCCESS
     }
 
-    fun clearSimilarAuthorList() {
-        similarAuthorList.value = emptyList()
-    }
-
-    fun addSimilarAuthor(list: List<String>) {
-        similarAuthorList.value = list
+    fun addSimilarAuthors(similarAuthors: List<AuthorVo>) {
+        similarSearchAuthors.clear()
+        similarSearchAuthors.addAll(similarAuthors)
     }
 
     fun clearAllBookData() {
         bookItem.value = null
     }
+
+    fun setSelectedAuthor(authorVo: AuthorVo) {
+        selectedAuthor.value = authorVo
+    }
+
+    fun clearSimilarAuthorList() {
+        similarSearchAuthors.clear()
+    }
+
+    fun clearSelectedAuthor() {
+        selectedAuthor.value = null
+    }
+
+    fun clearAllAuthorInfo() {
+        selectedAuthor.value = null
+        similarSearchAuthors.clear()
+    }
+
 }
