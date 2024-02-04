@@ -8,7 +8,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_models.TooltipItem
 import main_models.path.PathInfoVo
+import models.SettingsDataProvider
 import platform.Platform
+import screens.selecting_project.ProjectFoldersEvents
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -18,7 +20,8 @@ class ApplicationViewModel(
     private val db: SqlDelightDataSource,
     private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,
-) : ApplicationScope, DrawerScope {
+    private val settingsDataProvider: SettingsDataProvider,
+) : BaseEventScope<BaseEvent>, ApplicationScope, DrawerScope {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val _uiState = MutableStateFlow(ApplicationUiState())
     val uiState: StateFlow<ApplicationUiState> = _uiState
@@ -32,6 +35,31 @@ class ApplicationViewModel(
                     }
                 }
             }
+        }
+    }
+
+    override fun sendEvent(event: BaseEvent) {
+        when (event) {
+            is ProjectFoldersEvents.SelectFolderEvent -> selectFolder(event.path)
+            is ProjectFoldersEvents.CreateFolder -> createFolder(event.path, event.name)
+            is ProjectFoldersEvents.SelectPathInfo -> {
+                selectPathInfo(event.pathInfo)
+                navigationHandler.toMain()
+            }
+
+            is ProjectFoldersEvents.RenamePath -> {
+                val newPath = renamePath(
+                    pathInfo = event.pathInfo,
+                    newName = event.newName,
+                )
+                settingsDataProvider.updateLibraryNameInFile(
+                    path = newPath,
+                    oldName = event.pathInfo.libraryName,
+                    newName = event.newName
+                )
+            }
+
+            is ProjectFoldersEvents.RestartApp -> navigationHandler.restartWindow()
         }
     }
 
@@ -78,32 +106,13 @@ class ApplicationViewModel(
         return isExist
     }
 
-    fun createDbPath(dbPath: String, libraryName: String): Int? {
-        val id = db.createDbPath(dbPath, libraryName)
-        if (db.appDbIsNotInitialized) {
-            db.initializeAppDatabase()
-        }
-        return id
-    }
-
-    fun selectPathInfo(pathInfo: PathInfoVo) {
+    private fun selectPathInfo(pathInfo: PathInfoVo) {
         if (!pathInfo.isSelected) {
             db.setPathAsSelected(pathInfo.id)
         }
     }
 
-    fun createFolderAndGetPath(path: String, name: String): String? = try {
-        File(path, name).mkdir()
-        val osDivider =
-            if (path.contains("""\""")) """\""" else """/"""
-        val selectedPathResult =
-            if (path.last() == osDivider.first()) path else "$path$osDivider"
-        selectedPathResult + name + osDivider
-    } catch (_: Exception) {
-        null
-    }
-
-    fun renamePath(pathInfo: PathInfoVo, newName: String): String {
+    private fun renamePath(pathInfo: PathInfoVo, newName: String): String {
         val pathString = pathInfo.path.replace(pathInfo.libraryName, newName)
         scope.launch {
             try {
@@ -122,7 +131,7 @@ class ApplicationViewModel(
         return pathString
     }
 
-    suspend fun setFolderAsSelected(path: String, libraryName: String): Boolean {
+    private suspend fun setFolderAsSelected(path: String, libraryName: String): Boolean {
         createDbPath(dbPath = path, libraryName = libraryName)?.let { id ->
             db.setPathAsSelected(id)
             return true
@@ -130,13 +139,63 @@ class ApplicationViewModel(
         return false
     }
 
-    fun getPathByOs(path: String): String {
+    private suspend fun renamePathInDb(path: String, pathId: Int, newName: String) {
+        db.renamePath(pathId, path, newName)
+    }
+
+    private fun selectFolder(path: String) {
+        scope.launch {
+            getPathByOs(path).let { osPath ->
+                settingsDataProvider.getLibraryNameIfExist(osPath)?.let { libraryName ->
+                    val isSuccess = setFolderAsSelected(
+                        path = osPath,
+                        libraryName = libraryName
+                    )
+                    if (isSuccess) {
+                        navigationHandler.toMain()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun createDbPath(dbPath: String, libraryName: String): Int? {
+        val id = db.createDbPath(dbPath, libraryName)
+        if (db.appDbIsNotInitialized) {
+            db.initializeAppDatabase()
+        }
+        return id
+    }
+
+    private fun getPathByOs(path: String): String {
         val osDivider =
             if (path.contains("""\""")) """\""" else """/"""
         return if (path.last() == osDivider.first()) path else "$path$osDivider"
     }
 
-    private suspend fun renamePathInDb(path: String, pathId: Int, newName: String) {
-        db.renamePath(pathId, path, newName)
+    private fun createFolderAndGetPath(path: String, name: String): String? = try {
+        File(path, name).mkdir()
+        val osDivider =
+            if (path.contains("""\""")) """\""" else """/"""
+        val selectedPathResult =
+            if (path.last() == osDivider.first()) path else "$path$osDivider"
+        selectedPathResult + name + osDivider
+    } catch (_: Exception) {
+        null
+    }
+
+    private fun createFolder(path: String, name: String) {
+        createFolderAndGetPath(path, name)?.let { resultPath ->
+            settingsDataProvider.createAppSettingsFile(
+                path = resultPath,
+                libraryName = name,
+                themeName = "Dark" //todo
+            )
+            createDbPath(
+                dbPath = resultPath,
+                libraryName = name
+            )
+            navigationHandler.toMain()
+        }
     }
 }

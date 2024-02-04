@@ -4,13 +4,14 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import models.SettingsDataProvider
 import models.SettingsUiState
 import platform.Platform
 
 class SettingsViewModel(
     private val platform: Platform,
     private val repository: SettingsRepository
-) {
+) : SettingsDataProvider {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val _uiState = MutableStateFlow(
         SettingsUiState(
@@ -19,7 +20,7 @@ class SettingsViewModel(
     )
     val uiState = _uiState.asStateFlow()
 
-    fun createAppSettingsFile(
+    override fun createAppSettingsFile(
         path: String,
         libraryName: String,
         themeName: String,
@@ -33,7 +34,7 @@ class SettingsViewModel(
         }
     }
 
-    fun updateLibraryNameInFile(path: String, oldName: String, newName: String) {
+    override fun updateLibraryNameInFile(path: String, oldName: String, newName: String) {
         scope.launch {
             repository.updateLibraryNameInFile(
                 path = path,
@@ -43,7 +44,7 @@ class SettingsViewModel(
         }
     }
 
-    suspend fun getLibraryNameIfExist(path: String): String? =
+    override suspend fun getLibraryNameIfExist(path: String): String? =
         repository.getLibraryNameIfExist(path)
 
 }

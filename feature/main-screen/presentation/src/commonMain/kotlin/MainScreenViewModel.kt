@@ -33,7 +33,10 @@ class MainScreenViewModel(
     override fun sendEvent(event: BaseEvent) {
         when (event) {
             is TooltipEvents.SetTooltipEvent -> tooltipHandler.setTooltip(event.tooltip)
-            is DrawerEvents.OpenLeftDrawerOrCloseEvent -> drawerScope.openLeftDrawerOrClose()
+            is DrawerEvents.OpenLeftDrawerOrCloseEvent -> {
+                drawerScope.openLeftDrawerOrClose()
+            }
+
             is DrawerEvents.OpenRightDrawerOrCloseEvent -> drawerScope.openRightDrawerOrClose()
             is LeftMenuBarEvents.OnSearchClickEvent -> navigationHandler.navigateToSearch()
             is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator()

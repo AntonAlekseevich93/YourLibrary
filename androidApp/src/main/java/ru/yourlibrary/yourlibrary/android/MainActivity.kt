@@ -98,6 +98,17 @@ fun createNavigationHandler(
             navigator.value?.goBack()
         }
 
+        override fun toMain() {
+            navigator.value?.navigate(
+                route = Routes.main_route,
+                options = NavOptions(launchSingleTop = false),
+            )
+        }
+
+        override fun restartWindow() {
+            //nop
+        }
+
     }
     return handler
 }

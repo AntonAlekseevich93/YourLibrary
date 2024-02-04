@@ -1,6 +1,8 @@
 package screens.selecting_project
 
 import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import Drawable
 import Strings
 import androidx.compose.animation.AnimatedVisibility
@@ -43,13 +45,8 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun CreationAndSelectionProjectFolderScreen(
+fun BaseEventScope<BaseEvent>.CreationAndSelectionProjectFolderScreen(
     pathInfoList: List<PathInfoVo>,
-    selectedFolder: (path: String) -> Unit,
-    createFolder: (path: String, name: String) -> Unit,
-    selectedPathInfo: (pathInfo: PathInfoVo) -> Unit,
-    renamePath: (pathInfo: PathInfoVo, newName: String) -> Unit,
-    restartApp: () -> Unit,
 ) {
     val showDirPicker = remember { mutableStateOf(false) }
     val isMainScreen = remember { mutableStateOf(true) }
@@ -67,11 +64,21 @@ fun CreationAndSelectionProjectFolderScreen(
                 items(pathInfoList) { pathInfo ->
                     PathInfoBlock(
                         pathInfo = pathInfo,
-                        selectedPathInfo = { selectedPathInfo.invoke(pathInfo) },
-                        renamePath = { newName ->
-                            renamePath.invoke(pathInfo, newName)
+                        selectedPathInfo = {
+                            this@CreationAndSelectionProjectFolderScreen.sendEvent(
+                                ProjectFoldersEvents.SelectPathInfo(pathInfo)
+                            )
                         },
-                        restartApp = restartApp,
+                        renamePath = { newName ->
+                            this@CreationAndSelectionProjectFolderScreen.sendEvent(
+                                ProjectFoldersEvents.RenamePath(pathInfo, newName)
+                            )
+                        },
+                        restartApp = {
+                            this@CreationAndSelectionProjectFolderScreen.sendEvent(
+                                ProjectFoldersEvents.RestartApp
+                            )
+                        },
                     )
                 }
             }
@@ -145,7 +152,9 @@ fun CreationAndSelectionProjectFolderScreen(
                                     showDirPicker.value = true
                                 },
                                 createVaultListener = { name ->
-                                    createFolder.invoke(selectedPath, name)
+                                    this@CreationAndSelectionProjectFolderScreen.sendEvent(
+                                        ProjectFoldersEvents.CreateFolder(selectedPath, name)
+                                    )
                                 },
                                 onBackClick = {
                                     isMainScreen.value = true
@@ -162,7 +171,11 @@ fun CreationAndSelectionProjectFolderScreen(
                 selectedPath = path
                 if (isSelectedFolderProcess) {
                     isSelectedFolderProcess = false
-                    selectedFolder.invoke(path)
+                    this@CreationAndSelectionProjectFolderScreen.sendEvent(
+                        ProjectFoldersEvents.SelectFolderEvent(
+                            path
+                        )
+                    )
                 }
             }
             showDirPicker.value = false

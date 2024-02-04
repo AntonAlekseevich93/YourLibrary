@@ -2,6 +2,7 @@ import di.Inject
 import di.PlatformConfiguration
 import di.coreModule
 import domain_module.domainModule
+import models.SettingsDataProvider
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.direct
@@ -24,19 +25,22 @@ object PlatformSDK {
                 bind<TooltipHandler>() with singleton { tooltipHandler }
                 bind<PlatformConfiguration>() with singleton { configuration }
                 bind<ApplicationViewModel>() with singleton {
-                    ApplicationViewModel(instance(), instance(), instance())
+                    ApplicationViewModel(instance(), instance(), instance(), instance())
                 }
                 bind<Platform>() with singleton { platform }
                 bind<FileManager>() with singleton { FileManager() }
                 bind<PlatformInfo>() with singleton { platformInfo }
                 bind<ApplicationScope>() with singleton {
-                    ApplicationViewModel(instance(), instance(), instance())
+                    Inject.instance<ApplicationViewModel>()
                 }
                 bind<DrawerScope>() with singleton {
-                    ApplicationViewModel(instance(), instance(), instance())
+                    Inject.instance<ApplicationViewModel>()
                 }
                 bind<MainScreenScope<BaseEvent>>() with singleton {
-                    MainScreenViewModel(instance(), instance(), instance(), instance())
+                    Inject.instance<MainScreenViewModel>()
+                }
+                bind<SettingsDataProvider>() with singleton {
+                    Inject.instance<SettingsViewModel>()
                 }
             })
         Inject.createDependencies(

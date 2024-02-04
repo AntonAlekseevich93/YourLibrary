@@ -70,7 +70,8 @@ fun main() = application {
 
 fun createNavigationHandler(
     navigator: MutableState<Navigator?>,
-    desktopTooltip: MutableState<TooltipItem>
+    desktopTooltip: MutableState<TooltipItem>,
+    restart: () -> Unit
 ): NavigationHandler {
     val handler = object : NavigationHandler {
         override fun navigateToSearch() {
@@ -102,6 +103,17 @@ fun createNavigationHandler(
             navigator.value?.goBack()
         }
 
+        override fun toMain() {
+            navigator.value?.navigate(
+                route = Routes.main_route,
+                options = NavOptions(launchSingleTop = false),
+            )
+        }
+
+        override fun restartWindow() {
+            restart.invoke()
+        }
+
     }
     return handler
 }
@@ -128,7 +140,7 @@ private fun ApplicationScope.MainWindow(
         configuration = PlatformConfiguration(),
         platformInfo = PlatformInfo(),
         platform = Platform.DESKTOP,
-        navigationHandler = createNavigationHandler(navigator, desktopTooltip),
+        navigationHandler = createNavigationHandler(navigator, desktopTooltip, restart = restart),
         tooltipHandler = createTooltipHandler(desktopTooltip)
     )
 
@@ -156,7 +168,6 @@ private fun ApplicationScope.MainWindow(
                     navigator.value = rememberNavigator()
                     Application(
                         platform = Platform.DESKTOP,
-                        restartWindow = restart,
                         navigator = navigator.value ?: rememberNavigator(),
                         desktopTooltip = desktopTooltip,
                     )
@@ -190,7 +201,6 @@ private fun ApplicationScope.MainWindow(
                         navigator.value = rememberNavigator()
                         Application(
                             platform = Platform.DESKTOP,
-                            restartWindow = restart,
                             navigator = navigator.value ?: rememberNavigator(),
                             desktopTooltip = desktopTooltip
                         )

@@ -35,13 +35,11 @@ import tooltip_area.ShowTooltip
 @Composable
 fun Application(
     platform: Platform,
-    restartWindow: (() -> Unit)? = null,
     isKeyboardShown: State<Boolean> = mutableStateOf(false),
     navigator: Navigator,
     desktopTooltip: MutableState<TooltipItem>? = null,
 ) {
     val viewModel = remember { Inject.instance<ApplicationViewModel>() }
-    val settingsViewModel = remember { Inject.instance<SettingsViewModel>() }
     val mainScreenViewModel = remember { Inject.instance<MainScreenViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
     val mainScreenUiState by mainScreenViewModel.uiState.collectAsState()
@@ -129,63 +127,8 @@ fun Application(
                         destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
                     )
                 ) {
-                    CreationAndSelectionProjectFolderScreen(
+                    viewModel.CreationAndSelectionProjectFolderScreen(
                         pathInfoList = uiState.pathInfoList,
-                        selectedFolder = { dbPath ->
-                            viewModel.getPathByOs(dbPath).let { osPath ->
-                                scope.launch {
-                                    settingsViewModel.getLibraryNameIfExist(osPath)
-                                        ?.let { libraryName ->
-                                            val isSuccess = viewModel.setFolderAsSelected(
-                                                path = osPath,
-                                                libraryName = libraryName
-                                            )
-                                            if (isSuccess) {
-                                                navigator.navigate(
-                                                    route = Routes.main_route,
-                                                    options = NavOptions(launchSingleTop = false),
-                                                )
-                                            }
-                                        }
-                                }
-                            }
-                        },
-                        createFolder = { path, name ->
-                            viewModel.createFolderAndGetPath(path, name)?.let { resultPath ->
-                                settingsViewModel.createAppSettingsFile(
-                                    path = resultPath,
-                                    libraryName = name,
-                                    themeName = "Dark" //todo
-                                )
-                                viewModel.createDbPath(
-                                    dbPath = resultPath,
-                                    libraryName = name
-                                )
-                                navigator.navigate(
-                                    route = Routes.main_route,
-                                    options = NavOptions(launchSingleTop = false),
-                                )
-                            }
-                        },
-                        selectedPathInfo = { pathInfo ->
-                            viewModel.selectPathInfo(pathInfo)
-                            navigator.navigate(
-                                route = Routes.main_route,
-                                options = NavOptions(launchSingleTop = false),
-                            )
-                        },
-                        renamePath = { pathInfo, newName ->
-                            val newPath = viewModel.renamePath(
-                                pathInfo = pathInfo,
-                                newName = newName,
-                            )
-                            settingsViewModel.updateLibraryNameInFile(
-                                path = newPath,
-                                oldName = pathInfo.libraryName,
-                                newName = newName
-                            )
-                        },
-                        restartApp = { restartWindow?.invoke() }
                     )
                 }
             }

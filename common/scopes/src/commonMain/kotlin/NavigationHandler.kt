@@ -3,4 +3,6 @@ interface NavigationHandler {
     fun navigateToSelectorVault(needPopBackStack: Boolean = false)
     fun navigateToBookCreator(popUpToMain: Boolean = false)
     fun goBack()
+    fun toMain()
+    fun restartWindow()
 }
