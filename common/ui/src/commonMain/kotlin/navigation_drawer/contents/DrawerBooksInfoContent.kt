@@ -1,6 +1,8 @@
 package navigation_drawer.contents
 
 import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
@@ -34,13 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import main_models.BookItemVo
 import main_models.BooksInfoHeader
+import navigation_drawer.contents.models.DrawerEvents
 
 
 @Composable
-fun DrawerBooksInfoContent(
+fun BaseEventScope<BaseEvent>.DrawerBooksInfoContent(
     booksLazyState: LazyListState,
     booksInfo: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookItemVo>>,
-    openBookListener: (bookId: String) -> Unit
 ) {
     /**don`t use padding in LazyColumn because items uses hovered **/
     LazyColumn(state = booksLazyState) {
@@ -99,7 +101,12 @@ fun DrawerBooksInfoContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable(interactionSource, null) {
-                                    openBookListener.invoke(book.id)
+                                    this@DrawerBooksInfoContent.sendEvent(
+                                        DrawerEvents.OpenBook(
+                                            painterSelectedBookInCache = null,
+                                            book.id
+                                        )
+                                    )
                                 }
                                 .hoverable(
                                     interactionSource = interactionSource,

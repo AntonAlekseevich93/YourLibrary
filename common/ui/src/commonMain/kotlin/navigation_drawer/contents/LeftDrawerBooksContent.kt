@@ -34,7 +34,6 @@ import tooltip_area.TooltipIconArea
 @Composable
 fun BaseEventScope<BaseEvent>.LeftDrawerBooksContent(
     booksInfoUiState: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookItemVo>>,
-    openBookListener: (bookId: String) -> Unit,
 ) {
     var booksButtonIsSelected by remember { mutableStateOf(true) }
     var authorButtonIsSelected by remember { mutableStateOf(false) }
@@ -122,7 +121,6 @@ fun BaseEventScope<BaseEvent>.LeftDrawerBooksContent(
             DrawerBooksInfoContent(
                 booksLazyState = booksLazyState,
                 booksInfo = booksInfoUiState,
-                openBookListener = openBookListener
             )
         }
     }

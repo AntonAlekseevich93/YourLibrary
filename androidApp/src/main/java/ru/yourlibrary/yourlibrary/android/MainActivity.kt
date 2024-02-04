@@ -98,7 +98,7 @@ fun createNavigationHandler(
             navigator.value?.goBack()
         }
 
-        override fun toMain() {
+        override fun navigateToMain() {
             navigator.value?.navigate(
                 route = Routes.main_route,
                 options = NavOptions(launchSingleTop = false),
@@ -107,6 +107,13 @@ fun createNavigationHandler(
 
         override fun restartWindow() {
             //nop
+        }
+
+        override fun navigateToBookInfo() {
+            navigator.value?.navigate(
+                route = Routes.book_info_route,
+                options = NavOptions(popUpTo = PopUpTo.Prev),
+            )
         }
 
     }

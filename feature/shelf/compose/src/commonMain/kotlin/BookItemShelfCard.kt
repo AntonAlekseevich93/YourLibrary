@@ -9,21 +9,19 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.BookItemVo
 import models.BookItemCardConfig
+import navigation_drawer.contents.models.DrawerEvents
 
 @Composable
-fun BookItemShelfCard(
+fun BaseEventScope<BaseEvent>.BookItemShelfCard(
     config: BookItemCardConfig,
     bookItem: BookItemVo,
-    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: String) -> Unit,
 ) {
     val url =
         if (bookItem.coverUrlFromParsing.isNotEmpty()) bookItem.coverUrlFromParsing else bookItem.coverUrl
@@ -38,7 +36,9 @@ fun BookItemShelfCard(
         Card(
             modifier = Modifier
                 .size(width = config.width.dp, height = config.height.dp)
-                .clickable { openBookListener.invoke(painter, bookItem.id) },
+                .clickable {
+                    this@BookItemShelfCard.sendEvent(DrawerEvents.OpenBook(painter, bookItem.id))
+                },
             shape = RoundedCornerShape(8.dp),
         ) {
             Box {

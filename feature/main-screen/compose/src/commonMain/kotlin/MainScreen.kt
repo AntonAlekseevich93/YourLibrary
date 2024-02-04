@@ -10,9 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
-import io.kamel.core.Resource
 import menu_bar.LeftMenuBar
 import models.MainScreenUiState
 import navigation_drawer.PlatformLeftDrawerContent
@@ -30,7 +28,6 @@ fun MainScreen(
     showSearch: MutableState<Boolean>,
     leftDrawerState: DrawerState,
     viewModel: MainScreenViewModel,
-    openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: String) -> Unit,
 ) {
     LaunchedEffect(uiState.selectedPathInfo) {
         viewModel.getSelectedPathInfo()
@@ -51,10 +48,7 @@ fun MainScreen(
                     title = uiState.selectedPathInfo.value.libraryName,
                     platform = platform,
                     content = {
-                        viewModel.LeftDrawerBooksContent(
-                            booksInfoUiState = uiState.booksInfoUiState,
-                            openBookListener = { openBookListener.invoke(null, it) }
-                        )
+                        viewModel.LeftDrawerBooksContent(booksInfoUiState = uiState.booksInfoUiState)
                     }
                 )
             },
@@ -82,10 +76,7 @@ fun MainScreen(
                         closeViewsTypeDropdown = viewModel::changeViewsTypes,
                         homeButtonListener = {}
                     )
-                    ShelfBoardScreen(
-                        platform = platform,
-                        openBookListener = openBookListener,
-                    )
+                    viewModel.ShelfBoardScreen(platform = platform)
                 }
 
                 CustomDockedSearchBar(

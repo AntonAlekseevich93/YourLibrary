@@ -5,7 +5,7 @@ import org.kodein.di.singleton
 
 val viewModelsModule = DI.Module("viewModelsModule") {
     bind<MainScreenViewModel>() with singleton {
-        MainScreenViewModel(instance(), instance(), instance(), instance())
+        MainScreenViewModel(instance(), instance(), instance(), instance(), instance())
     }
     bind<ShelfViewModel>() with singleton {
         ShelfViewModel(instance(), instance())

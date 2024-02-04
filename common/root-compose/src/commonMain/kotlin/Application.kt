@@ -46,8 +46,6 @@ fun Application(
     val leftDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val rightDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val showSearch = remember { mutableStateOf(false) }
-    val painterSelectedBookInCache: MutableState<Resource<Painter>?> = mutableStateOf(null)
-    val selectedBookId: MutableState<String> = mutableStateOf("")
     val dbPathExist = remember { mutableStateOf(viewModel.isDbPathIsExist(platform)) }
     val scope = rememberCoroutineScope()
 
@@ -81,26 +79,18 @@ fun Application(
                         showSearch = showSearch,
                         leftDrawerState = leftDrawerState,
                         viewModel = mainScreenViewModel,
-                        openBookListener = { painter, bookId ->
-                            painterSelectedBookInCache.value = painter
-                            selectedBookId.value = bookId
-                            navigator.navigate(
-                                route = Routes.book_info_route,
-                                options = NavOptions(popUpTo = PopUpTo.Prev),
-                            )
-                        },
                     )
                 }
 
                 dialog(route = Routes.book_info_route) {
                     BookScreen(
                         platform = platform,
-                        bookItemId = selectedBookId.value,
+                        bookItemId = uiState.selectedBookId.value,
                         showLeftDrawer = uiState.showLeftDrawerState,
                         showRightDrawer = uiState.showRightDrawerState,
                         showSearch = showSearch,
                         fullScreenBookInfo = uiState.fullScreenBookInfo,
-                        painterInCache = painterSelectedBookInCache.value,
+                        painterInCache = uiState.painterSelectedBookInCache.value,
                         isKeyboardShown = isKeyboardShown,
                         changeReadingStatusListener = { oldStatusId, bookId ->
                             mainScreenViewModel.changedReadingStatus(oldStatusId, bookId)

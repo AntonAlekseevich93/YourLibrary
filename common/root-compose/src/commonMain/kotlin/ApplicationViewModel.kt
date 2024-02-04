@@ -1,4 +1,6 @@
+import androidx.compose.ui.graphics.painter.Painter
 import database.SqlDelightDataSource
+import io.kamel.core.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -44,7 +46,7 @@ class ApplicationViewModel(
             is ProjectFoldersEvents.CreateFolder -> createFolder(event.path, event.name)
             is ProjectFoldersEvents.SelectPathInfo -> {
                 selectPathInfo(event.pathInfo)
-                navigationHandler.toMain()
+                navigationHandler.navigateToMain()
             }
 
             is ProjectFoldersEvents.RenamePath -> {
@@ -60,6 +62,14 @@ class ApplicationViewModel(
             }
 
             is ProjectFoldersEvents.RestartApp -> navigationHandler.restartWindow()
+        }
+    }
+
+    override fun openBook(painter: Resource<Painter>?, bookId: String) {
+        _uiState.value.apply {
+            painterSelectedBookInCache.value = painter
+            selectedBookId.value = bookId
+            navigationHandler.navigateToBookInfo()
         }
     }
 
@@ -152,7 +162,7 @@ class ApplicationViewModel(
                         libraryName = libraryName
                     )
                     if (isSuccess) {
-                        navigationHandler.toMain()
+                        navigationHandler.navigateToMain()
                     }
                 }
             }
@@ -195,7 +205,7 @@ class ApplicationViewModel(
                 dbPath = resultPath,
                 libraryName = name
             )
-            navigationHandler.toMain()
+            navigationHandler.navigateToMain()
         }
     }
 }

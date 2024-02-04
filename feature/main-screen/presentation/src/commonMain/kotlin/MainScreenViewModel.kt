@@ -17,6 +17,7 @@ class MainScreenViewModel(
     private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,
     private val drawerScope: DrawerScope,
+    private val applicationScope: ApplicationScope,
 ) : MainScreenScope<BaseEvent> {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val _uiState: MutableStateFlow<MainScreenUiState> =
@@ -41,6 +42,10 @@ class MainScreenViewModel(
             is LeftMenuBarEvents.OnSearchClickEvent -> navigationHandler.navigateToSearch()
             is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator()
             is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault()
+            is DrawerEvents.OpenBook -> applicationScope.openBook(
+                event.painterSelectedBookInCache,
+                event.bookId
+            )
         }
     }
 
