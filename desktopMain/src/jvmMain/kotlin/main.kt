@@ -13,6 +13,7 @@ import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +40,12 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import buttons.ButtonThemeSwitcher
 import di.PlatformConfiguration
+import main_models.TooltipItem
+import moe.tlaster.precompose.PreComposeApp
+import moe.tlaster.precompose.navigation.NavOptions
+import moe.tlaster.precompose.navigation.Navigator
+import moe.tlaster.precompose.navigation.PopUpTo
+import moe.tlaster.precompose.navigation.rememberNavigator
 import platform.Platform
 import java.awt.FileDialog
 import java.awt.Frame
@@ -61,16 +68,70 @@ fun main() = application {
     }
 }
 
+fun createNavigationHandler(
+    navigator: MutableState<Navigator?>,
+    desktopTooltip: MutableState<TooltipItem>
+): NavigationHandler {
+    val handler = object : NavigationHandler {
+        override fun navigateToSearch() {
+
+        }
+
+        override fun navigateToSelectorVault(needPopBackStack: Boolean) {
+            desktopTooltip.value.showTooltip = false
+            //todo здесь происходит мигание анимации, но без этого баг. Подумать
+            if (needPopBackStack) navigator.value?.popBackStack()
+            navigator.value?.navigate(route = Routes.vault_route)
+        }
+
+        override fun navigateToBookCreator(popUpToMain: Boolean) {
+            val options = if (popUpToMain)
+                NavOptions(popUpTo = PopUpTo(Routes.main_route))
+            else {
+                NavOptions(launchSingleTop = false)
+            }
+
+            navigator.value?.navigate(
+                route = Routes.book_creator_route,
+                options = options,
+            )
+        }
+
+        override fun goBack() {
+            desktopTooltip.value.showTooltip = false
+            navigator.value?.goBack()
+        }
+
+    }
+    return handler
+}
+
+fun createTooltipHandler(
+    desktopTooltip: MutableState<TooltipItem>,
+): TooltipHandler {
+    val handler = object : TooltipHandler {
+        override fun setTooltip(tooltip: TooltipItem) {
+            desktopTooltip.value = tooltip
+        }
+    }
+    return handler
+}
+
 @Composable
 private fun ApplicationScope.MainWindow(
     state: WindowState,
     restart: () -> Unit,
 ) {
+    val navigator: MutableState<Navigator?> = mutableStateOf(null)
+    val desktopTooltip = remember { mutableStateOf(TooltipItem()) }
     PlatformSDK.init(
         configuration = PlatformConfiguration(),
         platformInfo = PlatformInfo(),
-        platform = Platform.DESKTOP
+        platform = Platform.DESKTOP,
+        navigationHandler = createNavigationHandler(navigator, desktopTooltip),
+        tooltipHandler = createTooltipHandler(desktopTooltip)
     )
+
     val isFullScreen = remember { mutableStateOf(false) }
     val windowCloseListener = ::exitApplication
 
@@ -91,7 +152,15 @@ private fun ApplicationScope.MainWindow(
                 if (fullScreenState.placement == WindowPlacement.Floating) {
                     isFullScreen.value = false
                 }
-                Application(Platform.DESKTOP, restartWindow = restart)
+                PreComposeApp {
+                    navigator.value = rememberNavigator()
+                    Application(
+                        platform = Platform.DESKTOP,
+                        restartWindow = restart,
+                        navigator = navigator.value ?: rememberNavigator(),
+                        desktopTooltip = desktopTooltip,
+                    )
+                }
             }
         }
     } else {
@@ -117,7 +186,15 @@ private fun ApplicationScope.MainWindow(
                             isFullScreen.value = true
                         }
                     )
-                    Application(Platform.DESKTOP, restartWindow = restart)
+                    PreComposeApp {
+                        navigator.value = rememberNavigator()
+                        Application(
+                            platform = Platform.DESKTOP,
+                            restartWindow = restart,
+                            navigator = navigator.value ?: rememberNavigator(),
+                            desktopTooltip = desktopTooltip
+                        )
+                    }
                 }
             }
         }

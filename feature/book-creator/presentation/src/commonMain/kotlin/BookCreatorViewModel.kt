@@ -1,3 +1,5 @@
+import androidx.compose.ui.text.input.TextFieldValue
+import book_editor.BookEditorEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,13 +16,22 @@ import models.BookCreatorUiState
 class BookCreatorViewModel(
     private val platformInfo: PlatformInfo,
     private val interactor: BookCreatorInteractor,
-) {
+) : BaseEventScope<BaseEvent> {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var parsingJob: Job? = null
     private var searchJob: Job? = null
     private val _uiState: MutableStateFlow<BookCreatorUiState> =
         MutableStateFlow(BookCreatorUiState())
     val uiState = _uiState.asStateFlow()
+
+    override fun sendEvent(event: BaseEvent) {
+        when (event) {
+            is BookEditorEvents.OnAuthorTextChanged -> onAuthorTextChanged(
+                event.textFieldValue,
+                event.textWasChanged
+            )
+        }
+    }
 
     fun startParseBook(url: String) {
         parsingJob?.cancel()
@@ -149,6 +160,20 @@ class BookCreatorViewModel(
                 relatedToAuthorId = null,
                 books = emptyList()
             )
+        }
+    }
+
+    private fun onAuthorTextChanged(textFieldValue: TextFieldValue, textWasChanged: Boolean) {
+        _uiState.value.apply {
+            if (selectedAuthor.value != null && bookValues.value.isSelectedAuthorNameWasChanged()) {
+                clearSelectedAuthor()
+            }
+
+            if (textFieldValue.text.isEmpty()) {
+                clearSearchAuthor()
+            } else if (textWasChanged) {
+                searchAuthor(textFieldValue.text)
+            }
         }
     }
 }

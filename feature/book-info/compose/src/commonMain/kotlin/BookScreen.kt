@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -21,18 +20,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
-import book_editor.BookValues
 import di.Inject
 import io.kamel.core.Resource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import main_models.BookItemVo
 import menu_bar.LeftMenuBar
 import navigation_drawer.PlatformLeftDrawerContent
 import navigation_drawer.PlatformNavigationDrawer
 import platform.Platform
 import platform.isDesktop
-import tooltip_area.TooltipItem
 
 @Composable
 fun BookScreen(
@@ -42,20 +38,13 @@ fun BookScreen(
     showSearch: MutableState<Boolean>,
     showLeftDrawer: MutableState<Boolean>,
     showRightDrawer: MutableState<Boolean>,
-    leftDrawerState: DrawerState,
-    rightDrawerState: DrawerState,
     isKeyboardShown: State<Boolean>,
     painterInCache: Resource<Painter>? = null,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
-    onClose: () -> Unit,
-    createBookListener: () -> Unit,
     changeReadingStatusListener: (oldStatusId: String, bookId: String) -> Unit,
-    bookItemWasChangedListener: (oldItem: BookItemVo, newItem: BookItemVo) -> Unit,
-    selectAnotherVaultListener: () -> Unit,
 ) {
     val viewModel = remember { Inject.instance<BookInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
-    val bookValues = remember { mutableStateOf(BookValues()) }
+    val bookValues = uiState.bookValues
     uiState.bookItem.value?.let {
         bookValues.value.setBookItem(it)
     }
@@ -71,7 +60,6 @@ fun BookScreen(
     else {
         Color.Transparent
     }
-    val isEditMode = remember { mutableStateOf(false) }
 
     /** this is necessary to get rid of the white blinking effect due
      * to the background transparent when collapsing and expanding */
@@ -112,16 +100,8 @@ fun BookScreen(
                     }
                 }
 
-                LeftMenuBar(
-                    searchListener = {
-                        showSearch.value = true
-                    },
-                    tooltipCallback = tooltipCallback,
-                    open = {
-
-                    },
-                    createBookListener = createBookListener,
-                    selectAnotherVaultListener = selectAnotherVaultListener,
+                viewModel.LeftMenuBar(
+                    open = {},
                 )
             }
         }
@@ -131,21 +111,9 @@ fun BookScreen(
             leftDrawerContent = {
                 AnimatedVisibility(visible = fullScreenBookInfo.value) {
                     Row {
-                        PlatformLeftDrawerContent(
+                        viewModel.PlatformLeftDrawerContent(
                             title = uiState.selectedPathInfo.value.libraryName,
                             platform = platform,
-                            tooltipCallback = tooltipCallback,
-                            closeSidebarListener = {
-                                scope.launch {
-                                    if (!showLeftDrawer.value) {
-                                        showLeftDrawer.value = true
-                                        leftDrawerState.open()
-                                    } else {
-                                        showLeftDrawer.value = false
-                                        leftDrawerState.close()
-                                    }
-                                }
-                            },
                             content = {
 
                             }
@@ -165,80 +133,19 @@ fun BookScreen(
                 contentAlignment = if (platform.isDesktop()) Alignment.TopCenter else Alignment.TopStart,
             ) {
                 if (uiState.bookItem.value != null) {
-                    BookScreenContent(
+                    viewModel.BookScreenContent(
                         platform = platform,
                         painterInCache = painterInCache,
                         bookItem = uiState.bookItem.value!!,
                         bookValues = bookValues,
-                        onClose = onClose,
                         fullScreenBookInfo = fullScreenBookInfo,
                         showLeftDrawer = showLeftDrawer,
                         showRightDrawer = showRightDrawer,
-                        isEditMode = isEditMode,
+                        isEditMode = uiState.isEditMode,
                         isKeyboardShown = isKeyboardShown,
                         similarAuthorList = uiState.similarSearchAuthors,
                         selectedAuthor = uiState.selectedAuthor,
-                        openLeftDrawerListener = {
-                            scope.launch {
-                                if (!showLeftDrawer.value) {
-                                    showLeftDrawer.value = true
-                                    leftDrawerState.open()
-                                } else {
-                                    showLeftDrawer.value = false
-                                    leftDrawerState.close()
-                                }
-                            }
-                        },
-                        openRightDrawerListener = {
-                            scope.launch {
-                                if (!showRightDrawer.value) {
-                                    showRightDrawer.value = true
-                                    rightDrawerState.open()
-                                } else {
-                                    showRightDrawer.value = false
-                                    rightDrawerState.close()
-                                }
-                            }
-                        },
-                        closeRightDrawerListener = {
-                            scope.launch {
-                                if (!showRightDrawer.value) {
-                                    showRightDrawer.value = true
-                                    rightDrawerState.open()
-                                } else {
-                                    showRightDrawer.value = false
-                                    rightDrawerState.close()
-                                }
-                            }
-                        },
-                        tooltipCallback = tooltipCallback,
-                        editBookModeCallback = { needCreateNewAuthor ->
-                            if (isEditMode.value && uiState.bookItem.value != null) {
-                                bookValues.value.updateBookWithEmptyAuthorId(
-                                    bookId = uiState.bookItem.value!!.id,
-                                    timestampOfCreating = uiState.bookItem.value!!.timestampOfCreating,
-                                    timestampOfUpdating = viewModel.getCurrentTimeInMillis(),
-                                )?.let {
-                                    bookItemWasChangedListener.invoke(uiState.bookItem.value!!, it)
-                                    viewModel.updateBook(
-                                        bookItem = it,
-                                        needCreateNewAuthor = needCreateNewAuthor
-                                    )
-                                }
-                            }
-
-                            isEditMode.value = !isEditMode.value
-                        },
-                        onAuthorTextChanged = { newValue, textWasChanged ->
-                            if (uiState.selectedAuthor.value != null && bookValues.value.isSelectedAuthorNameWasChanged()) {
-                                viewModel.clearSelectedAuthor()
-                            }
-                            if (newValue.text.isEmpty()) {
-                                viewModel.clearSearchAuthor()
-                            } else if (textWasChanged) {
-                                viewModel.searchAuthor(newValue.text)
-                            }
-                        },
+                        needCreateNewAuthor = uiState.needCreateNewAuthor,
                         onSuggestionAuthorClickListener = { author ->
                             viewModel.setSelectedAuthor(author)
                             bookValues.value.authorName.value =

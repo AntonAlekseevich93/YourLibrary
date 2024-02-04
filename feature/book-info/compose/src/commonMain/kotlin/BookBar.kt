@@ -17,13 +17,15 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import main_models.TooltipPosition
+import models.BookScreenEvents
+import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
+import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
-import tooltip_area.TooltipItem
-import tooltip_area.TooltipPosition
 
 @Composable
-fun FullBookBar(
+fun BaseEventScope<BaseEvent>.FullBookBar(
     platform: Platform,
     isFullscreen: State<Boolean>,
     showLeftDrawer: State<Boolean>,
@@ -31,11 +33,6 @@ fun FullBookBar(
     isEditMode: State<Boolean>,
     hideSaveButton: State<Boolean>,
     onFullscreen: () -> Unit,
-    openLeftDrawerListener: () -> Unit,
-    openRightDrawerListener: () -> Unit,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
-    editBookCallback: () -> Unit,
-    onClose: () -> Unit,
 ) {
     when (platform) {
         Platform.MOBILE -> {
@@ -46,11 +43,6 @@ fun FullBookBar(
                 isEditMode = isEditMode,
                 onFullscreen = onFullscreen,
                 hideSaveButton = hideSaveButton,
-                openLeftDrawerListener = openLeftDrawerListener,
-                openRightDrawerListener = openRightDrawerListener,
-                editBookCallback = editBookCallback,
-                onClose = onClose,
-                tooltipCallback = tooltipCallback,
             )
         }
 
@@ -62,29 +54,19 @@ fun FullBookBar(
                 isEditMode = isEditMode,
                 onFullscreen = onFullscreen,
                 hideSaveButton = hideSaveButton,
-                openLeftDrawerListener = openLeftDrawerListener,
-                openRightDrawerListener = openRightDrawerListener,
-                editBookCallback = editBookCallback,
-                onClose = onClose,
-                tooltipCallback = tooltipCallback
             )
         }
     }
 }
 
 @Composable
-internal fun BookBar(
+internal fun BaseEventScope<BaseEvent>.BookBar(
     isFullscreen: State<Boolean>,
     showLeftDrawer: State<Boolean>,
     showRightDrawer: State<Boolean>,
     hideSaveButton: State<Boolean>,
     isEditMode: State<Boolean>,
     onFullscreen: () -> Unit,
-    openLeftDrawerListener: () -> Unit,
-    openRightDrawerListener: () -> Unit,
-    editBookCallback: () -> Unit,
-    onClose: () -> Unit,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp, max = 50.dp).padding(start = 6.dp),
@@ -103,7 +85,9 @@ internal fun BookBar(
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     },
                 ) {
                     //todo
@@ -115,9 +99,13 @@ internal fun BookBar(
                     modifier = Modifier.padding(start = 10.dp),
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,
-                    onClick = openLeftDrawerListener,
+                    onClick = {
+                        this@BookBar.sendEvent(DrawerEvents.OpenLeftDrawerOrCloseEvent)
+                    },
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     },
                 )
             }
@@ -132,9 +120,17 @@ internal fun BookBar(
                 iconTint = if (isEditMode.value) ApplicationTheme.colors.successColor else ApplicationTheme.colors.mainIconsColor,
                 pointerInnerPadding = 4.dp,
                 tooltipCallback = {
-                    tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                    this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                        position = TooltipPosition.BOTTOM
+                    }))
                 },
-                onClick = editBookCallback
+                onClick = {
+                    if (isEditMode.value) {
+                        this@BookBar.sendEvent(BookScreenEvents.SaveBookAfterEditing)
+                    } else {
+                        this@BookBar.sendEvent(BookScreenEvents.SetEditMode)
+                    }
+                }
             )
         }
 
@@ -145,7 +141,9 @@ internal fun BookBar(
             iconSize = 18.dp,
             pointerInnerPadding = 4.dp,
             tooltipCallback = {
-                tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                    position = TooltipPosition.BOTTOM
+                }))
             },
         ) {
             //todo
@@ -157,7 +155,9 @@ internal fun BookBar(
             iconSize = 18.dp,
             pointerInnerPadding = 4.dp,
             tooltipCallback = {
-                tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                    position = TooltipPosition.BOTTOM
+                }))
             },
         ) {
             //todo
@@ -199,9 +199,13 @@ internal fun BookBar(
                     modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,
-                    onClick = openRightDrawerListener,
+                    onClick = {
+                        this@BookBar.sendEvent(DrawerEvents.OpenRightDrawerOrCloseEvent)
+                    },
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     },
                 )
                 Divider(
@@ -217,7 +221,9 @@ internal fun BookBar(
                         pointerInnerPadding = 4.dp,
                         onClick = onFullscreen,
                         tooltipCallback = {
-                            tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                            this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                                position = TooltipPosition.BOTTOM
+                            }))
                         },
                     )
                 } else {
@@ -229,7 +235,9 @@ internal fun BookBar(
                         pointerInnerPadding = 4.dp,
                         onClick = onFullscreen,
                         tooltipCallback = {
-                            tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                            this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                                position = TooltipPosition.BOTTOM
+                            }))
                         },
                     )
                 }
@@ -239,9 +247,13 @@ internal fun BookBar(
                     modifier = Modifier.padding(start = 10.dp, end = 16.dp),
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,
-                    onClick = onClose,
+                    onClick = {
+                        this@BookBar.sendEvent(BookScreenEvents.BookScreenCloseEvent)
+                    },
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     },
                 )
             }

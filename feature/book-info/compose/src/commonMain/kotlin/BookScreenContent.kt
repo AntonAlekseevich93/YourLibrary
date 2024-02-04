@@ -36,22 +36,22 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import book_editor.BookEditor
-import book_editor.BookValues
 import date.CommonDatePicker
 import io.kamel.core.Resource
 import main_models.AuthorVo
 import main_models.BookItemVo
+import main_models.BookValues
 import main_models.DatePickerType
 import main_models.ReadingStatus
+import models.BookScreenEvents
 import navigation_drawer.PlatformNavigationDrawer
 import navigation_drawer.PlatformRightDrawerContent
 import navigation_drawer.SelectedRightDrawerItem
 import platform.Platform
-import tooltip_area.TooltipItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookScreenContent(
+fun BaseEventScope<BaseEvent>.BookScreenContent(
     platform: Platform,
     bookItem: BookItemVo,
     bookValues: MutableState<BookValues>,
@@ -62,16 +62,10 @@ fun BookScreenContent(
     showLeftDrawer: State<Boolean>,
     showRightDrawer: MutableState<Boolean>,
     isEditMode: State<Boolean>,
+    needCreateNewAuthor: MutableState<Boolean>,
     isKeyboardShown: State<Boolean>,
-    openLeftDrawerListener: () -> Unit,
-    openRightDrawerListener: () -> Unit,
-    closeRightDrawerListener: () -> Unit,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
-    editBookModeCallback: (createNewAuthor: Boolean) -> Unit,
-    onAuthorTextChanged: (TextFieldValue, textWasChanged: Boolean) -> Unit,
     onSuggestionAuthorClickListener: (author: AuthorVo) -> Unit,
     changeReadingStatusListener: (selectedStatus: ReadingStatus, oldStatusId: String) -> Unit,
-    onClose: () -> Unit,
 ) {
 
     val targetVerticalPadding = if (fullScreenBookInfo.value) 0.dp else 65.dp
@@ -101,7 +95,6 @@ fun BookScreenContent(
     var datePickerType by remember { mutableStateOf(DatePickerType.StartDate) }
     val scrollableState = rememberScrollState()
     val hideSaveButton = remember { mutableStateOf(false) }
-    val createNewAuthor = remember { mutableStateOf(false) }
     val linkToAuthor = remember { mutableStateOf(false) }
     hideSaveButton.value = bookValues.value.bookName.value.text.isEmpty() ||
             bookValues.value.authorName.value.text.isEmpty()
@@ -113,7 +106,7 @@ fun BookScreenContent(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
-                        onClose.invoke()
+                        this@BookScreenContent.sendEvent(BookScreenEvents.BookScreenCloseEvent)
                     },
                 )
             },
@@ -155,12 +148,12 @@ fun BookScreenContent(
                                 isFullscreen = fullScreenBookInfo,
                                 isCanClose = true,
                                 selectedItem = SelectedRightDrawerItem.STRUCTURE,
-                                closeSidebarListener = closeRightDrawerListener,
                                 expandOrCollapseListener = {
                                     fullScreenBookInfo.value = !fullScreenBookInfo.value
                                 },
-                                closeWindow = onClose,
-                                tooltipCallback = tooltipCallback
+                                closeWindow = {
+                                    this@BookScreenContent.sendEvent(BookScreenEvents.BookScreenCloseEvent)
+                                },
                             )
                         }
                     }
@@ -174,14 +167,9 @@ fun BookScreenContent(
                         showLeftDrawer = showLeftDrawer,
                         showRightDrawer = showRightDrawer,
                         hideSaveButton = hideSaveButton,
-                        onClose = onClose,
                         onFullscreen = { fullScreenBookInfo.value = !fullScreenBookInfo.value },
                         isFullscreen = fullScreenBookInfo,
-                        openLeftDrawerListener = openLeftDrawerListener,
-                        openRightDrawerListener = openRightDrawerListener,
                         isEditMode = isEditMode,
-                        editBookCallback = { editBookModeCallback.invoke(createNewAuthor.value) },
-                        tooltipCallback = tooltipCallback
                     )
 
                     Divider(
@@ -203,14 +191,13 @@ fun BookScreenContent(
                                     start = 16.dp,
                                     end = 16.dp
                                 ),
-                                createNewAuthor = createNewAuthor,
+                                createNewAuthor = needCreateNewAuthor,
                                 linkToAuthor = linkToAuthor,
                                 isKeyboardShown = isKeyboardShown,
                                 showDataPickerListener = {
                                     datePickerType = it
                                     showDataPicker.value = true
                                 },
-                                onAuthorTextChanged = onAuthorTextChanged,
                                 onSuggestionAuthorClickListener = onSuggestionAuthorClickListener,
                             )
                         }

@@ -1,3 +1,5 @@
+import androidx.compose.ui.text.input.TextFieldValue
+import book_editor.BookEditorEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -9,12 +11,22 @@ import kotlinx.coroutines.withContext
 import main_models.AuthorVo
 import main_models.BookItemVo
 import main_models.ReadingStatus
+import menu_bar.LeftMenuBarEvents
+import models.BookInfoScope
 import models.BookInfoUiState
+import models.BookScreenEvents
+import navigation_drawer.contents.models.DrawerEvents
+import tooltip_area.TooltipEvents
 
 class BookInfoViewModel(
     private val platformInfo: PlatformInfo,
     private val interactor: BookInfoInteractor,
-) {
+    private val navigationHandler: NavigationHandler,
+    private val tooltipHandler: TooltipHandler,
+    private val applicationScope: ApplicationScope,
+    private val drawerScope: DrawerScope,
+    private val mainScreenScope: MainScreenScope<BaseEvent>
+) : BookInfoScope<BaseEvent> {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
     private val _uiState: MutableStateFlow<BookInfoUiState> = MutableStateFlow(BookInfoUiState())
@@ -29,6 +41,30 @@ class BookInfoViewModel(
                     }
                 }
             }
+        }
+    }
+
+    override fun sendEvent(event: BaseEvent) {
+        when (event) {
+            is TooltipEvents.SetTooltipEvent -> tooltipHandler.setTooltip(event.tooltip)
+            is DrawerEvents.OpenLeftDrawerOrCloseEvent -> drawerScope.openLeftDrawerOrClose()
+            is DrawerEvents.OpenRightDrawerOrCloseEvent -> drawerScope.openRightDrawerOrClose()
+            is BookScreenEvents.BookScreenCloseEvent -> applicationScope.closeBookScreen()
+            is BookScreenEvents.SaveBookAfterEditing -> saveBookAfterEditing()
+            is BookScreenEvents.SetEditMode -> _uiState.value.isEditMode.value = true
+            is BookEditorEvents.OnAuthorTextChanged -> onAuthorTextChanged(
+                event.textFieldValue,
+                event.textWasChanged
+            )
+
+            is LeftMenuBarEvents.OnSearchClickEvent -> navigationHandler.navigateToSearch()
+            is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator(
+                popUpToMain = true
+            )
+
+            is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault(
+                needPopBackStack = true
+            )
         }
     }
 
@@ -52,7 +88,19 @@ class BookInfoViewModel(
         _uiState.value.clearSimilarAuthorList()
     }
 
-    fun updateBook(bookItem: BookItemVo, needCreateNewAuthor: Boolean) {
+
+    fun changeReadingStatus(status: ReadingStatus, bookId: String) {
+        scope.launch {
+            interactor.changeBookStatusId(status, bookId)
+        }
+    }
+
+
+    fun setSelectedAuthor(author: AuthorVo) {
+        _uiState.value.setSelectedAuthor(author)
+    }
+
+    private fun updateBook(bookItem: BookItemVo, needCreateNewAuthor: Boolean) {
         scope.launch {
             if (needCreateNewAuthor) {
                 val author = createNewAuthor(authorName = bookItem.authorName)
@@ -64,19 +112,7 @@ class BookInfoViewModel(
         }
     }
 
-    fun changeReadingStatus(status: ReadingStatus, bookId: String) {
-        scope.launch {
-            interactor.changeBookStatusId(status, bookId)
-        }
-    }
-
-    fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
-
-    fun setSelectedAuthor(author: AuthorVo) {
-        _uiState.value.setSelectedAuthor(author)
-    }
-
-    fun searchAuthor(authorName: String) {
+    private fun searchAuthor(authorName: String) {
         searchJob?.cancel()
         if (authorName.length >= 2) {
             searchJob = scope.launch {
@@ -90,10 +126,6 @@ class BookInfoViewModel(
         } else {
             clearSearchAuthor()
         }
-    }
-
-    fun clearSelectedAuthor() {
-        _uiState.value.clearSelectedAuthor()
     }
 
     private fun createNewAuthor(
@@ -111,4 +143,39 @@ class BookInfoViewModel(
             )
         }
     }
+
+    private fun onAuthorTextChanged(textFieldValue: TextFieldValue, textWasChanged: Boolean) {
+        _uiState.value.apply {
+            if (selectedAuthor.value != null && bookValues.value.isSelectedAuthorNameWasChanged()) {
+                clearSelectedAuthor()
+            }
+            if (textFieldValue.text.isEmpty()) {
+                clearSearchAuthor()
+            } else if (textWasChanged) {
+                searchAuthor(textFieldValue.text)
+            }
+        }
+    }
+
+    private fun saveBookAfterEditing() {
+        uiState.value.apply {
+            if (isEditMode.value && bookItem.value != null) {
+                bookValues.value.updateBookWithEmptyAuthorId(
+                    bookId = bookItem.value!!.id,
+                    timestampOfCreating = bookItem.value!!.timestampOfCreating,
+                    timestampOfUpdating = getCurrentTimeInMillis(),
+                )?.let {
+                    mainScreenScope.checkIfNeedUpdateBookItem(bookItem.value!!, it)
+                    updateBook(
+                        bookItem = it,
+                        needCreateNewAuthor = needCreateNewAuthor.value
+                    )
+                }
+            }
+
+            isEditMode.value = !isEditMode.value
+        }
+    }
+
+    private fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
 }

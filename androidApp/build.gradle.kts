@@ -39,8 +39,11 @@ android {
 }
 
 dependencies {
+    implementation(Dependencies.PreCompose.preComposeWithNavigation)
     implementation(project(":common:root-compose"))
     implementation(project(":common:theme"))
+    implementation(project(":common:scopes"))
+    implementation(project(":common:models"))
     implementation("androidx.compose.ui:ui:1.5.4")
     implementation("androidx.compose.ui:ui-tooling:1.5.4")
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.4")

@@ -9,12 +9,15 @@ kotlin {
         named("jvmMain") {
             dependencies {
                 Dependencies.Kotlin
+                implementation(Dependencies.PreCompose.preComposeWithNavigation)
                 implementation(compose.uiTooling)
                 implementation(compose.material3)
                 implementation(compose.desktop.currentOs)
                 api(project(":common:root-compose"))
                 api(project(":common:root-compose"))
                 api(project(":common:ui"))
+                api(project(":common:scopes"))
+                api(project(":common:models"))
             }
         }
     }

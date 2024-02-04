@@ -11,6 +11,7 @@ kotlin {
                 implementation(project(":common:core"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:models"))
+                implementation(project(":common:scopes"))
                 implementation(project(":common:ui"))
                 implementation(project(":common:resources:drawable"))
                 implementation(project(":common:resources:strings"))

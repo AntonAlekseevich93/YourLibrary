@@ -1,7 +1,9 @@
 package navigation_drawer
 
 import ApplicationTheme
+import BaseEvent
 import Drawable
+import BaseEventScope
 import Strings
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,18 +21,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import main_models.TooltipPosition
+import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
+import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
-import tooltip_area.TooltipItem
-import tooltip_area.TooltipPosition
-
 
 @Composable
-fun PlatformLeftDrawerContent(
+fun BaseEventScope<BaseEvent>.PlatformLeftDrawerContent(
     title: String,
     platform: Platform,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit)? = null,
-    closeSidebarListener: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     when (platform) {
@@ -38,7 +38,7 @@ fun PlatformLeftDrawerContent(
             DismissibleDrawerSheet(
                 drawerContainerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor,
             ) {
-                LeftDrawerContent(title, closeSidebarListener, tooltipCallback, content)
+                LeftDrawerContent(title, content)
             }
         }
 
@@ -47,17 +47,15 @@ fun PlatformLeftDrawerContent(
             DismissibleDrawerSheet(
                 drawerContainerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor,
             ) {
-                LeftDrawerContent(title, closeSidebarListener, tooltipCallback, content)
+                LeftDrawerContent(title, content)
             }
         }
     }
 }
 
 @Composable
-fun LeftDrawerContent(
+fun BaseEventScope<BaseEvent>.LeftDrawerContent(
     title: String,
-    closeSidebarListener: () -> Unit,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     Box(modifier = Modifier.widthIn(max = 400.dp)) {
@@ -80,24 +78,28 @@ fun LeftDrawerContent(
                     text = Strings.to_main,
                     drawableResName = Drawable.drawable_ic_home,
                     tooltipCallback = {
-                        tooltipCallback?.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@LeftDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     },
                     modifier = Modifier.padding(start = 6.dp, end = 6.dp),
-
-                    ) {
-                    closeSidebarListener.invoke()
-                }
+                    onClick = {
+                        this@LeftDrawerContent.sendEvent(DrawerEvents.OpenLeftDrawerOrCloseEvent)
+                    }
+                )
                 TooltipIconArea(
                     text = Strings.menu,
                     drawableResName = Drawable.drawable_ic_sidebar,
                     tooltipCallback = {
-                        tooltipCallback?.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@LeftDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     },
                     modifier = Modifier.padding(end = 12.dp),
-
-                    ) {
-                    closeSidebarListener.invoke()
-                }
+                    onClick = {
+                        this@LeftDrawerContent.sendEvent(DrawerEvents.OpenLeftDrawerOrCloseEvent)
+                    }
+                )
             }
             Divider(
                 modifier = Modifier.padding(top = 6.dp).fillMaxWidth().height(1.dp),

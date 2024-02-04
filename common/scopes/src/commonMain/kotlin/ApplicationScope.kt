@@ -1,0 +1,3 @@
+interface ApplicationScope {
+    fun closeBookScreen()
+}

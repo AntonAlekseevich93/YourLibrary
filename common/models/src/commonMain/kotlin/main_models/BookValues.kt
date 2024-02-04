@@ -1,11 +1,9 @@
-package book_editor
+package main_models
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import main_models.BookItemVo
-import main_models.ReadingStatus
 
 class BookValues(
     var parsingUrl: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),

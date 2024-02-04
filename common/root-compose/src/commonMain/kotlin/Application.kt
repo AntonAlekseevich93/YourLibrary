@@ -20,24 +20,25 @@ import androidx.compose.ui.graphics.painter.Painter
 import di.Inject
 import io.kamel.core.Resource
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.PreComposeApp
+import main_models.TooltipItem
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.NavOptions
+import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.PopUpTo
-import moe.tlaster.precompose.navigation.rememberNavigator
 import moe.tlaster.precompose.navigation.transition.NavTransition
 import platform.Platform
 import platform.isDesktop
 import platform.isMobile
 import screens.selecting_project.CreationAndSelectionProjectFolderScreen
 import tooltip_area.ShowTooltip
-import tooltip_area.TooltipItem
 
 @Composable
 fun Application(
     platform: Platform,
     restartWindow: (() -> Unit)? = null,
-    isKeyboardShown: State<Boolean> = mutableStateOf(false)
+    isKeyboardShown: State<Boolean> = mutableStateOf(false),
+    navigator: Navigator,
+    desktopTooltip: MutableState<TooltipItem>? = null,
 ) {
     val viewModel = remember { Inject.instance<ApplicationViewModel>() }
     val settingsViewModel = remember { Inject.instance<SettingsViewModel>() }
@@ -46,196 +47,175 @@ fun Application(
     val mainScreenUiState by mainScreenViewModel.uiState.collectAsState()
     val leftDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val rightDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val showLeftDrawer = remember { mutableStateOf(false) }
-    val showRightDrawer = remember { mutableStateOf(false) }
     val showSearch = remember { mutableStateOf(false) }
-    val fullScreenBookInfo = remember { mutableStateOf(false) }
-    val tooltip = remember { mutableStateOf(TooltipItem()) }
     val painterSelectedBookInCache: MutableState<Resource<Painter>?> = mutableStateOf(null)
     val selectedBookId: MutableState<String> = mutableStateOf("")
     val dbPathExist = remember { mutableStateOf(viewModel.isDbPathIsExist(platform)) }
     val scope = rememberCoroutineScope()
 
     AppTheme {
-        PreComposeApp {
-            val navigator = rememberNavigator()
-            navigator.currentEntry.collectAsState(null).value?.route?.route?.let { currentRoute ->
-                if (!fullScreenBookInfo.value && platform.isMobile() && currentRoute == Routes.main_route) {
-                    fullScreenBookInfo.value = true
-                }
+        navigator.currentEntry.collectAsState(null).value?.route?.route?.let { currentRoute ->
+            if (!uiState.fullScreenBookInfo.value && platform.isMobile() && currentRoute == Routes.main_route) {
+                uiState.fullScreenBookInfo.value = true
             }
+        }
 
-            Box(modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundColor)) {
-                NavHost(
-                    navigator = navigator,
-                    initialRoute = if (platform.isDesktop() && !dbPathExist.value) Routes.vault_route else Routes.main_route,
+        Box(modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundColor)) {
+            NavHost(
+                navigator = navigator,
+                initialRoute = if (platform.isDesktop() && !dbPathExist.value) Routes.vault_route else Routes.main_route,
+                navTransition = NavTransition(
+                    createTransition = fadeIn(animationSpec = tween(durationMillis = 1)),
+                    destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
+                ),
+            ) {
+                scene(
+                    route = Routes.main_route,
                     navTransition = NavTransition(
-                        createTransition = fadeIn(animationSpec = tween(durationMillis = 1)),
+                        createTransition = fadeIn(tween(1)),
                         destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
-                    ),
+                    )
                 ) {
-                    scene(
-                        route = Routes.main_route,
-                        navTransition = NavTransition(
-                            createTransition = fadeIn(tween(1)),
-                            destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
-                        )
-                    ) {
-                        MainScreen(
-                            uiState = mainScreenUiState,
-                            platform = platform,
-                            showLeftDrawer = showLeftDrawer,
-                            showSearch = showSearch,
-                            leftDrawerState = leftDrawerState,
-                            viewModel = mainScreenViewModel,
-                            openBookListener = { painter, bookId ->
-                                painterSelectedBookInCache.value = painter
-                                selectedBookId.value = bookId
-                                navigator.navigate(
-                                    route = Routes.book_info_route,
-                                    options = NavOptions(popUpTo = PopUpTo.Prev),
-                                )
-                            },
-                            tooltipCallback = {
-                                tooltip.value = it
-                            },
-                            createBookListener = {
-                                navigator.navigate(
-                                    route = Routes.book_creator_route,
-                                    options = NavOptions(launchSingleTop = false),
-                                )
-                            },
-                            selectAnotherVaultListener = {
-                                tooltip.value.showTooltip = false
-                                navigator.navigate(route = Routes.vault_route)
-                            }
-                        )
-                    }
+                    MainScreen(
+                        uiState = mainScreenUiState,
+                        platform = platform,
+                        showLeftDrawer = uiState.showLeftDrawerState,
+                        showSearch = showSearch,
+                        leftDrawerState = leftDrawerState,
+                        viewModel = mainScreenViewModel,
+                        openBookListener = { painter, bookId ->
+                            painterSelectedBookInCache.value = painter
+                            selectedBookId.value = bookId
+                            navigator.navigate(
+                                route = Routes.book_info_route,
+                                options = NavOptions(popUpTo = PopUpTo.Prev),
+                            )
+                        },
+                    )
+                }
 
-                    dialog(route = Routes.book_info_route) {
-                        BookScreen(
-                            platform = platform,
-                            bookItemId = selectedBookId.value,
-                            showLeftDrawer = showLeftDrawer,
-                            showRightDrawer = showRightDrawer,
-                            showSearch = showSearch,
-                            leftDrawerState = leftDrawerState,
-                            rightDrawerState = rightDrawerState,
-                            fullScreenBookInfo = fullScreenBookInfo,
-                            painterInCache = painterSelectedBookInCache.value,
-                            isKeyboardShown = isKeyboardShown,
-                            tooltipCallback = {
-                                tooltip.value = it
-                            },
-                            onClose = {
-                                fullScreenBookInfo.value = false
-                                tooltip.value.showTooltip = false
-                                navigator.goBack()
-                            },
-                            createBookListener = {
-                                navigator.navigate(
-                                    route = Routes.book_creator_route,
-                                    options = NavOptions(popUpTo = PopUpTo(Routes.main_route)),
-                                )
-                            },
-                            selectAnotherVaultListener = {
-                                tooltip.value.showTooltip = false
-                                navigator.popBackStack() //todo здесь происходит мигание анимации, но без этого баг. Подумать
-                                navigator.navigate(route = Routes.vault_route)
-                            },
-                            changeReadingStatusListener = { oldStatusId, bookId ->
-                                mainScreenViewModel.changedReadingStatus(oldStatusId, bookId)
-                            },
-                            bookItemWasChangedListener = { oldItem, newItem ->
-                                mainScreenViewModel.checkIfNeedUpdateBookItem(oldItem, newItem)
-                            }
-                        )
-                    }
+                dialog(route = Routes.book_info_route) {
+                    BookScreen(
+                        platform = platform,
+                        bookItemId = selectedBookId.value,
+                        showLeftDrawer = uiState.showLeftDrawerState,
+                        showRightDrawer = uiState.showRightDrawerState,
+                        showSearch = showSearch,
+                        fullScreenBookInfo = uiState.fullScreenBookInfo,
+                        painterInCache = painterSelectedBookInCache.value,
+                        isKeyboardShown = isKeyboardShown,
+                        changeReadingStatusListener = { oldStatusId, bookId ->
+                            mainScreenViewModel.changedReadingStatus(oldStatusId, bookId)
+                        },
+                    )
+                }
 
-                    dialog(route = Routes.book_creator_route) {
-                        BookCreatorScreen(
-                            platform = platform,
-                            fullScreenBookCreator = mutableStateOf(false),
-                            isKeyboardShown = isKeyboardShown,
-                            showRightDrawer = showRightDrawer,
-                            tooltipCallback = { tooltip.value = it },
-                            closeBookCreatorListener = {
-                                navigator.goBack()
-                            }
-                        )
-                    }
+                dialog(route = Routes.book_creator_route) {
+                    BookCreatorScreen(
+                        platform = platform,
+                        fullScreenBookCreator = mutableStateOf(false),
+                        isKeyboardShown = isKeyboardShown,
+                        showRightDrawer = uiState.showRightDrawerState,
+                        closeBookCreatorListener = {
+                            navigator.goBack()
+                        }
+                    )
+                }
 
-                    scene(
-                        route = Routes.vault_route,
-                        navTransition = NavTransition(
-                            createTransition = fadeIn(tween(1)),
-                            destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
-                        )
-                    ) {
-                        CreationAndSelectionProjectFolderScreen(
-                            pathInfoList = uiState.pathInfoList,
-                            selectedFolder = { dbPath ->
-                                viewModel.getPathByOs(dbPath).let { osPath ->
-                                    scope.launch {
-                                        settingsViewModel.getLibraryNameIfExist(osPath)
-                                            ?.let { libraryName ->
-                                                val isSuccess = viewModel.setFolderAsSelected(
-                                                    path = osPath,
-                                                    libraryName = libraryName
+                scene(
+                    route = Routes.vault_route,
+                    navTransition = NavTransition(
+                        createTransition = fadeIn(tween(1)),
+                        destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
+                    )
+                ) {
+                    CreationAndSelectionProjectFolderScreen(
+                        pathInfoList = uiState.pathInfoList,
+                        selectedFolder = { dbPath ->
+                            viewModel.getPathByOs(dbPath).let { osPath ->
+                                scope.launch {
+                                    settingsViewModel.getLibraryNameIfExist(osPath)
+                                        ?.let { libraryName ->
+                                            val isSuccess = viewModel.setFolderAsSelected(
+                                                path = osPath,
+                                                libraryName = libraryName
+                                            )
+                                            if (isSuccess) {
+                                                navigator.navigate(
+                                                    route = Routes.main_route,
+                                                    options = NavOptions(launchSingleTop = false),
                                                 )
-                                                if (isSuccess) {
-                                                    navigator.navigate(
-                                                        route = Routes.main_route,
-                                                        options = NavOptions(launchSingleTop = false),
-                                                    )
-                                                }
                                             }
-                                    }
+                                        }
                                 }
-                            },
-                            createFolder = { path, name ->
-                                viewModel.createFolderAndGetPath(path, name)?.let { resultPath ->
-                                    settingsViewModel.createAppSettingsFile(
-                                        path = resultPath,
-                                        libraryName = name,
-                                        themeName = "Dark" //todo
-                                    )
-                                    viewModel.createDbPath(
-                                        dbPath = resultPath,
-                                        libraryName = name
-                                    )
-                                    navigator.navigate(
-                                        route = Routes.main_route,
-                                        options = NavOptions(launchSingleTop = false),
-                                    )
-                                }
-                            },
-                            selectedPathInfo = { pathInfo ->
-                                viewModel.selectPathInfo(pathInfo)
+                            }
+                        },
+                        createFolder = { path, name ->
+                            viewModel.createFolderAndGetPath(path, name)?.let { resultPath ->
+                                settingsViewModel.createAppSettingsFile(
+                                    path = resultPath,
+                                    libraryName = name,
+                                    themeName = "Dark" //todo
+                                )
+                                viewModel.createDbPath(
+                                    dbPath = resultPath,
+                                    libraryName = name
+                                )
                                 navigator.navigate(
                                     route = Routes.main_route,
                                     options = NavOptions(launchSingleTop = false),
                                 )
-                            },
-                            renamePath = { pathInfo, newName ->
-                                val newPath = viewModel.renamePath(
-                                    pathInfo = pathInfo,
-                                    newName = newName,
-                                )
-                                settingsViewModel.updateLibraryNameInFile(
-                                    path = newPath,
-                                    oldName = pathInfo.libraryName,
-                                    newName = newName
-                                )
-                            },
-                            restartApp = { restartWindow?.invoke() }
-                        )
-                    }
-                }
-                if (platform.isDesktop() && tooltip.value.showTooltip) {
-                    ShowTooltip(tooltip.value)
+                            }
+                        },
+                        selectedPathInfo = { pathInfo ->
+                            viewModel.selectPathInfo(pathInfo)
+                            navigator.navigate(
+                                route = Routes.main_route,
+                                options = NavOptions(launchSingleTop = false),
+                            )
+                        },
+                        renamePath = { pathInfo, newName ->
+                            val newPath = viewModel.renamePath(
+                                pathInfo = pathInfo,
+                                newName = newName,
+                            )
+                            settingsViewModel.updateLibraryNameInFile(
+                                path = newPath,
+                                oldName = pathInfo.libraryName,
+                                newName = newName
+                            )
+                        },
+                        restartApp = { restartWindow?.invoke() }
+                    )
                 }
             }
+            if (platform.isDesktop() && desktopTooltip?.value?.showTooltip == true) {
+                ShowTooltip(desktopTooltip.value)
+            }
+        }
+    }
+
+    uiState.closeLeftDrawerEvent.value = {
+        scope.launch {
+            leftDrawerState.close()
+        }
+    }
+
+    uiState.openLeftDrawerEvent.value = {
+        scope.launch {
+            leftDrawerState.open()
+        }
+    }
+
+    uiState.closeRightDrawerEvent.value = {
+        scope.launch {
+            rightDrawerState.close()
+        }
+    }
+
+    uiState.openRightDrawerEvent.value = {
+        scope.launch {
+            rightDrawerState.open()
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import main_models.AuthorVo
 import main_models.BookItemVo
+import main_models.BookValues
 import main_models.ReadingStatus
 import main_models.rest.LoadingStatus
 
@@ -17,7 +18,8 @@ class BookCreatorUiState(
     val needUpdateBookInfo: MutableState<Boolean> = mutableStateOf(false),
     val selectedAuthor: MutableState<AuthorVo?> = mutableStateOf<AuthorVo?>(null),
     val similarSearchAuthors: SnapshotStateList<AuthorVo> = mutableStateListOf(),
-    val authorWasSelectedProgrammatically: MutableState<() -> Unit> = mutableStateOf({})
+    val authorWasSelectedProgrammatically: MutableState<() -> Unit> = mutableStateOf({}),
+    val bookValues: MutableState<BookValues> =  mutableStateOf(BookValues()),
 ) {
     fun startParsing() {
         loadingStatus.value = LoadingStatus.LOADING

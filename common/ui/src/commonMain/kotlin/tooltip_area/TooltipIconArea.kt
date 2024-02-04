@@ -27,6 +27,8 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import main_models.TooltipItem
+import main_models.TooltipPosition
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -138,19 +140,4 @@ fun ShowTooltip(
         )
     }
 }
-
-enum class TooltipPosition {
-    RIGHT,
-    LEFT,
-    TOP,
-    BOTTOM,
-    NONE
-}
-
-class TooltipItem(
-    val text: String = "",
-    val offset: Offset = Offset(0f, 0f),
-    var showTooltip: Boolean = false,
-    var position: TooltipPosition = TooltipPosition.NONE
-)
 

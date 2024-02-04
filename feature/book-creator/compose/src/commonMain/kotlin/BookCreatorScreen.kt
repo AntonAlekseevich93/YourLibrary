@@ -51,7 +51,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import book_editor.AuthorIsNotSelectedInfo
 import book_editor.BookEditor
-import book_editor.BookValues
+import main_models.BookValues
 import containters.CenterBoxContainer
 import date.CommonDatePicker
 import di.Inject
@@ -71,7 +71,6 @@ import platform.isMobile
 import tags.CustomTag
 import text_fields.DELAY_FOR_LISTENER_PROCESSING
 import text_fields.TextFieldWithTitleAndSuggestion
-import tooltip_area.TooltipItem
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
@@ -81,14 +80,12 @@ fun BookCreatorScreen(
     fullScreenBookCreator: MutableState<Boolean>,
     showRightDrawer: MutableState<Boolean>,
     isKeyboardShown: State<Boolean>,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     closeBookCreatorListener: () -> Unit,
 ) {
     val viewModel = remember { Inject.instance<BookCreatorViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val scrollableState = rememberScrollState()
-    val bookValues by remember { mutableStateOf(BookValues()) }
 
     val targetVerticalPadding =
         if (fullScreenBookCreator.value || platform.isMobile()) 0.dp else 65.dp
@@ -129,7 +126,7 @@ fun BookCreatorScreen(
         if (uiState.needUpdateBookInfo.value) {
             urlFieldIsWork.value = false
             uiState.bookItem.value?.let { book ->
-                updateBookValues(bookValues = bookValues, book = book)
+                updateBookValues(bookValues = uiState.bookValues.value, book = book)
             }
             uiState.needUpdateBookInfo.value = false
         }
@@ -140,7 +137,7 @@ fun BookCreatorScreen(
             val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
                 "(${author.relatedAuthors.joinToString { it.name }})"
             } else ""
-            bookValues.setSelectedAuthorName(
+            uiState.bookValues.value.setSelectedAuthorName(
                 author.name,
                 relatedAuthorsNames = textPostfix
             )
@@ -201,8 +198,8 @@ fun BookCreatorScreen(
                         ) {
                             AuthorIsNotSelectedInfo()
                         } else if (
-                            bookValues.isRequiredFieldsFilled() && createNewAuthor.value ||
-                            bookValues.isRequiredFieldsFilled() && uiState.selectedAuthor.value != null
+                           uiState.bookValues.value.isRequiredFieldsFilled() && createNewAuthor.value ||
+                           uiState.bookValues.value.isRequiredFieldsFilled() && uiState.selectedAuthor.value != null
                         ) {
                             CustomTag(
                                 text = Strings.save,
@@ -212,7 +209,7 @@ fun BookCreatorScreen(
                                 maxHeight = 50.dp,
                                 onClick = {
                                     viewModel.createBook(
-                                        bookItemVoOrNull = bookValues.createBookItemWithoutAuthorIdOrNull(
+                                        bookItemVoOrNull =  uiState.bookValues.value.createBookItemWithoutAuthorIdOrNull(
                                             timestampOfCreating = viewModel.getCurrentTimeInMillis(),
                                             timestampOfUpdating = viewModel.getCurrentTimeInMillis(),
                                         ),
@@ -224,7 +221,7 @@ fun BookCreatorScreen(
                             )
                         } else {
                             Text(
-                                text = if (showParsingResult.value) bookValues.bookName.value.text else Strings.add_book,
+                                text = if (showParsingResult.value)  uiState.bookValues.value.bookName.value.text else Strings.add_book,
                                 modifier = Modifier.padding(top = 8.dp),
                                 style = ApplicationTheme.typography.title2Bold,
                                 color = ApplicationTheme.colors.mainTextColor,
@@ -290,9 +287,9 @@ fun BookCreatorScreen(
                                 hintText = Strings.hint_past_url_book,
                                 setAsSelected = !showParsingResult.value,
                                 showClearButton = showClearButtonOfUrlElement,
-                                textFieldValue = bookValues.parsingUrl,
+                                textFieldValue =  uiState.bookValues.value.parsingUrl,
                                 onTextChanged = { url ->
-                                    bookValues.parsingUrl.value = url
+                                    uiState.bookValues.value.parsingUrl.value = url
                                     if (url.text.isNotEmpty() && url.text.length > 5) {
                                         viewModel.startParseBook(url = url.text)
                                     } else {
@@ -331,7 +328,7 @@ fun BookCreatorScreen(
                             )
                             if (uiState.loadingStatus.value == LoadingStatus.ERROR) {
                                 ShowError {
-                                    bookValues.parsingUrl.value = TextFieldValue()
+                                    uiState.bookValues.value.parsingUrl.value = TextFieldValue()
                                     isCreateBookManually.value = true
                                     viewModel.hideLoadingStatusIndicator()
                                 }
@@ -353,7 +350,7 @@ fun BookCreatorScreen(
                                     modifier = Modifier.padding(bottom = 8.dp, top = 8.dp)
                                 )
                                 CreateBookButton(title = Strings.add_manually_button) {
-                                    bookValues.parsingUrl.value = TextFieldValue()
+                                    uiState.bookValues.value.parsingUrl.value = TextFieldValue()
                                     isCreateBookManually.value = true
                                 }
                             }
@@ -368,25 +365,14 @@ fun BookCreatorScreen(
                         Column {
                             Spacer(modifier = Modifier.padding(top = 12.dp))
 
-                            BookEditor(
+                            viewModel.BookEditor(
                                 platform = platform,
-                                bookValues = bookValues,
+                                bookValues =  uiState.bookValues.value,
                                 similarSearchAuthors = uiState.similarSearchAuthors,
                                 selectedAuthor = uiState.selectedAuthor,
                                 createNewAuthor = createNewAuthor,
                                 linkToAuthor = linkToAuthor,
                                 isKeyboardShown = isKeyboardShown,
-                                onAuthorTextChanged = { newValue, textWasChanged ->
-                                    if (uiState.selectedAuthor.value != null && bookValues.isSelectedAuthorNameWasChanged()) {
-                                        uiState.clearSelectedAuthor()
-                                    }
-
-                                    if (newValue.text.isEmpty()) {
-                                        viewModel.clearSearchAuthor()
-                                    } else if (textWasChanged) {
-                                        viewModel.searchAuthor(newValue.text)
-                                    }
-                                },
                                 statusBookTextFieldValue = statusBookTextFieldValue,
                                 showDataPickerListener = {
                                     datePickerType = it
@@ -417,13 +403,13 @@ fun BookCreatorScreen(
                     onSelectedListener = { millis, text ->
                         when (datePickerType) {
                             DatePickerType.StartDate -> {
-                                bookValues.startDateInMillis.value = millis
-                                bookValues.startDateInString.value = text
+                                uiState.bookValues.value.startDateInMillis.value = millis
+                                uiState.bookValues.value.startDateInString.value = text
                             }
 
                             DatePickerType.EndDate -> {
-                                bookValues.endDateInMillis.value = millis
-                                bookValues.endDateInString.value = text
+                                uiState.bookValues.value.endDateInMillis.value = millis
+                                uiState.bookValues.value.endDateInString.value = text
                             }
                         }
                     }
@@ -441,7 +427,7 @@ fun BookCreatorScreen(
                         urlFieldIsWork.value = true
                         showClearButtonOfUrlElement.value = false
                         showParsingResult.value = false
-                        bookValues.clearAll()
+                        uiState.bookValues.value.clearAll()
                         viewModel.clearAllBookData()
                         showDialogClearAllData.value = false
                     }

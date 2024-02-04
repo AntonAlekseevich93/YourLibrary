@@ -1,6 +1,8 @@
 package book_editor
 
 import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import Strings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -49,6 +51,7 @@ import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.AuthorVo
+import main_models.BookValues
 import main_models.DatePickerType
 import main_models.ReadingStatus
 import platform.Platform
@@ -59,7 +62,7 @@ import text_fields.DropdownSuggestionItem
 import text_fields.TextFieldWithTitleAndSuggestion
 
 @Composable
-fun BookEditor(
+fun BaseEventScope<BaseEvent>.BookEditor(
     platform: Platform,
     bookValues: BookValues,
     similarSearchAuthors: SnapshotStateList<AuthorVo>,
@@ -70,7 +73,6 @@ fun BookEditor(
     linkToAuthor: MutableState<Boolean>,
     modifier: Modifier = Modifier,
     canShowError: Boolean = false,
-    onAuthorTextChanged: (newValue: TextFieldValue, textWasChanged: Boolean) -> Unit,
     onSuggestionAuthorClickListener: (author: AuthorVo) -> Unit,
     showDataPickerListener: (type: DatePickerType) -> Unit,
 ) {
@@ -144,7 +146,12 @@ fun BookEditor(
                     onTextChanged = {
                         val oldText = bookValues.authorName.value.text
                         bookValues.authorName.value = it
-                        onAuthorTextChanged.invoke(it, oldText != it.text)
+                        this@BookEditor.sendEvent(
+                            BookEditorEvents.OnAuthorTextChanged(
+                                textFieldValue = it,
+                                textWasChanged = oldText != it.text
+                            )
+                        )
                     },
                     setAsSelected = !authorIsSelected && similarSearchAuthors.isNotEmpty() && !createNewAuthor.value && !linkToAuthor.value,
                     innerContent = {

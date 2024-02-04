@@ -19,6 +19,7 @@ kotlin {
                 implementation(project(":common:resources:drawable")) //todo возможно потом удалить
                 implementation(project(":common:resources:strings"))
                 implementation(project(":common:ui"))
+                implementation(project(":common:scopes"))
                 implementation(project(":common:di:compose"))
                 implementation(project(":common:file-manager"))
                 implementation(project(":feature:main-screen:data")) //используется из-за модуля

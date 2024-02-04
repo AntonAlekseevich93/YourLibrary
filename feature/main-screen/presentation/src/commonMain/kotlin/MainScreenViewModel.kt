@@ -7,14 +7,39 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_models.BookItemVo
 import main_models.ViewsType
+import menu_bar.LeftMenuBarEvents
 import models.MainScreenUiState
+import navigation_drawer.contents.models.DrawerEvents
+import tooltip_area.TooltipEvents
 
-class MainScreenViewModel(private val repository: MainScreenRepository) {
+class MainScreenViewModel(
+    private val repository: MainScreenRepository,
+    private val navigationHandler: NavigationHandler,
+    private val tooltipHandler: TooltipHandler,
+    private val drawerScope: DrawerScope,
+) : MainScreenScope<BaseEvent> {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val _uiState: MutableStateFlow<MainScreenUiState> =
         MutableStateFlow(MainScreenUiState())
     val uiState = _uiState.asStateFlow()
-    val booksMap: MutableMap<String, BookItemVo> = mutableMapOf()
+    private val booksMap: MutableMap<String, BookItemVo> = mutableMapOf()
+
+    override fun checkIfNeedUpdateBookItem(oldItem: BookItemVo, newItem: BookItemVo) {
+        if (oldItem.bookName != newItem.bookName) {
+            _uiState.value.removeBookBooksInfoUiState(id = newItem.statusId, bookId = newItem.id)
+        }
+    }
+
+    override fun sendEvent(event: BaseEvent) {
+        when (event) {
+            is TooltipEvents.SetTooltipEvent -> tooltipHandler.setTooltip(event.tooltip)
+            is DrawerEvents.OpenLeftDrawerOrCloseEvent -> drawerScope.openLeftDrawerOrClose()
+            is DrawerEvents.OpenRightDrawerOrCloseEvent -> drawerScope.openRightDrawerOrClose()
+            is LeftMenuBarEvents.OnSearchClickEvent -> navigationHandler.navigateToSearch()
+            is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator()
+            is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault()
+        }
+    }
 
     fun getSelectedPathInfo() {
         scope.launch {
@@ -29,16 +54,6 @@ class MainScreenViewModel(private val repository: MainScreenRepository) {
             }
             launch {
                 getAllBooks()
-            }
-        }
-    }
-
-    private suspend fun getAllBooks() {
-        repository.getAllBooks().collect { books ->
-            val unique = books.subtract(booksMap.values)
-            unique.forEach { book ->
-                _uiState.value.addBookToBooksInfo(book)
-                booksMap[book.id] = book
             }
         }
     }
@@ -60,9 +75,13 @@ class MainScreenViewModel(private val repository: MainScreenRepository) {
         _uiState.value.removeBookBooksInfoUiState(id = oldStatusId, bookId = bookId)
     }
 
-    fun checkIfNeedUpdateBookItem(oldItem: BookItemVo, newItem: BookItemVo) {
-        if (oldItem.bookName != newItem.bookName) {
-            _uiState.value.removeBookBooksInfoUiState(id = newItem.statusId, bookId = newItem.id)
+    private suspend fun getAllBooks() {
+        repository.getAllBooks().collect { books ->
+            val unique = books.subtract(booksMap.values)
+            unique.forEach { book ->
+                _uiState.value.addBookToBooksInfo(book)
+                booksMap[book.id] = book
+            }
         }
     }
 

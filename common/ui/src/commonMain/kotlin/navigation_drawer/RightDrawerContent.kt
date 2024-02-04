@@ -1,6 +1,8 @@
 package navigation_drawer
 
 import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import Drawable
 import Strings
 import androidx.compose.foundation.layout.Box
@@ -19,21 +21,20 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import main_models.TooltipPosition
+import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
+import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
-import tooltip_area.TooltipItem
-import tooltip_area.TooltipPosition
 
 
 @Composable
-fun PlatformRightDrawerContent(
+fun BaseEventScope<BaseEvent>.PlatformRightDrawerContent(
     platform: Platform,
     isCanClose: Boolean,
     isFullscreen: State<Boolean>,
     selectedItem: SelectedRightDrawerItem = SelectedRightDrawerItem.NONE,
-    closeSidebarListener: () -> Unit,
     closeWindow: () -> Unit,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     expandOrCollapseListener: () -> Unit,
 ) {
     when (platform) {
@@ -45,10 +46,8 @@ fun PlatformRightDrawerContent(
                     isCanClose = isCanClose,
                     isFullscreen = isFullscreen,
                     selectedItem = selectedItem,
-                    closeSidebarListener = closeSidebarListener,
                     expandOrCollapseListener = expandOrCollapseListener,
                     closeWindow = closeWindow,
-                    tooltipCallback = tooltipCallback,
                 )
             }
         }
@@ -61,10 +60,8 @@ fun PlatformRightDrawerContent(
                     isCanClose = isCanClose,
                     isFullscreen = isFullscreen,
                     selectedItem = selectedItem,
-                    closeSidebarListener = closeSidebarListener,
                     expandOrCollapseListener = expandOrCollapseListener,
                     closeWindow = closeWindow,
-                    tooltipCallback = tooltipCallback,
                 )
             }
         }
@@ -72,13 +69,11 @@ fun PlatformRightDrawerContent(
 }
 
 @Composable
-fun RightDrawerContent(
+fun BaseEventScope<BaseEvent>.RightDrawerContent(
     isCanClose: Boolean,
     isFullscreen: State<Boolean>,
     selectedItem: SelectedRightDrawerItem,
-    closeSidebarListener: () -> Unit,
     closeWindow: () -> Unit,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     expandOrCollapseListener: () -> Unit,
 ) {
 
@@ -99,10 +94,14 @@ fun RightDrawerContent(
                         ApplicationTheme.colors.pointerIsActiveCardColorDark
                     else
                         ApplicationTheme.colors.pointerIsActiveCardColor,
-                    onClick = closeSidebarListener,
+                    onClick = {
+                        this@RightDrawerContent.sendEvent(DrawerEvents.OpenRightDrawerOrCloseEvent)
+                    },
                     iconTint = ApplicationTheme.colors.searchIconColor,
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@RightDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     },
                 )
 
@@ -114,9 +113,13 @@ fun RightDrawerContent(
                     modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,
-                    onClick = closeSidebarListener,
+                    onClick = {
+                        this@RightDrawerContent.sendEvent(DrawerEvents.OpenRightDrawerOrCloseEvent)
+                    },
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@RightDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     },
                 )
                 if (isCanClose) {
@@ -133,7 +136,9 @@ fun RightDrawerContent(
                             pointerInnerPadding = 4.dp,
                             onClick = expandOrCollapseListener,
                             tooltipCallback = {
-                                tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                                this@RightDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                                    position = TooltipPosition.BOTTOM
+                                }))
                             },
                         )
                     } else {
@@ -145,7 +150,9 @@ fun RightDrawerContent(
                             pointerInnerPadding = 4.dp,
                             onClick = expandOrCollapseListener,
                             tooltipCallback = {
-                                tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                                this@RightDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                                    position = TooltipPosition.BOTTOM
+                                }))
                             },
                         )
                     }
@@ -157,7 +164,9 @@ fun RightDrawerContent(
                         pointerInnerPadding = 4.dp,
                         onClick = closeWindow,
                         tooltipCallback = {
-                            tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                            this@RightDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                                position = TooltipPosition.BOTTOM
+                            }))
                         },
                     )
                 }

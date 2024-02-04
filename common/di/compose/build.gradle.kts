@@ -23,6 +23,7 @@ kotlin {
                 implementation(project(":feature:authors:presentation"))
                 implementation(project(":feature:authors:data"))
                 implementation(project(":common:core"))
+                implementation(project(":common:scopes"))
             }
         }
     }

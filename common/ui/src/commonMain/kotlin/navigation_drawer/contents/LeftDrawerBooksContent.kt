@@ -1,6 +1,8 @@
 package navigation_drawer.contents
 
 import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import Drawable
 import Strings
 import androidx.compose.animation.AnimatedVisibility
@@ -25,14 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import main_models.BookItemVo
 import main_models.BooksInfoHeader
+import main_models.TooltipPosition
+import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
-import tooltip_area.TooltipItem
-import tooltip_area.TooltipPosition
 
 @Composable
-fun LeftDrawerBooksContent(
+fun BaseEventScope<BaseEvent>.LeftDrawerBooksContent(
     booksInfoUiState: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookItemVo>>,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     openBookListener: (bookId: String) -> Unit,
 ) {
     var booksButtonIsSelected by remember { mutableStateOf(true) }
@@ -58,7 +59,9 @@ fun LeftDrawerBooksContent(
                 else ApplicationTheme.colors.mainIconsColor,
                 drawableResName = Drawable.drawable_ic_book,
                 tooltipCallback = {
-                    tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                    this@LeftDrawerBooksContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                        position = TooltipPosition.BOTTOM
+                    }))
                 },
                 modifier = Modifier.padding(start = 6.dp, end = 6.dp),
                 onClick = {
@@ -72,9 +75,11 @@ fun LeftDrawerBooksContent(
                 text = Strings.authors,
                 iconTint = if (authorButtonIsSelected) ApplicationTheme.colors.selectedIconColor
                 else ApplicationTheme.colors.mainIconsColor,
-                drawableResName = Drawable.drawable_ic_man,
+                drawableResName = Drawable.drawable_ic_authors,
                 tooltipCallback = {
-                    tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                    this@LeftDrawerBooksContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                        position = TooltipPosition.BOTTOM
+                    }))
                 },
                 modifier = Modifier.padding(end = 6.dp),
                 disableSelection = authorButtonIsSelected,
@@ -90,7 +95,9 @@ fun LeftDrawerBooksContent(
                 else ApplicationTheme.colors.mainIconsColor,
                 drawableResName = Drawable.drawable_ic_book_shelves,
                 tooltipCallback = {
-                    tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                    this@LeftDrawerBooksContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                        position = TooltipPosition.BOTTOM
+                    }))
                 },
                 modifier = Modifier.padding(end = 6.dp),
                 disableSelection = bookShelvesButtonIsSelected,

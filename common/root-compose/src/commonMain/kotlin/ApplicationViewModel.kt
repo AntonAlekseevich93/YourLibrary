@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import main_models.TooltipItem
 import main_models.path.PathInfoVo
 import platform.Platform
 import java.io.File
@@ -13,7 +14,11 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
-class ApplicationViewModel(private val db: SqlDelightDataSource) {
+class ApplicationViewModel(
+    private val db: SqlDelightDataSource,
+    private val navigationHandler: NavigationHandler,
+    private val tooltipHandler: TooltipHandler,
+) : ApplicationScope, DrawerScope {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val _uiState = MutableStateFlow(ApplicationUiState())
     val uiState: StateFlow<ApplicationUiState> = _uiState
@@ -28,6 +33,41 @@ class ApplicationViewModel(private val db: SqlDelightDataSource) {
                 }
             }
         }
+    }
+
+    override fun closeBookScreen() {
+        _uiState.value.apply {
+            fullScreenBookInfo.value = false
+            navigationHandler.goBack()
+        }
+    }
+
+    override fun openLeftDrawerOrClose() {
+        _uiState.value.apply {
+            if (!showLeftDrawerState.value) {
+                showLeftDrawerState.value = true
+                openLeftDrawerEvent.value.invoke()
+            } else {
+                showLeftDrawerState.value = false
+                closeLeftDrawerEvent.value.invoke()
+            }
+        }
+    }
+
+    override fun openRightDrawerOrClose() {
+        _uiState.value.apply {
+            if (!showRightDrawerState.value) {
+                showRightDrawerState.value = true
+                openRightDrawerEvent.value.invoke()
+            } else {
+                showRightDrawerState.value = false
+                closeRightDrawerEvent.value.invoke()
+            }
+        }
+    }
+
+    override fun setTooltip(tooltip: TooltipItem) {
+        tooltipHandler.setTooltip(tooltip)
     }
 
     fun isDbPathIsExist(platform: Platform): Boolean {

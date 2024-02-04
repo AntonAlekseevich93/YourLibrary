@@ -1,7 +1,10 @@
 package sub_app_bar
 
 import ApplicationTheme
+import BaseEvent
 import Drawable
+import DrawerScope
+import BaseEventScope
 import Strings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -33,25 +36,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import main_models.TooltipPosition
 import main_models.ViewsType
+import navigation_drawer.contents.models.DrawerEvents
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
-import tooltip_area.TooltipItem
-import tooltip_area.TooltipPosition
 
 @Composable
-fun SubAppBar(
+fun BaseEventScope<BaseEvent>.SubAppBar(
     projectName: String,
     isOpenedType: ViewsType,
     modifier: Modifier = Modifier,
     isOpenedSidebar: State<Boolean>,
-    openSidebarListener: () -> Unit,
     selectedViewsTypes: SnapshotStateList<ViewsType>,
     isCheckedTypes: SnapshotStateList<ViewsType>,
     openViewType: (type: ViewsType) -> Unit,
     switchViewTypesListener: (isChecked: Boolean, type: ViewsType) -> Unit,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     homeButtonListener: () -> Unit,
     closeViewsTypeDropdown: () -> Unit,
 ) {
@@ -64,7 +66,9 @@ fun SubAppBar(
                     modifier = Modifier.padding(end = 6.dp),
                     pointerEventBackgroundDisable = ApplicationTheme.colors.mainBackgroundColor,
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@SubAppBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     },
                     onClick = homeButtonListener
                 )
@@ -75,11 +79,14 @@ fun SubAppBar(
                     pointerEventBackgroundDisable = ApplicationTheme.colors.mainBackgroundColor,
                     imageModifier = Modifier.rotate(180f),
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@SubAppBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     },
-                ) {
-                    openSidebarListener.invoke()
-                }
+                    onClick = {
+                        this@SubAppBar.sendEvent(DrawerEvents.OpenLeftDrawerOrCloseEvent)
+                    }
+                )
             }
         }
         Text(
@@ -97,19 +104,17 @@ fun SubAppBar(
             isCheckedTypes = isCheckedTypes,
             switchChangedListener = switchViewTypesListener,
             closeViewsTypeDropdown = closeViewsTypeDropdown,
-            tooltipCallback = tooltipCallback,
         )
     }
 }
 
 @Composable
-fun ViewTypesBlock(
+fun BaseEventScope<BaseEvent>.ViewTypesBlock(
     isOpenedType: ViewsType,
     selectedViewsTypes: SnapshotStateList<ViewsType>,
     isCheckedTypes: SnapshotStateList<ViewsType>,
     openViewType: (type: ViewsType) -> Unit,
     switchChangedListener: (isChecked: Boolean, type: ViewsType) -> Unit,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     closeViewsTypeDropdown: () -> Unit,
 ) {
     val selectedType = remember(isOpenedType) { mutableStateOf(isOpenedType) }
@@ -133,7 +138,9 @@ fun ViewTypesBlock(
                         openViewType.invoke(ViewsType.LIST)
                     },
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@ViewTypesBlock.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     }
                 )
             }
@@ -148,7 +155,9 @@ fun ViewTypesBlock(
                         openViewType.invoke(ViewsType.KANBAN)
                     },
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@ViewTypesBlock.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     }
                 )
             }
@@ -163,7 +172,9 @@ fun ViewTypesBlock(
                         openViewType.invoke(ViewsType.CALENDAR)
                     },
                     tooltipCallback = {
-                        tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                        this@ViewTypesBlock.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                            position = TooltipPosition.BOTTOM
+                        }))
                     }
                 )
             }
@@ -180,7 +191,9 @@ fun ViewTypesBlock(
                             isExpandedDropDownViewsMenu.value = true
                         },
                         tooltipCallback = {
-                            tooltipCallback.invoke(it.apply { position = TooltipPosition.BOTTOM })
+                            this@ViewTypesBlock.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                                position = TooltipPosition.BOTTOM
+                            }))
                         }
                     )
                 }

@@ -8,13 +8,11 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import io.kamel.core.Resource
-import kotlinx.coroutines.launch
 import menu_bar.LeftMenuBar
 import models.MainScreenUiState
 import navigation_drawer.PlatformLeftDrawerContent
@@ -23,7 +21,6 @@ import navigation_drawer.contents.LeftDrawerBooksContent
 import platform.Platform
 import platform.isDesktop
 import sub_app_bar.SubAppBar
-import tooltip_area.TooltipItem
 
 @Composable
 fun MainScreen(
@@ -33,53 +30,29 @@ fun MainScreen(
     showSearch: MutableState<Boolean>,
     leftDrawerState: DrawerState,
     viewModel: MainScreenViewModel,
-    tooltipCallback: ((tooltip: TooltipItem) -> Unit),
     openBookListener: (painterSelectedBookInCache: Resource<Painter>?, bookId: String) -> Unit,
-    createBookListener: () -> Unit,
-    selectAnotherVaultListener: () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-
     LaunchedEffect(uiState.selectedPathInfo) {
         viewModel.getSelectedPathInfo()
     }
 
     Row {
         if (platform.isDesktop()) {
-            LeftMenuBar(
-                searchListener = {
-                    showSearch.value = true
-                },
+            viewModel.LeftMenuBar(
                 open = {
                 },
-                tooltipCallback = tooltipCallback,
-                createBookListener = createBookListener,
-                selectAnotherVaultListener = selectAnotherVaultListener,
             )
         }
 
         PlatformNavigationDrawer(
             platform = platform,
             leftDrawerContent = {
-                PlatformLeftDrawerContent(
+                viewModel.PlatformLeftDrawerContent(
                     title = uiState.selectedPathInfo.value.libraryName,
                     platform = platform,
-                    closeSidebarListener = {
-                        scope.launch {
-                            if (!showLeftDrawer.value) {
-                                showLeftDrawer.value = true
-                                leftDrawerState.open()
-                            } else {
-                                showLeftDrawer.value = false
-                                leftDrawerState.close()
-                            }
-                        }
-                    },
-                    tooltipCallback = tooltipCallback,
                     content = {
-                        LeftDrawerBooksContent(
+                        viewModel.LeftDrawerBooksContent(
                             booksInfoUiState = uiState.booksInfoUiState,
-                            tooltipCallback = tooltipCallback,
                             openBookListener = { openBookListener.invoke(null, it) }
                         )
                     }
@@ -97,7 +70,7 @@ fun MainScreen(
                         .fillMaxSize()
                         .background(ApplicationTheme.colors.mainBackgroundColor),
                 ) {
-                    SubAppBar(
+                    viewModel.SubAppBar(
                         modifier = Modifier.padding(start = 16.dp, top = 6.dp),
                         projectName = "Книжная полка",
                         selectedViewsTypes = uiState.viewsTypes.selectedViewTypes,
@@ -107,19 +80,7 @@ fun MainScreen(
                         isOpenedSidebar = showLeftDrawer,
                         switchViewTypesListener = viewModel::switchViewTypesListener,
                         closeViewsTypeDropdown = viewModel::changeViewsTypes,
-                        openSidebarListener = {
-                            scope.launch {
-                                if (!showLeftDrawer.value) {
-                                    showLeftDrawer.value = true
-                                    leftDrawerState.open()
-                                } else {
-                                    showLeftDrawer.value = false
-                                    leftDrawerState.close()
-                                }
-                            }
-                        },
-                        tooltipCallback = tooltipCallback,
-                        homeButtonListener = createBookListener
+                        homeButtonListener = {}
                     )
                     ShelfBoardScreen(
                         platform = platform,

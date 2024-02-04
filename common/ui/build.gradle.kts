@@ -12,6 +12,7 @@ kotlin {
                 implementation(project(":common:utils:date"))
                 implementation(project(":common:models"))
                 implementation(project(":common:theme"))
+                implementation(project(":common:scopes"))
                 implementation(project(":common:resources:strings"))
                 implementation(project(":common:resources:drawable"))
             }
