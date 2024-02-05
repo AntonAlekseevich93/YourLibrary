@@ -12,7 +12,8 @@ class ShelfUiState(
     val shelvesList: MutableState<MutableList<ShelfVo>> = mutableStateOf(mutableListOf()),
     val config: BookItemCardConfig = BookItemCardConfig(platform),
     val fullShelfIndex: MutableState<Int> = mutableStateOf(-1),
-    val sortBookList: MutableState<List<BookItemVo>> = mutableStateOf(emptyList())
+    val sortBookList: MutableState<List<BookItemVo>> = mutableStateOf(emptyList()),
+    val bottomSheetExpandEvent: MutableState<() -> Unit> = mutableStateOf({}),
 ) {
     init {
         shelvesList.value = ReadingStatusVo.createShelvesListFromStatuses().toMutableList()

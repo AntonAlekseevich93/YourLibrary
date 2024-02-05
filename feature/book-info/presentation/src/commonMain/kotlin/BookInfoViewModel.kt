@@ -52,6 +52,10 @@ class BookInfoViewModel(
             is BookScreenEvents.BookScreenCloseEvent -> applicationScope.closeBookScreen()
             is BookScreenEvents.SaveBookAfterEditing -> saveBookAfterEditing()
             is BookScreenEvents.SetEditMode -> _uiState.value.isEditMode.value = true
+            is BookScreenEvents.ChangeReadingStatusEvent -> changeReadingStatus(
+                selectedStatus = event.selectedStatus, oldStatusId = event.oldStatusId
+            )
+
             is BookEditorEvents.OnAuthorTextChanged -> onAuthorTextChanged(
                 event.textFieldValue,
                 event.textWasChanged
@@ -87,14 +91,6 @@ class BookInfoViewModel(
     fun clearSearchAuthor() {
         _uiState.value.clearSimilarAuthorList()
     }
-
-
-    fun changeReadingStatus(status: ReadingStatus, bookId: String) {
-        scope.launch {
-            interactor.changeBookStatusId(status, bookId)
-        }
-    }
-
 
     fun setSelectedAuthor(author: AuthorVo) {
         _uiState.value.setSelectedAuthor(author)
@@ -174,6 +170,15 @@ class BookInfoViewModel(
             }
 
             isEditMode.value = !isEditMode.value
+        }
+    }
+
+    private fun changeReadingStatus(selectedStatus: ReadingStatus, oldStatusId: String) {
+        scope.launch {
+            _uiState.value.bookItem.value?.let { book ->
+                interactor.changeBookStatusId(selectedStatus, book.id)
+                mainScreenScope.changedReadingStatus(oldStatusId, book.id)
+            }
         }
     }
 

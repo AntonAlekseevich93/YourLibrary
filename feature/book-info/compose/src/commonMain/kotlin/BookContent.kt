@@ -33,6 +33,7 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.BookItemVo
 import main_models.ReadingStatus
+import models.BookScreenEvents
 import platform.Platform
 import platform.isDesktop
 import platform.isMobile
@@ -40,11 +41,10 @@ import reading_status.getStatusColor
 import tags.CustomTag
 
 @Composable
-fun BookContent(
+fun BaseEventScope<BaseEvent>.BookContent(
     platform: Platform,
     bookItem: BookItemVo,
     painterInCache: Resource<Painter>? = null,
-    changeReadingStatusListener: (selectedStatus: ReadingStatus, oldStatusId: String) -> Unit,
 ) {
     val url = bookItem.coverUrlFromParsing.ifEmpty { bookItem.coverUrl }
     val painter = painterInCache ?: asyncPainterResource(data = url)
@@ -114,7 +114,12 @@ fun BookContent(
                             selectedStatusListener = {
                                 showReadingStatusSelector = false
                                 if (it != bookItem.readingStatus) {
-                                    changeReadingStatusListener.invoke(it, bookItem.statusId)
+                                    this@BookContent.sendEvent(
+                                        BookScreenEvents.ChangeReadingStatusEvent(
+                                            it,
+                                            bookItem.statusId
+                                        )
+                                    )
                                 }
                             }
                         )

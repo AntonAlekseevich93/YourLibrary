@@ -42,7 +42,6 @@ import main_models.AuthorVo
 import main_models.BookItemVo
 import main_models.BookValues
 import main_models.DatePickerType
-import main_models.ReadingStatus
 import models.BookScreenEvents
 import navigation_drawer.PlatformNavigationDrawer
 import navigation_drawer.PlatformRightDrawerContent
@@ -65,7 +64,6 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
     needCreateNewAuthor: MutableState<Boolean>,
     isKeyboardShown: State<Boolean>,
     onSuggestionAuthorClickListener: (author: AuthorVo) -> Unit,
-    changeReadingStatusListener: (selectedStatus: ReadingStatus, oldStatusId: String) -> Unit,
 ) {
 
     val targetVerticalPadding = if (fullScreenBookInfo.value) 0.dp else 65.dp
@@ -208,7 +206,6 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
                             platform = platform,
                             bookItem = bookItem,
                             painterInCache = painterInCache,
-                            changeReadingStatusListener = changeReadingStatusListener,
                         )
                     }
                 }

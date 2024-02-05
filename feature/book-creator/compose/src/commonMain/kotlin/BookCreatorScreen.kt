@@ -63,6 +63,7 @@ import main_models.BookItemVo
 import main_models.DatePickerType
 import main_models.ReadingStatus
 import main_models.rest.LoadingStatus
+import models.BookCreatorEvents
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import platform.Platform
@@ -80,7 +81,6 @@ fun BookCreatorScreen(
     fullScreenBookCreator: MutableState<Boolean>,
     showRightDrawer: MutableState<Boolean>,
     isKeyboardShown: State<Boolean>,
-    closeBookCreatorListener: () -> Unit,
 ) {
     val viewModel = remember { Inject.instance<BookCreatorViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
@@ -152,7 +152,7 @@ fun BookCreatorScreen(
                 detectTapGestures(
                     onPress = {
                         uiState.clearAllAuthorInfo()
-                        closeBookCreatorListener.invoke()
+                        viewModel.sendEvent(BookCreatorEvents.GoBack)
                     },
                 )
             },
@@ -216,7 +216,7 @@ fun BookCreatorScreen(
                                         needCreateAuthor = createNewAuthor.value
                                     )
                                     uiState.clearAllAuthorInfo()
-                                    closeBookCreatorListener.invoke()
+                                    viewModel.sendEvent(BookCreatorEvents.GoBack)
                                 }
                             )
                         } else {
@@ -244,7 +244,7 @@ fun BookCreatorScreen(
                                 indication = null,
                                 onClick = {
                                     uiState.clearAllAuthorInfo()
-                                    closeBookCreatorListener.invoke()
+                                    viewModel.sendEvent(BookCreatorEvents.GoBack)
                                 }
                             )
                         )

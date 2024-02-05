@@ -8,7 +8,7 @@ val viewModelsModule = DI.Module("viewModelsModule") {
         MainScreenViewModel(instance(), instance(), instance(), instance(), instance())
     }
     bind<ShelfViewModel>() with singleton {
-        ShelfViewModel(instance(), instance())
+        ShelfViewModel(instance(), instance(), instance())
     }
     bind<SearchViewModel>() with singleton {
         SearchViewModel(instance())
@@ -25,7 +25,7 @@ val viewModelsModule = DI.Module("viewModelsModule") {
         )
     }
     bind<BookCreatorViewModel>() with singleton {
-        BookCreatorViewModel(instance(), instance())
+        BookCreatorViewModel(instance(), instance(), instance())
     }
     bind<SettingsViewModel>() with singleton {
         SettingsViewModel(instance(), instance())

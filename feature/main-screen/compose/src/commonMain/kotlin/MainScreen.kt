@@ -8,11 +8,14 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import di.Inject
 import menu_bar.LeftMenuBar
-import models.MainScreenUiState
 import navigation_drawer.PlatformLeftDrawerContent
 import navigation_drawer.PlatformNavigationDrawer
 import navigation_drawer.contents.LeftDrawerBooksContent
@@ -22,13 +25,14 @@ import sub_app_bar.SubAppBar
 
 @Composable
 fun MainScreen(
-    uiState: MainScreenUiState,
     platform: Platform,
     showLeftDrawer: MutableState<Boolean>,
     showSearch: MutableState<Boolean>,
     leftDrawerState: DrawerState,
-    viewModel: MainScreenViewModel,
 ) {
+    val viewModel = remember { Inject.instance<MainScreenViewModel>() }
+    val uiState by viewModel.uiState.collectAsState()
+
     LaunchedEffect(uiState.selectedPathInfo) {
         viewModel.getSelectedPathInfo()
     }
@@ -76,7 +80,7 @@ fun MainScreen(
                         closeViewsTypeDropdown = viewModel::changeViewsTypes,
                         homeButtonListener = {}
                     )
-                    viewModel.ShelfBoardScreen(platform = platform)
+                    ShelfBoardScreen(platform = platform)
                 }
 
                 CustomDockedSearchBar(

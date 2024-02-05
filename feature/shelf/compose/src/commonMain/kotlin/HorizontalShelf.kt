@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import main_models.ShelfVo
 import models.BookItemCardConfig
+import models.ShelfEvents
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -32,7 +33,7 @@ import org.jetbrains.compose.resources.painterResource
 fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
     shelfVo: ShelfVo,
     config: BookItemCardConfig,
-    expandShelfListener: () -> Unit,
+    index: Int,
 ) {
     val firstElements =
         remember(shelfVo.booksList) { shelfVo.booksList.take(config.maxItemsInHorizontalShelf) }
@@ -45,7 +46,9 @@ fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = null,
-                    onClick = expandShelfListener
+                    onClick = {
+                        this@HorizontalShelfScreen.sendEvent(ShelfEvents.ExpandShelfEvent(index))
+                    }
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -84,7 +87,7 @@ fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
                             vertical = 12.dp,
                             horizontal = 12.dp
                         ).clickable {
-                            expandShelfListener.invoke()
+                            this@HorizontalShelfScreen.sendEvent(ShelfEvents.ExpandShelfEvent(index))
                         },
                         shape = RoundedCornerShape(8.dp),
                         colors = CardDefaults.cardColors(containerColor = ApplicationTheme.colors.mainBackgroundColor)

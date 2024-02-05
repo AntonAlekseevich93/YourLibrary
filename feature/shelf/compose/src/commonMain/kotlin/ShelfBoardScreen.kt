@@ -25,7 +25,7 @@ import platform.isDesktop
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BaseEventScope<BaseEvent>.ShelfBoardScreen(
+fun ShelfBoardScreen(
     platform: Platform,
 ) {
     val viewModel = remember { Inject.instance<ShelfViewModel>() }
@@ -40,6 +40,12 @@ fun BaseEventScope<BaseEvent>.ShelfBoardScreen(
         )
     )
 
+    uiState.value.bottomSheetExpandEvent.value = {
+        scope.launch {
+            bottomSheetState.bottomSheetState.expand()
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         BottomSheetScaffold(
             sheetPeekHeight = 0.dp,
@@ -48,7 +54,7 @@ fun BaseEventScope<BaseEvent>.ShelfBoardScreen(
             sheetShape = RoundedCornerShape(14.dp),
             sheetContent = {
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    FullShelfScreen(
+                    viewModel.FullShelfScreen(
                         platform = platform,
                         bookList = uiState.value.sortBookList.value,
                         config = uiState.value.config,
@@ -72,15 +78,10 @@ fun BaseEventScope<BaseEvent>.ShelfBoardScreen(
             ) {
                 LazyColumn(state = lazyListState) {
                     itemsIndexed(uiState.value.shelvesList.value) { index, item ->
-                        HorizontalShelfScreen(
+                        viewModel.HorizontalShelfScreen(
                             shelfVo = item,
                             config = uiState.value.config,
-                            expandShelfListener = {
-                                viewModel.showFullShelf(index)
-                                scope.launch {
-                                    bottomSheetState.bottomSheetState.expand()
-                                }
-                            },
+                            index = index,
                         )
                         //todo нужно добавить зероскрин когда у нас нету книг
                     }

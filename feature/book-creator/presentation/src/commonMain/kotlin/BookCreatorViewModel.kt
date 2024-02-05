@@ -11,11 +11,13 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import main_models.AuthorVo
 import main_models.BookItemVo
+import models.BookCreatorEvents
 import models.BookCreatorUiState
 
 class BookCreatorViewModel(
     private val platformInfo: PlatformInfo,
     private val interactor: BookCreatorInteractor,
+    private val navigationHandler: NavigationHandler,
 ) : BaseEventScope<BaseEvent> {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var parsingJob: Job? = null
@@ -30,6 +32,8 @@ class BookCreatorViewModel(
                 event.textFieldValue,
                 event.textWasChanged
             )
+
+            is BookCreatorEvents.GoBack -> navigationHandler.goBack()
         }
     }
 
@@ -57,22 +61,6 @@ class BookCreatorViewModel(
     fun stopParsingBook() {
         parsingJob?.cancel()
         _uiState.value.hideLoadingIndicator()
-    }
-
-    fun searchAuthor(authorName: String) {
-        searchJob?.cancel()
-        if (authorName.length >= 2) {
-            searchJob = scope.launch {
-                val response = interactor.searchInAuthorsNameWithRelates(authorName)
-                if (response.isNotEmpty()) {
-                    _uiState.value.addSimilarAuthors(response)
-                } else {
-                    clearSearchAuthor()
-                }
-            }
-        } else {
-            clearSearchAuthor()
-        }
     }
 
     fun clearSearchAuthor() {
@@ -174,6 +162,22 @@ class BookCreatorViewModel(
             } else if (textWasChanged) {
                 searchAuthor(textFieldValue.text)
             }
+        }
+    }
+
+    private fun searchAuthor(authorName: String) {
+        searchJob?.cancel()
+        if (authorName.length >= 2) {
+            searchJob = scope.launch {
+                val response = interactor.searchInAuthorsNameWithRelates(authorName)
+                if (response.isNotEmpty()) {
+                    _uiState.value.addSimilarAuthors(response)
+                } else {
+                    clearSearchAuthor()
+                }
+            }
+        } else {
+            clearSearchAuthor()
         }
     }
 }

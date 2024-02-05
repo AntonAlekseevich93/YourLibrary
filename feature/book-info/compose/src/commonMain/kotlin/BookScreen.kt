@@ -40,7 +40,6 @@ fun BookScreen(
     showRightDrawer: MutableState<Boolean>,
     isKeyboardShown: State<Boolean>,
     painterInCache: Resource<Painter>? = null,
-    changeReadingStatusListener: (oldStatusId: String, bookId: String) -> Unit,
 ) {
     val viewModel = remember { Inject.instance<BookInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
@@ -155,10 +154,6 @@ fun BookScreen(
                                 )
                             viewModel.clearSearchAuthor()
                         },
-                        changeReadingStatusListener = { selectedStatus, oldStatusId ->
-                            viewModel.changeReadingStatus(selectedStatus, bookItemId)
-                            changeReadingStatusListener.invoke(oldStatusId, bookItemId)
-                        }
                     )
                 }
                 CustomDockedSearchBar(

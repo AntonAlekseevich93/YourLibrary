@@ -7,13 +7,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_models.ReadingStatus
+import models.ShelfEvents
 import models.ShelfUiState
+import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
 
 class ShelfViewModel(
     private val platform: Platform,
-    private val repository: ShelfRepository
-) {
+    private val repository: ShelfRepository,
+    private val applicationScope: ApplicationScope,
+) : BaseEventScope<BaseEvent> {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val _uiState = MutableStateFlow(
         ShelfUiState(
@@ -35,12 +38,22 @@ class ShelfViewModel(
         }
     }
 
-    fun searchInShelf(searchedText: String, shelfIndex: Int) {
-        _uiState.value.searchInFullShelf(searchedText, shelfIndex)
+    override fun sendEvent(event: BaseEvent) {
+        when (event) {
+            is ShelfEvents.ExpandShelfEvent -> {
+                uiState.value.showFullShelf(shelfIndex = event.index)
+                uiState.value.bottomSheetExpandEvent.value.invoke()
+            }
+
+            is DrawerEvents.OpenBook -> applicationScope.openBook(
+                event.painterSelectedBookInCache,
+                event.bookId
+            )
+        }
     }
 
-    fun showFullShelf(shelfIndex: Int) {
-        _uiState.value.showFullShelf(shelfIndex = shelfIndex)
+    fun searchInShelf(searchedText: String, shelfIndex: Int) {
+        _uiState.value.searchInFullShelf(searchedText, shelfIndex)
     }
 
 }

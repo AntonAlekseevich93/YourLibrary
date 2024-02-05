@@ -16,15 +16,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import di.Inject
-import io.kamel.core.Resource
 import kotlinx.coroutines.launch
 import main_models.TooltipItem
 import moe.tlaster.precompose.navigation.NavHost
-import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
 import moe.tlaster.precompose.navigation.transition.NavTransition
 import platform.Platform
 import platform.isDesktop
@@ -40,9 +36,7 @@ fun Application(
     desktopTooltip: MutableState<TooltipItem>? = null,
 ) {
     val viewModel = remember { Inject.instance<ApplicationViewModel>() }
-    val mainScreenViewModel = remember { Inject.instance<MainScreenViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
-    val mainScreenUiState by mainScreenViewModel.uiState.collectAsState()
     val leftDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val rightDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val showSearch = remember { mutableStateOf(false) }
@@ -73,12 +67,10 @@ fun Application(
                     )
                 ) {
                     MainScreen(
-                        uiState = mainScreenUiState,
                         platform = platform,
                         showLeftDrawer = uiState.showLeftDrawerState,
                         showSearch = showSearch,
                         leftDrawerState = leftDrawerState,
-                        viewModel = mainScreenViewModel,
                     )
                 }
 
@@ -92,9 +84,6 @@ fun Application(
                         fullScreenBookInfo = uiState.fullScreenBookInfo,
                         painterInCache = uiState.painterSelectedBookInCache.value,
                         isKeyboardShown = isKeyboardShown,
-                        changeReadingStatusListener = { oldStatusId, bookId ->
-                            mainScreenViewModel.changedReadingStatus(oldStatusId, bookId)
-                        },
                     )
                 }
 
@@ -104,9 +93,6 @@ fun Application(
                         fullScreenBookCreator = mutableStateOf(false),
                         isKeyboardShown = isKeyboardShown,
                         showRightDrawer = uiState.showRightDrawerState,
-                        closeBookCreatorListener = {
-                            navigator.goBack()
-                        }
                     )
                 }
 

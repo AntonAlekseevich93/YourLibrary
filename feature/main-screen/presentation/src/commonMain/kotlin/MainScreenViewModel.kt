@@ -49,6 +49,10 @@ class MainScreenViewModel(
         }
     }
 
+    override fun changedReadingStatus(oldStatusId: String, bookId: String) {
+        _uiState.value.removeBookBooksInfoUiState(id = oldStatusId, bookId = bookId)
+    }
+
     fun getSelectedPathInfo() {
         scope.launch {
             launch {
@@ -77,10 +81,6 @@ class MainScreenViewModel(
 
     fun openViewType(viewsType: ViewsType) {
         _uiState.value.viewsTypes.openedViewType.value = viewsType
-    }
-
-    fun changedReadingStatus(oldStatusId: String, bookId: String) {
-        _uiState.value.removeBookBooksInfoUiState(id = oldStatusId, bookId = bookId)
     }
 
     private suspend fun getAllBooks() {
