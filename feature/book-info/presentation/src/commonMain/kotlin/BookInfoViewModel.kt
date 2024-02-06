@@ -1,5 +1,7 @@
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import book_editor.BookEditorEvents
+import date.DatePickerEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -10,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_models.AuthorVo
 import main_models.BookItemVo
+import main_models.DatePickerType
 import main_models.ReadingStatus
 import menu_bar.LeftMenuBarEvents
 import models.BookInfoScope
@@ -61,6 +64,7 @@ class BookInfoViewModel(
                 event.textWasChanged
             )
 
+            is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
             is LeftMenuBarEvents.OnSearchClickEvent -> navigationHandler.navigateToSearch()
             is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator(
                 popUpToMain = true
@@ -69,6 +73,12 @@ class BookInfoViewModel(
             is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault(
                 needPopBackStack = true
             )
+
+            is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
+            is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
+            is DatePickerEvents.OnHideDatePicker -> {
+                _uiState.value.showDatePicker.value = false
+            }
         }
     }
 
@@ -88,12 +98,8 @@ class BookInfoViewModel(
         }
     }
 
-    fun clearSearchAuthor() {
+    private fun clearSearchAuthor() {
         _uiState.value.clearSimilarAuthorList()
-    }
-
-    fun setSelectedAuthor(author: AuthorVo) {
-        _uiState.value.setSelectedAuthor(author)
     }
 
     private fun updateBook(bookItem: BookItemVo, needCreateNewAuthor: Boolean) {
@@ -179,6 +185,40 @@ class BookInfoViewModel(
                 interactor.changeBookStatusId(selectedStatus, book.id)
                 mainScreenScope.changedReadingStatus(oldStatusId, book.id)
             }
+        }
+    }
+
+    private fun setSelectedDate(millis: Long, text: String) {
+        _uiState.value.apply {
+            when (datePickerType.value) {
+                DatePickerType.StartDate -> {
+                    bookValues.value.startDateInMillis.value = millis
+                    bookValues.value.startDateInString.value = text
+                }
+
+                DatePickerType.EndDate -> {
+                    bookValues.value.endDateInMillis.value = millis
+                    bookValues.value.endDateInString.value = text
+                }
+            }
+        }
+    }
+
+    private fun showDatePicker(type: DatePickerType) {
+        _uiState.value.apply {
+            datePickerType.value = type
+            showDatePicker.value = true
+        }
+    }
+
+    private fun onSuggestionAuthorClick(author: AuthorVo) {
+        _uiState.value.apply {
+            setSelectedAuthor(author)
+            bookValues.value.authorName.value = bookValues.value.authorName.value.copy(
+                author.name,
+                selection = TextRange(author.name.length)
+            )
+            clearSearchAuthor()
         }
     }
 

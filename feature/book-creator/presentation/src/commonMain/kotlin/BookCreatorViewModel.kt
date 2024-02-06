@@ -1,5 +1,6 @@
 import androidx.compose.ui.text.input.TextFieldValue
 import book_editor.BookEditorEvents
+import date.DatePickerEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -10,9 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import main_models.AuthorVo
-import main_models.BookItemVo
+import main_models.DatePickerType
 import models.BookCreatorEvents
 import models.BookCreatorUiState
+import text_fields.DELAY_FOR_LISTENER_PROCESSING
 
 class BookCreatorViewModel(
     private val platformInfo: PlatformInfo,
@@ -33,66 +35,54 @@ class BookCreatorViewModel(
                 event.textWasChanged
             )
 
+            is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
-        }
-    }
-
-    fun startParseBook(url: String) {
-        parsingJob?.cancel()
-        parsingJob = scope.launch() {
-            _uiState.value.apply {
-                startParsing()
-                val response = interactor.parseBookUrl(url)
-                delay(3000)
-                if (this@launch.isActive) {
-                    if (response.bookError != null) {
-                        setParsingError()
-                    } else if (response.bookItem != null) {
-                        bookItem.value = response.bookItem
-                        needUpdateBookInfo.value = true
-                        setParsingSuccess()
-                        splitAuthorsNameAndSearch(response.bookItem!!.authorName)
-                    }
-                }
+            is BookCreatorEvents.CreateBookEvent -> createBook()
+            is BookCreatorEvents.UrlTextChangedEvent -> urlTextChanged(event.urlTextFieldValue)
+            is BookCreatorEvents.ClearUrlEvent -> clearUrl()
+            is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
+            is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
+            is DatePickerEvents.OnHideDatePicker -> {
+                _uiState.value.showDatePicker.value = false
             }
         }
-    }
-
-    fun stopParsingBook() {
-        parsingJob?.cancel()
-        _uiState.value.hideLoadingIndicator()
-    }
-
-    fun clearSearchAuthor() {
-        _uiState.value.clearSimilarAuthorList()
     }
 
     fun hideLoadingStatusIndicator() {
         _uiState.value.hideLoadingIndicator()
     }
 
-    fun clearAllBookData() {
-        _uiState.value.clearAllBookData()
-    }
+    private fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
 
-    fun createBook(bookItemVoOrNull: BookItemVo?, needCreateAuthor: Boolean) {
-        if (bookItemVoOrNull != null) {
-            scope.launch {
-                val authorId = if (needCreateAuthor) {
-                    val newAuthor = createNewAuthor(authorName = bookItemVoOrNull.authorName)
-                    interactor.createAuthor(newAuthor)
-                    newAuthor.id
-                } else {
-                    _uiState.value.selectedAuthor.value!!.id
+    private fun createBook() {
+        _uiState.value.apply {
+            bookValues.value.createBookItemWithoutAuthorIdOrNull(
+                timestampOfCreating = getCurrentTimeInMillis(),
+                timestampOfUpdating = getCurrentTimeInMillis(),
+            )?.let { bookItem ->
+                scope.launch {
+                    launch {
+                        val authorId = if (needCreateNewAuthor.value) {
+                            val newAuthor = createNewAuthor(authorName = bookItem.authorName)
+                            interactor.createAuthor(newAuthor)
+                            newAuthor.id
+                        } else {
+                            selectedAuthor.value!!.id
+                        }
+                        interactor.createBook(bookItem.copy(authorId = authorId))
+                    }
+
+                    launch {
+                        clearAllAuthorInfo()
+                        navigationHandler.goBack()
+                    }
                 }
-                interactor.createBook(bookItemVoOrNull.copy(authorId = authorId))
             }
         }
     }
 
-    fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
-    fun setSelectedAuthor(authorVo: AuthorVo) {
-        _uiState.value.setSelectedAuthor(authorVo)
+    private fun clearSearchAuthor() {
+        _uiState.value.clearSimilarAuthorList()
     }
 
     private fun splitAuthorsNameAndSearch(authorName: String) {
@@ -180,4 +170,83 @@ class BookCreatorViewModel(
             clearSearchAuthor()
         }
     }
+
+    private fun onSuggestionAuthorClick(author: AuthorVo) {
+        _uiState.value.setSelectedAuthor(author)
+
+        scope.launch {
+            delay(DELAY_FOR_LISTENER_PROCESSING)
+            clearSearchAuthor()
+        }
+    }
+
+    private fun urlTextChanged(urlTextFieldValue: TextFieldValue) {
+        _uiState.value.bookValues.value.parsingUrl.value = urlTextFieldValue
+        if (urlTextFieldValue.text.isNotEmpty() && urlTextFieldValue.text.length > 5) {
+            startParseBook(url = urlTextFieldValue.text)
+        } else {
+            stopParsingBook()
+        }
+    }
+
+    private fun startParseBook(url: String) {
+        parsingJob?.cancel()
+        parsingJob = scope.launch() {
+            _uiState.value.apply {
+                startParsing()
+                val response = interactor.parseBookUrl(url)
+                delay(3000)
+                if (this@launch.isActive) {
+                    if (response.bookError != null) {
+                        setParsingError()
+                    } else if (response.bookItem != null) {
+                        bookItem.value = response.bookItem
+                        needUpdateBookInfo.value = true
+                        setParsingSuccess()
+                        splitAuthorsNameAndSearch(response.bookItem!!.authorName)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun stopParsingBook() {
+        parsingJob?.cancel()
+        _uiState.value.hideLoadingIndicator()
+    }
+
+    private fun clearUrl() {
+        _uiState.value.apply {
+            urlFieldIsWork.value = true
+            showClearButtonOfUrlElement.value = false
+            showParsingResult.value = false
+            bookValues.value.clearAll()
+            clearAllBookData()
+            showDialogClearAllData.value = false
+        }
+    }
+
+    private fun setSelectedDate(millis: Long, text: String) {
+        _uiState.value.apply {
+            when (datePickerType.value) {
+                DatePickerType.StartDate -> {
+                    bookValues.value.startDateInMillis.value = millis
+                    bookValues.value.startDateInString.value = text
+                }
+
+                DatePickerType.EndDate -> {
+                    bookValues.value.endDateInMillis.value = millis
+                    bookValues.value.endDateInString.value = text
+                }
+            }
+        }
+    }
+
+    private fun showDatePicker(type: DatePickerType) {
+        _uiState.value.apply {
+            datePickerType.value = type
+            showDatePicker.value = true
+        }
+    }
+
 }

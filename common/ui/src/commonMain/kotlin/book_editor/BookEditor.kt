@@ -46,6 +46,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import date.DatePickerEvents
 import info.InfoBlock
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
@@ -73,8 +74,6 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     linkToAuthor: MutableState<Boolean>,
     modifier: Modifier = Modifier,
     canShowError: Boolean = false,
-    onSuggestionAuthorClickListener: (author: AuthorVo) -> Unit,
-    showDataPickerListener: (type: DatePickerType) -> Unit,
 ) {
     val showImage = remember { mutableStateOf(false) }
     val painter = asyncPainterResource(
@@ -204,7 +203,11 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                                     author.name,
                                                     relatedAuthorsNames = textPostfix
                                                 )
-                                                onSuggestionAuthorClickListener.invoke(author)
+                                                this@BookEditor.sendEvent(
+                                                    BookEditorEvents.OnSuggestionAuthorClickEvent(
+                                                        author
+                                                    )
+                                                )
                                             },
                                         )
                                     }
@@ -327,7 +330,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     hintText = Strings.hint_reading_start_date,
                     enabledInput = false,
                     onClick = {
-                        showDataPickerListener.invoke(DatePickerType.StartDate)
+                        this@BookEditor.sendEvent(DatePickerEvents.OnShowDatePicker(DatePickerType.StartDate))
                     }
                 )
 
@@ -339,7 +342,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     hintText = Strings.hint_reading_end_date,
                     enabledInput = false,
                     onClick = {
-                        showDataPickerListener.invoke(DatePickerType.EndDate)
+                        this@BookEditor.sendEvent(DatePickerEvents.OnShowDatePicker(DatePickerType.EndDate))
                     }
                 )
 

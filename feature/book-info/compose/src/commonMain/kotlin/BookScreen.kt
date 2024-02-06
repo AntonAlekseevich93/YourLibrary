@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import di.Inject
 import io.kamel.core.Resource
@@ -145,15 +144,8 @@ fun BookScreen(
                         similarAuthorList = uiState.similarSearchAuthors,
                         selectedAuthor = uiState.selectedAuthor,
                         needCreateNewAuthor = uiState.needCreateNewAuthor,
-                        onSuggestionAuthorClickListener = { author ->
-                            viewModel.setSelectedAuthor(author)
-                            bookValues.value.authorName.value =
-                                bookValues.value.authorName.value.copy(
-                                    author.name,
-                                    selection = TextRange(author.name.length)
-                                )
-                            viewModel.clearSearchAuthor()
-                        },
+                        datePickerType = uiState.datePickerType,
+                        showDatePicker = uiState.showDatePicker
                     )
                 }
                 CustomDockedSearchBar(

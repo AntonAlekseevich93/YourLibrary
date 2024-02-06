@@ -1,6 +1,8 @@
 package date
 
 import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import DateUtils
 import Strings
 import androidx.compose.foundation.layout.padding
@@ -20,10 +22,9 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommonDatePicker(
+fun BaseEventScope<BaseEvent>.CommonDatePicker(
     title: String = Strings.date_utils_title,
     state: DatePickerState,
-    onSelectedListener: (millis: Long, text: String) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     val text =
@@ -44,7 +45,11 @@ fun CommonDatePicker(
         confirmButton = {
             TextButton(onClick = {
                 if (state.selectedDateMillis != null) {
-                    onSelectedListener.invoke(state.selectedDateMillis ?: 0, text.value)
+                    this@CommonDatePicker.sendEvent(
+                        DatePickerEvents.OnSelectedDate(
+                            state.selectedDateMillis ?: 0, text.value
+                        )
+                    )
                 }
                 onDismissRequest.invoke()
             }, modifier = Modifier.padding(end = 16.dp)) {

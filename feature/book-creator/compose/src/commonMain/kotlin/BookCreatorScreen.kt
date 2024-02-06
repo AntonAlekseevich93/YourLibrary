@@ -38,8 +38,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -51,15 +49,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import book_editor.AuthorIsNotSelectedInfo
 import book_editor.BookEditor
-import main_models.BookValues
 import containters.CenterBoxContainer
 import date.CommonDatePicker
+import date.DatePickerEvents
 import di.Inject
 import info.InfoBlock
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import loader.LoadingStatusIndicator
 import main_models.BookItemVo
+import main_models.BookValues
 import main_models.DatePickerType
 import main_models.ReadingStatus
 import main_models.rest.LoadingStatus
@@ -70,7 +67,6 @@ import platform.Platform
 import platform.isDesktop
 import platform.isMobile
 import tags.CustomTag
-import text_fields.DELAY_FOR_LISTENER_PROCESSING
 import text_fields.TextFieldWithTitleAndSuggestion
 
 
@@ -84,25 +80,16 @@ fun BookCreatorScreen(
 ) {
     val viewModel = remember { Inject.instance<BookCreatorViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
-    val scope = rememberCoroutineScope()
     val scrollableState = rememberScrollState()
 
     val targetVerticalPadding =
         if (fullScreenBookCreator.value || platform.isMobile()) 0.dp else 65.dp
     val targetHorizontalPadding =
         if (fullScreenBookCreator.value || platform == Platform.MOBILE) 0.dp else if (showRightDrawer.value) 100.dp else 220.dp
-
     val isCreateBookManually = remember { mutableStateOf(false) }
     val statusBookTextFieldValue =
         remember { mutableStateOf(TextFieldValue(text = uiState.defaultStatus.value.nameValue)) }
-    val showDataPicker = remember { mutableStateOf(false) }
     val dataPickerState = rememberDatePickerState()
-    var datePickerType by remember { mutableStateOf(DatePickerType.StartDate) }
-    val showParsingResult = remember { mutableStateOf(false) }
-    val urlFieldIsWork = remember { mutableStateOf(true) }
-    val showDialogClearAllData = remember { mutableStateOf(false) }
-    val showClearButtonOfUrlElement = remember { mutableStateOf(false) }
-    val createNewAuthor = remember { mutableStateOf(false) }
     val linkToAuthor = remember { mutableStateOf(false) }
 
     val animatedVerticalPadding by animateDpAsState(
@@ -123,12 +110,14 @@ fun BookCreatorScreen(
     )
 
     LaunchedEffect(key1 = uiState.needUpdateBookInfo.value) {
-        if (uiState.needUpdateBookInfo.value) {
-            urlFieldIsWork.value = false
-            uiState.bookItem.value?.let { book ->
-                updateBookValues(bookValues = uiState.bookValues.value, book = book)
+        uiState.apply {
+            if (needUpdateBookInfo.value) {
+                urlFieldIsWork.value = false
+                bookItem.value?.let { book ->
+                    updateBookValues(bookValues = bookValues.value, book = book)
+                }
+                needUpdateBookInfo.value = false
             }
-            uiState.needUpdateBookInfo.value = false
         }
     }
 
@@ -194,12 +183,12 @@ fun BookCreatorScreen(
                         if (
                             platform.isDesktop() &&
                             uiState.selectedAuthor.value == null &&
-                            uiState.similarSearchAuthors.isNotEmpty() && !createNewAuthor.value
+                            uiState.similarSearchAuthors.isNotEmpty() && !uiState.needCreateNewAuthor.value
                         ) {
                             AuthorIsNotSelectedInfo()
                         } else if (
-                           uiState.bookValues.value.isRequiredFieldsFilled() && createNewAuthor.value ||
-                           uiState.bookValues.value.isRequiredFieldsFilled() && uiState.selectedAuthor.value != null
+                            uiState.bookValues.value.isRequiredFieldsFilled() && uiState.needCreateNewAuthor.value ||
+                            uiState.bookValues.value.isRequiredFieldsFilled() && uiState.selectedAuthor.value != null
                         ) {
                             CustomTag(
                                 text = Strings.save,
@@ -207,21 +196,11 @@ fun BookCreatorScreen(
                                 textStyle = ApplicationTheme.typography.footnoteBold,
                                 textModifier = Modifier,
                                 maxHeight = 50.dp,
-                                onClick = {
-                                    viewModel.createBook(
-                                        bookItemVoOrNull =  uiState.bookValues.value.createBookItemWithoutAuthorIdOrNull(
-                                            timestampOfCreating = viewModel.getCurrentTimeInMillis(),
-                                            timestampOfUpdating = viewModel.getCurrentTimeInMillis(),
-                                        ),
-                                        needCreateAuthor = createNewAuthor.value
-                                    )
-                                    uiState.clearAllAuthorInfo()
-                                    viewModel.sendEvent(BookCreatorEvents.GoBack)
-                                }
+                                onClick = { viewModel.sendEvent(BookCreatorEvents.CreateBookEvent) }
                             )
                         } else {
                             Text(
-                                text = if (showParsingResult.value)  uiState.bookValues.value.bookName.value.text else Strings.add_book,
+                                text = if (uiState.showParsingResult.value) uiState.bookValues.value.bookName.value.text else Strings.add_book,
                                 modifier = Modifier.padding(top = 8.dp),
                                 style = ApplicationTheme.typography.title2Bold,
                                 color = ApplicationTheme.colors.mainTextColor,
@@ -250,7 +229,7 @@ fun BookCreatorScreen(
                         )
                     }
 
-                    if (isCreateBookManually.value && !showParsingResult.value) {
+                    if (isCreateBookManually.value && !uiState.showParsingResult.value) {
                         Box(
                             modifier = Modifier.fillMaxSize().padding(start = 10.dp),
                             contentAlignment = Alignment.CenterStart
@@ -282,25 +261,20 @@ fun BookCreatorScreen(
                             TextFieldWithTitleAndSuggestion(
                                 platform = platform,
                                 title = Strings.link,
-                                enabledInput = urlFieldIsWork.value,
+                                enabledInput = uiState.urlFieldIsWork.value,
                                 modifier = Modifier,
                                 hintText = Strings.hint_past_url_book,
-                                setAsSelected = !showParsingResult.value,
-                                showClearButton = showClearButtonOfUrlElement,
-                                textFieldValue =  uiState.bookValues.value.parsingUrl,
+                                setAsSelected = !uiState.showParsingResult.value,
+                                showClearButton = uiState.showClearButtonOfUrlElement,
+                                textFieldValue = uiState.bookValues.value.parsingUrl,
                                 onTextChanged = { url ->
-                                    uiState.bookValues.value.parsingUrl.value = url
-                                    if (url.text.isNotEmpty() && url.text.length > 5) {
-                                        viewModel.startParseBook(url = url.text)
-                                    } else {
-                                        viewModel.stopParsingBook()
-                                    }
+                                    viewModel.sendEvent(BookCreatorEvents.UrlTextChangedEvent(url))
                                 },
                                 onClearButtonListener = {
-                                    showDialogClearAllData.value = true
+                                    uiState.showDialogClearAllData.value = true
                                 }
                             )
-                            AnimatedVisibility(visible = !showParsingResult.value) {
+                            AnimatedVisibility(visible = !uiState.showParsingResult.value) {
                                 InfoBlock(
                                     Strings.tooltip_parsing_book,
                                     modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
@@ -318,9 +292,9 @@ fun BookCreatorScreen(
                                 loadingStatus = uiState.loadingStatus,
                                 finishAnimationListener = {
                                     if (uiState.loadingStatus.value == LoadingStatus.SUCCESS) {
-                                        showClearButtonOfUrlElement.value = true
+                                        uiState.showClearButtonOfUrlElement.value = true
                                         viewModel.hideLoadingStatusIndicator()
-                                        showParsingResult.value = true
+                                        uiState.showParsingResult.value = true
                                     } else {
 
                                     }
@@ -338,7 +312,7 @@ fun BookCreatorScreen(
 
                     AnimatedVisibility(
                         !isCreateBookManually.value
-                                && !showParsingResult.value
+                                && !uiState.showParsingResult.value
                                 && !uiState.showLoadingIndicator.value,
                     ) {
                         CenterBoxContainer {
@@ -358,7 +332,7 @@ fun BookCreatorScreen(
                     }
 
                     AnimatedVisibility(
-                        isCreateBookManually.value || showParsingResult.value,
+                        isCreateBookManually.value || uiState.showParsingResult.value,
                         enter = fadeIn(),
                         exit = fadeOut()
                     ) {
@@ -367,69 +341,40 @@ fun BookCreatorScreen(
 
                             viewModel.BookEditor(
                                 platform = platform,
-                                bookValues =  uiState.bookValues.value,
+                                bookValues = uiState.bookValues.value,
                                 similarSearchAuthors = uiState.similarSearchAuthors,
                                 selectedAuthor = uiState.selectedAuthor,
-                                createNewAuthor = createNewAuthor,
+                                createNewAuthor = uiState.needCreateNewAuthor,
                                 linkToAuthor = linkToAuthor,
                                 isKeyboardShown = isKeyboardShown,
                                 statusBookTextFieldValue = statusBookTextFieldValue,
-                                showDataPickerListener = {
-                                    datePickerType = it
-                                    showDataPicker.value = true
-                                },
-                                onSuggestionAuthorClickListener = { author ->
-                                    viewModel.setSelectedAuthor(author)
-                                    scope.launch {
-                                        delay(DELAY_FOR_LISTENER_PROCESSING)
-                                        viewModel.clearSearchAuthor()
-                                    }
-                                },
                             )
                         }
                     }
                 }
             }
 
-            AnimatedVisibility(showDataPicker.value) {
+            AnimatedVisibility(uiState.showDatePicker.value) {
                 val timePickerTitle =
-                    remember { if (datePickerType == DatePickerType.StartDate) Strings.start_date else Strings.end_date }
-                CommonDatePicker(
+                    remember { if (uiState.datePickerType.value == DatePickerType.StartDate) Strings.start_date else Strings.end_date }
+                viewModel.CommonDatePicker(
                     state = dataPickerState,
                     title = timePickerTitle,
                     onDismissRequest = {
-                        showDataPicker.value = false
+                        viewModel.sendEvent(DatePickerEvents.OnHideDatePicker)
                     },
-                    onSelectedListener = { millis, text ->
-                        when (datePickerType) {
-                            DatePickerType.StartDate -> {
-                                uiState.bookValues.value.startDateInMillis.value = millis
-                                uiState.bookValues.value.startDateInString.value = text
-                            }
-
-                            DatePickerType.EndDate -> {
-                                uiState.bookValues.value.endDateInMillis.value = millis
-                                uiState.bookValues.value.endDateInString.value = text
-                            }
-                        }
-                    }
                 )
             }
 
             AnimatedVisibility(
-                visible = showDialogClearAllData.value,
+                visible = uiState.showDialogClearAllData.value,
                 exit = fadeOut(animationSpec = tween(durationMillis = 1))
             ) {
                 ClearDataAlertDialog(
                     onDismissRequest = {
-                        showDialogClearAllData.value = false
+                        uiState.showDialogClearAllData.value = false
                     }, onClick = {
-                        urlFieldIsWork.value = true
-                        showClearButtonOfUrlElement.value = false
-                        showParsingResult.value = false
-                        uiState.bookValues.value.clearAll()
-                        viewModel.clearAllBookData()
-                        showDialogClearAllData.value = false
+                        viewModel.sendEvent(BookCreatorEvents.ClearUrlEvent)
                     }
                 )
             }

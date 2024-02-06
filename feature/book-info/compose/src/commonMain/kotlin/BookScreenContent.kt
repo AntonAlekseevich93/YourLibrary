@@ -27,7 +27,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import book_editor.BookEditor
 import date.CommonDatePicker
+import date.DatePickerEvents
 import io.kamel.core.Resource
 import main_models.AuthorVo
 import main_models.BookItemVo
@@ -63,7 +63,8 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
     isEditMode: State<Boolean>,
     needCreateNewAuthor: MutableState<Boolean>,
     isKeyboardShown: State<Boolean>,
-    onSuggestionAuthorClickListener: (author: AuthorVo) -> Unit,
+    datePickerType: State<DatePickerType>,
+    showDatePicker: State<Boolean>,
 ) {
 
     val targetVerticalPadding = if (fullScreenBookInfo.value) 0.dp else 65.dp
@@ -88,9 +89,7 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
     val shapeInDp = if (fullScreenBookInfo.value) 0.dp else 8.dp
     val statusBookTextFieldValue =
         remember(key1 = bookItem.readingStatus) { mutableStateOf(TextFieldValue(text = bookItem.readingStatus.nameValue)) }
-    val showDataPicker = remember { mutableStateOf(false) }
     val dataPickerState = rememberDatePickerState()
-    var datePickerType by remember { mutableStateOf(DatePickerType.StartDate) }
     val scrollableState = rememberScrollState()
     val hideSaveButton = remember { mutableStateOf(false) }
     val linkToAuthor = remember { mutableStateOf(false) }
@@ -192,11 +191,6 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
                                 createNewAuthor = needCreateNewAuthor,
                                 linkToAuthor = linkToAuthor,
                                 isKeyboardShown = isKeyboardShown,
-                                showDataPickerListener = {
-                                    datePickerType = it
-                                    showDataPicker.value = true
-                                },
-                                onSuggestionAuthorClickListener = onSuggestionAuthorClickListener,
                             )
                         }
                     }
@@ -211,28 +205,15 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
                 }
             }
 
-            AnimatedVisibility(showDataPicker.value) {
+            AnimatedVisibility(showDatePicker.value) {
                 val timePickerTitle =
-                    remember { if (datePickerType == DatePickerType.StartDate) Strings.start_date else Strings.end_date }
+                    remember { if (datePickerType.value == DatePickerType.StartDate) Strings.start_date else Strings.end_date }
                 CommonDatePicker(
                     state = dataPickerState,
                     title = timePickerTitle,
                     onDismissRequest = {
-                        showDataPicker.value = false
+                        this@BookScreenContent.sendEvent(DatePickerEvents.OnHideDatePicker)
                     },
-                    onSelectedListener = { millis, text ->
-                        when (datePickerType) {
-                            DatePickerType.StartDate -> {
-                                bookValues.value.startDateInMillis.value = millis
-                                bookValues.value.startDateInString.value = text
-                            }
-
-                            DatePickerType.EndDate -> {
-                                bookValues.value.endDateInMillis.value = millis
-                                bookValues.value.endDateInString.value = text
-                            }
-                        }
-                    }
                 )
             }
         }
