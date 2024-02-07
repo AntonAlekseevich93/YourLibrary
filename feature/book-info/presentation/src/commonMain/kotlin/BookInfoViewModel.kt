@@ -91,7 +91,7 @@ class BookInfoViewModel(
                 launch {
                     interactor.getAuthorWithRelatesWithoutBooks(book.authorId)?.let {
                         _uiState.value.setSelectedAuthor(it)
-                        _uiState.value.authorWasSelectedProgrammatically.value.invoke()
+                        setSelectedAuthorName()
                     }
                 }
             }
@@ -219,6 +219,20 @@ class BookInfoViewModel(
                 selection = TextRange(author.name.length)
             )
             clearSearchAuthor()
+        }
+    }
+
+    private fun setSelectedAuthorName() {
+        _uiState.value.apply {
+            selectedAuthor.value?.let { author ->
+                val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
+                    "(${author.relatedAuthors.joinToString { it.name }})"
+                } else ""
+                bookValues.value.setSelectedAuthorName(
+                    author.name,
+                    relatedAuthorsNames = textPostfix
+                )
+            }
         }
     }
 

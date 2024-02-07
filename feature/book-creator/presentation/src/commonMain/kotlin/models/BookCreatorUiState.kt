@@ -16,10 +16,8 @@ class BookCreatorUiState(
     val showLoadingIndicator: MutableState<Boolean> = mutableStateOf(false),
     val loadingStatus: MutableState<LoadingStatus> = mutableStateOf(LoadingStatus.LOADING),
     val defaultStatus: MutableState<ReadingStatus> = mutableStateOf(ReadingStatus.PLANNED),
-    val needUpdateBookInfo: MutableState<Boolean> = mutableStateOf(false),
     val selectedAuthor: MutableState<AuthorVo?> = mutableStateOf<AuthorVo?>(null),
     val similarSearchAuthors: SnapshotStateList<AuthorVo> = mutableStateListOf(),
-    val authorWasSelectedProgrammatically: MutableState<() -> Unit> = mutableStateOf({}),
     val bookValues: MutableState<BookValues> = mutableStateOf(BookValues()),
     val needCreateNewAuthor: MutableState<Boolean> = mutableStateOf(false),
     val showClearButtonOfUrlElement: MutableState<Boolean> = mutableStateOf(false),
@@ -28,6 +26,7 @@ class BookCreatorUiState(
     val showDialogClearAllData: MutableState<Boolean> = mutableStateOf(false),
     var datePickerType: MutableState<DatePickerType> = mutableStateOf(DatePickerType.StartDate),
     val showDatePicker: MutableState<Boolean> = mutableStateOf(false),
+    val isCreateBookManually: MutableState<Boolean> = mutableStateOf(false),
 ) {
     fun startParsing() {
         loadingStatus.value = LoadingStatus.LOADING
@@ -71,5 +70,4 @@ class BookCreatorUiState(
         selectedAuthor.value = null
         similarSearchAuthors.clear()
     }
-
 }

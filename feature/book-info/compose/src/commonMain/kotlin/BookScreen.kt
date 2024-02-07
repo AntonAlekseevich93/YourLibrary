@@ -70,18 +70,6 @@ fun BookScreen(
         }
     }
 
-    uiState.authorWasSelectedProgrammatically.value = {
-        uiState.selectedAuthor.value?.let { author ->
-            val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
-                "(${author.relatedAuthors.joinToString { it.name }})"
-            } else ""
-            bookValues.value.setSelectedAuthorName(
-                author.name,
-                relatedAuthorsNames = textPostfix
-            )
-        }
-    }
-
     Row(
         modifier = Modifier.background(background)
     ) {

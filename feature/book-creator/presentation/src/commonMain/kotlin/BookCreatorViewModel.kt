@@ -1,3 +1,4 @@
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import book_editor.BookEditorEvents
 import date.DatePickerEvents
@@ -11,7 +12,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import main_models.AuthorVo
+import main_models.BookItemVo
+import main_models.BookValues
 import main_models.DatePickerType
+import main_models.ReadingStatus
+import main_models.rest.LoadingStatus
 import models.BookCreatorEvents
 import models.BookCreatorUiState
 import text_fields.DELAY_FOR_LISTENER_PROCESSING
@@ -40,16 +45,32 @@ class BookCreatorViewModel(
             is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.UrlTextChangedEvent -> urlTextChanged(event.urlTextFieldValue)
             is BookCreatorEvents.ClearUrlEvent -> clearUrl()
+            is BookCreatorEvents.OnClearUrlAndCreateBookManuallyEvent -> {
+                _uiState.value.apply {
+                    _uiState.value.bookValues.value.parsingUrl.value = TextFieldValue()
+                    isCreateBookManually.value = true
+                    hideLoadingIndicator()
+                }
+            }
+
+            is BookCreatorEvents.OnFinishParsingUrl -> finishParsing()
+            is BookCreatorEvents.OnCreateBookManuallyEvent -> {
+                _uiState.value.apply {
+                    bookValues.value.parsingUrl.value = TextFieldValue()
+                    isCreateBookManually.value = true
+                }
+            }
+
+            is BookCreatorEvents.DisableCreateBookManuallyEvent -> {
+                _uiState.value.isCreateBookManually.value = false
+            }
+
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
             is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
             is DatePickerEvents.OnHideDatePicker -> {
                 _uiState.value.showDatePicker.value = false
             }
         }
-    }
-
-    fun hideLoadingStatusIndicator() {
-        _uiState.value.hideLoadingIndicator()
     }
 
     private fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
@@ -108,22 +129,39 @@ class BookCreatorViewModel(
     }
 
     private fun setSelectedAuthorIfExist(authorName: String, similarAuthors: List<AuthorVo>) {
-        similarAuthors.forEach { authorItem ->
-            if (authorItem.name.equals(authorName, ignoreCase = true)) {
-                _uiState.value.setSelectedAuthor(authorItem)
-                _uiState.value.authorWasSelectedProgrammatically.value.invoke()
-                return@forEach
-            } else {
-                authorItem.relatedAuthors.forEach {
-                    if (it.name.equals(authorName, ignoreCase = true)) {
-                        _uiState.value.setSelectedAuthor(authorItem)
-                        _uiState.value.authorWasSelectedProgrammatically.value.invoke()
-                        return@forEach
+        _uiState.value.apply {
+            similarAuthors.forEach { authorItem ->
+                if (authorItem.name.equals(authorName, ignoreCase = true)) {
+                    setSelectedAuthor(authorItem)
+                    setSelectedAuthorName()
+                    return@forEach
+                } else {
+                    authorItem.relatedAuthors.forEach {
+                        if (it.name.equals(authorName, ignoreCase = true)) {
+                            setSelectedAuthor(authorItem)
+                            setSelectedAuthorName()
+                            return@forEach
+                        }
                     }
                 }
             }
         }
     }
+
+    private fun setSelectedAuthorName() {
+        _uiState.value.apply {
+            selectedAuthor.value?.let { author ->
+                val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
+                    "(${author.relatedAuthors.joinToString { it.name }})"
+                } else ""
+                bookValues.value.setSelectedAuthorName(
+                    author.name,
+                    relatedAuthorsNames = textPostfix
+                )
+            }
+        }
+    }
+
 
     private fun createNewAuthor(
         authorName: String
@@ -201,11 +239,20 @@ class BookCreatorViewModel(
                         setParsingError()
                     } else if (response.bookItem != null) {
                         bookItem.value = response.bookItem
-                        needUpdateBookInfo.value = true
+                        updateBookInfo()
                         setParsingSuccess()
                         splitAuthorsNameAndSearch(response.bookItem!!.authorName)
                     }
                 }
+            }
+        }
+    }
+
+    private fun updateBookInfo() {
+        _uiState.value.apply {
+            urlFieldIsWork.value = false
+            bookItem.value?.let { book ->
+                updateBookValues(bookValues = bookValues.value, book = book)
             }
         }
     }
@@ -249,4 +296,47 @@ class BookCreatorViewModel(
         }
     }
 
+    private fun updateBookValues(
+        bookValues: BookValues,
+        book: BookItemVo
+    ) {
+        bookValues.apply {
+            authorName.value = authorName.value.copy(
+                text = book.authorName,
+                selection = TextRange(book.authorName.length)
+            )
+            bookName.value = bookName.value.copy(
+                text = book.bookName,
+                selection = TextRange(book.bookName.length)
+            )
+            numberOfPages.value = numberOfPages.value.copy(
+                text = book.numbersOfPages.toString(),
+                selection = TextRange(book.numbersOfPages.toString().length)
+            )
+            description.value = description.value.copy(
+                text = book.description,
+                selection = TextRange(book.description.length)
+            )
+            selectedStatus.value = ReadingStatus.PLANNED
+
+            coverUrl.value = coverUrl.value.copy(
+                text = book.coverUrlFromParsing,
+                selection = TextRange(book.coverUrlFromParsing.length)
+            )
+            isbn.value = isbn.value.copy(
+                text = book.isbn,
+                selection = TextRange(book.isbn.length)
+            )
+        }
+    }
+
+    private fun finishParsing() {
+        _uiState.value.apply {
+            if (loadingStatus.value == LoadingStatus.SUCCESS) {
+                showClearButtonOfUrlElement.value = true
+                hideLoadingIndicator()
+                showParsingResult.value = true
+            }
+        }
+    }
 }

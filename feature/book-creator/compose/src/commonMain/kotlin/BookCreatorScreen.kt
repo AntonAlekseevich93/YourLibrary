@@ -31,7 +31,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -42,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -55,10 +53,7 @@ import date.DatePickerEvents
 import di.Inject
 import info.InfoBlock
 import loader.LoadingStatusIndicator
-import main_models.BookItemVo
-import main_models.BookValues
 import main_models.DatePickerType
-import main_models.ReadingStatus
 import main_models.rest.LoadingStatus
 import models.BookCreatorEvents
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -86,7 +81,6 @@ fun BookCreatorScreen(
         if (fullScreenBookCreator.value || platform.isMobile()) 0.dp else 65.dp
     val targetHorizontalPadding =
         if (fullScreenBookCreator.value || platform == Platform.MOBILE) 0.dp else if (showRightDrawer.value) 100.dp else 220.dp
-    val isCreateBookManually = remember { mutableStateOf(false) }
     val statusBookTextFieldValue =
         remember { mutableStateOf(TextFieldValue(text = uiState.defaultStatus.value.nameValue)) }
     val dataPickerState = rememberDatePickerState()
@@ -108,30 +102,6 @@ fun BookCreatorScreen(
             easing = FastOutSlowInEasing
         )
     )
-
-    LaunchedEffect(key1 = uiState.needUpdateBookInfo.value) {
-        uiState.apply {
-            if (needUpdateBookInfo.value) {
-                urlFieldIsWork.value = false
-                bookItem.value?.let { book ->
-                    updateBookValues(bookValues = bookValues.value, book = book)
-                }
-                needUpdateBookInfo.value = false
-            }
-        }
-    }
-
-    uiState.authorWasSelectedProgrammatically.value = {
-        uiState.selectedAuthor.value?.let { author ->
-            val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
-                "(${author.relatedAuthors.joinToString { it.name }})"
-            } else ""
-            uiState.bookValues.value.setSelectedAuthorName(
-                author.name,
-                relatedAuthorsNames = textPostfix
-            )
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -229,7 +199,7 @@ fun BookCreatorScreen(
                         )
                     }
 
-                    if (isCreateBookManually.value && !uiState.showParsingResult.value) {
+                    if (uiState.isCreateBookManually.value && !uiState.showParsingResult.value) {
                         Box(
                             modifier = Modifier.fillMaxSize().padding(start = 10.dp),
                             contentAlignment = Alignment.CenterStart
@@ -242,7 +212,7 @@ fun BookCreatorScreen(
                                     interactionSource = MutableInteractionSource(),
                                     null
                                 ) {
-                                    isCreateBookManually.value = false
+                                    viewModel.sendEvent(BookCreatorEvents.DisableCreateBookManuallyEvent)
                                 }
                             )
                         }
@@ -255,7 +225,7 @@ fun BookCreatorScreen(
                         .verticalScroll(scrollableState)
                 ) {
                     AnimatedVisibility(
-                        !isCreateBookManually.value,
+                        !uiState.isCreateBookManually.value,
                     ) {
                         Column(modifier = Modifier.padding(top = 16.dp)) {
                             TextFieldWithTitleAndSuggestion(
@@ -291,27 +261,19 @@ fun BookCreatorScreen(
                             LoadingStatusIndicator(
                                 loadingStatus = uiState.loadingStatus,
                                 finishAnimationListener = {
-                                    if (uiState.loadingStatus.value == LoadingStatus.SUCCESS) {
-                                        uiState.showClearButtonOfUrlElement.value = true
-                                        viewModel.hideLoadingStatusIndicator()
-                                        uiState.showParsingResult.value = true
-                                    } else {
-
-                                    }
+                                    viewModel.sendEvent(BookCreatorEvents.OnFinishParsingUrl)
                                 }
                             )
                             if (uiState.loadingStatus.value == LoadingStatus.ERROR) {
                                 ShowError {
-                                    uiState.bookValues.value.parsingUrl.value = TextFieldValue()
-                                    isCreateBookManually.value = true
-                                    viewModel.hideLoadingStatusIndicator()
+                                    viewModel.sendEvent(BookCreatorEvents.OnClearUrlAndCreateBookManuallyEvent)
                                 }
                             }
                         }
                     }
 
                     AnimatedVisibility(
-                        !isCreateBookManually.value
+                        !uiState.isCreateBookManually.value
                                 && !uiState.showParsingResult.value
                                 && !uiState.showLoadingIndicator.value,
                     ) {
@@ -324,15 +286,14 @@ fun BookCreatorScreen(
                                     modifier = Modifier.padding(bottom = 8.dp, top = 8.dp)
                                 )
                                 CreateBookButton(title = Strings.add_manually_button) {
-                                    uiState.bookValues.value.parsingUrl.value = TextFieldValue()
-                                    isCreateBookManually.value = true
+                                    viewModel.sendEvent(BookCreatorEvents.OnCreateBookManuallyEvent)
                                 }
                             }
                         }
                     }
 
                     AnimatedVisibility(
-                        isCreateBookManually.value || uiState.showParsingResult.value,
+                        uiState.isCreateBookManually.value || uiState.showParsingResult.value,
                         enter = fadeIn(),
                         exit = fadeOut()
                     ) {
@@ -379,40 +340,6 @@ fun BookCreatorScreen(
                 )
             }
         }
-    }
-}
-
-private fun updateBookValues(
-    bookValues: BookValues,
-    book: BookItemVo
-) {
-    bookValues.apply {
-        authorName.value = authorName.value.copy(
-            text = book.authorName,
-            selection = TextRange(book.authorName.length)
-        )
-        bookName.value = bookName.value.copy(
-            text = book.bookName,
-            selection = TextRange(book.bookName.length)
-        )
-        numberOfPages.value = numberOfPages.value.copy(
-            text = book.numbersOfPages.toString(),
-            selection = TextRange(book.numbersOfPages.toString().length)
-        )
-        description.value = description.value.copy(
-            text = book.description,
-            selection = TextRange(book.description.length)
-        )
-        selectedStatus.value = ReadingStatus.PLANNED
-
-        coverUrl.value = coverUrl.value.copy(
-            text = book.coverUrlFromParsing,
-            selection = TextRange(book.coverUrlFromParsing.length)
-        )
-        isbn.value = isbn.value.copy(
-            text = book.isbn,
-            selection = TextRange(book.isbn.length)
-        )
     }
 }
 

@@ -8,4 +8,8 @@ sealed class BookCreatorEvents : BaseEvent {
     data object CreateBookEvent : BookCreatorEvents()
     class UrlTextChangedEvent(val urlTextFieldValue: TextFieldValue) : BookCreatorEvents()
     data object ClearUrlEvent : BookCreatorEvents()
+    data object OnFinishParsingUrl : BookCreatorEvents()
+    data object OnCreateBookManuallyEvent : BookCreatorEvents()
+    data object DisableCreateBookManuallyEvent : BookCreatorEvents()
+    data object OnClearUrlAndCreateBookManuallyEvent : BookCreatorEvents()
 }

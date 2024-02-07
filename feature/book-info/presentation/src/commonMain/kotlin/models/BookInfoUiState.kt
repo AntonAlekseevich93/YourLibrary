@@ -15,7 +15,6 @@ class BookInfoUiState(
     val selectedPathInfo: MutableState<PathInfoVo> = mutableStateOf(PathInfoVo()),
     val similarSearchAuthors: SnapshotStateList<AuthorVo> = mutableStateListOf(),
     val selectedAuthor: MutableState<AuthorVo?> = mutableStateOf<AuthorVo?>(null),
-    val authorWasSelectedProgrammatically: MutableState<() -> Unit> = mutableStateOf({}),
     val bookValues: MutableState<BookValues> = mutableStateOf(BookValues()),
     val isEditMode: MutableState<Boolean> = mutableStateOf(false),
     val needCreateNewAuthor: MutableState<Boolean> = mutableStateOf(false),
