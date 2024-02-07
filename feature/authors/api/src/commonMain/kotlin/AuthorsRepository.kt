@@ -6,4 +6,5 @@ interface AuthorsRepository {
     suspend fun getAllRelatedAuthors(mainAuthorId: String): List<AuthorVo>
     fun getAuthorById(id: String): AuthorVo?
     suspend fun getAuthorWithRelatesWithoutBooks(authorId: String): AuthorVo?
+    suspend fun getAllAuthors(): List<AuthorVo>
 }

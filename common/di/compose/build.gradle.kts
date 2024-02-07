@@ -22,8 +22,10 @@ kotlin {
                 implementation(project(":feature:settings:data"))
                 implementation(project(":feature:authors:presentation"))
                 implementation(project(":feature:authors:data"))
+                implementation(project(":feature:authors:domain"))
                 implementation(project(":common:core"))
                 implementation(project(":common:scopes"))
+                implementation(project(":common:arch"))
             }
         }
     }

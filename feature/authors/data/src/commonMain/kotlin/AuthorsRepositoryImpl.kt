@@ -31,4 +31,15 @@ class AuthorsRepositoryImpl(
         }
         return null
     }
+
+    override suspend fun getAllAuthors(): List<AuthorVo> {
+        val resultList: MutableList<AuthorVo> = mutableListOf()
+        localAuthorsDataSource.getAllMainAuthors().forEach { mainAuthor ->
+            val relates = mainAuthor.id?.let { localAuthorsDataSource.getAllRelatedAuthors(it) }
+            mainAuthor.toVo(relatedAuthors = relates ?: emptyList(), books = emptyList())?.let {
+                resultList.add(it)
+            }
+        }
+        return resultList
+    }
 }

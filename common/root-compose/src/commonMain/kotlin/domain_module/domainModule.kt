@@ -1,5 +1,6 @@
 package domain_module
 
+import AuthorsInteractor
 import BookCreatorInteractor
 import BookInfoInteractor
 import org.kodein.di.DI
@@ -14,5 +15,9 @@ val domainModule = DI.Module("domainModule") {
 
     bind<BookInfoInteractor>() with provider {
         BookInfoInteractor(instance(), instance(), instance())
+    }
+
+    bind<AuthorsInteractor>() with provider {
+        AuthorsInteractor(instance())
     }
 }

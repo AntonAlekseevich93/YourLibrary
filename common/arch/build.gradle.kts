@@ -7,17 +7,15 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(Dependencies.Kamel.imageLoader)
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
-                implementation(project(":common:arch"))
                 implementation(project(":common:scopes"))
-                implementation(project(":feature:authors:api"))
-                implementation(project(":feature:authors:domain"))
             }
         }
     }
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.authors.presentation"
+    namespace = "ru.yourlibrary.yourlibrary.common.base.arch"
 }

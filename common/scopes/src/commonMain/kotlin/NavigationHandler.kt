@@ -6,4 +6,5 @@ interface NavigationHandler {
     fun navigateToMain()
     fun restartWindow()
     fun navigateToBookInfo()
+    fun navigateToAuthorsScreen()
 }

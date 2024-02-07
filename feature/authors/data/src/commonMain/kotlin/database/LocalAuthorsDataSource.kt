@@ -37,5 +37,8 @@ class LocalAuthorsDataSource(
     fun getAuthorById(id: String): AuthorLocalDto? =
         db.appQuery.getAuthorById(id).executeAsList().firstOrNull()?.toAuthorLocalDto()
 
+    suspend fun getAllMainAuthors(): List<AuthorLocalDto> =
+        db.appQuery.getAllMainAuthors().executeAsList().map { it.toAuthorLocalDto() }
+
 
 }

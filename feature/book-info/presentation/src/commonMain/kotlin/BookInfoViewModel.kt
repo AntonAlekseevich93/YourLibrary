@@ -74,6 +74,8 @@ class BookInfoViewModel(
                 needPopBackStack = true
             )
 
+            is LeftMenuBarEvents.OnAuthorsClickEvent -> navigationHandler.navigateToAuthorsScreen()
+
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
             is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
             is DatePickerEvents.OnHideDatePicker -> {

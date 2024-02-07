@@ -85,7 +85,9 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
                     }))
                 },
                 pointerInnerPadding = 4.dp,
-                onClick = {}
+                onClick = {
+                    this@LeftMenuBar.sendEvent(LeftMenuBarEvents.OnAuthorsClickEvent)
+                }
             )
 
             TooltipIconArea(

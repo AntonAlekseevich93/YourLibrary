@@ -107,6 +107,16 @@ fun Application(
                         pathInfoList = uiState.pathInfoList,
                     )
                 }
+
+                scene(
+                    route = Routes.authors_screen_route,
+                    navTransition = NavTransition(
+                        createTransition = fadeIn(tween(1)),
+                        destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
+                    )
+                ) {
+                    AuthorsScreen()
+                }
             }
             if (platform.isDesktop() && desktopTooltip?.value?.showTooltip == true) {
                 ShowTooltip(desktopTooltip.value)

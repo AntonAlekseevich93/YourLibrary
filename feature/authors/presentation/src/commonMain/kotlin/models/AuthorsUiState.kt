@@ -1,9 +1,8 @@
 package models
 
-import platform.Platform
+import base.BaseUIState
+import main_models.AuthorVo
 
-class AuthorsUiState(
-    val platform: Platform,
-) {
-
-}
+data class AuthorsUiState(
+    val authorByAlphabet: LinkedHashMap<String, MutableList<AuthorVo>> = LinkedHashMap()
+) : BaseUIState

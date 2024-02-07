@@ -42,6 +42,7 @@ kotlin {
                 implementation(project(":feature:settings:presentation"))
                 implementation(project(":feature:authors:data"))
                 implementation(project(":feature:authors:compose"))
+                implementation(project(":feature:authors:domain"))
             }
         }
     }

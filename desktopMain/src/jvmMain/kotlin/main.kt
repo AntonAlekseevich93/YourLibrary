@@ -121,6 +121,13 @@ fun createNavigationHandler(
             )
         }
 
+        override fun navigateToAuthorsScreen() {
+            navigator.value?.navigate(
+                route = Routes.authors_screen_route,
+            )
+        }
+
+
     }
     return handler
 }

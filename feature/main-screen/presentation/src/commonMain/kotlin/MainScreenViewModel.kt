@@ -42,6 +42,7 @@ class MainScreenViewModel(
             is LeftMenuBarEvents.OnSearchClickEvent -> navigationHandler.navigateToSearch()
             is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator()
             is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault()
+            is LeftMenuBarEvents.OnAuthorsClickEvent -> navigationHandler.navigateToAuthorsScreen()
             is DrawerEvents.OpenBook -> applicationScope.openBook(
                 event.painterSelectedBookInCache,
                 event.bookId

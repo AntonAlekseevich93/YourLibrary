@@ -191,4 +191,7 @@ SET `relatedToAuthorId`=? WHERE relatedToAuthorId=?;
 getAllAuthorByName:
 SELECT * FROM AuthorsTable WHERE uppercaseName LIKE ?;
 
+getAllMainAuthors:
+SELECT * FROM AuthorsTable WHERE isMainAuthor =0;
+
 
