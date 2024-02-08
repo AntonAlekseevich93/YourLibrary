@@ -1,4 +1,4 @@
-package screens.selecting_project
+package selecting_project
 
 import ApplicationTheme
 import androidx.compose.animation.AnimatedVisibility

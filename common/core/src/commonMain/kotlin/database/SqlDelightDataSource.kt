@@ -33,7 +33,9 @@ class SqlDelightDataSource(
     private lateinit var appDriver: SqlDriver
     private lateinit var appDatabase: AppDatabase
     lateinit var appQuery: AppDatabaseQueries
-    var appDbIsNotInitialized = true
+    private var appDbIsNotInitialized = true
+
+    fun isAppDbIsNotInitialized() = appDbIsNotInitialized
 
     fun initializeAppDatabase() {
         appDriver = if (platform.isDesktop()) {

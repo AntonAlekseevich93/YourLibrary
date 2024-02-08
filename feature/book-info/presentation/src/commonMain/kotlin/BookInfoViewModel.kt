@@ -28,7 +28,6 @@ class BookInfoViewModel(
     private val tooltipHandler: TooltipHandler,
     private val applicationScope: ApplicationScope,
     private val drawerScope: DrawerScope,
-    private val mainScreenScope: MainScreenScope<BaseEvent>
 ) : BookInfoScope<BaseEvent> {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
@@ -169,7 +168,7 @@ class BookInfoViewModel(
                     timestampOfCreating = bookItem.value!!.timestampOfCreating,
                     timestampOfUpdating = getCurrentTimeInMillis(),
                 )?.let {
-                    mainScreenScope.checkIfNeedUpdateBookItem(bookItem.value!!, it)
+                    applicationScope.checkIfNeedUpdateBookItem(bookItem.value!!, it)
                     updateBook(
                         bookItem = it,
                         needCreateNewAuthor = needCreateNewAuthor.value
@@ -185,7 +184,7 @@ class BookInfoViewModel(
         scope.launch {
             _uiState.value.bookItem.value?.let { book ->
                 interactor.changeBookStatusId(selectedStatus, book.id)
-                mainScreenScope.changedReadingStatus(oldStatusId, book.id)
+                applicationScope.changedReadingStatus(oldStatusId, book.id)
             }
         }
     }

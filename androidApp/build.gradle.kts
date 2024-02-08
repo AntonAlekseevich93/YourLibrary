@@ -40,7 +40,8 @@ android {
 
 dependencies {
     implementation(Dependencies.PreCompose.preComposeWithNavigation)
-    implementation(project(":common:root-compose"))
+    implementation(project(":common:root-app:compose"))
+    implementation(project(":common:root-app:di"))
     implementation(project(":common:theme"))
     implementation(project(":common:scopes"))
     implementation(project(":common:models"))

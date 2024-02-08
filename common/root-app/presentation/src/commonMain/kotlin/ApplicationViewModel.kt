@@ -1,5 +1,4 @@
 import androidx.compose.ui.graphics.painter.Painter
-import database.SqlDelightDataSource
 import io.kamel.core.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -8,18 +7,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import main_models.BookItemVo
 import main_models.TooltipItem
 import main_models.path.PathInfoVo
+import menu_bar.LeftMenuBarEvents
+import models.ProjectFoldersEvents
 import models.SettingsDataProvider
+import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
-import screens.selecting_project.ProjectFoldersEvents
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 
 class ApplicationViewModel(
-    private val db: SqlDelightDataSource,
+    private val interactor: ApplicationInteractor,
     private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,
     private val settingsDataProvider: SettingsDataProvider,
@@ -27,14 +25,17 @@ class ApplicationViewModel(
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val _uiState = MutableStateFlow(ApplicationUiState())
     val uiState: StateFlow<ApplicationUiState> = _uiState
+    private val booksMap: MutableMap<String, BookItemVo> = mutableMapOf()
 
     init {
         scope.launch {
-            db.getAllPathInfo().collect { pathInfo ->
+            interactor.getAllPathInfo().collect { pathInfo ->
                 if (pathInfo != null) {
                     withContext(Dispatchers.Main) {
                         _uiState.value.addPathInfo(pathInfo)
                     }
+
+                    getAllBooks()
                 }
             }
         }
@@ -50,18 +51,34 @@ class ApplicationViewModel(
             }
 
             is ProjectFoldersEvents.RenamePath -> {
-                val newPath = renamePath(
-                    pathInfo = event.pathInfo,
-                    newName = event.newName,
-                )
-                settingsDataProvider.updateLibraryNameInFile(
-                    path = newPath,
-                    oldName = event.pathInfo.libraryName,
-                    newName = event.newName
-                )
+                scope.launch {
+                    val newPath = interactor.renamePath(
+                        pathInfo = event.pathInfo,
+                        newName = event.newName,
+                    )
+                    settingsDataProvider.updateLibraryNameInFile(
+                        path = newPath,
+                        oldName = event.pathInfo.libraryName,
+                        newName = event.newName
+                    )
+                }
             }
 
             is ProjectFoldersEvents.RestartApp -> navigationHandler.restartWindow()
+            is LeftMenuBarEvents.OnSearchClickEvent -> navigationHandler.navigateToSearch()
+            is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator()
+            is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault()
+            is LeftMenuBarEvents.OnAuthorsClickEvent -> navigationHandler.navigateToAuthorsScreen()
+            is DrawerEvents.OpenBook -> openBook(
+                event.painterSelectedBookInCache,
+                event.bookId
+            )
+
+            is DrawerEvents.OpenLeftDrawerOrCloseEvent -> {
+                openLeftDrawerOrClose()
+            }
+
+            is DrawerEvents.OpenRightDrawerOrCloseEvent -> openRightDrawerOrClose()
         }
     }
 
@@ -108,54 +125,41 @@ class ApplicationViewModel(
         tooltipHandler.setTooltip(tooltip)
     }
 
+    override fun checkIfNeedUpdateBookItem(oldItem: BookItemVo, newItem: BookItemVo) {
+        if (oldItem.bookName != newItem.bookName) {
+            _uiState.value.removeBookBooksInfoUiState(id = newItem.statusId, bookId = newItem.id)
+        }
+    }
+
+    override fun changedReadingStatus(oldStatusId: String, bookId: String) {
+        _uiState.value.removeBookBooksInfoUiState(id = oldStatusId, bookId = bookId)
+    }
+
     fun isDbPathIsExist(platform: Platform): Boolean {
-        val isExist = db.isPathIsExist(platform)
-        if (isExist && db.appDbIsNotInitialized) {
-            db.initializeAppDatabase()
+        val isExist = interactor.isPathIsExist(platform)
+        if (isExist && interactor.isAppDbIsNotInitialized()) {
+            interactor.initializeAppDatabase()
         }
         return isExist
     }
 
     private fun selectPathInfo(pathInfo: PathInfoVo) {
         if (!pathInfo.isSelected) {
-            db.setPathAsSelected(pathInfo.id)
+            interactor.setPathAsSelected(pathInfo.id)
         }
     }
 
-    private fun renamePath(pathInfo: PathInfoVo, newName: String): String {
-        val pathString = pathInfo.path.replace(pathInfo.libraryName, newName)
-        scope.launch {
-            try {
-                val oldPath = Paths.get(pathInfo.path)
-                val newPath = Paths.get(pathString)
-                Files.move(
-                    oldPath,
-                    newPath,
-                    StandardCopyOption.REPLACE_EXISTING
-                )
-                renamePathInDb(pathString, pathInfo.id, newName)
-            } catch (_: Throwable) {
-                //todo log
-            }
-        }
-        return pathString
-    }
-
-    private suspend fun setFolderAsSelected(path: String, libraryName: String): Boolean {
-        createDbPath(dbPath = path, libraryName = libraryName)?.let { id ->
-            db.setPathAsSelected(id)
+    private fun setFolderAsSelected(path: String, libraryName: String): Boolean {
+        interactor.createDbPath(path = path, libraryName = libraryName)?.let { id ->
+            interactor.setPathAsSelected(id)
             return true
         }
         return false
     }
 
-    private suspend fun renamePathInDb(path: String, pathId: Int, newName: String) {
-        db.renamePath(pathId, path, newName)
-    }
-
     private fun selectFolder(path: String) {
         scope.launch {
-            getPathByOs(path).let { osPath ->
+            interactor.getPathByOs(path).let { osPath ->
                 settingsDataProvider.getLibraryNameIfExist(osPath)?.let { libraryName ->
                     val isSuccess = setFolderAsSelected(
                         path = osPath,
@@ -169,43 +173,28 @@ class ApplicationViewModel(
         }
     }
 
-    private fun createDbPath(dbPath: String, libraryName: String): Int? {
-        val id = db.createDbPath(dbPath, libraryName)
-        if (db.appDbIsNotInitialized) {
-            db.initializeAppDatabase()
-        }
-        return id
-    }
-
-    private fun getPathByOs(path: String): String {
-        val osDivider =
-            if (path.contains("""\""")) """\""" else """/"""
-        return if (path.last() == osDivider.first()) path else "$path$osDivider"
-    }
-
-    private fun createFolderAndGetPath(path: String, name: String): String? = try {
-        File(path, name).mkdir()
-        val osDivider =
-            if (path.contains("""\""")) """\""" else """/"""
-        val selectedPathResult =
-            if (path.last() == osDivider.first()) path else "$path$osDivider"
-        selectedPathResult + name + osDivider
-    } catch (_: Exception) {
-        null
-    }
-
     private fun createFolder(path: String, name: String) {
-        createFolderAndGetPath(path, name)?.let { resultPath ->
+        interactor.createFolderAndGetPath(path, name)?.let { resultPath ->
             settingsDataProvider.createAppSettingsFile(
                 path = resultPath,
                 libraryName = name,
                 themeName = "Dark" //todo
             )
-            createDbPath(
-                dbPath = resultPath,
+            interactor.createDbPath(
+                path = resultPath,
                 libraryName = name
             )
             navigationHandler.navigateToMain()
+        }
+    }
+
+    private suspend fun getAllBooks() {
+        interactor.getAllBooks().collect { books ->
+            val unique = books.subtract(booksMap.values)
+            unique.forEach { book ->
+                _uiState.value.addBookToBooksInfo(book)
+                booksMap[book.id] = book
+            }
         }
     }
 }

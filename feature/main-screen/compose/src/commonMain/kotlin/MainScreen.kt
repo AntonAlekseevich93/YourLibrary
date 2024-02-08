@@ -15,12 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import di.Inject
-import menu_bar.LeftMenuBar
-import navigation_drawer.PlatformLeftDrawerContent
-import navigation_drawer.PlatformNavigationDrawer
-import navigation_drawer.contents.LeftDrawerBooksContent
 import platform.Platform
-import platform.isDesktop
 import sub_app_bar.SubAppBar
 
 @Composable
@@ -38,58 +33,36 @@ fun MainScreen(
     }
 
     Row {
-        if (platform.isDesktop()) {
-            viewModel.LeftMenuBar(
-                open = {
+        Box(
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(start = if (leftDrawerState.isClosed) 0.dp else 0.dp)
+                    .fillMaxSize()
+                    .background(ApplicationTheme.colors.mainBackgroundColor),
+            ) {
+                viewModel.SubAppBar(
+                    modifier = Modifier.padding(start = 16.dp, top = 6.dp),
+                    projectName = "Книжная полка",
+                    selectedViewsTypes = uiState.viewsTypes.selectedViewTypes,
+                    isCheckedTypes = uiState.viewsTypes.checkedViewTypes,
+                    isOpenedType = uiState.viewsTypes.openedViewType.value,
+                    openViewType = viewModel::openViewType,
+                    isOpenedSidebar = showLeftDrawer,
+                    switchViewTypesListener = viewModel::switchViewTypesListener,
+                    closeViewsTypeDropdown = viewModel::changeViewsTypes,
+                    homeButtonListener = {}
+                )
+                ShelfBoardScreen(platform = platform)
+            }
+
+            CustomDockedSearchBar(
+                showSearch = showSearch,
+                closeSearch = {
+                    showSearch.value = false
                 },
             )
-        }
-
-        PlatformNavigationDrawer(
-            platform = platform,
-            leftDrawerContent = {
-                viewModel.PlatformLeftDrawerContent(
-                    title = uiState.selectedPathInfo.value.libraryName,
-                    platform = platform,
-                    content = {
-                        viewModel.LeftDrawerBooksContent(booksInfoUiState = uiState.booksInfoUiState)
-                    }
-                )
-            },
-            leftDrawerState = leftDrawerState,
-            showLeftDrawer = showLeftDrawer
-        ) {
-            Box(
-                contentAlignment = Alignment.TopCenter,
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(start = if (leftDrawerState.isClosed) 0.dp else 0.dp)
-                        .fillMaxSize()
-                        .background(ApplicationTheme.colors.mainBackgroundColor),
-                ) {
-                    viewModel.SubAppBar(
-                        modifier = Modifier.padding(start = 16.dp, top = 6.dp),
-                        projectName = "Книжная полка",
-                        selectedViewsTypes = uiState.viewsTypes.selectedViewTypes,
-                        isCheckedTypes = uiState.viewsTypes.checkedViewTypes,
-                        isOpenedType = uiState.viewsTypes.openedViewType.value,
-                        openViewType = viewModel::openViewType,
-                        isOpenedSidebar = showLeftDrawer,
-                        switchViewTypesListener = viewModel::switchViewTypesListener,
-                        closeViewsTypeDropdown = viewModel::changeViewsTypes,
-                        homeButtonListener = {}
-                    )
-                    ShelfBoardScreen(platform = platform)
-                }
-
-                CustomDockedSearchBar(
-                    showSearch = showSearch,
-                    closeSearch = {
-                        showSearch.value = false
-                    },
-                )
-            }
         }
     }
 }

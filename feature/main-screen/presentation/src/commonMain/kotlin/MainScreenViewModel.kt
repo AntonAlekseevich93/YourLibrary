@@ -5,9 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import main_models.BookItemVo
 import main_models.ViewsType
-import menu_bar.LeftMenuBarEvents
 import models.MainScreenUiState
 import navigation_drawer.contents.models.DrawerEvents
 import tooltip_area.TooltipEvents
@@ -23,13 +21,6 @@ class MainScreenViewModel(
     private val _uiState: MutableStateFlow<MainScreenUiState> =
         MutableStateFlow(MainScreenUiState())
     val uiState = _uiState.asStateFlow()
-    private val booksMap: MutableMap<String, BookItemVo> = mutableMapOf()
-
-    override fun checkIfNeedUpdateBookItem(oldItem: BookItemVo, newItem: BookItemVo) {
-        if (oldItem.bookName != newItem.bookName) {
-            _uiState.value.removeBookBooksInfoUiState(id = newItem.statusId, bookId = newItem.id)
-        }
-    }
 
     override fun sendEvent(event: BaseEvent) {
         when (event) {
@@ -37,21 +28,7 @@ class MainScreenViewModel(
             is DrawerEvents.OpenLeftDrawerOrCloseEvent -> {
                 drawerScope.openLeftDrawerOrClose()
             }
-
-            is DrawerEvents.OpenRightDrawerOrCloseEvent -> drawerScope.openRightDrawerOrClose()
-            is LeftMenuBarEvents.OnSearchClickEvent -> navigationHandler.navigateToSearch()
-            is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator()
-            is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault()
-            is LeftMenuBarEvents.OnAuthorsClickEvent -> navigationHandler.navigateToAuthorsScreen()
-            is DrawerEvents.OpenBook -> applicationScope.openBook(
-                event.painterSelectedBookInCache,
-                event.bookId
-            )
         }
-    }
-
-    override fun changedReadingStatus(oldStatusId: String, bookId: String) {
-        _uiState.value.removeBookBooksInfoUiState(id = oldStatusId, bookId = bookId)
     }
 
     fun getSelectedPathInfo() {
@@ -64,9 +41,6 @@ class MainScreenViewModel(
                         }
                     }
                 }
-            }
-            launch {
-                getAllBooks()
             }
         }
     }
@@ -82,16 +56,6 @@ class MainScreenViewModel(
 
     fun openViewType(viewsType: ViewsType) {
         _uiState.value.viewsTypes.openedViewType.value = viewsType
-    }
-
-    private suspend fun getAllBooks() {
-        repository.getAllBooks().collect { books ->
-            val unique = books.subtract(booksMap.values)
-            unique.forEach { book ->
-                _uiState.value.addBookToBooksInfo(book)
-                booksMap[book.id] = book
-            }
-        }
     }
 
 }

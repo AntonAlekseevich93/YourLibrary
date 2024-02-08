@@ -1,4 +1,4 @@
-package screens.selecting_project
+package selecting_project
 
 import ApplicationTheme
 import BaseEvent
@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
 import main_models.path.PathInfoVo
+import models.ProjectFoldersEvents
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 

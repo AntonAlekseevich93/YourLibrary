@@ -21,7 +21,6 @@ val viewModelsModule = DI.Module("viewModelsModule") {
             instance(),
             instance(),
             instance(),
-            instance()
         )
     }
     bind<BookCreatorViewModel>() with singleton {

@@ -1,7 +1,6 @@
 import di.Inject
 import di.PlatformConfiguration
 import di.coreModule
-import domain_module.domainModule
 import models.SettingsDataProvider
 import org.kodein.di.DI
 import org.kodein.di.bind
@@ -47,6 +46,7 @@ object PlatformSDK {
             DI {
                 importAll(
                     rootComposeModule,
+                    applicationModule,
                     coreModule,
                     mainScreenModule,
                     shelfModule,
