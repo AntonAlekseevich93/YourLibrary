@@ -105,17 +105,17 @@ fun ShowTooltip(
 ) {
     val offsetShiftX = when (tooltip.position) {
         TooltipPosition.TOP -> -40
-        TooltipPosition.BOTTOM -> -30
-        TooltipPosition.BOTTOM_LEFT -> -180
+        TooltipPosition.BOTTOM -> 0
+        TooltipPosition.BOTTOM_LEFT -> -80
         TooltipPosition.LEFT -> 0
-        TooltipPosition.RIGHT -> 30
+        TooltipPosition.RIGHT -> 80
         TooltipPosition.NONE -> 0
     }
 
     val offsetShiftY = when (tooltip.position) {
         TooltipPosition.TOP -> 180
         TooltipPosition.BOTTOM -> 20
-        TooltipPosition.BOTTOM_LEFT -> 0
+        TooltipPosition.BOTTOM_LEFT -> 20
         TooltipPosition.LEFT -> 0
         TooltipPosition.RIGHT -> 100
         TooltipPosition.NONE -> 0

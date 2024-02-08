@@ -153,10 +153,10 @@ fun Application(
                             AuthorsScreen()
                         }
                     }
-                    if (platform.isDesktop() && desktopTooltip?.value?.showTooltip == true) {
-                        ShowTooltip(desktopTooltip.value)
-                    }
                 }
+            }
+            if (platform.isDesktop() && desktopTooltip?.value?.showTooltip == true) {
+                ShowTooltip(desktopTooltip.value)
             }
         }
     }
