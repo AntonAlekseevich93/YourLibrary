@@ -40,7 +40,7 @@ fun BaseEventScope<BaseEvent>.PlatformRightDrawerContent(
     when (platform) {
         Platform.DESKTOP -> {
             DismissibleDrawerSheet(
-                drawerContainerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor,
+                drawerContainerColor = ApplicationTheme.colors.mainDrawerBackground,
             ) {
                 RightDrawerContent(
                     isCanClose = isCanClose,
@@ -54,7 +54,7 @@ fun BaseEventScope<BaseEvent>.PlatformRightDrawerContent(
 
         else -> {
             DismissibleDrawerSheet(
-                drawerContainerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor,
+                drawerContainerColor = ApplicationTheme.colors.mainDrawerBackground,
             ) {
                 RightDrawerContent(
                     isCanClose = isCanClose,

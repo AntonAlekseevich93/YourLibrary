@@ -204,7 +204,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
                     },
                     tooltipCallback = {
                         this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                            position = TooltipPosition.BOTTOM
+                            position = TooltipPosition.BOTTOM_LEFT
                         }))
                     },
                 )
@@ -212,7 +212,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
                     modifier = Modifier.width(1.dp).height(24.dp),
                     color = ApplicationTheme.colors.searchDividerColor
                 )
-                if (isFullscreen.value) {
+                if (!showLeftDrawer.value && isFullscreen.value) {
                     TooltipIconArea(
                         text = Strings.collapse,
                         drawableResName = Drawable.drawable_ic_collapse,
@@ -222,11 +222,11 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
                         onClick = onFullscreen,
                         tooltipCallback = {
                             this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                                position = TooltipPosition.BOTTOM
+                                position = TooltipPosition.BOTTOM_LEFT
                             }))
                         },
                     )
-                } else {
+                } else if (!showLeftDrawer.value) {
                     TooltipIconArea(
                         text = Strings.expand,
                         drawableResName = Drawable.drawable_ic_expand,
@@ -236,7 +236,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
                         onClick = onFullscreen,
                         tooltipCallback = {
                             this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                                position = TooltipPosition.BOTTOM
+                                position = TooltipPosition.BOTTOM_LEFT
                             }))
                         },
                     )
@@ -252,7 +252,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
                     },
                     tooltipCallback = {
                         this@BookBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                            position = TooltipPosition.BOTTOM
+                            position = TooltipPosition.BOTTOM_LEFT
                         }))
                     },
                 )

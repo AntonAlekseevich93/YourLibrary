@@ -2,9 +2,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -18,14 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.unit.dp
 import di.Inject
 import io.kamel.core.Resource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import menu_bar.LeftMenuBar
-import navigation_drawer.PlatformLeftDrawerContent
-import navigation_drawer.PlatformNavigationDrawer
 import platform.Platform
 import platform.isDesktop
 
@@ -85,64 +78,36 @@ fun BookScreen(
                         leftMenuVisible.value = true
                     }
                 }
-
-                viewModel.LeftMenuBar(
-                    open = {},
-                )
             }
         }
 
-        PlatformNavigationDrawer(
-            platform = platform,
-            leftDrawerContent = {
-                AnimatedVisibility(visible = fullScreenBookInfo.value) {
-                    Row {
-                        viewModel.PlatformLeftDrawerContent(
-                            title = uiState.selectedPathInfo.value.libraryName,
-                            platform = platform,
-                            content = {
-
-                            }
-                        )
-                        Divider(
-                            modifier = Modifier.fillMaxHeight().width(1.dp),
-                            thickness = 1.dp,
-                            color = ApplicationTheme.colors.divider
-                        )
-                    }
-                }
-            },
-            background = background,
-            showLeftDrawer = showLeftDrawer,
+        Box(
+            contentAlignment = if (platform.isDesktop()) Alignment.TopCenter else Alignment.TopStart,
         ) {
-            Box(
-                contentAlignment = if (platform.isDesktop()) Alignment.TopCenter else Alignment.TopStart,
-            ) {
-                if (uiState.bookItem.value != null) {
-                    viewModel.BookScreenContent(
-                        platform = platform,
-                        painterInCache = painterInCache,
-                        bookItem = uiState.bookItem.value!!,
-                        bookValues = bookValues,
-                        fullScreenBookInfo = fullScreenBookInfo,
-                        showLeftDrawer = showLeftDrawer,
-                        showRightDrawer = showRightDrawer,
-                        isEditMode = uiState.isEditMode,
-                        isKeyboardShown = isKeyboardShown,
-                        similarAuthorList = uiState.similarSearchAuthors,
-                        selectedAuthor = uiState.selectedAuthor,
-                        needCreateNewAuthor = uiState.needCreateNewAuthor,
-                        datePickerType = uiState.datePickerType,
-                        showDatePicker = uiState.showDatePicker
-                    )
-                }
-                CustomDockedSearchBar(
-                    showSearch = showSearch,
-                    closeSearch = {
-                        showSearch.value = false
-                    },
+            if (uiState.bookItem.value != null) {
+                viewModel.BookScreenContent(
+                    platform = platform,
+                    painterInCache = painterInCache,
+                    bookItem = uiState.bookItem.value!!,
+                    bookValues = bookValues,
+                    fullScreenBookInfo = fullScreenBookInfo,
+                    showLeftDrawer = showLeftDrawer,
+                    showRightDrawer = showRightDrawer,
+                    isEditMode = uiState.isEditMode,
+                    isKeyboardShown = isKeyboardShown,
+                    similarAuthorList = uiState.similarSearchAuthors,
+                    selectedAuthor = uiState.selectedAuthor,
+                    needCreateNewAuthor = uiState.needCreateNewAuthor,
+                    datePickerType = uiState.datePickerType,
+                    showDatePicker = uiState.showDatePicker
                 )
             }
+            CustomDockedSearchBar(
+                showSearch = showSearch,
+                closeSearch = {
+                    showSearch.value = false
+                },
+            )
         }
     }
 }

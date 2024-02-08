@@ -14,7 +14,6 @@ import main_models.AuthorVo
 import main_models.BookItemVo
 import main_models.DatePickerType
 import main_models.ReadingStatus
-import menu_bar.LeftMenuBarEvents
 import models.BookInfoScope
 import models.BookInfoUiState
 import models.BookScreenEvents
@@ -64,17 +63,6 @@ class BookInfoViewModel(
             )
 
             is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
-            is LeftMenuBarEvents.OnSearchClickEvent -> navigationHandler.navigateToSearch()
-            is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator(
-                popUpToMain = true
-            )
-
-            is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault(
-                needPopBackStack = true
-            )
-
-            is LeftMenuBarEvents.OnAuthorsClickEvent -> navigationHandler.navigateToAuthorsScreen()
-
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
             is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
             is DatePickerEvents.OnHideDatePicker -> {

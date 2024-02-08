@@ -6,6 +6,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -17,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import di.Inject
 import kotlinx.coroutines.launch
 import main_models.TooltipItem
@@ -64,13 +68,20 @@ fun Application(
                 PlatformNavigationDrawer(
                     platform = platform,
                     leftDrawerContent = {
-                        viewModel.PlatformLeftDrawerContent(
-                            title = uiState.selectedPathInfo.value.libraryName,
-                            platform = platform,
-                            content = {
-                                viewModel.LeftDrawerBooksContent(booksInfoUiState = uiState.booksInfoUiState)
-                            }
-                        )
+                        Row {
+                            viewModel.PlatformLeftDrawerContent(
+                                title = uiState.selectedPathInfo.value.libraryName,
+                                platform = platform,
+                                content = {
+                                    viewModel.LeftDrawerBooksContent(booksInfoUiState = uiState.booksInfoUiState)
+                                }
+                            )
+                            Divider(
+                                modifier = Modifier.fillMaxHeight().width(1.dp),
+                                thickness = 1.dp,
+                                color = ApplicationTheme.colors.divider
+                            )
+                        }
                     },
                     leftDrawerState = leftDrawerState,
                     showLeftDrawer = uiState.showLeftDrawerState

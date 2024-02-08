@@ -2,8 +2,8 @@ package navigation_drawer
 
 import ApplicationTheme
 import BaseEvent
-import Drawable
 import BaseEventScope
+import Drawable
 import Strings
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +36,7 @@ fun BaseEventScope<BaseEvent>.PlatformLeftDrawerContent(
     when (platform) {
         Platform.DESKTOP -> {
             DismissibleDrawerSheet(
-                drawerContainerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor,
+                drawerContainerColor = ApplicationTheme.colors.mainDrawerBackground,
             ) {
                 LeftDrawerContent(title, content)
             }
@@ -45,7 +45,7 @@ fun BaseEventScope<BaseEvent>.PlatformLeftDrawerContent(
 
         else -> {
             DismissibleDrawerSheet(
-                drawerContainerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor,
+                drawerContainerColor = ApplicationTheme.colors.mainDrawerBackground,
             ) {
                 LeftDrawerContent(title, content)
             }

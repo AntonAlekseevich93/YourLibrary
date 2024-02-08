@@ -67,9 +67,10 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
     showDatePicker: State<Boolean>,
 ) {
 
-    val targetVerticalPadding = if (fullScreenBookInfo.value) 0.dp else 65.dp
+    val targetVerticalPadding =
+        if (fullScreenBookInfo.value || showLeftDrawer.value) 0.dp else 65.dp
     val targetHorizontalPadding =
-        if (fullScreenBookInfo.value || platform == Platform.MOBILE) 0.dp else if (showRightDrawer.value) 100.dp else 220.dp
+        if (fullScreenBookInfo.value || platform == Platform.MOBILE || showLeftDrawer.value) 0.dp else if (showRightDrawer.value) 100.dp else 220.dp
     val animatedVerticalPadding by animateDpAsState(
         targetValue = targetVerticalPadding,
         animationSpec = tween(
@@ -86,7 +87,7 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
             easing = FastOutSlowInEasing
         )
     )
-    val shapeInDp = if (fullScreenBookInfo.value) 0.dp else 8.dp
+    val shapeInDp = if (fullScreenBookInfo.value || showLeftDrawer.value) 0.dp else 8.dp
     val statusBookTextFieldValue =
         remember(key1 = bookItem.readingStatus) { mutableStateOf(TextFieldValue(text = bookItem.readingStatus.nameValue)) }
     val dataPickerState = rememberDatePickerState()

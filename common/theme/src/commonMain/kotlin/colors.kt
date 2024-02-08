@@ -4,6 +4,7 @@ import component_colors.DatePickerColors
 data class AppColors(
     val mainBackgroundColor: Color,
     val mainBackgroundWindowDarkColor: Color,
+    val mainDrawerBackground: Color,
     val mainTextColor: Color,
     val mainTextColorLight: Color,
     val mainPlaceholderTextColor: Color,
@@ -41,6 +42,7 @@ data class AppColors(
 val lightPaletteTheme = AppColors(
     mainBackgroundColor = Color(0xFF151515),
     mainBackgroundWindowDarkColor = Color(0xFF2A2A2A),
+    mainDrawerBackground = Color(0xFF252525),
     mainTextColor = Color(0xFFe5e5e5),
     mainTextColorLight = Color.White,
     mainPlaceholderTextColor = Color(0xFFb2b2b2),
@@ -88,6 +90,7 @@ val lightPaletteTheme = AppColors(
 val darkPaletteTheme = AppColors(
     mainBackgroundColor = Color(0xFF151515),
     mainBackgroundWindowDarkColor = Color(0xFF2A2A2A),
+    mainDrawerBackground = Color(0xFF252525),
     mainTextColor = Color(0xFFe5e5e5),
     mainTextColorLight = Color.White,
     mainPlaceholderTextColor = Color(0xFFb2b2b2),

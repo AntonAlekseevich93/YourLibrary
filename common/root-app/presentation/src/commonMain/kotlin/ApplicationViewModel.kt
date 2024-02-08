@@ -15,6 +15,7 @@ import models.ProjectFoldersEvents
 import models.SettingsDataProvider
 import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
+import tooltip_area.TooltipEvents
 
 class ApplicationViewModel(
     private val interactor: ApplicationInteractor,
@@ -43,6 +44,7 @@ class ApplicationViewModel(
 
     override fun sendEvent(event: BaseEvent) {
         when (event) {
+            is TooltipEvents.SetTooltipEvent -> tooltipHandler.setTooltip(event.tooltip)
             is ProjectFoldersEvents.SelectFolderEvent -> selectFolder(event.path)
             is ProjectFoldersEvents.CreateFolder -> createFolder(event.path, event.name)
             is ProjectFoldersEvents.SelectPathInfo -> {

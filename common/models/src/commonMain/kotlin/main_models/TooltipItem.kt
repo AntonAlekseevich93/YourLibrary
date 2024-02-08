@@ -14,5 +14,6 @@ enum class TooltipPosition {
     LEFT,
     TOP,
     BOTTOM,
+    BOTTOM_LEFT,
     NONE
 }
