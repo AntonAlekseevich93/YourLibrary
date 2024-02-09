@@ -4,6 +4,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import main_models.TooltipPosition
 import models.BookScreenEvents
 import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
+import toolbar.ToolbarEvents
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
 
@@ -69,7 +71,9 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
     onFullscreen: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp, max = 50.dp).padding(start = 6.dp),
+        modifier = Modifier.fillMaxWidth()
+            .heightIn(min = 50.dp, max = 50.dp)
+            .background(ApplicationTheme.colors.mainToolbarColor),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AnimatedVisibility(
@@ -89,9 +93,10 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
                             position = TooltipPosition.BOTTOM
                         }))
                     },
-                ) {
-                    //todo
-                }
+                    onClick = {
+                        this@BookBar.sendEvent(ToolbarEvents.ToMain)
+                    }
+                )
 
                 TooltipIconArea(
                     text = Strings.menu,

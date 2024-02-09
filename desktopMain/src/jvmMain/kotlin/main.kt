@@ -14,10 +14,12 @@ import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -40,6 +42,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import buttons.ButtonThemeSwitcher
 import di.PlatformConfiguration
+import kotlinx.coroutines.launch
 import main_models.TooltipItem
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.NavOptions
@@ -71,6 +74,7 @@ fun main() = application {
 fun createNavigationHandler(
     navigator: MutableState<Navigator?>,
     desktopTooltip: MutableState<TooltipItem>,
+    currentRoute: State<String>,
     restart: () -> Unit
 ): NavigationHandler {
     val handler = object : NavigationHandler {
@@ -79,23 +83,27 @@ fun createNavigationHandler(
         }
 
         override fun navigateToSelectorVault(needPopBackStack: Boolean) {
-            desktopTooltip.value.showTooltip = false
-            //todo здесь происходит мигание анимации, но без этого баг. Подумать
-            if (needPopBackStack) navigator.value?.popBackStack()
-            navigator.value?.navigate(route = Routes.vault_route)
+            if (currentRoute.value != Routes.vault_route) {
+                desktopTooltip.value.showTooltip = false
+                //todo здесь происходит мигание анимации, но без этого баг. Подумать
+                if (needPopBackStack) navigator.value?.popBackStack()
+                navigator.value?.navigate(route = Routes.vault_route)
+            }
         }
 
         override fun navigateToBookCreator(popUpToMain: Boolean) {
-            val options = if (popUpToMain)
-                NavOptions(popUpTo = PopUpTo(Routes.main_route))
-            else {
-                NavOptions(launchSingleTop = false)
-            }
+            if (currentRoute.value != Routes.book_creator_route) {
+                val options = if (popUpToMain)
+                    NavOptions(popUpTo = PopUpTo(Routes.main_route))
+                else {
+                    NavOptions(launchSingleTop = false)
+                }
 
-            navigator.value?.navigate(
-                route = Routes.book_creator_route,
-                options = options,
-            )
+                navigator.value?.navigate(
+                    route = Routes.book_creator_route,
+                    options = options,
+                )
+            }
         }
 
         override fun goBack() {
@@ -104,10 +112,12 @@ fun createNavigationHandler(
         }
 
         override fun navigateToMain() {
-            navigator.value?.navigate(
-                route = Routes.main_route,
-                options = NavOptions(launchSingleTop = false),
-            )
+            if (currentRoute.value != Routes.main_route) {
+                navigator.value?.navigate(
+                    route = Routes.main_route,
+                    options = NavOptions(launchSingleTop = false),
+                )
+            }
         }
 
         override fun restartWindow() {
@@ -115,16 +125,20 @@ fun createNavigationHandler(
         }
 
         override fun navigateToBookInfo() {
-            navigator.value?.navigate(
-                route = Routes.book_info_route,
-                options = NavOptions(popUpTo = PopUpTo.Prev),
-            )
+            if (currentRoute.value != Routes.book_info_route) {
+                navigator.value?.navigate(
+                    route = Routes.book_info_route,
+                    options = NavOptions(popUpTo = PopUpTo.Prev),
+                )
+            }
         }
 
         override fun navigateToAuthorsScreen() {
-            navigator.value?.navigate(
-                route = Routes.authors_screen_route,
-            )
+            if (currentRoute.value != Routes.authors_screen_route) {
+                navigator.value?.navigate(
+                    route = Routes.authors_screen_route,
+                )
+            }
         }
 
 
@@ -150,11 +164,24 @@ private fun ApplicationScope.MainWindow(
 ) {
     val navigator: MutableState<Navigator?> = mutableStateOf(null)
     val desktopTooltip = remember { mutableStateOf(TooltipItem()) }
+    val currentRoute = remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    scope.launch {
+        navigator.value?.currentEntry?.collect {
+            currentRoute.value = it?.route?.route ?: ""
+        }
+    }
+
     PlatformSDK.init(
         configuration = PlatformConfiguration(),
         platformInfo = PlatformInfo(),
         platform = Platform.DESKTOP,
-        navigationHandler = createNavigationHandler(navigator, desktopTooltip, restart = restart),
+        navigationHandler = createNavigationHandler(
+            navigator,
+            desktopTooltip,
+            currentRoute = currentRoute,
+            restart = restart
+        ),
         tooltipHandler = createTooltipHandler(desktopTooltip)
     )
 
@@ -332,7 +359,7 @@ private fun WindowScope.AppWindowTitleBar(
 ) = WindowDraggableArea {
     val showIconState = remember { mutableStateOf(false) }
     val isDarkMode = remember { mutableStateOf(true) }
-    Box(Modifier.fillMaxWidth().height(48.dp).background(Color(0xFF2E2E2E))) {
+    Box(Modifier.fillMaxWidth().height(48.dp).background(Color(0xFF252525))) {
         Row(
             Modifier.fillMaxWidth().padding(top = 8.dp, start = 8.dp),
             verticalAlignment = Alignment.CenterVertically,

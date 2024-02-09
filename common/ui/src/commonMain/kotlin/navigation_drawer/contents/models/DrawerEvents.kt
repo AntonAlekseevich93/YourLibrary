@@ -10,4 +10,6 @@ sealed class DrawerEvents : BaseEvent {
     data object OpenRightDrawerOrCloseEvent : DrawerEvents()
     class OpenBook(val painterSelectedBookInCache: Resource<Painter>?, val bookId: String) :
         DrawerEvents()
+
+    data object ToMain : DrawerEvents()
 }

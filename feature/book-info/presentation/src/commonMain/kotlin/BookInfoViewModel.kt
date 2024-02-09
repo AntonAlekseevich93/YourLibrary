@@ -18,6 +18,7 @@ import models.BookInfoScope
 import models.BookInfoUiState
 import models.BookScreenEvents
 import navigation_drawer.contents.models.DrawerEvents
+import toolbar.ToolbarEvents
 import tooltip_area.TooltipEvents
 
 class BookInfoViewModel(
@@ -68,6 +69,8 @@ class BookInfoViewModel(
             is DatePickerEvents.OnHideDatePicker -> {
                 _uiState.value.showDatePicker.value = false
             }
+
+            is ToolbarEvents.ToMain -> navigationHandler.navigateToMain()
         }
     }
 

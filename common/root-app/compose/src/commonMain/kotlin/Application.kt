@@ -1,8 +1,11 @@
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -51,20 +54,26 @@ fun Application(
     val showSearch = remember { mutableStateOf(false) }
     val dbPathExist = remember { mutableStateOf(viewModel.isDbPathIsExist(platform)) }
     val scope = rememberCoroutineScope()
+    val canShowLeftBar = remember { mutableStateOf(true) }
+    val canShowMainButton = remember { mutableStateOf(true) }
 
     AppTheme {
         navigator.currentEntry.collectAsState(null).value?.route?.route?.let { currentRoute ->
             if (!uiState.fullScreenBookInfo.value && platform.isMobile() && currentRoute == Routes.main_route) {
                 uiState.fullScreenBookInfo.value = true
             }
+            canShowLeftBar.value = currentRoute != Routes.vault_route
+            canShowMainButton.value = currentRoute != Routes.main_route
         }
 
         Box(modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundColor)) {
             Row {
-                viewModel.LeftMenuBar(
-                    open = {
-                    },
-                )
+                AnimatedVisibility(canShowLeftBar.value) {
+                    viewModel.LeftMenuBar(
+                        open = {
+                        },
+                    )
+                }
                 PlatformNavigationDrawer(
                     platform = platform,
                     leftDrawerContent = {
@@ -72,6 +81,7 @@ fun Application(
                             viewModel.PlatformLeftDrawerContent(
                                 title = uiState.selectedPathInfo.value.libraryName,
                                 platform = platform,
+                                canShowHomeButton = canShowMainButton,
                                 content = {
                                     viewModel.LeftDrawerBooksContent(booksInfoUiState = uiState.booksInfoUiState)
                                 }
@@ -146,11 +156,13 @@ fun Application(
                         scene(
                             route = Routes.authors_screen_route,
                             navTransition = NavTransition(
-                                createTransition = fadeIn(tween(1)),
-                                destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
+                                createTransition = expandHorizontally(),
+                                destroyTransition = slideOutHorizontally(tween(100))
                             )
                         ) {
-                            AuthorsScreen()
+                            AuthorsScreen(
+                                showLeftDrawer = uiState.showLeftDrawerState
+                            )
                         }
                     }
                 }

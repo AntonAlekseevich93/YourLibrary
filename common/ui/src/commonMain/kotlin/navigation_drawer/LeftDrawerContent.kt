@@ -5,6 +5,9 @@ import BaseEvent
 import BaseEventScope
 import Drawable
 import Strings
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +20,7 @@ import androidx.compose.material3.DismissibleDrawerSheet
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,6 +35,7 @@ import tooltip_area.TooltipIconArea
 fun BaseEventScope<BaseEvent>.PlatformLeftDrawerContent(
     title: String,
     platform: Platform,
+    canShowHomeButton: State<Boolean>,
     content: @Composable () -> Unit,
 ) {
     when (platform) {
@@ -38,7 +43,7 @@ fun BaseEventScope<BaseEvent>.PlatformLeftDrawerContent(
             DismissibleDrawerSheet(
                 drawerContainerColor = ApplicationTheme.colors.mainDrawerBackground,
             ) {
-                LeftDrawerContent(title, content)
+                LeftDrawerContent(title, canShowHomeButton, content)
             }
         }
 
@@ -47,7 +52,7 @@ fun BaseEventScope<BaseEvent>.PlatformLeftDrawerContent(
             DismissibleDrawerSheet(
                 drawerContainerColor = ApplicationTheme.colors.mainDrawerBackground,
             ) {
-                LeftDrawerContent(title, content)
+                LeftDrawerContent(title, canShowHomeButton, content)
             }
         }
     }
@@ -56,6 +61,7 @@ fun BaseEventScope<BaseEvent>.PlatformLeftDrawerContent(
 @Composable
 fun BaseEventScope<BaseEvent>.LeftDrawerContent(
     title: String,
+    canShowHomeButton: State<Boolean>,
     content: @Composable () -> Unit,
 ) {
     Box(modifier = Modifier.widthIn(max = 400.dp)) {
@@ -74,19 +80,25 @@ fun BaseEventScope<BaseEvent>.LeftDrawerContent(
                 )
                 Spacer(modifier = Modifier.weight(1f, fill = true))
 
-                TooltipIconArea(
-                    text = Strings.to_main,
-                    drawableResName = Drawable.drawable_ic_home,
-                    tooltipCallback = {
-                        this@LeftDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                            position = TooltipPosition.BOTTOM
-                        }))
-                    },
-                    modifier = Modifier.padding(start = 6.dp, end = 6.dp),
-                    onClick = {
-                        this@LeftDrawerContent.sendEvent(DrawerEvents.OpenLeftDrawerOrCloseEvent)
-                    }
-                )
+                AnimatedVisibility(
+                    canShowHomeButton.value,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    TooltipIconArea(
+                        text = Strings.to_main,
+                        drawableResName = Drawable.drawable_ic_home,
+                        tooltipCallback = {
+                            this@LeftDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                                position = TooltipPosition.BOTTOM
+                            }))
+                        },
+                        modifier = Modifier.padding(start = 6.dp, end = 6.dp),
+                        onClick = {
+                            this@LeftDrawerContent.sendEvent(DrawerEvents.ToMain)
+                        }
+                    )
+                }
                 TooltipIconArea(
                     text = Strings.menu,
                     drawableResName = Drawable.drawable_ic_sidebar,

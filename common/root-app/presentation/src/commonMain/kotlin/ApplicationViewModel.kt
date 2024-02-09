@@ -81,6 +81,7 @@ class ApplicationViewModel(
             }
 
             is DrawerEvents.OpenRightDrawerOrCloseEvent -> openRightDrawerOrClose()
+            is DrawerEvents.ToMain -> navigationHandler.navigateToMain()
         }
     }
 

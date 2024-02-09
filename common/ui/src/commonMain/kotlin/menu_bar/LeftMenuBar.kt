@@ -26,7 +26,7 @@ import tooltip_area.TooltipIconArea
 fun BaseEventScope<BaseEvent>.LeftMenuBar(
     open: () -> Unit,
 ) {
-    Row(modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundWindowDarkColor)) {
+    Row(modifier = Modifier.background(ApplicationTheme.colors.mainLeftBarColor)) {
         Column(
             modifier = Modifier.widthIn(max = 42.dp).fillMaxHeight().width(42.dp),
             horizontalAlignment = Alignment.CenterHorizontally
