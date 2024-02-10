@@ -43,7 +43,7 @@ fun TooltipIconArea(
     iconSize: Dp = 20.dp,
     pointerInnerPadding: Dp = 6.dp,
     pointerIsActiveCardColor: Color = ApplicationTheme.colors.pointerIsActiveCardColor,
-    pointerEventBackgroundDisable: Color = ApplicationTheme.colors.cardBackgroundDark, //todo переделать токен цвет)
+    pointerEventBackgroundDisable: Color = ApplicationTheme.colors.mainDrawerBackground, //todo переделать токен цвет)
     iconTint: Color = ApplicationTheme.colors.mainIconsColor,
     isSelected: Boolean = false,
     tooltipCallback: ((tooltip: TooltipItem) -> Unit)? = null,

@@ -28,6 +28,7 @@ import tooltip_area.TooltipIconArea
 @Composable
 fun BaseEventScope<BaseEvent>.CommonToolbar(
     showLeftDrawer: State<Boolean>,
+    content: (@Composable () -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp, max = 50.dp)
@@ -74,6 +75,7 @@ fun BaseEventScope<BaseEvent>.CommonToolbar(
             }
         }
 
+        content?.invoke()
         Spacer(Modifier.weight(1f, fill = true))
 
         TooltipIconArea(

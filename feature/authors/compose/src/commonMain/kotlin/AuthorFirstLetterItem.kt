@@ -10,8 +10,8 @@ fun AuthorFirstLetterItem(
 ) {
     Text(
         text = letter,
-        modifier = Modifier.padding(bottom = 16.dp),
-        style = ApplicationTheme.typography.title1Bold,
+        modifier = Modifier.padding(bottom = 4.dp, start = 16.dp),
+        style = ApplicationTheme.typography.title2Bold,
         color = ApplicationTheme.colors.mainTextColor,
     )
 }

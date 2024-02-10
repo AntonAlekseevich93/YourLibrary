@@ -44,6 +44,7 @@ object Strings {
     const val cancel = "Отменить"
     const val clear = "Очистить"
     const val autor = "Автор"
+    const val autors = "Авторы"
     const val title = "Название"
     const val status = "Статус"
     const val pages_title = "Страниц"
@@ -88,4 +89,8 @@ object Strings {
     const val error_author_can_exist = "Возможно такой автор уже есть.\nВыберите его из списка, либо создайте нового"
     const val create_new_author = "Создать нового автора"
     const val link_to_author = "Привязать автора к существующему"
+    const val rename = "Переименовать"
+    const val join_to_author = "Объединить с другим автором"
+    const val delete = "Удалить"
+    const val notes = "Заметки"
 }

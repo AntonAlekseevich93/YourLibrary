@@ -1,8 +1,8 @@
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -18,15 +18,21 @@ fun AuthorsScreen(
 ) {
     val viewModel = remember { Inject.instance<AuthorsViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
-    val scrollableState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(ApplicationTheme.colors.mainBackgroundColor)
-            .verticalScroll(scrollableState)
     ) {
-        viewModel.CommonToolbar(showLeftDrawer)
+        viewModel.CommonToolbar(showLeftDrawer){
+           Spacer(Modifier.weight(1f))
+                Text(
+                    text = Strings.autors,
+                    style = ApplicationTheme.typography.title3Bold,
+                    color = ApplicationTheme.colors.mainTextColor,
+                )
+
+        }
         viewModel.AuthorsScreenContent(uiState)
     }
 

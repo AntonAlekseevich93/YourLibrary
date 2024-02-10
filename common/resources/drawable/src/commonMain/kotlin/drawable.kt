@@ -30,6 +30,9 @@ object Drawable {
     const val drawable_ic_save = "ic_save.png"
     const val drawable_ic_book = "ic_book.png"
     const val drawable_ic_book_shelves = "ic_book_shelves.png"
-    const val drawable_ic_quotes = "ic_quotes.png"
+    const val drawable_ic_quotes = "ic_quote.xml"
     const val drawable_ic_authors = "ic_authors.png"
+    const val drawable_ic_rename = "ic_rename.xml"
+    const val drawable_ic_join = "ic_join.xml"
+    const val drawable_ic_trash = "ic_trash_bin.xml"
 }
