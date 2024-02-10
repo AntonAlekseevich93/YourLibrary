@@ -1,3 +1,8 @@
+package authors_screen
+
+import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally

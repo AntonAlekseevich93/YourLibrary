@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import authors_screen.AuthorsScreen
 import di.Inject
 import kotlinx.coroutines.launch
 import main_models.TooltipItem
