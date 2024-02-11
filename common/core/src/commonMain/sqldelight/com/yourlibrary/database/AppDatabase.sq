@@ -184,9 +184,23 @@ setAsMainAuthor:
 UPDATE AuthorsTable
 SET `isMainAuthor`=0 WHERE id=?;
 
+setAsNotMainAuthor:
+UPDATE AuthorsTable
+SET `isMainAuthor`=1 WHERE id=?;
+
 updateRelatedToAuthorId:
 UPDATE AuthorsTable
 SET `relatedToAuthorId`=? WHERE relatedToAuthorId=?;
+
+-- dont forget set author how not main
+updateRelationToAuthor:
+UPDATE AuthorsTable
+SET `relatedToAuthorId`=? WHERE id=?;
+
+-- dont forget set author how main
+removeAuthorFromRelates:
+UPDATE AuthorsTable
+SET `relatedToAuthorId`="" WHERE id=?;
 
 getAllAuthorByName:
 SELECT * FROM AuthorsTable WHERE uppercaseName LIKE ?;

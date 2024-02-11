@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import authors_screen.AuthorsScreen
 import di.Inject
+import join_authors_screen.JoinAuthorsScreen
 import kotlinx.coroutines.launch
 import main_models.TooltipItem
 import menu_bar.LeftMenuBar
@@ -165,6 +166,13 @@ fun Application(
                                 showLeftDrawer = uiState.showLeftDrawerState
                             )
                         }
+
+                        dialog(route = Routes.join_authors_screen_route) {
+                            JoinAuthorsScreen(
+                                showLeftDrawer = uiState.showLeftDrawerState,
+                            )
+                        }
+
                     }
                 }
             }

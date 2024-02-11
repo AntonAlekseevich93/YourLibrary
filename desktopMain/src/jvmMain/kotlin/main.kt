@@ -141,6 +141,14 @@ fun createNavigationHandler(
             }
         }
 
+        override fun navigateToJoinAuthorsScreen() {
+            if (currentRoute.value != Routes.join_authors_screen_route) {
+                navigator.value?.navigate(
+                    route = Routes.join_authors_screen_route
+                )
+            }
+        }
+
 
     }
     return handler

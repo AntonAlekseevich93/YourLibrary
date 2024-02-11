@@ -1,4 +1,6 @@
 import database.LocalAuthorsDataSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import ktor.RemoteAuthorsDataSource
 import main_models.AuthorVo
 import main_models.local_models.toDto
@@ -21,7 +23,7 @@ class AuthorsRepositoryImpl(
         localAuthorsDataSource.getAllRelatedAuthors(mainAuthorId)
             .mapNotNull { it.toVo(emptyList(), emptyList()) }
 
-    override fun getAuthorById(id: String): AuthorVo? =
+    override fun getAuthorByIdWithoutRelates(id: String): AuthorVo? =
         localAuthorsDataSource.getAuthorById(id = id)?.toVo(emptyList(), emptyList())
 
     override suspend fun getAuthorWithRelatesWithoutBooks(authorId: String): AuthorVo? {
@@ -32,14 +34,34 @@ class AuthorsRepositoryImpl(
         return null
     }
 
-    override suspend fun getAllAuthors(): List<AuthorVo> {
-        val resultList: MutableList<AuthorVo> = mutableListOf()
-        localAuthorsDataSource.getAllMainAuthors().forEach { mainAuthor ->
-            val relates = mainAuthor.id?.let { localAuthorsDataSource.getAllRelatedAuthors(it) }
-            mainAuthor.toVo(relatedAuthors = relates ?: emptyList(), books = emptyList())?.let {
-                resultList.add(it)
+    override suspend fun getAllMainAuthors(): Flow<List<AuthorVo>> = flow {
+        localAuthorsDataSource.getAllMainAuthors().collect { mainAuthors ->
+            val authorsVo = mainAuthors.mapNotNull { mainAuthor ->
+                val relatedAuthors =
+                    mainAuthor.id?.let { localAuthorsDataSource.getAllRelatedAuthors(it) }
+                mainAuthor.toVo(
+                    relatedAuthors = relatedAuthors ?: emptyList(),
+                    books = emptyList()
+                )
             }
+            emit(authorsVo)
         }
-        return resultList
     }
+
+    override suspend fun getAllAuthorsNotSeparatingSimilar(): Flow<List<AuthorVo>> = flow {
+        localAuthorsDataSource.getAllAuthors().collect {
+            emit(
+                it.mapNotNull { it.toVo(emptyList(), emptyList()) }
+            )
+        }
+    }
+
+    override suspend fun addAuthorToRelates(mainAuthorId: String, selectedAuthorId: String) {
+        localAuthorsDataSource.addAuthorToRelates(mainAuthorId, selectedAuthorId)
+    }
+
+    override suspend fun removeAuthorFromRelates(selectedAuthorId: String) {
+        localAuthorsDataSource.removeAuthorFromRelates(selectedAuthorId)
+    }
+
 }

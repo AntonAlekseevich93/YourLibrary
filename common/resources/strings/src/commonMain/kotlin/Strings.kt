@@ -93,4 +93,12 @@ object Strings {
     const val join_to_author = "Объединить с другим автором"
     const val delete = "Удалить"
     const val notes = "Заметки"
+    const val relatesAuthors = "Связанные авторы"
+    const val search_by_author = "Поиск по автору"
+    const val all_authors = "Все авторы"
+    const val add_to_relates = "В связанные"
+    const val as_main = "Сделать основным"
+    const val as_main_author = "Сделать основным автором"
+    const val main_author = "Основной автор"
+    const val remove_from_relates = "Убрать из связанных"
 }

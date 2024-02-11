@@ -39,6 +39,20 @@ data class AppColors(
     val textDescriptionColor: Color,
     val primaryButtonColor: Color,
     val secondaryButtonColor: Color,
+    val joinAuthorsColors: JoinAuthorsColors,
+    val authorsContainerColor: Color,
+)
+
+class ReadingStatusesColor(
+    val plannedStatusColor: Color,
+    val readingStatusColor: Color,
+    val doneStatusColor: Color,
+    val deferredStatusColor: Color,
+)
+
+class JoinAuthorsColors(
+    val mainAuthorColor: Color,
+    val relatesAuthorsColor: Color,
 )
 
 val lightPaletteTheme = AppColors(
@@ -89,6 +103,11 @@ val lightPaletteTheme = AppColors(
     textDescriptionColor = Color(0xFF949494),
     primaryButtonColor = Color(0xFF6495ED),
     secondaryButtonColor = Color(0xFF434343),
+    joinAuthorsColors = JoinAuthorsColors(
+        mainAuthorColor = Color(0xFF3a86ff),
+        relatesAuthorsColor = Color(0xFF17B978),
+    ),
+    authorsContainerColor = Color(0xFF252525),
 )
 
 val darkPaletteTheme = AppColors(
@@ -139,11 +158,9 @@ val darkPaletteTheme = AppColors(
     textDescriptionColor = Color(0xFF949494),
     primaryButtonColor = Color(0xFF6495ED),
     secondaryButtonColor = Color(0xFF434343),
-)
-
-class ReadingStatusesColor(
-    val plannedStatusColor: Color,
-    val readingStatusColor: Color,
-    val doneStatusColor: Color,
-    val deferredStatusColor: Color,
+    joinAuthorsColors = JoinAuthorsColors(
+        mainAuthorColor = Color(0xFF3a86ff),
+        relatesAuthorsColor = Color(0xFF17B978),
+    ),
+    authorsContainerColor = Color(0xFF252525),
 )

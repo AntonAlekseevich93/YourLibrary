@@ -1,6 +1,11 @@
 package database
 
 import DatabaseUtils.Companion.toAuthorLocalDto
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import main_models.local_models.AuthorLocalDto
 
 class LocalAuthorsDataSource(
@@ -37,8 +42,23 @@ class LocalAuthorsDataSource(
     fun getAuthorById(id: String): AuthorLocalDto? =
         db.appQuery.getAuthorById(id).executeAsList().firstOrNull()?.toAuthorLocalDto()
 
-    suspend fun getAllMainAuthors(): List<AuthorLocalDto> =
-        db.appQuery.getAllMainAuthors().executeAsList().map { it.toAuthorLocalDto() }
+    suspend fun getAllMainAuthors(): Flow<List<AuthorLocalDto>> =
+        db.appQuery.getAllMainAuthors().asFlow().mapToList(Dispatchers.IO)
+            .map { it.map { it.toAuthorLocalDto() } }
+
+    suspend fun getAllAuthors(): Flow<List<AuthorLocalDto>> =
+        db.appQuery.getAllAuthors().asFlow().mapToList(Dispatchers.IO)
+            .map { it.map { it.toAuthorLocalDto() } }
+
+    suspend fun addAuthorToRelates(mainAuthorId: String, selectedAuthorId: String) {
+        db.appQuery.updateRelationToAuthor(mainAuthorId, selectedAuthorId)
+        db.appQuery.setAsNotMainAuthor(selectedAuthorId)
+    }
+
+    fun removeAuthorFromRelates(selectedAuthorId: String) {
+        db.appQuery.removeAuthorFromRelates(selectedAuthorId)
+        db.appQuery.setAsMainAuthor(selectedAuthorId)
+    }
 
 
 }

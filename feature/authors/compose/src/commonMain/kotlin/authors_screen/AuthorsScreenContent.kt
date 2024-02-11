@@ -38,7 +38,10 @@ fun BaseEventScope<BaseEvent>.AuthorsScreenContent(
                             AuthorItem(
                                 author = author,
                                 showAuthorMenuEvent = { hideAuthorsMenu.value = it },
-                                hideAuthorMenu = hideAuthorsMenu
+                                hideAuthorMenu = hideAuthorsMenu,
+                                menuContent = {
+                                    AuthorItemMenu(author)
+                                }
                             )
                         }
                     }

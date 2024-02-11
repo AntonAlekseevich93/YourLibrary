@@ -32,7 +32,9 @@ import main_models.AuthorVo
 fun BaseEventScope<BaseEvent>.AuthorItem(
     author: AuthorVo,
     showAuthorMenuEvent: (id: String) -> Unit,
-    hideAuthorMenu: State<String>
+    hideAuthorMenu: State<String>,
+    contentModifier: Modifier = Modifier,
+    menuContent: @Composable (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered = interactionSource.collectIsHoveredAsState()
@@ -61,7 +63,7 @@ fun BaseEventScope<BaseEvent>.AuthorItem(
         shape = RoundedCornerShape(0.dp),
         colors = CardDefaults.cardColors(cardBackground)
     ) {
-        Row(modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp)) {
+        Row(modifier = contentModifier.padding(vertical = 4.dp, horizontal = 16.dp)) {
             Text(
                 text = author.name,
                 style = ApplicationTheme.typography.bodyRegular,
@@ -84,6 +86,6 @@ fun BaseEventScope<BaseEvent>.AuthorItem(
         enter = slideInHorizontally(),
         exit = slideOutHorizontally(targetOffsetX = { -500 })
     ) {
-        AuthorItemMenu(author)
+        menuContent?.invoke()
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import main_models.AuthorVo
 import main_models.TooltipPosition
+import models.AuthorsEvents
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
 
@@ -69,7 +70,7 @@ fun BaseEventScope<BaseEvent>.AuthorItemMenu(authorVo: AuthorVo) {
             },
             modifier = Modifier.padding(end = 6.dp),
             onClick = {
-
+                this@AuthorItemMenu.sendEvent(AuthorsEvents.OpenJoinAuthorsScreen(authorVo))
             }
         )
 

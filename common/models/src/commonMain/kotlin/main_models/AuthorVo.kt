@@ -15,5 +15,14 @@ data class AuthorVo(
 ) {
     companion object {
         fun generateId() = UUID.randomUUID().toString() //todo подумать над другой реализацией id
+        fun getEmptyAuthor() = AuthorVo(
+            "",
+            "",
+            null,
+            true,
+            0,
+            0,
+            books = emptyList()
+        )
     }
 }

@@ -1,11 +1,64 @@
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import main_models.AuthorVo
 
 class AuthorsInteractor(
     private val repository: AuthorsRepository,
+    private val searchRepository: SearchRepository,
 ) {
-    suspend fun getAllAuthorsByAlphabet(): LinkedHashMap<String, MutableList<AuthorVo>> {
+    suspend fun getAllAuthorsByAlphabet(): Flow<LinkedHashMap<String, MutableList<AuthorVo>>> {
+        return repository.getAllMainAuthors().transform { authors ->
+            emit(getAuthorsByAlphabet(authors))
+        }
+    }
+
+    suspend fun getAllAuthorsNotSeparatingSimilarWithExceptionId(
+        exceptionAuthorId: String
+    ): Flow<LinkedHashMap<String, MutableList<AuthorVo>>> {
+        return repository.getAllAuthorsNotSeparatingSimilar().transform { authors ->
+            emit(getAuthorsByAlphabet(authors, exceptionAuthorId))
+        }
+    }
+
+    suspend fun searchAuthorExceptId(
+        searchingName: String,
+        exceptionAuthorId: String
+    ): LinkedHashMap<String, MutableList<AuthorVo>> {
+        val result = searchRepository.searchInAuthorsName(searchingName)
+        return getAuthorsByAlphabet(result, exceptionAuthorId)
+    }
+
+    suspend fun addAuthorToRelates(mainAuthorId: String, selectedAuthorId: String) {
+        repository.addAuthorToRelates(mainAuthorId, selectedAuthorId)
+    }
+
+    suspend fun getMainAuthorById(id: String): AuthorVo? {
+        repository.getAuthorByIdWithoutRelates(id)?.let { authorVo ->
+            val relates = repository.getAllRelatedAuthors(id)
+            return authorVo.apply { relatedAuthors = relates }
+        }
+        return null
+    }
+
+    suspend fun removeAuthorFromRelates(selectedAuthorId: String) {
+        repository.removeAuthorFromRelates(selectedAuthorId)
+    }
+
+    private fun getAuthorsByAlphabet(
+        authors: List<AuthorVo>,
+        exceptionAuthorId: String? = null
+    ): LinkedHashMap<String, MutableList<AuthorVo>> {
+        val list = if (exceptionAuthorId != null) {
+            authors
+                .asSequence()
+                .mapNotNull {
+                    it.takeIf { it.id != exceptionAuthorId && it.relatedToAuthorId != exceptionAuthorId }
+                }
+                .toList()
+        } else authors
+
         val resultMap: LinkedHashMap<String, MutableList<AuthorVo>> = linkedMapOf()
-        repository.getAllAuthors().forEach { author ->
+        list.forEach { author ->
             val firstLetter = author.name.first().uppercase()
             val currentList =
                 if (resultMap.containsKey(firstLetter)) resultMap[firstLetter]!! else mutableListOf()

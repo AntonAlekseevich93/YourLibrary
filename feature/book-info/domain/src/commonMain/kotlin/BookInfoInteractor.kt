@@ -29,7 +29,7 @@ class BookInfoInteractor(
                 val relates = authorRepository.getAllRelatedAuthors(author.id)
                 finishedSet.add(author.apply { relatedAuthors = relates })
             } else if (author.relatedToAuthorId != null) {
-                authorRepository.getAuthorById(author.relatedToAuthorId!!)
+                authorRepository.getAuthorByIdWithoutRelates(author.relatedToAuthorId!!)
                     ?.let { mainAuthor ->
                         val relates =
                             authorRepository.getAllRelatedAuthors(mainAuthor.id)

@@ -29,13 +29,13 @@ fun AuthorsScreen(
             .fillMaxSize()
             .background(ApplicationTheme.colors.mainBackgroundColor)
     ) {
-        viewModel.CommonToolbar(showLeftDrawer){
-           Spacer(Modifier.weight(1f))
-                Text(
-                    text = Strings.autors,
-                    style = ApplicationTheme.typography.title3Bold,
-                    color = ApplicationTheme.colors.mainTextColor,
-                )
+        viewModel.CommonToolbar(showLeftDrawer) {
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = Strings.autors,
+                style = ApplicationTheme.typography.title3Bold,
+                color = ApplicationTheme.colors.mainTextColor,
+            )
 
         }
         viewModel.AuthorsScreenContent(uiState)

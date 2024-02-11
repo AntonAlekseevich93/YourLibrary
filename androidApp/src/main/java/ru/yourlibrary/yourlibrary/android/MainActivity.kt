@@ -12,11 +12,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalView
@@ -24,6 +26,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import di.PlatformConfiguration
+import kotlinx.coroutines.launch
 import main_models.TooltipItem
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.NavOptions
@@ -37,6 +40,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val navigator: MutableState<Navigator?> = mutableStateOf(null)
         val desktopTooltip = mutableStateOf(TooltipItem())
+        val currentRoute = mutableStateOf("")
 
         PlatformSDK.init(
             configuration = PlatformConfiguration(this),
@@ -44,12 +48,21 @@ class MainActivity : ComponentActivity() {
             platform = Platform.MOBILE,
             navigationHandler = createNavigationHandler(
                 navigator = navigator,
-                desktopTooltip = desktopTooltip
+                desktopTooltip = desktopTooltip,
+                currentRoute = currentRoute,
             ),
             tooltipHandler = createTooltipHandler(desktopTooltip)
         )
 
         setContent {
+            val scope = rememberCoroutineScope()
+            LaunchedEffect(key1 = Unit) {
+                scope.launch {
+                    navigator.value?.currentEntry?.collect {
+                        currentRoute.value = it?.route?.route ?: ""
+                    }
+                }
+            }
             AppTheme {
                 PreComposeApp {
                     navigator.value = rememberNavigator()
@@ -66,7 +79,8 @@ class MainActivity : ComponentActivity() {
 
 fun createNavigationHandler(
     navigator: MutableState<Navigator?>,
-    desktopTooltip: MutableState<TooltipItem>
+    desktopTooltip: MutableState<TooltipItem>,
+    currentRoute: State<String>,
 ): NavigationHandler {
     val handler = object : NavigationHandler {
         override fun navigateToSearch() {
@@ -74,23 +88,27 @@ fun createNavigationHandler(
         }
 
         override fun navigateToSelectorVault(needPopBackStack: Boolean) {
-            desktopTooltip.value.showTooltip = false
-            //todo здесь происходит мигание анимации, но без этого баг. Подумать
-            if (needPopBackStack) navigator.value?.popBackStack()
-            navigator.value?.navigate(route = Routes.vault_route)
+            if (currentRoute.value != Routes.vault_route) {
+                desktopTooltip.value.showTooltip = false
+                //todo здесь происходит мигание анимации, но без этого баг. Подумать
+                if (needPopBackStack) navigator.value?.popBackStack()
+                navigator.value?.navigate(route = Routes.vault_route)
+            }
         }
 
         override fun navigateToBookCreator(popUpToMain: Boolean) {
-            val options = if (popUpToMain)
-                NavOptions(popUpTo = PopUpTo(Routes.main_route))
-            else {
-                NavOptions(launchSingleTop = false)
-            }
+            if (currentRoute.value != Routes.book_creator_route) {
+                val options = if (popUpToMain)
+                    NavOptions(popUpTo = PopUpTo(Routes.main_route))
+                else {
+                    NavOptions(launchSingleTop = false)
+                }
 
-            navigator.value?.navigate(
-                route = Routes.book_creator_route,
-                options = options,
-            )
+                navigator.value?.navigate(
+                    route = Routes.book_creator_route,
+                    options = options,
+                )
+            }
         }
 
         override fun goBack() {
@@ -99,10 +117,12 @@ fun createNavigationHandler(
         }
 
         override fun navigateToMain() {
-            navigator.value?.navigate(
-                route = Routes.main_route,
-                options = NavOptions(launchSingleTop = false),
-            )
+            if (currentRoute.value != Routes.main_route) {
+                navigator.value?.navigate(
+                    route = Routes.main_route,
+                    options = NavOptions(launchSingleTop = false),
+                )
+            }
         }
 
         override fun restartWindow() {
@@ -110,16 +130,28 @@ fun createNavigationHandler(
         }
 
         override fun navigateToBookInfo() {
-            navigator.value?.navigate(
-                route = Routes.book_info_route,
-                options = NavOptions(popUpTo = PopUpTo.Prev),
-            )
+            if (currentRoute.value != Routes.book_info_route) {
+                navigator.value?.navigate(
+                    route = Routes.book_info_route,
+                    options = NavOptions(popUpTo = PopUpTo.Prev),
+                )
+            }
         }
 
         override fun navigateToAuthorsScreen() {
-            navigator.value?.navigate(
-                route = Routes.authors_screen_route,
-            )
+            if (currentRoute.value != Routes.authors_screen_route) {
+                navigator.value?.navigate(
+                    route = Routes.authors_screen_route,
+                )
+            }
+        }
+
+        override fun navigateToJoinAuthorsScreen() {
+            if (currentRoute.value != Routes.join_authors_screen_route) {
+                navigator.value?.navigate(
+                    route = Routes.join_authors_screen_route
+                )
+            }
         }
 
     }

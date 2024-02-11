@@ -9,6 +9,7 @@ kotlin {
             dependencies {
                 implementation(project(":common:models"))
                 implementation(project(":feature:authors:api"))
+                implementation(project(":feature:search:api"))
             }
         }
     }

@@ -9,11 +9,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun AuthorFirstLetterItem(
-    letter: String
+    letter: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = letter,
-        modifier = Modifier.padding(bottom = 4.dp, start = 16.dp),
+        modifier = modifier.padding(bottom = 2.dp, start = 16.dp),
         style = ApplicationTheme.typography.title2Bold,
         color = ApplicationTheme.colors.mainTextColor,
     )
