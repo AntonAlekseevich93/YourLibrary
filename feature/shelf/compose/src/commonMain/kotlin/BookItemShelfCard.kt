@@ -50,7 +50,7 @@ fun BaseEventScope<BaseEvent>.BookItemShelfCard(
             }
         }
         Text(
-            text = bookItem.authorName,
+            text = bookItem.modifiedAuthorName ?: bookItem.originalAuthorName,
             modifier = Modifier
                 .padding(top = 8.dp, start = 4.dp, end = 4.dp)
                 .sizeIn(maxWidth = config.width.dp),

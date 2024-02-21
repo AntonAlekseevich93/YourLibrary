@@ -7,11 +7,13 @@ import main_models.ReadingStatus
 /** need update DatabaseUtils if change values **/
 data class BookItemLocalDto(
     val id: String,
-    val authorId: String,
+    val originalAuthorId: String,
+    val modifiedAuthorId: String?,
     var statusId: String,
     var shelfId: String?,
     var bookName: String,
-    var authorName: String,
+    var originalAuthorName: String,
+    var modifiedAuthorName: String?,
     var description: String? = "",
     var coverUrl: String? = "",
     var coverUrlFromParsing: String? = "",
@@ -29,11 +31,13 @@ data class BookItemLocalDto(
 
 fun BookItemVo.toLocalDto() = BookItemLocalDto(
     id = id,
-    authorId = authorId,
+    originalAuthorId = originalAuthorId,
+    modifiedAuthorId = modifiedAuthorId,
     statusId = statusId,
     shelfId = shelfId,
     bookName = bookName,
-    authorName = authorName,
+    originalAuthorName = originalAuthorName,
+    modifiedAuthorName = modifiedAuthorName,
     description = description,
     coverUrl = coverUrl,
     coverUrlFromParsing = coverUrlFromParsing,
@@ -51,11 +55,13 @@ fun BookItemVo.toLocalDto() = BookItemLocalDto(
 
 fun BookItemLocalDto.toVo() = BookItemVo(
     id = id,
-    authorId = authorId,
+    originalAuthorId = originalAuthorId,
+    modifiedAuthorId = modifiedAuthorId,
     statusId = statusId,
     shelfId = shelfId,
     bookName = bookName,
-    authorName = authorName,
+    originalAuthorName = originalAuthorName,
+    modifiedAuthorName = modifiedAuthorName,
     description = description ?: "",
     coverUrl = coverUrl ?: "",
     coverUrlFromParsing = coverUrlFromParsing ?: "",

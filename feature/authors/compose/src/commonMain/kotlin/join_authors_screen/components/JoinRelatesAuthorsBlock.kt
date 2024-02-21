@@ -62,8 +62,8 @@ fun BaseEventScope<BaseEvent>.JoinRelatesAuthorBlock(mainAuthor: State<AuthorVo>
                         modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundColor),
                         content = {
                             RelatesAuthorsDropMenu(
-                                mainAuthor = mainAuthor.value,
-                                authorVo = author,
+                                modifiedAuthor = mainAuthor.value,
+                                originalAuthor = author,
                                 onClose = {
                                     showDropdown = false
                                 }

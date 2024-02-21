@@ -9,6 +9,11 @@ interface AuthorsRepository {
     suspend fun getAuthorWithRelatesWithoutBooks(authorId: String): AuthorVo?
     suspend fun getAllMainAuthors(): Flow<List<AuthorVo>>
     suspend fun getAllAuthorsNotSeparatingSimilar(): Flow<List<AuthorVo>>
-    suspend fun addAuthorToRelates(mainAuthorId: String, selectedAuthorId: String)
-    suspend fun removeAuthorFromRelates(selectedAuthorId: String)
+    suspend fun addAuthorToRelates(
+        originalAuthorId: String,
+        originalAuthorName: String,
+        modifiedAuthorId: String,
+    )
+
+    suspend fun removeAuthorFromRelates(originalAuthorId: String)
 }

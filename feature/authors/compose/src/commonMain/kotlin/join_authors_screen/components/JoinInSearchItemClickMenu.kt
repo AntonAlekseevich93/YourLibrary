@@ -15,8 +15,8 @@ import tags.CustomTag
 
 @Composable
 fun BaseEventScope<BaseEvent>.JoinInSearchItemClickMenu(
-    mainAuthor: State<AuthorVo>,
-    author: AuthorVo
+    originalAuthor: State<AuthorVo>,
+    modifiedAuthor: AuthorVo
 ) {
     Row(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp, bottom = 12.dp)) {
         CustomTag(
@@ -24,8 +24,8 @@ fun BaseEventScope<BaseEvent>.JoinInSearchItemClickMenu(
             onClick = {
                 this@JoinInSearchItemClickMenu.sendEvent(
                     AuthorsEvents.AddAuthorToRelates(
-                        mainAuthor = mainAuthor.value,
-                        selectedAuthorId = author.id
+                        originalAuthor = originalAuthor.value,
+                        modifiedAuthorId = modifiedAuthor.id,
                     )
                 )
             },

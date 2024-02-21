@@ -28,8 +28,16 @@ class AuthorsInteractor(
         return getAuthorsByAlphabet(result, exceptionAuthorId)
     }
 
-    suspend fun addAuthorToRelates(mainAuthorId: String, selectedAuthorId: String) {
-        repository.addAuthorToRelates(mainAuthorId, selectedAuthorId)
+    suspend fun addAuthorToRelates(
+        originalAuthorId: String,
+        originalAuthorName: String,
+        modifiedAuthorId: String,
+    ) {
+        repository.addAuthorToRelates(
+            originalAuthorId = originalAuthorId,
+            originalAuthorName = originalAuthorName,
+            modifiedAuthorId = modifiedAuthorId,
+        )
     }
 
     suspend fun getMainAuthorById(id: String): AuthorVo? {
@@ -40,8 +48,8 @@ class AuthorsInteractor(
         return null
     }
 
-    suspend fun removeAuthorFromRelates(selectedAuthorId: String) {
-        repository.removeAuthorFromRelates(selectedAuthorId)
+    suspend fun removeAuthorFromRelates(originalAuthorId: String) {
+        repository.removeAuthorFromRelates(originalAuthorId = originalAuthorId)
     }
 
     private fun getAuthorsByAlphabet(

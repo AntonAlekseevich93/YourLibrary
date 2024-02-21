@@ -19,11 +19,20 @@ class ShelfUiState(
         shelvesList.value = ReadingStatusVo.createShelvesListFromStatuses().toMutableList()
     }
 
+    //todo это надо вынести в ViewModel. А не выполнять логику в compose
     fun searchInFullShelf(searchedText: String, shelfIndex: Int) {
         fullShelfIndex.value = shelfIndex
         val newList = shelvesList.value[shelfIndex].booksList.filter {
             it.bookName.contains(searchedText, ignoreCase = true) ||
-                    it.authorName.contains(searchedText, ignoreCase = true)
+                    (it.modifiedAuthorName != null && it.modifiedAuthorName!!.contains(
+                        searchedText,
+                        ignoreCase = true
+                    ))
+                    ||
+                    (it.modifiedAuthorName == null && it.originalAuthorName.contains(
+                        searchedText,
+                        ignoreCase = true
+                    ))
         }
         sortBookList.value = newList
     }

@@ -16,8 +16,8 @@ import models.AuthorsEvents
 
 @Composable
 fun BaseEventScope<BaseEvent>.RelatesAuthorsDropMenu(
-    mainAuthor: AuthorVo,
-    authorVo: AuthorVo,
+    modifiedAuthor: AuthorVo,
+    originalAuthor: AuthorVo,
     onClose: () -> Unit,
 ) {
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
@@ -28,8 +28,8 @@ fun BaseEventScope<BaseEvent>.RelatesAuthorsDropMenu(
             modifier = Modifier.padding(bottom = 8.dp).clickable {
                 this@RelatesAuthorsDropMenu.sendEvent(
                     AuthorsEvents.RemoveAuthorFromRelates(
-                        mainAuthor = mainAuthor,
-                        selectedAuthorId = authorVo.id
+                        originalAuthor = originalAuthor,
+                        modifiedAuthorId = modifiedAuthor.id
                     )
                 )
                 onClose.invoke()

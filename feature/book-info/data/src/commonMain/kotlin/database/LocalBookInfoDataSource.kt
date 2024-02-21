@@ -22,11 +22,13 @@ class LocalBookInfoDataSource(
         bookItem.apply {
             db.appQuery.updateBook(
                 id = id,
-                authorId = authorId,
+                originalAuthorId = originalAuthorId,
+                modifiedAuthorId = modifiedAuthorId,
                 statusId = statusId,
                 shelfId = shelfId,
                 bookName = bookName,
-                authorName = authorName,
+                originalAuthorName = originalAuthorName,
+                modifiedAuthorName = modifiedAuthorName,
                 description = description,
                 coverUrl = coverUrl,
                 coverUrlFromParsing = coverUrlFromParsing,

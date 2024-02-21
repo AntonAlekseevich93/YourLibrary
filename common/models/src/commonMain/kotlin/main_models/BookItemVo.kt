@@ -5,11 +5,13 @@ import java.util.UUID
 //todo we can`t use var values in data classes
 data class BookItemVo(
     val id: String,
-    val authorId: String,
+    val originalAuthorId: String,
+    val modifiedAuthorId: String?,
     var statusId: String,
     var shelfId: String? = null,
     var bookName: String,
-    var authorName: String,
+    var originalAuthorName: String,
+    var modifiedAuthorName: String?,
     var description: String = "",
     var coverUrl: String = "",
     var coverUrlFromParsing: String = "",

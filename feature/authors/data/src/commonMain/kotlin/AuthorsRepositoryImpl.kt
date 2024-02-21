@@ -56,12 +56,22 @@ class AuthorsRepositoryImpl(
         }
     }
 
-    override suspend fun addAuthorToRelates(mainAuthorId: String, selectedAuthorId: String) {
-        localAuthorsDataSource.addAuthorToRelates(mainAuthorId, selectedAuthorId)
+    override suspend fun addAuthorToRelates(
+        originalAuthorId: String,
+        originalAuthorName: String,
+        modifiedAuthorId: String,
+    ) {
+        localAuthorsDataSource.addAuthorToRelates(
+            originalAuthorId = originalAuthorId,
+            originalAuthorName = originalAuthorName,
+            modifiedAuthorId = modifiedAuthorId,
+        )
     }
 
-    override suspend fun removeAuthorFromRelates(selectedAuthorId: String) {
-        localAuthorsDataSource.removeAuthorFromRelates(selectedAuthorId)
+    override suspend fun removeAuthorFromRelates(originalAuthorId: String) {
+        localAuthorsDataSource.removeAuthorFromRelates(
+            originalAuthorId = originalAuthorId
+        )
     }
 
 }

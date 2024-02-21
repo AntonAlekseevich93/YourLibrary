@@ -59,8 +59,8 @@ fun BaseEventScope<BaseEvent>.JoinAuthorsContent(
         }
 
         JoinAllAuthors(
-            mainAuthor = state.value.mainAuthor,
-            authorByAlphabet = state.value.allAuthorsExceptMainAndRelates,
+            originalAuthor = state.value.mainAuthor,
+            authorsByAlphabet = state.value.allAuthorsExceptMainAndRelates,
             searchingResult = searchingAuthorsResult
         )
     }

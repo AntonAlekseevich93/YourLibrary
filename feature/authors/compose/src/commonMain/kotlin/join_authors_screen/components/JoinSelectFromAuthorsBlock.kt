@@ -40,8 +40,8 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BaseEventScope<BaseEvent>.JoinAllAuthors(
-    mainAuthor: State<AuthorVo>,
-    authorByAlphabet: LinkedHashMap<String, MutableList<AuthorVo>>,
+    originalAuthor: State<AuthorVo>,
+    authorsByAlphabet: LinkedHashMap<String, MutableList<AuthorVo>>,
     searchingResult: State<LinkedHashMap<String, MutableList<AuthorVo>>>
 ) {
     var searchText by remember { mutableStateOf("") }
@@ -59,7 +59,7 @@ fun BaseEventScope<BaseEvent>.JoinAllAuthors(
                     this@JoinAllAuthors.sendEvent(
                         AuthorsEvents.OnSearch(
                             searchText,
-                            mainAuthor.value.id
+                            originalAuthor.value.id
                         )
                     )
                 }
@@ -110,7 +110,7 @@ fun BaseEventScope<BaseEvent>.JoinAllAuthors(
         }
 
         if (searchText.isEmpty()) {
-            authorByAlphabet.keys.forEach { letter ->
+            authorsByAlphabet.keys.forEach { letter ->
 
                 AuthorFirstLetterItem(letter, Modifier.padding(start = 8.dp))
 
@@ -119,16 +119,16 @@ fun BaseEventScope<BaseEvent>.JoinAllAuthors(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(bottom = 12.dp, top = 4.dp)) {
-                        authorByAlphabet[letter]?.forEach { author ->
+                        authorsByAlphabet[letter]?.forEach { modifiedAuthor ->
                             AuthorItem(
-                                author = author,
+                                author = modifiedAuthor,
                                 showAuthorMenuEvent = { hideAuthorsMenu.value = it },
                                 hideAuthorMenu = hideAuthorsMenu,
                                 contentModifier = Modifier.padding(start = 8.dp),
                                 menuContent = {
                                     JoinInSearchItemClickMenu(
-                                        mainAuthor = mainAuthor,
-                                        author = author,
+                                        originalAuthor = originalAuthor,
+                                        modifiedAuthor = modifiedAuthor,
                                     )
                                 }
                             )

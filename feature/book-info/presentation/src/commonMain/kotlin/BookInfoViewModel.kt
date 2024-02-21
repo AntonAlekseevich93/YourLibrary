@@ -81,7 +81,8 @@ class BookInfoViewModel(
                     _uiState.value.setBookItem(book)
                 }
                 launch {
-                    interactor.getAuthorWithRelatesWithoutBooks(book.authorId)?.let {
+                    val authorId: String = book.modifiedAuthorId ?: book.originalAuthorId
+                    interactor.getAuthorWithRelatesWithoutBooks(authorId)?.let {
                         _uiState.value.setSelectedAuthor(it)
                         setSelectedAuthorName()
                     }
@@ -97,9 +98,15 @@ class BookInfoViewModel(
     private fun updateBook(bookItem: BookItemVo, needCreateNewAuthor: Boolean) {
         scope.launch {
             if (needCreateNewAuthor) {
-                val author = createNewAuthor(authorName = bookItem.authorName)
+                val author = createNewAuthor(authorName = bookItem.originalAuthorName)
                 interactor.createAuthor(author)
-                interactor.updateBook(bookItem.copy(authorId = author.id))
+                interactor.updateBook(
+                    bookItem.copy(
+                        originalAuthorId = author.id,
+                        modifiedAuthorId = null,
+                        modifiedAuthorName = null
+                    )
+                )
             } else {
                 interactor.updateBook(bookItem)
             }
@@ -159,9 +166,23 @@ class BookInfoViewModel(
                     timestampOfCreating = bookItem.value!!.timestampOfCreating,
                     timestampOfUpdating = getCurrentTimeInMillis(),
                 )?.let {
-                    applicationScope.checkIfNeedUpdateBookItem(bookItem.value!!, it)
+                    val isModifiedAuthor = it.modifiedAuthorName != null
+
+                    val resultBook = if (isModifiedAuthor) {
+                        it.copy(
+                            modifiedAuthorName = bookValues.value.getChangedAuthorName(),
+                            modifiedAuthorId = bookValues.value.modifierAuthorId
+                        )
+                    } else {
+                        it.copy(
+                            originalAuthorName = bookValues.value.getChangedAuthorName()
+                                ?: throw Exception("BookValues.getChangedAuthorName is null")
+                        )
+                    }
+
+                    applicationScope.checkIfNeedUpdateBookItem(bookItem.value!!, resultBook)
                     updateBook(
-                        bookItem = it,
+                        bookItem = resultBook,
                         needCreateNewAuthor = needCreateNewAuthor.value
                     )
                 }

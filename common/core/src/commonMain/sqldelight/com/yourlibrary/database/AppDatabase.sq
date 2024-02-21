@@ -60,11 +60,13 @@ SELECT * FROM ShelvesTable;
 
 CREATE TABLE IF NOT EXISTS BooksTable (
   id TEXT NOT NULL,
-  authorId TEXT NOT NULL,
+  originalAuthorId TEXT NOT NULL,
+  modifiedAuthorId TEXT,
   statusId TEXT NOT NULL,
   shelfId TEXT,
   bookName Text NOT NULL,
-  authorName Text NOT NULL,
+  originalAuthorName Text NOT NULL,
+  modifiedAuthorName Text,
   description Text,
   coverUrl Text,
   coverUrlFromParsing Text,
@@ -81,10 +83,10 @@ CREATE TABLE IF NOT EXISTS BooksTable (
 );
 
 addBook:
-INSERT INTO BooksTable (id, authorId, statusId, shelfId, bookName, authorName, description, coverUrl,
+INSERT INTO BooksTable (id, originalAuthorId, modifiedAuthorId, statusId, shelfId, bookName, originalAuthorName,modifiedAuthorName, description, coverUrl,
  coverUrlFromParsing, numbersOfPages, isbn, quotes, readingStatus, startDateInString,
   endDateInString, startDateInMillis, endDateInMillis, timestampOfCreating, timestampOfUpdating)
-VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 updateShelfIdForAllBooks:
 UPDATE BooksTable
@@ -102,11 +104,13 @@ SELECT * FROM BooksTable;
 
 updateBook:
 UPDATE BooksTable SET
-  authorId = :authorId,
+  originalAuthorId = :originalAuthorId,
+  modifiedAuthorId = :modifiedAuthorId,
   statusId = :statusId,
   shelfId = :shelfId,
   bookName = :bookName,
-  authorName = :authorName,
+  originalAuthorName = :originalAuthorName,
+  modifiedAuthorName = :modifiedAuthorName,
   description = :description,
   coverUrl = :coverUrl,
   coverUrlFromParsing = :coverUrlFromParsing,
@@ -137,6 +141,14 @@ DELETE FROM BooksTable;
 
 getBookById:
 SELECT * FROM BooksTable WHERE id =:id;
+
+setModifierAuthor:
+UPDATE BooksTable
+SET `modifiedAuthorId`=?, modifiedAuthorName=? WHERE originalAuthorId=?;
+
+clearModifierAuthor:
+UPDATE BooksTable
+SET `modifiedAuthorId`=NULL, modifiedAuthorName=NULL WHERE originalAuthorId=?;
 
 -- ------------------------------------------------------------------AUTHORS TABLE:
 

@@ -50,14 +50,24 @@ class LocalAuthorsDataSource(
         db.appQuery.getAllAuthors().asFlow().mapToList(Dispatchers.IO)
             .map { it.map { it.toAuthorLocalDto() } }
 
-    suspend fun addAuthorToRelates(mainAuthorId: String, selectedAuthorId: String) {
-        db.appQuery.updateRelationToAuthor(mainAuthorId, selectedAuthorId)
-        db.appQuery.setAsNotMainAuthor(selectedAuthorId)
+    suspend fun addAuthorToRelates(
+        originalAuthorId: String,
+        originalAuthorName: String,
+        modifiedAuthorId: String,
+    ) {
+        db.appQuery.updateRelationToAuthor(originalAuthorId, modifiedAuthorId)
+        db.appQuery.setAsNotMainAuthor(modifiedAuthorId)
+        db.appQuery.setModifierAuthor(
+            modifiedAuthorId = originalAuthorId,
+            modifiedAuthorName = originalAuthorName,
+            originalAuthorId = modifiedAuthorId
+        )
     }
 
-    fun removeAuthorFromRelates(selectedAuthorId: String) {
-        db.appQuery.removeAuthorFromRelates(selectedAuthorId)
-        db.appQuery.setAsMainAuthor(selectedAuthorId)
+    fun removeAuthorFromRelates(originalAuthorId: String) {
+        db.appQuery.removeAuthorFromRelates(originalAuthorId)
+        db.appQuery.setAsMainAuthor(originalAuthorId)
+        db.appQuery.clearModifierAuthor(originalAuthorId)
     }
 
 

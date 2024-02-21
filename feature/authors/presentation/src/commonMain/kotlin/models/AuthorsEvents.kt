@@ -8,9 +8,9 @@ sealed class AuthorsEvents : BaseEvent {
     class OnSearch(val searchingAuthorName: String, val exceptId: String) : AuthorsEvents()
     data object FinishSearch : AuthorsEvents()
 
-    class AddAuthorToRelates(val mainAuthor: AuthorVo, val selectedAuthorId: String) :
+    class AddAuthorToRelates(val originalAuthor: AuthorVo, val modifiedAuthorId: String) :
         AuthorsEvents()
 
-    class RemoveAuthorFromRelates(val mainAuthor: AuthorVo, val selectedAuthorId: String) :
+    class RemoveAuthorFromRelates(val originalAuthor: AuthorVo, val modifiedAuthorId: String) :
         AuthorsEvents()
 }

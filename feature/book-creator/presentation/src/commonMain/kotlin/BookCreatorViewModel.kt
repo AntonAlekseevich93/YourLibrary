@@ -84,13 +84,14 @@ class BookCreatorViewModel(
                 scope.launch {
                     launch {
                         val authorId = if (needCreateNewAuthor.value) {
-                            val newAuthor = createNewAuthor(authorName = bookItem.authorName)
+                            val newAuthor =
+                                createNewAuthor(authorName = bookItem.originalAuthorName)
                             interactor.createAuthor(newAuthor)
                             newAuthor.id
                         } else {
                             selectedAuthor.value!!.id
                         }
-                        interactor.createBook(bookItem.copy(authorId = authorId))
+                        interactor.createBook(bookItem.copy(originalAuthorId = authorId))
                     }
 
                     launch {
@@ -241,7 +242,7 @@ class BookCreatorViewModel(
                         bookItem.value = response.bookItem
                         updateBookInfo()
                         setParsingSuccess()
-                        splitAuthorsNameAndSearch(response.bookItem!!.authorName)
+                        splitAuthorsNameAndSearch(response.bookItem!!.originalAuthorName)
                     }
                 }
             }
@@ -302,8 +303,8 @@ class BookCreatorViewModel(
     ) {
         bookValues.apply {
             authorName.value = authorName.value.copy(
-                text = book.authorName,
-                selection = TextRange(book.authorName.length)
+                text = book.modifiedAuthorName ?: book.originalAuthorName,
+                selection = TextRange(book.originalAuthorName.length)
             )
             bookName.value = bookName.value.copy(
                 text = book.bookName,

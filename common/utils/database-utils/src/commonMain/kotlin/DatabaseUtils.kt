@@ -17,11 +17,13 @@ class DatabaseUtils {
 
         fun BooksTable.map() = BookItemLocalDto(
             id = id,
-            authorId = authorId,
+            originalAuthorId = originalAuthorId,
+            modifiedAuthorId = modifiedAuthorId,
             statusId = statusId,
             shelfId = shelfId,
             bookName = bookName,
-            authorName = authorName,
+            originalAuthorName = originalAuthorName,
+            modifiedAuthorName = modifiedAuthorName,
             description = description,
             coverUrl = coverUrl,
             coverUrlFromParsing = coverUrlFromParsing,

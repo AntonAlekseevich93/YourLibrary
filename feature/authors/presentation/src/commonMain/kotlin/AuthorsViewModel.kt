@@ -50,13 +50,13 @@ class AuthorsViewModel(
             )
 
             is AuthorsEvents.AddAuthorToRelates -> addAuthorToRelates(
-                event.mainAuthor,
-                event.selectedAuthorId
+                originalAuthor = event.originalAuthor,
+                modifiedAuthorId = event.modifiedAuthorId,
             )
 
             is AuthorsEvents.RemoveAuthorFromRelates -> removeAuthorFromRelates(
-                event.mainAuthor,
-                event.selectedAuthorId
+                originalAuthor = event.originalAuthor,
+                modifiedAuthorId = event.modifiedAuthorId
             )
         }
     }
@@ -77,19 +77,31 @@ class AuthorsViewModel(
         }
     }
 
-    private fun addAuthorToRelates(mainAuthor: AuthorVo, selectedAuthorId: String) {
+    private fun addAuthorToRelates(
+        originalAuthor: AuthorVo,
+        modifiedAuthorId: String,
+    ) {
         scope.launch {
-            interactor.addAuthorToRelates(mainAuthor.id, selectedAuthorId)
-            interactor.getMainAuthorById(mainAuthor.id)?.let { newAuthor ->
+            interactor.addAuthorToRelates(
+                originalAuthorId = originalAuthor.id,
+                originalAuthorName = originalAuthor.name,
+                modifiedAuthorId = modifiedAuthorId,
+            )
+            interactor.getMainAuthorById(originalAuthor.id)?.let { newAuthor ->
                 getAllAuthorsNotSeparatingSimilarWithExceptionId(newAuthor)
             }
         }
     }
 
-    private fun removeAuthorFromRelates(mainAuthor: AuthorVo, selectedAuthorId: String) {
+    private fun removeAuthorFromRelates(
+        originalAuthor: AuthorVo,
+        modifiedAuthorId: String
+    ) {
         scope.launch {
-            interactor.removeAuthorFromRelates(selectedAuthorId)
-            interactor.getMainAuthorById(mainAuthor.id)?.let { newAuthor ->
+            interactor.removeAuthorFromRelates(
+                originalAuthorId = originalAuthor.id
+            )
+            interactor.getMainAuthorById(modifiedAuthorId)?.let { newAuthor ->
                 getAllAuthorsNotSeparatingSimilarWithExceptionId(newAuthor)
             }
         }

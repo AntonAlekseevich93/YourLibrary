@@ -20,6 +20,12 @@ class BookValues(
     var isbn: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
 ) {
     private var selectedAuthorName: String = ""
+    private var originalAuthorName: String = ""
+    private var originalAuthorId: String = ""
+    private var modifierAuthorName: String = ""
+    var modifierAuthorId: String = ""
+        private set
+
     val relatedAuthorsNames: MutableState<String> = mutableStateOf("")
 
     fun clearAll() {
@@ -60,11 +66,14 @@ class BookValues(
     ): BookItemVo? {
         return BookItemVo(
             id = BookItemVo.generateId(),
-            authorId = "",
+            originalAuthorId = "",
+            modifiedAuthorId = null,
             statusId = selectedStatus.value.id,
             shelfId = null,//todo
             bookName = bookName.value.text.takeIf { it.isNotEmpty() } ?: return null,
-            authorName = authorName.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            originalAuthorName = authorName.value.text.takeIf { it.isNotEmpty() }
+                ?: return null,
+            modifiedAuthorName = null,
             description = description.value.text,
             coverUrl = "",
             coverUrlFromParsing = coverUrl.value.text,
@@ -88,11 +97,13 @@ class BookValues(
     ): BookItemVo? {
         return BookItemVo(
             id = bookId,
-            authorId = "",
+            originalAuthorId = originalAuthorId,
+            modifiedAuthorId = modifierAuthorId.ifEmpty { null },
             statusId = selectedStatus.value.id,
             shelfId = null, //todo
             bookName = bookName.value.text.takeIf { it.isNotEmpty() } ?: return null,
-            authorName = authorName.value.text.takeIf { it.isNotEmpty() } ?: return null,
+            originalAuthorName = originalAuthorName,
+            modifiedAuthorName = modifierAuthorName.ifEmpty { null },
             description = description.value.text,
             coverUrl = "",
             coverUrlFromParsing = coverUrl.value.text,
@@ -109,8 +120,10 @@ class BookValues(
         )
     }
 
+    fun getChangedAuthorName() = authorName.value.text.takeIf { it.isNotEmpty() }
+
     fun setBookItem(book: BookItemVo) {
-        authorName.value = TextFieldValue(book.authorName)
+        authorName.value = TextFieldValue(book.modifiedAuthorName ?: book.originalAuthorName)
         bookName.value = TextFieldValue(book.bookName)
         numberOfPages.value = TextFieldValue(book.numbersOfPages.toString())
         description.value = TextFieldValue(book.description)
@@ -122,6 +135,10 @@ class BookValues(
         coverUrl.value =
             TextFieldValue(book.coverUrl.takeIf { it.isNotEmpty() } ?: book.coverUrlFromParsing)
         isbn.value = TextFieldValue(book.isbn)
+        originalAuthorName = book.originalAuthorName
+        originalAuthorId = book.originalAuthorId
+        modifierAuthorName = book.modifiedAuthorName.orEmpty()
+        modifierAuthorId = book.modifiedAuthorId.orEmpty()
     }
 
     fun setSelectedAuthorName(authorName: String, relatedAuthorsNames: String) {

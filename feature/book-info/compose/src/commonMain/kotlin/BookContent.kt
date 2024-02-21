@@ -127,7 +127,7 @@ fun BaseEventScope<BaseEvent>.BookContent(
 
                     SelectionContainer {
                         Text(
-                            text = bookItem.authorName,
+                            text = bookItem.modifiedAuthorName ?: bookItem.originalAuthorName,
                             style = ApplicationTheme.typography.buttonRegular,
                             color = ApplicationTheme.colors.mainTextColor,
                             maxLines = 1,
