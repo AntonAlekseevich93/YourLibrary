@@ -130,6 +130,14 @@ updateBookStatusId:
 UPDATE BooksTable
 SET statusId=?, readingStatus=? WHERE id=?;
 
+updateOriginalAuthorNameForAllBooks:
+UPDATE BooksTable
+SET originalAuthorName=? WHERE originalAuthorId=?;
+
+updateModifiedAuthorNameForAllBooks:
+UPDATE BooksTable
+SET modifiedAuthorName=? WHERE modifiedAuthorId=?;
+
 getAllBooksByShelfId:
 SELECT * FROM BooksTable WHERE shelfId =:shelfId;
 
@@ -213,6 +221,10 @@ updateRelationToAuthor:
 UPDATE AuthorsTable
 SET `relatedToAuthorId`=? WHERE id=?;
 
+renameAuthor:
+UPDATE AuthorsTable
+SET name=?, uppercaseName=? WHERE id=?;
+
 -- dont forget set author how main
 removeAuthorFromRelates:
 UPDATE AuthorsTable
@@ -220,6 +232,9 @@ SET `relatedToAuthorId`="" WHERE id=?;
 
 getAllAuthorByName:
 SELECT * FROM AuthorsTable WHERE uppercaseName LIKE ?;
+
+getAuthorIfNameWithoutUppercaseExist:
+SELECT * FROM AuthorsTable WHERE name=?;
 
 getAllMainAuthors:
 SELECT * FROM AuthorsTable WHERE isMainAuthor =0;

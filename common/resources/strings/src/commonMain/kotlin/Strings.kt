@@ -107,4 +107,6 @@ object Strings {
     const val as_main_author_alert_dialog_description =
         "Это действие нельзя будет отменить.\nВсе книги созданные под автором %s будут переписанны на автора %s"
     const val as_main_author_alert_dialog_accept_button = "Сделать %s основным"
+    const val change_author_name = "Введите новое имя"
+    const val error_author_name_exist = "Автор с таким именем уже существует"
 }

@@ -8,4 +8,5 @@ class CommonAlertDialogConfig(
     val descriptionAnnotated: AnnotatedString? = null,
     val acceptButtonTitle: String,
     val dismissButtonTitle: String,
+    val showContent: Boolean = false,
 )

@@ -25,6 +25,7 @@ import androidx.compose.ui.window.DialogProperties
 fun CommonAlertDialog(
     config: CommonAlertDialogConfig,
     modifier: Modifier = Modifier,
+    content: @Composable (() -> Unit)? = null,
     acceptListener: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
@@ -52,7 +53,7 @@ fun CommonAlertDialog(
                         style = ApplicationTheme.typography.footnoteRegular,
                         color = ApplicationTheme.colors.mainTextColor,
                     )
-                } else {
+                } else if (config.description.isNotEmpty()) {
                     Text(
                         text = config.description,
                         modifier = Modifier.padding(start = 16.dp),
@@ -60,6 +61,11 @@ fun CommonAlertDialog(
                         color = ApplicationTheme.colors.mainTextColor,
                     )
                 }
+
+                if (config.showContent) {
+                    content?.invoke()
+                }
+
                 Spacer(Modifier.padding(bottom = 20.dp))
 
                 Box(

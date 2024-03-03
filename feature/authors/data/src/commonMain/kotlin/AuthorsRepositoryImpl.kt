@@ -83,4 +83,7 @@ class AuthorsRepositoryImpl(
         )
     }
 
+    override fun renameAuthor(authorId: String, newName: String): Boolean =
+        localAuthorsDataSource.renameAuthor(authorId = authorId, newName = newName)
+
 }

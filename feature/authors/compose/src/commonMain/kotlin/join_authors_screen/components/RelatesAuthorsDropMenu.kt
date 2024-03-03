@@ -66,6 +66,17 @@ fun BaseEventScope<BaseEvent>.RelatesAuthorsDropMenu(
             style = ApplicationTheme.typography.footnoteRegular,
             color = ApplicationTheme.colors.mainTextColor,
             modifier = Modifier.padding(bottom = 8.dp)
+                .clickable(interactionSource = interactionSource, indication = null) {
+                    showAlertDialog.invoke(
+                        CommonAlertDialogConfig(
+                            title = Strings.change_author_name,
+                            acceptButtonTitle = Strings.rename,
+                            dismissButtonTitle = Strings.cancel,
+                            showContent = true
+                        ),
+                        originalAuthor
+                    )
+                }
         )
         Text(
             text = Strings.delete,

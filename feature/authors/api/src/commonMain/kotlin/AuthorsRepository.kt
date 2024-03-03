@@ -21,4 +21,5 @@ interface AuthorsRepository {
     )
 
     suspend fun removeAuthorFromRelates(originalAuthorId: String)
+    fun renameAuthor(authorId: String, newName: String): Boolean
 }

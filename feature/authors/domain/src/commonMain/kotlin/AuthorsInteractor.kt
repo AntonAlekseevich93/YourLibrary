@@ -64,6 +64,9 @@ class AuthorsInteractor(
         )
     }
 
+    fun renameAuthor(authorId: String, newName: String): Boolean =
+        repository.renameAuthor(authorId = authorId, newName = newName)
+
     private fun getAuthorsByAlphabet(
         authors: List<AuthorVo>,
         exceptionAuthorId: String? = null

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import containters.CenterBoxContainer
 import join_authors_screen.components.JoinAllAuthors
@@ -32,6 +34,7 @@ import models.AuthorsEvents
 import models.JoiningAuthorsUiState
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import renaming_author.RenamingAuthorBlock
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -42,6 +45,8 @@ fun BaseEventScope<BaseEvent>.JoinAuthorsContent(
     var showCommonAlertDialog by remember { mutableStateOf(false) }
     var alertDialogConfig: CommonAlertDialogConfig? by remember { mutableStateOf(null) }
     var newAuthorAsMain by remember { mutableStateOf(AuthorVo.getEmptyAuthor()) }
+    val renamingAuthorTextField: MutableState<TextFieldValue> =
+        remember { mutableStateOf(TextFieldValue()) }
 
     Box {
         Column(modifier = Modifier.padding(top = 24.dp)) {
@@ -61,9 +66,13 @@ fun BaseEventScope<BaseEvent>.JoinAuthorsContent(
 
             JoinRelatesAuthorBlock(
                 mainAuthor = state.value.mainAuthor,
-                showAlertDialog = { config, newAuthorId ->
+                showAlertDialog = { config, newAuthor ->
                     alertDialogConfig = config
-                    newAuthorAsMain = newAuthorId
+                    newAuthorAsMain = newAuthor
+                    if (config.showContent) {
+                        renamingAuthorTextField.value =
+                            renamingAuthorTextField.value.copy(text = newAuthor.name)
+                    }
                     showCommonAlertDialog = true
                 }
             )
@@ -83,9 +92,9 @@ fun BaseEventScope<BaseEvent>.JoinAuthorsContent(
                 originalAuthor = state.value.mainAuthor,
                 authorsByAlphabet = state.value.allAuthorsExceptMainAndRelates,
                 searchingResult = searchingAuthorsResult,
-                showAlertDialog = { config, newAuthorId ->
+                showAlertDialog = { config, newAuthor ->
                     alertDialogConfig = config
-                    newAuthorAsMain = newAuthorId
+                    newAuthorAsMain = newAuthor
                     showCommonAlertDialog = true
                 }
             )
@@ -95,19 +104,36 @@ fun BaseEventScope<BaseEvent>.JoinAuthorsContent(
             CommonAlertDialog(
                 config = alertDialogConfig!!,
                 acceptListener = {
-                    this@JoinAuthorsContent.sendEvent(
-                        AuthorsEvents.SetAuthorAsMain(
-                            oldAuthorId = state.value.mainAuthor.value.id,
-                            newAuthorId = newAuthorAsMain.id,
-                            newAuthorName = newAuthorAsMain.name
+                    if (alertDialogConfig?.showContent == true) {
+                        this@JoinAuthorsContent.sendEvent(
+                            AuthorsEvents.RenameAuthor(
+                                authorId = newAuthorAsMain.id,
+                                newName = renamingAuthorTextField.value.text
+                            )
                         )
-                    )
+                    } else {
+                        this@JoinAuthorsContent.sendEvent(
+                            AuthorsEvents.SetAuthorAsMain(
+                                oldAuthorId = state.value.mainAuthor.value.id,
+                                newAuthorId = newAuthorAsMain.id,
+                                newAuthorName = newAuthorAsMain.name
+                            )
+                        )
+                    }
                     newAuthorAsMain = AuthorVo.getEmptyAuthor()
                     showCommonAlertDialog = false
                 },
                 onDismissRequest = {
                     newAuthorAsMain = AuthorVo.getEmptyAuthor()
                     showCommonAlertDialog = false
+                },
+                content = {
+                    RenamingAuthorBlock(
+                        textField = renamingAuthorTextField,
+                        onTextChanged = {
+                            renamingAuthorTextField.value = it
+                        }
+                    )
                 }
             )
         }

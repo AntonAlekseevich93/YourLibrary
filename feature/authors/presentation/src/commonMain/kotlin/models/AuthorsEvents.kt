@@ -1,6 +1,7 @@
 package models
 
 import BaseEvent
+import alert_dialog.CommonAlertDialogConfig
 import main_models.AuthorVo
 
 sealed class AuthorsEvents : BaseEvent {
@@ -19,4 +20,9 @@ sealed class AuthorsEvents : BaseEvent {
         val newAuthorId: String,
         val newAuthorName: String
     ) : AuthorsEvents()
+
+    class RenameAuthor(val authorId: String, val newName: String) : AuthorsEvents()
+    data object HideAlertDialog : AuthorsEvents()
+    data class ShowAlertDialog(val author: AuthorVo, val config: CommonAlertDialogConfig) :
+        AuthorsEvents()
 }

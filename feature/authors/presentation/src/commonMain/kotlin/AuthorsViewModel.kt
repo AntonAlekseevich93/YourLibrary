@@ -1,3 +1,4 @@
+import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.runtime.mutableStateOf
 import base.BaseMVIViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -7,6 +8,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_models.AuthorVo
+import models.AuthorAlertDialogState
 import models.AuthorsEvents
 import models.AuthorsUiState
 import models.JoiningAuthorsUiState
@@ -65,6 +67,21 @@ class AuthorsViewModel(
                     newAuthorId = event.newAuthorId,
                     newMainAuthorName = event.newAuthorName
                 )
+            }
+
+            is AuthorsEvents.RenameAuthor -> renameAuthor(
+                authorId = event.authorId,
+                newName = event.newName
+            )
+
+            is AuthorsEvents.HideAlertDialog -> updateUIState(
+                uiStateValue.copy(
+                    authorAlertDialogState = mutableStateOf(AuthorAlertDialogState())
+                )
+            )
+
+            is AuthorsEvents.ShowAlertDialog -> {
+                showAlertDialog(event.author, event.config)
             }
         }
     }
@@ -161,6 +178,31 @@ class AuthorsViewModel(
         interactor.getMainAuthorById(authorId)?.let { newAuthor ->
             getAllAuthorsNotSeparatingSimilarWithExceptionId(newAuthor)
         }
+    }
+
+    private fun renameAuthor(authorId: String, newName: String) {
+        scope.launch {
+            val isSuccess = interactor.renameAuthor(authorId = authorId, newName = newName)
+            if (isSuccess) {
+                getMainAuthorById(uiStateValue.joiningAuthorsUiState.value.mainAuthor.value.id)
+            } else {
+                uiStateValue.snackbarHostState.value.showSnackbar(Strings.error_author_name_exist)
+            }
+        }
+    }
+
+    private fun showAlertDialog(author: AuthorVo, config: CommonAlertDialogConfig) {
+        updateUIState(
+            uiStateValue.copy(
+                authorAlertDialogState = mutableStateOf(
+                    AuthorAlertDialogState(
+                        show = true,
+                        selectedAuthor = author,
+                        config = config
+                    )
+                )
+            )
+        )
     }
 
 }

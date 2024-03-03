@@ -79,5 +79,29 @@ class LocalAuthorsDataSource(
         db.appQuery.clearModifierAuthor(originalAuthorId)
     }
 
+    fun renameAuthor(authorId: String, newName: String): Boolean {
+        return if (checkIfAuthorNameExist(newName)) {
+            false
+        } else {
+            db.appQuery.renameAuthor(
+                name = newName,
+                uppercaseName = newName.uppercase(),
+                id = authorId
+            )
+            db.appQuery.updateOriginalAuthorNameForAllBooks(
+                originalAuthorName = newName,
+                originalAuthorId = authorId
+            )
+            db.appQuery.updateModifiedAuthorNameForAllBooks(
+                modifiedAuthorName = newName,
+                modifiedAuthorId = authorId
+            )
+            true
+        }
+    }
+
+    private fun checkIfAuthorNameExist(authorName: String): Boolean =
+        db.appQuery.getAuthorIfNameWithoutUppercaseExist(name = authorName).executeAsList()
+            .isNotEmpty()
 
 }

@@ -5,6 +5,7 @@ import BaseEvent
 import BaseEventScope
 import Drawable
 import Strings
+import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -86,7 +87,17 @@ fun BaseEventScope<BaseEvent>.AuthorItemMenu(authorVo: AuthorVo) {
             },
             modifier = Modifier.padding(end = 6.dp),
             onClick = {
-
+                this@AuthorItemMenu.sendEvent(
+                    AuthorsEvents.ShowAlertDialog(
+                        author = authorVo,
+                        config = CommonAlertDialogConfig(
+                            title = Strings.change_author_name,
+                            acceptButtonTitle = Strings.rename,
+                            dismissButtonTitle = Strings.cancel,
+                            showContent = true
+                        )
+                    )
+                )
             }
         )
 

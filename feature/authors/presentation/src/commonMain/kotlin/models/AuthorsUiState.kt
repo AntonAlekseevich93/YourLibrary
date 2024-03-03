@@ -1,5 +1,7 @@
 package models
 
+import alert_dialog.CommonAlertDialogConfig
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import base.BaseUIState
@@ -12,7 +14,11 @@ data class AuthorsUiState(
     ),
     val searchingAuthorResult: MutableState<LinkedHashMap<String, MutableList<AuthorVo>>> = mutableStateOf(
         LinkedHashMap()
-    )
+    ),
+    val authorAlertDialogState: MutableState<AuthorAlertDialogState> = mutableStateOf(
+        AuthorAlertDialogState()
+    ),
+    val snackbarHostState: MutableState<SnackbarHostState> = mutableStateOf(SnackbarHostState())
 ) : BaseUIState {
 
     fun clearJoiningAuthors() {
@@ -23,4 +29,14 @@ data class AuthorsUiState(
 data class JoiningAuthorsUiState(
     val mainAuthor: MutableState<AuthorVo> = mutableStateOf(AuthorVo.getEmptyAuthor()),
     val allAuthorsExceptMainAndRelates: LinkedHashMap<String, MutableList<AuthorVo>> = LinkedHashMap()
+)
+
+data class AuthorAlertDialogState(
+    val show: Boolean = false,
+    val selectedAuthor: AuthorVo = AuthorVo.getEmptyAuthor(),
+    val config: CommonAlertDialogConfig = CommonAlertDialogConfig(
+        title = "",
+        acceptButtonTitle = "",
+        dismissButtonTitle = ""
+    ),
 )
