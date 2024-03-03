@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -40,6 +42,8 @@ import androidx.compose.ui.window.WindowScope
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import build_variants.DesktopBuildVariants
+import build_variants.isDebug
 import buttons.ButtonThemeSwitcher
 import di.PlatformConfiguration
 import kotlinx.coroutines.launch
@@ -54,6 +58,7 @@ import java.awt.FileDialog
 import java.awt.Frame
 
 fun main() = application {
+    val buildVariant = DesktopBuildVariants.DEBUG
     val state = rememberWindowState(
         size = DpSize(1300.dp, 900.dp),
         position = WindowPosition(Alignment.Center)
@@ -63,10 +68,14 @@ fun main() = application {
 
     for (window in applicationState.windows) {
         key(window) {
-            MainWindow(state, restart = {
-                applicationState.exit()
-                applicationState.openNewWindow()
-            })
+            MainWindow(
+                state = state,
+                restart = {
+                    applicationState.exit()
+                    applicationState.openNewWindow()
+                },
+                buildVariant = buildVariant,
+            )
         }
     }
 }
@@ -149,6 +158,14 @@ fun createNavigationHandler(
             }
         }
 
+        override fun navigateToSettingsScreen() {
+            if (currentRoute.value != Routes.settings_screen_route) {
+                navigator.value?.navigate(
+                    route = Routes.settings_screen_route
+                )
+            }
+        }
+
 
     }
     return handler
@@ -168,6 +185,7 @@ fun createTooltipHandler(
 @Composable
 private fun ApplicationScope.MainWindow(
     state: WindowState,
+    buildVariant: DesktopBuildVariants,
     restart: () -> Unit,
 ) {
     val navigator: MutableState<Navigator?> = mutableStateOf(null)
@@ -181,7 +199,7 @@ private fun ApplicationScope.MainWindow(
     }
 
     PlatformSDK.init(
-        configuration = PlatformConfiguration(),
+        configuration = PlatformConfiguration(buildVariant),
         platformInfo = PlatformInfo(),
         platform = Platform.DESKTOP,
         navigationHandler = createNavigationHandler(
@@ -236,6 +254,7 @@ private fun ApplicationScope.MainWindow(
             Card(shape = RoundedCornerShape(8.dp)) {
                 Column() {
                     AppWindowTitleBar(
+                        buildVariant = buildVariant,
                         closeListener = {
                             windowCloseListener.invoke()
                         },
@@ -361,6 +380,7 @@ private fun FileDialog(
 
 @Composable
 private fun WindowScope.AppWindowTitleBar(
+    buildVariant: DesktopBuildVariants,
     closeListener: () -> Unit,
     isMaximizedListener: () -> Unit,
     fullscreenListener: () -> Unit,
@@ -397,11 +417,22 @@ private fun WindowScope.AppWindowTitleBar(
                 showIconCallback = { showIconState.value = it }
             )
         }
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-            ButtonThemeSwitcher(
-                modifier = Modifier.size(60.dp),
-                isDarkMode = isDarkMode,
-            )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Spacer(Modifier.padding(start = 64.dp))
+            if (buildVariant.isDebug()) {
+                Text(
+                    text = "DEBUG",
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Box(modifier = Modifier, contentAlignment = Alignment.CenterEnd) {
+                ButtonThemeSwitcher(
+                    modifier = Modifier.size(60.dp),
+                    isDarkMode = isDarkMode,
+                )
+            }
         }
     }
 }

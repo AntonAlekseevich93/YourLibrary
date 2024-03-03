@@ -154,6 +154,14 @@ fun createNavigationHandler(
             }
         }
 
+        override fun navigateToSettingsScreen() {
+            if (currentRoute.value != Routes.settings_screen_route) {
+                navigator.value?.navigate(
+                    route = Routes.settings_screen_route
+                )
+            }
+        }
+
     }
     return handler
 }

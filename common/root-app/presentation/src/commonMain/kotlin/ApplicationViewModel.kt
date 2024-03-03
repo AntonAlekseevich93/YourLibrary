@@ -71,6 +71,7 @@ class ApplicationViewModel(
             is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator()
             is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault()
             is LeftMenuBarEvents.OnAuthorsClickEvent -> navigationHandler.navigateToAuthorsScreen()
+            is LeftMenuBarEvents.OnSettingsClickEvent -> navigationHandler.navigateToSettingsScreen()
             is DrawerEvents.OpenBook -> openBook(
                 event.painterSelectedBookInCache,
                 event.bookId

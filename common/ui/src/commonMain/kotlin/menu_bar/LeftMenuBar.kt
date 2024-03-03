@@ -152,10 +152,11 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
                         position = TooltipPosition.RIGHT
                     }))
                 },
-                modifier = Modifier.padding(bottom = 10.dp)
-            ) {
-                println("открыли меню")
-            }
+                modifier = Modifier.padding(bottom = 10.dp),
+                onClick = {
+                    this@LeftMenuBar.sendEvent(LeftMenuBarEvents.OnSettingsClickEvent)
+                }
+            )
         }
 
         Divider(

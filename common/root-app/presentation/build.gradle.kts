@@ -22,5 +22,5 @@ kotlin {
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.root-app.presentation"
+    namespace = "ru.yourlibrary.yourlibrary.root_app.presentation"
 }

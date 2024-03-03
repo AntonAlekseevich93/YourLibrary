@@ -173,6 +173,10 @@ fun Application(
                             )
                         }
 
+                        dialog(route = Routes.settings_screen_route) {
+                            SettingsScreen(platform)
+                        }
+
                     }
                 }
             }

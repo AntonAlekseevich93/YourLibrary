@@ -9,4 +9,5 @@ interface NavigationHandler {
     fun navigateToBookInfo()
     fun navigateToAuthorsScreen()
     fun navigateToJoinAuthorsScreen()
+    fun navigateToSettingsScreen()
 }

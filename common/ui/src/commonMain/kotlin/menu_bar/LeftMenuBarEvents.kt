@@ -7,4 +7,5 @@ sealed class LeftMenuBarEvents : BaseEvent {
     data object OnCreateBookClickEvent : LeftMenuBarEvents()
     data object OnSelectAnotherVaultEvent : LeftMenuBarEvents()
     data object OnAuthorsClickEvent : LeftMenuBarEvents()
+    data object OnSettingsClickEvent : LeftMenuBarEvents()
 }

@@ -20,6 +20,7 @@ kotlin {
                 implementation(project(":common:resources:strings"))
                 implementation(project(":common:ui"))
                 implementation(project(":common:scopes"))
+                implementation(project(":common:arch"))
                 implementation(project(":common:di:compose"))
                 implementation(project(":common:file-manager"))
                 implementation(project(":feature:main-screen:data")) //используется из-за модуля
@@ -42,5 +43,5 @@ kotlin {
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.root-app.api"
+    namespace = "ru.yourlibrary.yourlibrary.root_app.api"
 }

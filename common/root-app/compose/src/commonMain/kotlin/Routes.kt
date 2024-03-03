@@ -5,4 +5,5 @@ object Routes {
     const val book_creator_route = "/book_creator_screen"
     const val authors_screen_route = "/authors_screen"
     const val join_authors_screen_route = "/join_authors_screen"
+    const val settings_screen_route = "/settings_screen"
 }

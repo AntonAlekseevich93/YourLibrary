@@ -18,7 +18,7 @@ kotlin {
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.root-app.data"
+    namespace = "ru.yourlibrary.yourlibrary.root_app.data"
 }
 dependencies {
     implementation(project(mapOf("path" to ":common:ui")))

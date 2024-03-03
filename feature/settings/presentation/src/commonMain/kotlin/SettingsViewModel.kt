@@ -1,24 +1,25 @@
+import base.BaseMVIViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import models.SettingsDataProvider
+import models.SettingsEvents
 import models.SettingsUiState
 import platform.Platform
 
 class SettingsViewModel(
     private val platform: Platform,
-    private val repository: SettingsRepository
-) : SettingsDataProvider {
+    private val repository: SettingsRepository,
+    private val navigationHandler: NavigationHandler,
+) : BaseMVIViewModel<SettingsUiState, BaseEvent>(SettingsUiState(platform)), SettingsDataProvider {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
-    private val _uiState = MutableStateFlow(
-        SettingsUiState(
-            platform = platform,
-        )
-    )
-    val uiState = _uiState.asStateFlow()
+
+    override fun sendEvent(event: BaseEvent) {
+        when (event) {
+            is SettingsEvents.CloseSettingsScreen -> navigationHandler.goBack()
+        }
+    }
 
     override fun createAppSettingsFile(
         path: String,

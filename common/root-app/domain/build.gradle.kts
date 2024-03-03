@@ -16,5 +16,5 @@ kotlin {
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.root-app.domain"
+    namespace = "ru.yourlibrary.yourlibrary.root_app.domain"
 }
