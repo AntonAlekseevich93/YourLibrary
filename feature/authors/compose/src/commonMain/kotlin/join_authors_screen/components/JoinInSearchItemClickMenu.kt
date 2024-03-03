@@ -16,7 +16,8 @@ import tags.CustomTag
 @Composable
 fun BaseEventScope<BaseEvent>.JoinInSearchItemClickMenu(
     originalAuthor: State<AuthorVo>,
-    modifiedAuthor: AuthorVo
+    modifiedAuthor: AuthorVo,
+    onClickAsMain: () -> Unit,
 ) {
     Row(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp, bottom = 12.dp)) {
         CustomTag(
@@ -33,7 +34,7 @@ fun BaseEventScope<BaseEvent>.JoinInSearchItemClickMenu(
         )
         CustomTag(
             text = Strings.as_main,
-            onClick = {}
+            onClick = onClickAsMain
         )
     }
 

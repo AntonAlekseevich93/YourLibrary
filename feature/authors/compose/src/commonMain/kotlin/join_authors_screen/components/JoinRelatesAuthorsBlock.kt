@@ -4,6 +4,7 @@ import ApplicationTheme
 import BaseEvent
 import BaseEventScope
 import Strings
+import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +29,10 @@ import join_authors_screen.elements.AuthorButtonContainer
 import main_models.AuthorVo
 
 @Composable
-fun BaseEventScope<BaseEvent>.JoinRelatesAuthorBlock(mainAuthor: State<AuthorVo>) {
+fun BaseEventScope<BaseEvent>.JoinRelatesAuthorBlock(
+    mainAuthor: State<AuthorVo>,
+    showAlertDialog: (config: CommonAlertDialogConfig, newAuthorVo: AuthorVo) -> Unit
+) {
     Card(
         colors = CardDefaults.cardColors(containerColor = ApplicationTheme.colors.authorsContainerColor),
         shape = RoundedCornerShape(8.dp),
@@ -64,6 +68,10 @@ fun BaseEventScope<BaseEvent>.JoinRelatesAuthorBlock(mainAuthor: State<AuthorVo>
                             RelatesAuthorsDropMenu(
                                 modifiedAuthor = mainAuthor.value,
                                 originalAuthor = author,
+                                showAlertDialog = { config, newAuthor ->
+                                    showDropdown = false
+                                    showAlertDialog.invoke(config, newAuthor)
+                                },
                                 onClose = {
                                     showDropdown = false
                                 }

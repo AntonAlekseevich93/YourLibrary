@@ -5,6 +5,7 @@ import BaseEvent
 import BaseEventScope
 import Drawable
 import Strings
+import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,7 +43,8 @@ import org.jetbrains.compose.resources.painterResource
 fun BaseEventScope<BaseEvent>.JoinAllAuthors(
     originalAuthor: State<AuthorVo>,
     authorsByAlphabet: LinkedHashMap<String, MutableList<AuthorVo>>,
-    searchingResult: State<LinkedHashMap<String, MutableList<AuthorVo>>>
+    searchingResult: State<LinkedHashMap<String, MutableList<AuthorVo>>>,
+    showAlertDialog: (config: CommonAlertDialogConfig, newAuthorVo: AuthorVo) -> Unit,
 ) {
     var searchText by remember { mutableStateOf("") }
     val hideAuthorsMenu = remember { mutableStateOf("") }
@@ -129,6 +131,22 @@ fun BaseEventScope<BaseEvent>.JoinAllAuthors(
                                     JoinInSearchItemClickMenu(
                                         originalAuthor = originalAuthor,
                                         modifiedAuthor = modifiedAuthor,
+                                        onClickAsMain = {
+                                            showAlertDialog.invoke(
+                                                CommonAlertDialogConfig(
+                                                    title = Strings.as_main_author_alert_dialog_title,
+                                                    description = Strings.as_main_author_alert_dialog_description.format(
+                                                        originalAuthor.value.name,
+                                                        modifiedAuthor.name
+                                                    ),
+                                                    acceptButtonTitle = Strings.as_main_author_alert_dialog_accept_button.format(
+                                                        modifiedAuthor.name
+                                                    ),
+                                                    dismissButtonTitle = Strings.cancel
+                                                ),
+                                                modifiedAuthor
+                                            )
+                                        }
                                     )
                                 }
                             )

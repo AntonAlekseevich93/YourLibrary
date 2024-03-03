@@ -3,7 +3,12 @@ import main_models.AuthorVo
 
 interface AuthorsRepository {
     suspend fun createAuthor(author: AuthorVo)
-    suspend fun changeMainAuthor(oldMainAuthorId: String, newMainAuthorId: String)
+    suspend fun changeMainAuthor(
+        oldMainAuthorId: String,
+        newMainAuthorId: String,
+        newMainAuthorName: String
+    )
+
     suspend fun getAllRelatedAuthors(mainAuthorId: String): List<AuthorVo>
     fun getAuthorByIdWithoutRelates(id: String): AuthorVo?
     suspend fun getAuthorWithRelatesWithoutBooks(authorId: String): AuthorVo?

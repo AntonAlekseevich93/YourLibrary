@@ -150,6 +150,10 @@ clearModifierAuthor:
 UPDATE BooksTable
 SET `modifiedAuthorId`=NULL, modifiedAuthorName=NULL WHERE originalAuthorId=?;
 
+changeMainAuthorForAllBooks:
+UPDATE BooksTable
+SET originalAuthorId=?, originalAuthorName=? WHERE originalAuthorId=?;
+
 -- ------------------------------------------------------------------AUTHORS TABLE:
 
 CREATE TABLE IF NOT EXISTS AuthorsTable (
@@ -202,7 +206,7 @@ SET `isMainAuthor`=1 WHERE id=?;
 
 updateRelatedToAuthorId:
 UPDATE AuthorsTable
-SET `relatedToAuthorId`=? WHERE relatedToAuthorId=?;
+SET `relatedToAuthorId`=? WHERE id=?;
 
 -- dont forget set author how not main
 updateRelationToAuthor:

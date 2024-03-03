@@ -4,7 +4,9 @@ import ApplicationTheme
 import BaseEvent
 import BaseEventScope
 import Strings
+import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -19,7 +21,9 @@ fun BaseEventScope<BaseEvent>.RelatesAuthorsDropMenu(
     modifiedAuthor: AuthorVo,
     originalAuthor: AuthorVo,
     onClose: () -> Unit,
+    showAlertDialog: (config: CommonAlertDialogConfig, newAuthorVo: AuthorVo) -> Unit,
 ) {
+    val interactionSource = MutableInteractionSource()
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
         Text(
             text = Strings.remove_from_relates,
@@ -40,6 +44,22 @@ fun BaseEventScope<BaseEvent>.RelatesAuthorsDropMenu(
             style = ApplicationTheme.typography.footnoteRegular,
             color = ApplicationTheme.colors.mainTextColor,
             modifier = Modifier.padding(bottom = 8.dp)
+                .clickable(interactionSource = interactionSource, indication = null) {
+                    showAlertDialog.invoke(
+                        CommonAlertDialogConfig(
+                            title = Strings.as_main_author_alert_dialog_title,
+                            description = Strings.as_main_author_alert_dialog_description.format(
+                                modifiedAuthor.name,
+                                originalAuthor.name
+                            ),
+                            acceptButtonTitle = Strings.as_main_author_alert_dialog_accept_button.format(
+                                originalAuthor.name
+                            ),
+                            dismissButtonTitle = Strings.cancel
+                        ),
+                        originalAuthor
+                    )
+                }
         )
         Text(
             text = Strings.rename,

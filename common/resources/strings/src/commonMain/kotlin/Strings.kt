@@ -65,7 +65,8 @@ object Strings {
     const val or = "или"
     const val search = "Поиск"
     const val select_path_for_save_data_title = "Создать новую библиотеку"
-    const val select_path_for_save_data_description = "Создайте новую библиотеку где будут храниться ваши данные"
+    const val select_path_for_save_data_description =
+        "Создайте новую библиотеку где будут храниться ваши данные"
     const val create = "Создать"
     const val creating_vault_error = "Укажите название библиотеки и выберите расположение"
     const val version = "Версия"
@@ -86,7 +87,8 @@ object Strings {
     const val authors = "Авторы"
     const val shelves = "Полки"
     const val quotes = "Цитаты"
-    const val error_author_can_exist = "Возможно такой автор уже есть.\nВыберите его из списка, либо создайте нового"
+    const val error_author_can_exist =
+        "Возможно такой автор уже есть.\nВыберите его из списка, либо создайте нового"
     const val create_new_author = "Создать нового автора"
     const val link_to_author = "Привязать автора к существующему"
     const val rename = "Переименовать"
@@ -101,4 +103,8 @@ object Strings {
     const val as_main_author = "Сделать основным автором"
     const val main_author = "Основной автор"
     const val remove_from_relates = "Убрать из связанных"
+    const val as_main_author_alert_dialog_title = "Внимание!"
+    const val as_main_author_alert_dialog_description =
+        "Это действие нельзя будет отменить.\nВсе книги созданные под автором %s будут переписанны на автора %s"
+    const val as_main_author_alert_dialog_accept_button = "Сделать %s основным"
 }

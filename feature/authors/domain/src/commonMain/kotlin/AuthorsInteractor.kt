@@ -52,6 +52,18 @@ class AuthorsInteractor(
         repository.removeAuthorFromRelates(originalAuthorId = originalAuthorId)
     }
 
+    suspend fun changeMainAuthor(
+        oldAuthorId: String,
+        newAuthorId: String,
+        newMainAuthorName: String
+    ) {
+        repository.changeMainAuthor(
+            oldMainAuthorId = oldAuthorId,
+            newMainAuthorId = newAuthorId,
+            newMainAuthorName = newMainAuthorName
+        )
+    }
+
     private fun getAuthorsByAlphabet(
         authors: List<AuthorVo>,
         exceptionAuthorId: String? = null

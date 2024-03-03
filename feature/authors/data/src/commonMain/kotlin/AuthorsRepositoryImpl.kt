@@ -15,8 +15,17 @@ class AuthorsRepositoryImpl(
         localAuthorsDataSource.createAuthor(author.toDto())
     }
 
-    override suspend fun changeMainAuthor(oldMainAuthorId: String, newMainAuthorId: String) {
+    override suspend fun changeMainAuthor(
+        oldMainAuthorId: String,
+        newMainAuthorId: String,
+        newMainAuthorName: String
+    ) {
         localAuthorsDataSource.changeMainAuthor(oldMainAuthorId, newMainAuthorId)
+        localAuthorsDataSource.changeMainAuthorForAllBooks(
+            oldMainAuthorId,
+            newMainAuthorId,
+            newMainAuthorName
+        )
     }
 
     override suspend fun getAllRelatedAuthors(mainAuthorId: String): List<AuthorVo> =

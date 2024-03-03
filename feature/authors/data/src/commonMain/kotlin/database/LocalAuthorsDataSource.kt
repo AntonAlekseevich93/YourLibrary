@@ -33,7 +33,16 @@ class LocalAuthorsDataSource(
     fun changeMainAuthor(oldMainAuthorId: String, newMainAuthorId: String) {
         db.appQuery.disableMainAuthor(oldMainAuthorId)
         db.appQuery.setAsMainAuthor(newMainAuthorId)
+        db.appQuery.removeAuthorFromRelates(newMainAuthorId)
         db.appQuery.updateRelatedToAuthorId(newMainAuthorId, oldMainAuthorId)
+    }
+
+    fun changeMainAuthorForAllBooks(
+        oldMainAuthorId: String,
+        newMainAuthorId: String,
+        newMainAuthorName: String
+    ) {
+        db.appQuery.changeMainAuthorForAllBooks(newMainAuthorId, newMainAuthorName, oldMainAuthorId)
     }
 
     fun getAllRelatedAuthors(mainAuthorId: String): List<AuthorLocalDto> =

@@ -13,4 +13,10 @@ sealed class AuthorsEvents : BaseEvent {
 
     class RemoveAuthorFromRelates(val originalAuthor: AuthorVo, val modifiedAuthorId: String) :
         AuthorsEvents()
+
+    class SetAuthorAsMain(
+        val oldAuthorId: String,
+        val newAuthorId: String,
+        val newAuthorName: String
+    ) : AuthorsEvents()
 }

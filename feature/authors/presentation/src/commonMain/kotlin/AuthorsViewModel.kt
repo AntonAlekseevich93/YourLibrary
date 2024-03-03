@@ -58,6 +58,14 @@ class AuthorsViewModel(
                 originalAuthor = event.originalAuthor,
                 modifiedAuthorId = event.modifiedAuthorId
             )
+
+            is AuthorsEvents.SetAuthorAsMain -> {
+                changeMainAuthor(
+                    oldAuthorId = event.oldAuthorId,
+                    newAuthorId = event.newAuthorId,
+                    newMainAuthorName = event.newAuthorName
+                )
+            }
         }
     }
 
@@ -87,9 +95,7 @@ class AuthorsViewModel(
                 originalAuthorName = originalAuthor.name,
                 modifiedAuthorId = modifiedAuthorId,
             )
-            interactor.getMainAuthorById(originalAuthor.id)?.let { newAuthor ->
-                getAllAuthorsNotSeparatingSimilarWithExceptionId(newAuthor)
-            }
+            getMainAuthorById(originalAuthor.id)
         }
     }
 
@@ -101,9 +107,7 @@ class AuthorsViewModel(
             interactor.removeAuthorFromRelates(
                 originalAuthorId = originalAuthor.id
             )
-            interactor.getMainAuthorById(modifiedAuthorId)?.let { newAuthor ->
-                getAllAuthorsNotSeparatingSimilarWithExceptionId(newAuthor)
-            }
+            getMainAuthorById(modifiedAuthorId)
         }
     }
 
@@ -135,6 +139,27 @@ class AuthorsViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun changeMainAuthor(
+        oldAuthorId: String,
+        newAuthorId: String,
+        newMainAuthorName: String
+    ) {
+        scope.launch {
+            interactor.changeMainAuthor(
+                oldAuthorId = oldAuthorId,
+                newAuthorId = newAuthorId,
+                newMainAuthorName = newMainAuthorName
+            )
+            getMainAuthorById(newAuthorId)
+        }
+    }
+
+    private suspend fun getMainAuthorById(authorId: String) {
+        interactor.getMainAuthorById(authorId)?.let { newAuthor ->
+            getAllAuthorsNotSeparatingSimilarWithExceptionId(newAuthor)
         }
     }
 
