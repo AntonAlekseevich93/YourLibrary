@@ -46,12 +46,18 @@ class ApplicationUiState(
 
     fun addBookToBooksInfo(book: BookItemVo) {
         booksInfoHeaderList.forEach { header ->
+            val elementNonExist =
+                ((booksInfoUiState[header]?.count { it.id == book.id } ?: 0) == 0)
             if (!header.isShelf) {
                 if (book.statusId == header.id) {
-                    booksInfoUiState[header]?.add(book)
+                    if (elementNonExist) {
+                        booksInfoUiState[header]?.add(book)
+                    }
                 }
             } else if (book.shelfId == header.id) {
-                booksInfoUiState[header]?.add(book)
+                if (elementNonExist) {
+                    booksInfoUiState[header]?.add(book)
+                }
             }
         }
     }
