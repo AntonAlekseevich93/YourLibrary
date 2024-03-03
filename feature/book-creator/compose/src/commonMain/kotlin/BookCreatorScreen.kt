@@ -80,7 +80,7 @@ fun BookCreatorScreen(
     val targetVerticalPadding =
         if (fullScreenBookCreator.value || platform.isMobile()) 0.dp else 65.dp
     val targetHorizontalPadding =
-        if (fullScreenBookCreator.value || platform == Platform.MOBILE) 0.dp else if (showRightDrawer.value) 100.dp else 220.dp
+        if (fullScreenBookCreator.value || platform.isMobile()) 0.dp else if (showRightDrawer.value) 100.dp else 220.dp
     val statusBookTextFieldValue =
         remember { mutableStateOf(TextFieldValue(text = uiState.defaultStatus.value.nameValue)) }
     val dataPickerState = rememberDatePickerState()

@@ -1,9 +1,9 @@
 package platform
 
-enum class Platform {
-    DESKTOP,
-    MOBILE
+sealed class Platform(val isDebug: Boolean) {
+    class DESKTOP(isDebug: Boolean) : Platform(isDebug)
+    class MOBILE : Platform(false)
 }
 
-fun Platform.isDesktop(): Boolean = this == Platform.DESKTOP
-fun Platform.isMobile(): Boolean = this == Platform.MOBILE
+fun Platform.isDesktop(): Boolean = this is Platform.DESKTOP
+fun Platform.isMobile(): Boolean = this is Platform.MOBILE

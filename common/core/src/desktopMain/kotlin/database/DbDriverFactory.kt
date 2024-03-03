@@ -11,7 +11,6 @@ import sqldelight.com.yourlibrary.database.AppDatabase
 import java.io.File
 import java.util.Locale
 
-private const val DEBUG_PREFIX = "debug_"
 
 actual class DbDriverFactory actual constructor(private val platformConfiguration: PlatformConfiguration) {
     actual fun createDriver(path: String?, isPathDb: Boolean, dbName: String?): SqlDriver {

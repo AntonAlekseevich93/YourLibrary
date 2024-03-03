@@ -18,10 +18,11 @@ import platform.isMobile
 import sqldelight.com.yourlibrary.database.AppDatabase
 import java.io.File
 
+const val DEBUG_PREFIX = "debug_"
 
 class SqlDelightDataSource(
     private val platform: Platform,
-    private val dbDriverFactory: DbDriverFactory
+    private val dbDriverFactory: DbDriverFactory,
 ) {
     private var pathDriver: SqlDriver = dbDriverFactory.createDriver(null, true, null)
     private var pathDatabase: AppDatabase = AppDatabase(pathDriver)
@@ -83,10 +84,19 @@ class SqlDelightDataSource(
     fun createDbPath(path: String, libraryName: String): Int? {
         val lastId = pathDbQuery.selectAllFilesInfo().executeAsList().maxOfOrNull { it.id }
         val resultId = if (lastId != null) lastId + 1 else 1
-        val dbName =
-            if (resultId.toInt() == 1) DEFAULT_DB_NAME_PREFIX + DEFAULT_DB_NAME_POSTFIX else {
+        val dbName = if (platform.isDebug) {
+            if (resultId.toInt() == 1) {
+                DEBUG_PREFIX + DEFAULT_DB_NAME_PREFIX + DEFAULT_DB_NAME_POSTFIX
+            } else {
+                "$DEBUG_PREFIX${DEFAULT_DB_NAME_PREFIX}_${resultId.toInt()}$DEFAULT_DB_NAME_POSTFIX"
+            }
+        } else {
+            if (resultId.toInt() == 1) {
+                DEFAULT_DB_NAME_PREFIX + DEFAULT_DB_NAME_POSTFIX
+            } else {
                 "${DEFAULT_DB_NAME_PREFIX}_${resultId.toInt()}$DEFAULT_DB_NAME_POSTFIX"
             }
+        }
         try {
             pathDbQuery.insertFileInfo(
                 id = resultId,

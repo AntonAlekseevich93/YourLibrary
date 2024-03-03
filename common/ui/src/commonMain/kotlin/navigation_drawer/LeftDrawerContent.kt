@@ -39,7 +39,7 @@ fun BaseEventScope<BaseEvent>.PlatformLeftDrawerContent(
     content: @Composable () -> Unit,
 ) {
     when (platform) {
-        Platform.DESKTOP -> {
+        is Platform.DESKTOP -> {
             DismissibleDrawerSheet(
                 drawerContainerColor = ApplicationTheme.colors.mainDrawerBackground,
             ) {

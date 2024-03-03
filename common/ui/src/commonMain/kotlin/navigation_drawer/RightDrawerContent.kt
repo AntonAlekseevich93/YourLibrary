@@ -38,7 +38,7 @@ fun BaseEventScope<BaseEvent>.PlatformRightDrawerContent(
     expandOrCollapseListener: () -> Unit,
 ) {
     when (platform) {
-        Platform.DESKTOP -> {
+        is Platform.DESKTOP -> {
             DismissibleDrawerSheet(
                 drawerContainerColor = ApplicationTheme.colors.mainDrawerBackground,
             ) {

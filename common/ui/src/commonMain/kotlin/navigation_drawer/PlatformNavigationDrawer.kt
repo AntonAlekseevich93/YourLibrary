@@ -30,7 +30,7 @@ fun PlatformNavigationDrawer(
     content: @Composable () -> Unit,
 ) {
     when (platform) {
-        Platform.DESKTOP -> {
+        is Platform.DESKTOP -> {
             CustomDrawer(
                 leftDrawerContent = leftDrawerContent,
                 rightDrawerContent = rightDrawerContent,

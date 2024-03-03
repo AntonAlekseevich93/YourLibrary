@@ -201,7 +201,7 @@ private fun ApplicationScope.MainWindow(
     PlatformSDK.init(
         configuration = PlatformConfiguration(buildVariant),
         platformInfo = PlatformInfo(),
-        platform = Platform.DESKTOP,
+        platform = Platform.DESKTOP(isDebug = buildVariant.isDebug()),
         navigationHandler = createNavigationHandler(
             navigator,
             desktopTooltip,
@@ -234,7 +234,7 @@ private fun ApplicationScope.MainWindow(
                 PreComposeApp {
                     navigator.value = rememberNavigator()
                     Application(
-                        platform = Platform.DESKTOP,
+                        platform = Platform.DESKTOP(isDebug = buildVariant.isDebug()),
                         navigator = navigator.value ?: rememberNavigator(),
                         desktopTooltip = desktopTooltip,
                     )
@@ -268,7 +268,7 @@ private fun ApplicationScope.MainWindow(
                     PreComposeApp {
                         navigator.value = rememberNavigator()
                         Application(
-                            platform = Platform.DESKTOP,
+                            platform = Platform.DESKTOP(isDebug = buildVariant.isDebug()),
                             navigator = navigator.value ?: rememberNavigator(),
                             desktopTooltip = desktopTooltip
                         )

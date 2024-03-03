@@ -47,6 +47,7 @@ import navigation_drawer.PlatformNavigationDrawer
 import navigation_drawer.PlatformRightDrawerContent
 import navigation_drawer.SelectedRightDrawerItem
 import platform.Platform
+import platform.isMobile
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +71,7 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
     val targetVerticalPadding =
         if (fullScreenBookInfo.value || showLeftDrawer.value) 0.dp else 65.dp
     val targetHorizontalPadding =
-        if (fullScreenBookInfo.value || platform == Platform.MOBILE || showLeftDrawer.value) 0.dp else if (showRightDrawer.value) 100.dp else 220.dp
+        if (fullScreenBookInfo.value || platform.isMobile() || showLeftDrawer.value) 0.dp else if (showRightDrawer.value) 100.dp else 220.dp
     val animatedVerticalPadding by animateDpAsState(
         targetValue = targetVerticalPadding,
         animationSpec = tween(

@@ -37,7 +37,7 @@ fun BaseEventScope<BaseEvent>.FullBookBar(
     onFullscreen: () -> Unit,
 ) {
     when (platform) {
-        Platform.MOBILE -> {
+        is Platform.MOBILE -> {
             BookBar(
                 isFullscreen = isFullscreen,
                 showLeftDrawer = showLeftDrawer,
@@ -48,7 +48,7 @@ fun BaseEventScope<BaseEvent>.FullBookBar(
             )
         }
 
-        Platform.DESKTOP -> {
+        is Platform.DESKTOP -> {
             BookBar(
                 isFullscreen = isFullscreen,
                 showLeftDrawer = showLeftDrawer,

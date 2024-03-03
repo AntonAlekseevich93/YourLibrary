@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import di.Inject
-import platform.Platform
+import platform.isMobile
 import toolbar.CommonToolbar
 import toolbar.ToolbarEvents
 
@@ -41,9 +41,9 @@ fun JoinAuthorsScreen(
     val scrollableState = rememberScrollState()
 
     val targetVerticalPadding =
-        if (platform == Platform.MOBILE) 0.dp else 65.dp
+        if (platform.isMobile()) 0.dp else 65.dp
     val targetHorizontalPadding =
-        if (platform == Platform.MOBILE) 0.dp else if (showLeftDrawer.value) 100.dp else 220.dp
+        if (platform.isMobile()) 0.dp else if (showLeftDrawer.value) 100.dp else 220.dp
 
     val animatedVerticalPadding by animateDpAsState(
         targetValue = targetVerticalPadding,
