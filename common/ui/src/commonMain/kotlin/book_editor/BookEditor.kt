@@ -356,7 +356,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     },
                     disableSingleLineIfFocused = true,
                     textFieldValue = bookValues.description,
-                    maxLines = 40
+                    maxLines = 200,
                 )
 
                 TextFieldWithTitleAndSuggestion(

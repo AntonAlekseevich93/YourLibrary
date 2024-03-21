@@ -234,7 +234,6 @@ class BookCreatorViewModel(
             _uiState.value.apply {
                 startParsing()
                 val response = interactor.parseBookUrl(url)
-                delay(3000)
                 if (this@launch.isActive) {
                     if (response.bookError != null) {
                         setParsingError()
