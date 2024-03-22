@@ -72,7 +72,7 @@ class ApplicationViewModel(
             is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault()
             is LeftMenuBarEvents.OnAuthorsClickEvent -> navigationHandler.navigateToAuthorsScreen()
             is LeftMenuBarEvents.OnSettingsClickEvent -> navigationHandler.navigateToSettingsScreen()
-            is LeftMenuBarEvents.OnProfileClickEvent -> navigationHandler.navigateToSettingsScreen()
+            is LeftMenuBarEvents.OnProfileClickEvent -> navigationHandler.navigateToProfile()
             is DrawerEvents.OpenBook -> openBook(
                 event.painterSelectedBookInCache,
                 event.bookId

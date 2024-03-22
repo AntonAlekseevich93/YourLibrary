@@ -19,4 +19,9 @@ val domainModule = DI.Module("domainModule") {
     bind<ApplicationInteractor>() with provider {
         ApplicationInteractor(instance())
     }
+
+    bind<UserInteractor>() with provider {
+        UserInteractor(instance(), instance())
+    }
+
 }

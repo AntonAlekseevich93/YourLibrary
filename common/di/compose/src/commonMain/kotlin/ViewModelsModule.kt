@@ -32,4 +32,7 @@ val viewModelsModule = DI.Module("viewModelsModule") {
     bind<AuthorsViewModel>() with singleton {
         AuthorsViewModel(instance(), instance(), instance(), instance(), instance())
     }
+    bind<UserViewModel>() with singleton {
+        UserViewModel(instance(), instance(), instance(), instance(), instance())
+    }
 }

@@ -177,6 +177,19 @@ fun Application(
                             SettingsScreen(platform)
                         }
 
+                        scene(
+                            route = Routes.profile_screen_route,
+                            navTransition = NavTransition(
+                                createTransition = expandHorizontally(),
+                                destroyTransition = slideOutHorizontally(tween(100))
+                            )
+                        ) {
+                            ProfileScreen(
+                                showLeftDrawer = uiState.showLeftDrawerState
+                            )
+                        }
+
+
                     }
                 }
             }
