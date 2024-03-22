@@ -166,6 +166,14 @@ fun createNavigationHandler(
             }
         }
 
+        override fun navigateToProfile() {
+            if (currentRoute.value != Routes.profile_screen_route) {
+                navigator.value?.navigate(
+                    route = Routes.profile_screen_route
+                )
+            }
+        }
+
 
     }
     return handler

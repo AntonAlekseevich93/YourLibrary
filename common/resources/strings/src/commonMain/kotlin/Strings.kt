@@ -109,4 +109,5 @@ object Strings {
     const val as_main_author_alert_dialog_accept_button = "Сделать %s основным"
     const val change_author_name = "Введите новое имя"
     const val error_author_name_exist = "Автор с таким именем уже существует"
+    const val profile = "Профиль"
 }

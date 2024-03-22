@@ -10,4 +10,5 @@ interface NavigationHandler {
     fun navigateToAuthorsScreen()
     fun navigateToJoinAuthorsScreen()
     fun navigateToSettingsScreen()
+    fun navigateToProfile()
 }

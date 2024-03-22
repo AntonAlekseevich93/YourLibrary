@@ -5,6 +5,7 @@ import Application
 import NavigationHandler
 import PlatformInfo
 import PlatformSDK
+import Routes
 import TooltipHandler
 import android.os.Bundle
 import android.view.ViewTreeObserver
@@ -45,7 +46,7 @@ class MainActivity : ComponentActivity() {
         PlatformSDK.init(
             configuration = PlatformConfiguration(this),
             platformInfo = PlatformInfo(),
-            platform = Platform.MOBILE,
+            platform = Platform.MOBILE(),
             navigationHandler = createNavigationHandler(
                 navigator = navigator,
                 desktopTooltip = desktopTooltip,
@@ -67,7 +68,7 @@ class MainActivity : ComponentActivity() {
                 PreComposeApp {
                     navigator.value = rememberNavigator()
                     Application(
-                        platform = Platform.MOBILE,
+                        platform = Platform.MOBILE(),
                         isKeyboardShown = keyboardAsState(),
                         navigator = navigator.value ?: rememberNavigator()
                     )
@@ -158,6 +159,14 @@ fun createNavigationHandler(
             if (currentRoute.value != Routes.settings_screen_route) {
                 navigator.value?.navigate(
                     route = Routes.settings_screen_route
+                )
+            }
+        }
+
+        override fun navigateToProfile() {
+            if (currentRoute.value != Routes.profile_screen_route) {
+                navigator.value?.navigate(
+                    route = Routes.profile_screen_route
                 )
             }
         }

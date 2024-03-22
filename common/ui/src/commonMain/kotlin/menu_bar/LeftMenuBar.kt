@@ -132,6 +132,20 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
             Spacer(modifier = Modifier.weight(1f, fill = true))
 
             TooltipIconArea(
+                text = Strings.profile,
+                drawableResName = Drawable.drawable_ic_user,
+                tooltipCallback = {
+                    this@LeftMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
+                        position = TooltipPosition.RIGHT
+                    }))
+                },
+                modifier = Modifier.padding(bottom = 4.dp),
+                onClick = {
+                    this@LeftMenuBar.sendEvent(LeftMenuBarEvents.OnProfileClickEvent)
+                },
+            )
+
+            TooltipIconArea(
                 text = Strings.another_storage,
                 drawableResName = Drawable.drawable_ic_folder,
                 tooltipCallback = {

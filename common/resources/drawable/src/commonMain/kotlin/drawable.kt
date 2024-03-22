@@ -36,4 +36,5 @@ object Drawable {
     const val drawable_ic_join = "ic_join.xml"
     const val drawable_ic_trash = "ic_trash_bin.xml"
     const val drawable_ic_arrow_in_box = "ic_arrow_in_box.xml"
+    const val drawable_ic_user = "ic_user.xml"
 }
