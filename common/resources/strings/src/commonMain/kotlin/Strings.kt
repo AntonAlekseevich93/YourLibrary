@@ -110,4 +110,9 @@ object Strings {
     const val change_author_name = "Введите новое имя"
     const val error_author_name_exist = "Автор с таким именем уже существует"
     const val profile = "Профиль"
+    const val signUp = "Зарегистрироваться"
+    const val signIn = "Авторизоваться"
+    const val email = "Электронная почта"
+    const val password = "Пароль"
+    const val user_name = "Имя пользователя"
 }

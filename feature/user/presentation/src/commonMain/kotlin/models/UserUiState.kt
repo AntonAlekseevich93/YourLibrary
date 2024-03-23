@@ -1,9 +1,9 @@
 package models
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import base.BaseUIState
 
 data class UserUiState(
-    val name: String = ""//todo remove
-) : BaseUIState {
-
-}
+   val isSignUnState: MutableState<Boolean> = mutableStateOf(false)
+) : BaseUIState

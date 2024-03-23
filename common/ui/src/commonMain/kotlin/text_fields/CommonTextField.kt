@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -31,6 +32,7 @@ fun CommonTextField(
         disabledTextColor = ApplicationTheme.colors.mainPlaceholderTextColor,
     ),
     textStyle: TextStyle = LocalTextStyle.current,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     BasicCustomTextField(
         textFieldValue = textState,
@@ -50,6 +52,7 @@ fun CommonTextField(
         singleLine = maxLines <= 1,
         shape = shape,
         focusedIndicatorLineThickness = focusedIndicatorLineThickness,
-        unfocusedIndicatorLineThickness = unfocusedIndicatorLineThickness
+        unfocusedIndicatorLineThickness = unfocusedIndicatorLineThickness,
+        visualTransformation = visualTransformation
     )
 }
