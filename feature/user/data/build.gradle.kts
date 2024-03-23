@@ -8,6 +8,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":feature:user:api"))
+                implementation(project(":common:constants"))
                 implementation(project(":common:core"))
                 implementation(project(":common:http-client"))
                 implementation(project(":common:models"))
