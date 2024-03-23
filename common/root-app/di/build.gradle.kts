@@ -15,9 +15,11 @@ kotlin {
                 api(project(":common:root-app:domain"))
                 api(project(":common:root-app:api"))
                 api(project(":common:root-app:data"))
+                implementation(project(":common:app-config"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:resources:drawable")) //todo возможно потом удалить
                 implementation(project(":common:resources:strings"))
+                implementation(project(":common:http-client"))
                 implementation(project(":common:ui"))
                 implementation(project(":common:scopes"))
                 implementation(project(":common:arch"))

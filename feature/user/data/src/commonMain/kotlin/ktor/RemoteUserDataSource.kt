@@ -1,7 +1,12 @@
 package ktor
 
-import io.ktor.client.HttpClient
+import HttpAppClient
 
-class RemoteUserDataSource(val httpClient: HttpClient) {
-
+class RemoteUserDataSource(private val httpClient: HttpAppClient) {
+    suspend fun signIn() {
+        httpClient.post(
+            url = "user/test",
+            bodyRequest = null
+        )
+    }
 }

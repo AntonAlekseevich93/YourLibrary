@@ -18,9 +18,8 @@ class UserViewModel(
 
 
     override fun sendEvent(event: BaseEvent) {
-        when (event) {
-
-        }
+//        when (event) {
+//        }
     }
 
 }

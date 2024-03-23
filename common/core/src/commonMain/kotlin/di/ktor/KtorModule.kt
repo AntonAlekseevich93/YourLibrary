@@ -34,9 +34,9 @@ internal val ktorModule = DI.Module("ktorModule") {
                 requestTimeoutMillis = 30000
             }
 
-            defaultRequest {
-                url("http://185.84.162.166:8080/")
-            }
+//            defaultRequest {
+//                url("http://185.84.162.166:8080/")
+//            }
         }
     }
 }

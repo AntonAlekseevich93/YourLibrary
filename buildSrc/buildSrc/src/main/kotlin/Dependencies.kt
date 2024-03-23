@@ -83,4 +83,9 @@ object Dependencies {
         private const val version = "3.7.0"
         const val fileManager = "com.squareup.okio:okio:$version"
     }
+
+    object LocalSettings{
+        private const val version = "1.1.1"
+        const val settings = "com.russhwolf:multiplatform-settings-no-arg:$version"
+    }
 }
