@@ -29,6 +29,7 @@ class HttpAppClient(
             val response: HttpResponse = httpClient.post(getFullUrl(url)) {
                 contentType(ContentType.Application.Json)
                 header(TOKEN_KEY, appConfig.authToken)
+                header(DEVICE_ID_KEY, appConfig.deviceId)
                 setBody(bodyRequest)
             }
             val jsonAsString: String = response.body<String>()
@@ -57,6 +58,7 @@ class HttpAppClient(
             val response: HttpResponse = httpClient.get(getFullUrl(url)) {
                 contentType(ContentType.Application.Json)
                 header(TOKEN_KEY, appConfig.authToken)
+                header(DEVICE_ID_KEY, appConfig.deviceId)
             }
             val jsonAsString: String = response.body<String>()
             val json = Json { ignoreUnknownKeys = true }
@@ -78,5 +80,6 @@ class HttpAppClient(
 
     companion object {
         private const val TOKEN_KEY = "user_token"
+        private const val DEVICE_ID_KEY = "device_id"
     }
 }
