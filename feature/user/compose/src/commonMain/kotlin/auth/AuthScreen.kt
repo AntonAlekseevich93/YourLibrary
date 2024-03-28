@@ -67,8 +67,18 @@ fun BaseEventScope<BaseEvent>.AuthScreen(isSignUnState: State<Boolean>) {
             isSignUnState = isSignUnState,
             buttonIsActive = buttonIsActive,
             onClick = {
-                val event =
-                    if (isSignUnState.value) UserEvents.OnSignUpConfirmClick else UserEvents.OnSignInConfirmClick
+                val event = if (isSignUnState.value) {
+                    UserEvents.OnSignUpConfirmClick(
+                        name = userName.value.text,
+                        email = userEmail.value.text,
+                        password = userPassword.value.text
+                    )
+                } else {
+                    UserEvents.OnSignInConfirmClick(
+                        email = userEmail.value.text,
+                        password = userPassword.value.text
+                    )
+                }
                 this@AuthScreen.sendEvent(event)
             }
         )

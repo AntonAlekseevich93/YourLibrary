@@ -115,4 +115,9 @@ object Strings {
     const val email = "Электронная почта"
     const val password = "Пароль"
     const val user_name = "Имя пользователя"
+    const val account = "Аккаунт"
+    const val logout_from_account = "Выйти из аккаунта"
+    const val info_block_verify_user =
+        "Мы отправили вам письмо с подтверждением.\nПожалуйста, проверьте вашу электронную почтy"
+    const val refresh = "Обновить"
 }

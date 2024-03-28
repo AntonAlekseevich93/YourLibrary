@@ -10,7 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import auth.AuthScreen
+import auth.VerifiedScreen
 import di.Inject
+import profile.ProfileContent
 import toolbar.CommonToolbar
 
 @Composable
@@ -34,6 +36,14 @@ fun ProfileScreen(
             )
         }
 
-        viewModel.AuthScreen(uiState.isSignUnState)
+        if (uiState.isAuthorized.value) {
+            if (uiState.userInfo.value.isVerified) {
+                viewModel.ProfileContent(uiState.userInfo)
+            } else {
+                viewModel.VerifiedScreen()
+            }
+        } else {
+            viewModel.AuthScreen(uiState.isSignUnState)
+        }
     }
 }

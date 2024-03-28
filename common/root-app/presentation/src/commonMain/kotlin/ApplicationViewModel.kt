@@ -22,6 +22,7 @@ class ApplicationViewModel(
     private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,
     private val settingsDataProvider: SettingsDataProvider,
+    private val userInteractor: UserInteractor
 ) : BaseEventScope<BaseEvent>, ApplicationScope, DrawerScope {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val _uiState = MutableStateFlow(ApplicationUiState())
@@ -30,14 +31,20 @@ class ApplicationViewModel(
 
     init {
         scope.launch {
-            interactor.getAllPathInfo().collect { pathInfo ->
-                if (pathInfo != null) {
-                    withContext(Dispatchers.Main) {
-                        _uiState.value.addPathInfo(pathInfo)
-                    }
+            launch {
+                interactor.getAllPathInfo().collect { pathInfo ->
+                    if (pathInfo != null) {
+                        withContext(Dispatchers.Main) {
+                            _uiState.value.addPathInfo(pathInfo)
+                        }
 
-                    getAllBooks()
+                        getAllBooks()
+                    }
                 }
+            }
+
+            launch {
+                userInteractor.checkIfUserTokenExistAndLogOutIfNot()
             }
         }
     }

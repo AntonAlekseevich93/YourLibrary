@@ -21,4 +21,5 @@ class AuthResponse(
     @SerialName("id") val id: Int?,
     @SerialName("name") val name: String?,
     @SerialName("token") val token: String?,
+    @SerialName("verified") val isVerified: Boolean?,
 )

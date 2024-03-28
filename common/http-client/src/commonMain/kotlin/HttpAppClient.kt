@@ -3,10 +3,10 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.util.InternalAPI
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
@@ -18,7 +18,7 @@ class HttpAppClient(
     private val appConfig: AppConfig
 ) {
 
-    @OptIn(InternalAPI::class, InternalSerializationApi::class)
+    @OptIn(InternalSerializationApi::class)
     suspend fun <TResult : Any, TError : Any> post(
         url: String,
         bodyRequest: Any,
@@ -29,20 +29,21 @@ class HttpAppClient(
             val response: HttpResponse = httpClient.post(getFullUrl(url)) {
                 contentType(ContentType.Application.Json)
                 header(TOKEN_KEY, appConfig.authToken)
-                body = bodyRequest
+                setBody(bodyRequest)
             }
-            val json: String = response.body<String>()
+            val jsonAsString: String = response.body<String>()
+            val json = Json { ignoreUnknownKeys = true }
             val serializer =
                 BaseResponse.serializer(resultClass.serializer(), errorClass.serializer())
             val baseResponse: BaseResponse<TResult, TError> =
-                Json.decodeFromString(serializer, json)
-
+                json.decodeFromString(serializer, jsonAsString)
             baseResponse
         } catch (e: Exception) {
+            println("HttpAppClient exception: ${e.message}")
             //todo log "Request encountered an error: ${e.message}"
             null
         } finally {
-            httpClient.close()
+//            httpClient.close()
         }
     }
 
@@ -57,17 +58,19 @@ class HttpAppClient(
                 contentType(ContentType.Application.Json)
                 header(TOKEN_KEY, appConfig.authToken)
             }
-            val json: String = response.body<String>()
+            val jsonAsString: String = response.body<String>()
+            val json = Json { ignoreUnknownKeys = true }
             val serializer =
                 BaseResponse.serializer(resultClass.serializer(), errorClass.serializer())
             val baseResponse: BaseResponse<TResult, TError> =
-                Json.decodeFromString(serializer, json)
+                json.decodeFromString(serializer, jsonAsString)
 
             baseResponse
         } catch (e: Exception) {
+            println("GET EXSEPTIONS = ${e.message}")
             null
         } finally {
-            httpClient.close()
+//            httpClient.close()
         }
     }
 

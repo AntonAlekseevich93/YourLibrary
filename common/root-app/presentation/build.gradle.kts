@@ -16,6 +16,7 @@ kotlin {
                 implementation(project(":common:root-app:api"))
                 implementation(project(":common:root-app:domain"))
                 implementation(project(":feature:settings:presentation"))
+                implementation(project(":feature:user:domain"))
             }
         }
     }

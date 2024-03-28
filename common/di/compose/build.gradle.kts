@@ -27,6 +27,7 @@ kotlin {
                 implementation(project(":feature:user:data"))
                 implementation(project(":feature:user:domain"))
                 implementation(project(":common:core"))
+                implementation(project(":common:app-config"))
                 implementation(project(":common:scopes"))
                 implementation(project(":common:arch"))
             }

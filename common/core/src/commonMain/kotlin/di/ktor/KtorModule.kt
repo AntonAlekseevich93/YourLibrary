@@ -26,7 +26,6 @@ internal val ktorModule = DI.Module("ktorModule") {
                 json(Json {
                     ignoreUnknownKeys = true
                 })
-
             }
 
             install(HttpTimeout) {

@@ -239,4 +239,34 @@ SELECT * FROM AuthorsTable WHERE name=?;
 getAllMainAuthors:
 SELECT * FROM AuthorsTable WHERE isMainAuthor =0;
 
+-- ------------------------------------------------------------------USER TABLE:
 
+CREATE TABLE IF NOT EXISTS UserTable (
+  id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  isVerified INTEGER NOT NULL,
+  isAuthorized INTEGER NOT NULL
+);
+
+createUser:
+INSERT INTO UserTable (id, name,  email, isVerified, isAuthorized)
+VALUES(?,? , ?, ?,?);
+
+getAuthorizedUser:
+SELECT * FROM UserTable WHERE  isAuthorized =0;
+
+getUserByEmail:
+SELECT * FROM UserTable WHERE email =?;
+
+logOut:
+UPDATE UserTable SET isAuthorized=1 WHERE isAuthorized=0;
+
+updateUserByEmail:
+UPDATE UserTable SET
+  id = :id,
+  name = :name,
+  email = :email,
+  isVerified = :isVerified,
+  isAuthorized =:isAuthorized
+WHERE email = :email;
