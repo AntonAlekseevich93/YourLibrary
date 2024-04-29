@@ -46,27 +46,27 @@ class BookCreatorViewModel(
             }
 
             is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
+            is BookEditorEvents.OnBookSelected -> setSelectedBook(event.shortBook)
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
             is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.UrlTextChangedEvent -> urlTextChanged(event.urlTextFieldValue)
             is BookCreatorEvents.ClearUrlEvent -> clearUrl()
             is BookCreatorEvents.OnClearUrlAndCreateBookManuallyEvent -> {
-                uiStateValue.bookValues.value.parsingUrl.value = TextFieldValue()
+                uiStateValue.bookValues.parsingUrl.value = TextFieldValue()
                 updateUIState(
                     uiStateValue.copy(
-                        isCreateBookManually = mutableStateOf(true),
-                        showLoadingIndicator = mutableStateOf(false)
+                        isCreateBookManually = true,
+                        showLoadingIndicator = false
                     )
                 )
-
             }
 
             is BookCreatorEvents.OnFinishParsingUrl -> finishParsing()
             is BookCreatorEvents.OnCreateBookManuallyEvent -> {
-                uiStateValue.bookValues.value.parsingUrl.value = TextFieldValue()
+                uiStateValue.bookValues.parsingUrl.value = TextFieldValue()
                 updateUIState(
                     uiStateValue.copy(
-                        isCreateBookManually = mutableStateOf(true)
+                        isCreateBookManually = true
                     )
                 )
             }
@@ -74,7 +74,7 @@ class BookCreatorViewModel(
             is BookCreatorEvents.DisableCreateBookManuallyEvent -> {
                 updateUIState(
                     uiStateValue.copy(
-                        isCreateBookManually = mutableStateOf(false)
+                        isCreateBookManually = false
                     )
                 )
             }
@@ -83,12 +83,16 @@ class BookCreatorViewModel(
                 clearAllAuthorInfo()
             }
 
+            is BookCreatorEvents.OnShowDialogClearAllData -> {
+                updateUIState(uiStateValue.copy(showDialogClearAllData = event.show))
+            }
+
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
             is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
             is DatePickerEvents.OnHideDatePicker -> {
                 updateUIState(
                     uiStateValue.copy(
-                        showDatePicker = mutableStateOf(false)
+                        showDatePicker = false
                     )
                 )
             }
@@ -98,7 +102,7 @@ class BookCreatorViewModel(
     private fun clearAllAuthorInfo() {
         updateUIState(
             uiStateValue.copy(
-                selectedAuthor = mutableStateOf(null)
+                selectedAuthor = null
             )
         )
         uiStateValue.similarSearchAuthors.clear()
@@ -107,19 +111,19 @@ class BookCreatorViewModel(
     private fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
 
     private fun createBook() {
-        uiStateValue.bookValues.value.createBookItemWithoutAuthorIdOrNull(
+        uiStateValue.bookValues.createBookItemWithoutAuthorIdOrNull(
             timestampOfCreating = getCurrentTimeInMillis(),
             timestampOfUpdating = getCurrentTimeInMillis(),
         )?.let { bookItem ->
             scope.launch {
                 launch {
-                    val authorId = if (uiStateValue.needCreateNewAuthor.value) {
+                    val authorId = if (uiStateValue.needCreateNewAuthor) {
                         val newAuthor =
                             createNewAuthor(authorName = bookItem.originalAuthorName)
                         interactor.createAuthor(newAuthor)
                         newAuthor.id
                     } else {
-                        uiStateValue.selectedAuthor.value!!.id
+                        uiStateValue.selectedAuthor!!.id
                     }
                     interactor.createBook(bookItem.copy(originalAuthorId = authorId))
                 }
@@ -164,13 +168,13 @@ class BookCreatorViewModel(
     private fun setSelectedAuthorIfExist(authorName: String, similarAuthors: List<AuthorVo>) {
         similarAuthors.forEach { authorItem ->
             if (authorItem.name.equals(authorName, ignoreCase = true)) {
-                updateUIState(uiStateValue.copy(selectedAuthor = mutableStateOf(authorItem)))
+                updateUIState(uiStateValue.copy(selectedAuthor = authorItem))
                 setSelectedAuthorName()
                 return@forEach
             } else {
                 authorItem.relatedAuthors.forEach {
                     if (it.name.equals(authorName, ignoreCase = true)) {
-                        updateUIState(uiStateValue.copy(selectedAuthor = mutableStateOf(authorItem)))
+                        updateUIState(uiStateValue.copy(selectedAuthor = authorItem))
                         setSelectedAuthorName()
                         return@forEach
                     }
@@ -180,11 +184,11 @@ class BookCreatorViewModel(
     }
 
     private fun setSelectedAuthorName() {
-        uiStateValue.selectedAuthor.value?.let { author ->
+        uiStateValue.selectedAuthor?.let { author ->
             val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
                 "(${author.relatedAuthors.joinToString { it.name }})"
             } else ""
-            uiStateValue.bookValues.value.setSelectedAuthorName(
+            uiStateValue.bookValues.setSelectedAuthorName(
                 author.name,
                 relatedAuthorsNames = textPostfix
             )
@@ -209,8 +213,8 @@ class BookCreatorViewModel(
     }
 
     private fun onAuthorTextChanged(textFieldValue: TextFieldValue, textWasChanged: Boolean) {
-        if (uiStateValue.selectedAuthor.value != null && uiStateValue.bookValues.value.isSelectedAuthorNameWasChanged()) {
-            updateUIState(uiStateValue.copy(selectedAuthor = mutableStateOf(null)))
+        if (uiStateValue.selectedAuthor != null && uiStateValue.bookValues.isSelectedAuthorNameWasChanged()) {
+            updateUIState(uiStateValue.copy(selectedAuthor = null))
         }
 
         if (textFieldValue.text.isEmpty()) {
@@ -242,7 +246,7 @@ class BookCreatorViewModel(
                         updateUIState(
                             uiStateValue.copy(
                                 similarSearchAuthors = list,
-                                selectedAuthor = mutableStateOf(exactMatchAuthor)
+                                selectedAuthor = exactMatchAuthor
                             )
                         )
                     }
@@ -276,7 +280,7 @@ class BookCreatorViewModel(
     }
 
     private fun onSuggestionAuthorClick(author: AuthorVo) {
-        updateUIState(uiStateValue.copy(selectedAuthor = mutableStateOf(author)))
+        updateUIState(uiStateValue.copy(selectedAuthor = author))
 
         scope.launch {
             delay(DELAY_FOR_LISTENER_PROCESSING)
@@ -285,7 +289,7 @@ class BookCreatorViewModel(
     }
 
     private fun urlTextChanged(urlTextFieldValue: TextFieldValue) {
-        uiStateValue.bookValues.value.parsingUrl.value = urlTextFieldValue
+        uiStateValue.bookValues.parsingUrl.value = urlTextFieldValue
         if (urlTextFieldValue.text.isNotEmpty() && urlTextFieldValue.text.length > 5) {
             startParseBook(url = urlTextFieldValue.text)
         } else {
@@ -298,8 +302,8 @@ class BookCreatorViewModel(
         parsingJob = scope.launch() {
             updateUIState(
                 uiStateValue.copy(
-                    loadingStatus = mutableStateOf(LoadingStatus.LOADING),
-                    showLoadingIndicator = mutableStateOf(true)
+                    loadingStatus = LoadingStatus.LOADING,
+                    showLoadingIndicator = true
                 )
             )
 
@@ -308,19 +312,19 @@ class BookCreatorViewModel(
                 if (response.bookError != null) {
                     updateUIState(
                         uiStateValue.copy(
-                            loadingStatus = mutableStateOf(LoadingStatus.ERROR)
+                            loadingStatus = LoadingStatus.ERROR
                         )
                     )
                 } else if (response.bookItem != null) {
                     updateUIState(
                         uiStateValue.copy(
-                            bookItem = mutableStateOf(response.bookItem)
+                            bookItem = response.bookItem
                         )
                     )
                     updateBookInfo()
                     updateUIState(
                         uiStateValue.copy(
-                            loadingStatus = mutableStateOf(LoadingStatus.SUCCESS)
+                            loadingStatus = LoadingStatus.SUCCESS
                         )
                     )
                     splitAuthorsNameAndSearch(response.bookItem!!.originalAuthorName)
@@ -332,11 +336,11 @@ class BookCreatorViewModel(
     private fun updateBookInfo() {
         updateUIState(
             uiStateValue.copy(
-                urlFieldIsWork = mutableStateOf(false)
+                urlFieldIsWork = false
             )
         )
-        uiStateValue.bookItem.value?.let { book ->
-            updateBookValues(bookValues = uiStateValue.bookValues.value, book = book)
+        uiStateValue.bookItem?.let { book ->
+            updateBookValues(bookValues = uiStateValue.bookValues, book = book)
         }
     }
 
@@ -344,35 +348,35 @@ class BookCreatorViewModel(
         parsingJob?.cancel()
         updateUIState(
             uiStateValue.copy(
-                showLoadingIndicator = mutableStateOf(false)
+                showLoadingIndicator = false
             )
         )
     }
 
     private fun clearUrl() {
-        uiStateValue.bookValues.value.clearAll()
+        uiStateValue.bookValues.clearAll()
         updateUIState(
             uiStateValue.copy(
-                urlFieldIsWork = mutableStateOf(true),
-                showClearButtonOfUrlElement = mutableStateOf(false),
-                showParsingResult = mutableStateOf(false),
-                bookItem = mutableStateOf(null),
-                showDialogClearAllData = mutableStateOf(false),
+                urlFieldIsWork = true,
+                showClearButtonOfUrlElement = false,
+                showParsingResult = false,
+                bookItem = null,
+                showDialogClearAllData = false,
             )
         )
     }
 
     private fun setSelectedDate(millis: Long, text: String) {
         uiStateValue.apply {
-            when (datePickerType.value) {
+            when (datePickerType) {
                 DatePickerType.StartDate -> {
-                    bookValues.value.startDateInMillis.value = millis
-                    bookValues.value.startDateInString.value = text
+                    bookValues.startDateInMillis.value = millis
+                    bookValues.startDateInString.value = text
                 }
 
                 DatePickerType.EndDate -> {
-                    bookValues.value.endDateInMillis.value = millis
-                    bookValues.value.endDateInString.value = text
+                    bookValues.endDateInMillis.value = millis
+                    bookValues.endDateInString.value = text
                 }
             }
         }
@@ -381,8 +385,8 @@ class BookCreatorViewModel(
     private fun showDatePicker(type: DatePickerType) {
         updateUIState(
             uiStateValue.copy(
-                datePickerType = mutableStateOf(type),
-                showDatePicker = mutableStateOf(true)
+                datePickerType = type,
+                showDatePicker = true
             )
         )
     }
@@ -422,14 +426,22 @@ class BookCreatorViewModel(
     }
 
     private fun finishParsing() {
-        if (uiStateValue.loadingStatus.value == LoadingStatus.SUCCESS) {
+        if (uiStateValue.loadingStatus == LoadingStatus.SUCCESS) {
             updateUIState(
                 uiStateValue.copy(
-                    showClearButtonOfUrlElement = mutableStateOf(true),
-                    showLoadingIndicator = mutableStateOf(false),
-                    showParsingResult = mutableStateOf(true)
+                    showClearButtonOfUrlElement = true,
+                    showLoadingIndicator = false,
+                    showParsingResult = true
                 )
             )
         }
+    }
+
+    private fun setSelectedBook(shortBook: BookShortVo) {
+        updateUIState(
+            uiStateValue.copy(
+                shortBookItem = shortBook
+            )
+        )
     }
 }

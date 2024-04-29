@@ -3,6 +3,7 @@ package book_editor
 import BaseEvent
 import androidx.compose.ui.text.input.TextFieldValue
 import main_models.AuthorVo
+import main_models.books.BookShortVo
 
 sealed class BookEditorEvents : BaseEvent {
     class OnAuthorTextChanged(val textFieldValue: TextFieldValue, val textWasChanged: Boolean) :
@@ -10,4 +11,5 @@ sealed class BookEditorEvents : BaseEvent {
 
     class OnSuggestionAuthorClickEvent(val author: AuthorVo) : BookEditorEvents()
     class OnBookNameChanged(val bookName: String) : BookEditorEvents()
+    class OnBookSelected(val shortBook: BookShortVo) : BookEditorEvents()
 }

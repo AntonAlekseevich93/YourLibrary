@@ -272,7 +272,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     similarBooks = similarBooks,
                     modifier = Modifier.padding(top = 16.dp, bottom = 16.dp, start = 8.dp),
                     onClick = {
-
+                        sendEvent(BookEditorEvents.OnBookSelected(it))
                     }
                 )
 

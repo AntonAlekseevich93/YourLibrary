@@ -33,7 +33,7 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LoadingStatusIndicator(
-    loadingStatus: MutableState<LoadingStatus>,
+    loadingStatus: LoadingStatus,
     color: Color = ApplicationTheme.colors.linkColor,
     trackColor: Color = ApplicationTheme.colors.cardBackgroundDark,
     finishAnimationListener: () -> Unit,
@@ -50,14 +50,14 @@ fun LoadingStatusIndicator(
     }
 
     @Composable
-    fun getSuccessOrErrorColor(): Color = if (loadingStatus.value == LoadingStatus.SUCCESS) {
+    fun getSuccessOrErrorColor(): Color = if (loadingStatus == LoadingStatus.SUCCESS) {
         ApplicationTheme.colors.successColor
     } else {
         ApplicationTheme.colors.errorColor
     }
 
-    LaunchedEffect(key1 = loadingStatus.value) {
-        if (loadingStatus.value != LoadingStatus.LOADING) {
+    LaunchedEffect(key1 = loadingStatus) {
+        if (loadingStatus != LoadingStatus.LOADING) {
             scope.launch {
                 delay(200)
                 showIconAnimation.value = true
@@ -72,7 +72,7 @@ fun LoadingStatusIndicator(
     }
 
     CenterBoxContainer(modifier = Modifier) {
-        if (loadingStatus.value == LoadingStatus.LOADING) {
+        if (loadingStatus == LoadingStatus.LOADING) {
             CircularProgressIndicator(
                 modifier = Modifier.width(width),
                 color = if (showIconAnimation.value) {
@@ -82,7 +82,7 @@ fun LoadingStatusIndicator(
             )
         }
 
-        if (loadingStatus.value != LoadingStatus.LOADING) {
+        if (loadingStatus != LoadingStatus.LOADING) {
             CircularProgressIndicator(
                 progress = progressLoading.value,
                 modifier = Modifier.width(width),
@@ -97,7 +97,7 @@ fun LoadingStatusIndicator(
                 enter = scaleIn(animationSpec = tween(durationMillis = 1200)),
                 exit = scaleOut()
             ) {
-                if (loadingStatus.value == LoadingStatus.SUCCESS) {
+                if (loadingStatus == LoadingStatus.SUCCESS) {
                     Image(
                         painter = painterResource(Drawable.drawable_ic_check),
                         contentDescription = null,
@@ -105,7 +105,7 @@ fun LoadingStatusIndicator(
                         modifier = Modifier
                     )
                 }
-                if (loadingStatus.value == LoadingStatus.ERROR) {
+                if (loadingStatus == LoadingStatus.ERROR) {
                     Image(
                         painter = painterResource(Drawable.drawable_ic_close_128px),
                         contentDescription = null,
