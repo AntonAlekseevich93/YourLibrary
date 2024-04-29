@@ -41,6 +41,10 @@ class BookCreatorViewModel(
                 event.textWasChanged
             )
 
+            is BookEditorEvents.OnBookNameChanged -> {
+                searchBookName(event.bookName)
+            }
+
             is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
             is BookCreatorEvents.CreateBookEvent -> createBook()

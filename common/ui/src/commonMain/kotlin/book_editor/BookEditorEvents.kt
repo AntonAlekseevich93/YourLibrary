@@ -9,4 +9,5 @@ sealed class BookEditorEvents : BaseEvent {
         BookEditorEvents()
 
     class OnSuggestionAuthorClickEvent(val author: AuthorVo) : BookEditorEvents()
+    class OnBookNameChanged(val bookName: String) : BookEditorEvents()
 }

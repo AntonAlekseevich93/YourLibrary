@@ -148,6 +148,9 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     hintText = Strings.hint_type_title_book,
                     onTextChanged = {
                         bookValues.bookName.value = it
+                        if (it.text.isNotEmpty() && it.text.length > 1) {
+                            sendEvent(BookEditorEvents.OnBookNameChanged(it.text))
+                        }
                     },
                     disableSingleLineIfFocused = true,
                     textFieldValue = bookValues.bookName
