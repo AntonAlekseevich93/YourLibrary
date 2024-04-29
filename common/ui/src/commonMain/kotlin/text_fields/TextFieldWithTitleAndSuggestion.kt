@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
@@ -69,6 +68,7 @@ fun TextFieldWithTitleAndSuggestion(
     suggestionList: State<List<String>> = mutableStateOf(emptyList()),
     maxWidthSuggestions: Boolean = false,
     disableHiddenSuggestion: Boolean = false,
+    disableBorder: Boolean = false,
     textFieldValue: MutableState<TextFieldValue>? = null,
     text: MutableState<String>? = null,
     showClearButton: MutableState<Boolean> = mutableStateOf(false),
@@ -79,6 +79,7 @@ fun TextFieldWithTitleAndSuggestion(
     onClearButtonListener: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
     suggestionMaxHeight: Dp = 320.dp,
+    hiddenText: String? = null,
     topContent: @Composable ((isFocused: Boolean) -> Unit)? = null,
     innerContent: @Composable ((isFocused: Boolean) -> Unit)? = null,
     bottomContent: @Composable ((isFocused: Boolean) -> Unit)? = null,
@@ -115,7 +116,7 @@ fun TextFieldWithTitleAndSuggestion(
                 ),
             shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
-            border = if (setAsSelected || isHovered.value || isFocused) BorderStroke(
+            border = if (!disableBorder && (setAsSelected || isHovered.value || isFocused)) BorderStroke(
                 if (isFocused || setAsSelected) 2.dp else if (isHovered.value) 1.dp else 0.dp,
                 color = ApplicationTheme.colors.textFieldColor
             ) else null
@@ -154,7 +155,7 @@ fun TextFieldWithTitleAndSuggestion(
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = ApplicationTheme.colors.mainTextColor,
                                 disabledTextColor = ApplicationTheme.colors.mainTextColor,
-                                backgroundColor = if (setAsSelected || isHovered.value || isFocused)
+                                backgroundColor = if (!disableBorder && (setAsSelected || isHovered.value || isFocused))
                                     ApplicationTheme.colors.focusedTextFillBackground
                                 else ApplicationTheme.colors.cardBackgroundDark,
                             ),
@@ -177,7 +178,7 @@ fun TextFieldWithTitleAndSuggestion(
                     Box(modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            if (setAsSelected || isHovered.value || isFocused)
+                            if (!disableBorder && (setAsSelected || isHovered.value || isFocused))
                                 ApplicationTheme.colors.focusedTextFillBackground
                             else ApplicationTheme.colors.cardBackgroundDark
                         ).clickable(
@@ -197,29 +198,30 @@ fun TextFieldWithTitleAndSuggestion(
                             end = 16.dp
                         )
                         if (
-                            textFieldValue?.value?.text == null &&
-                            text?.value?.isEmpty() == true
-                            && textState.value.text.isEmpty() ||
-                            textFieldValue?.value?.text?.isEmpty() == true
+                            hiddenText != null ||
+                            (textFieldValue?.value?.text == null &&
+                                    text?.value?.isEmpty() == true
+                                    && textState.value.text.isEmpty() ||
+                                    textFieldValue?.value?.text?.isEmpty() == true
+                                    )
                         ) {
                             Text(
-                                text = hintText,
+                                text = hiddenText ?: hintText,
                                 modifier = textModifier,
                                 style = ApplicationTheme.typography.footnoteRegular,
                                 color = ApplicationTheme.colors.hintColor
                             )
                         }
 
-                        if (!showSuggestionAsTag) {
+                        if (hiddenText == null && !showSuggestionAsTag) {
                             Text(
                                 text = textFieldValue?.value?.text ?: text?.value
                                 ?: textState.value.text,
                                 modifier = textModifier,
                                 style = ApplicationTheme.typography.bodyRegular,
                                 color = ApplicationTheme.colors.mainTextColor,
-
-                                )
-                        } else {
+                            )
+                        } else if (hiddenText == null) {
                             CustomTag(
                                 text = textFieldValue?.value?.text ?: text?.value
                                 ?: textState.value.text,

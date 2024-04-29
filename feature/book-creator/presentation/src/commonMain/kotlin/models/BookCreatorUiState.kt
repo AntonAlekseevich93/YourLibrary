@@ -27,7 +27,7 @@ data class BookCreatorUiState(
     val showDialogClearAllData: Boolean = false,
     var datePickerType: DatePickerType = DatePickerType.StartDate,
     val showDatePicker: Boolean = false,
-    val isCreateBookManually: Boolean = true,
+    val isCreateBookManually: Boolean = false,
     val similarBooks: SnapshotStateList<BookShortVo> = mutableStateListOf(),
     val isSearchBookProcess: Boolean = false
 ) : BaseUIState

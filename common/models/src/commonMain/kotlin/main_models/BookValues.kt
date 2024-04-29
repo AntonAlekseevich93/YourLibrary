@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import main_models.books.BookShortVo
 
 class BookValues(
     var parsingUrl: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
@@ -139,6 +140,18 @@ class BookValues(
         originalAuthorId = book.originalAuthorId
         modifierAuthorName = book.modifiedAuthorName.orEmpty()
         modifierAuthorId = book.modifiedAuthorId.orEmpty()
+    }
+
+    fun setShortBook(book: BookShortVo) {
+        authorName.value = TextFieldValue(book.originalAuthorName)
+        bookName.value = TextFieldValue(book.bookName)
+        numberOfPages.value = TextFieldValue(book.numbersOfPages.toString())
+        description.value = TextFieldValue(book.description)
+        coverUrl.value =
+            TextFieldValue(book.coverUrl)
+        isbn.value = TextFieldValue(book.isbn)
+        originalAuthorName = book.originalAuthorName
+        originalAuthorId = book.originalAuthorId
     }
 
     fun setSelectedAuthorName(authorName: String, relatedAuthorsNames: String) {

@@ -18,7 +18,7 @@ import containters.CenterBoxContainer
 import main_models.books.BookShortVo
 
 @Composable
-fun BookSelector(
+fun BookSearchSelector(
     similarBooks: SnapshotStateList<BookShortVo>,
     isLoading: Boolean,
     modifier: Modifier = Modifier,

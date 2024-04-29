@@ -445,9 +445,10 @@ class BookCreatorViewModel(
     }
 
     private fun setSelectedBook(shortBook: BookShortVo) {
+        uiStateValue.bookValues.setShortBook(shortBook)
         updateUIState(
             uiStateValue.copy(
-                shortBookItem = shortBook
+                shortBookItem = shortBook,
             )
         )
     }

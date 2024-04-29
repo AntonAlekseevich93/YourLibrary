@@ -2,7 +2,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,10 +47,7 @@ import containters.CenterBoxContainer
 import date.CommonDatePicker
 import date.DatePickerEvents
 import di.Inject
-import info.InfoBlock
-import loader.LoadingStatusIndicator
 import main_models.DatePickerType
-import main_models.rest.LoadingStatus
 import models.BookCreatorEvents
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -59,7 +55,6 @@ import platform.Platform
 import platform.isDesktop
 import platform.isMobile
 import tags.CustomTag
-import text_fields.TextFieldWithTitleAndSuggestion
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
@@ -222,99 +217,101 @@ fun BookCreatorScreen(
                         .fillMaxWidth()
                         .verticalScroll(scrollableState)
                 ) {
-                    AnimatedVisibility(
-                        !uiState.isCreateBookManually,
-                    ) {
-                        Column(modifier = Modifier.padding(top = 16.dp)) {
-                            TextFieldWithTitleAndSuggestion(
-                                platform = platform,
-                                title = Strings.link,
-                                enabledInput = uiState.urlFieldIsWork,
-                                modifier = Modifier,
-                                hintText = Strings.hint_past_url_book,
-                                setAsSelected = !uiState.showParsingResult,
-                                showClearButton = showClearButton,
-                                textFieldValue = uiState.bookValues.parsingUrl,
-                                onTextChanged = { url ->
-                                    viewModel.sendEvent(BookCreatorEvents.UrlTextChangedEvent(url))
-                                },
-                                onClearButtonListener = {
-                                    viewModel.sendEvent(
-                                        BookCreatorEvents.OnShowDialogClearAllData(
-                                            true
-                                        )
-                                    )
-                                }
-                            )
-                            AnimatedVisibility(visible = !uiState.showParsingResult) {
-                                InfoBlock(
-                                    Strings.tooltip_parsing_book,
-                                    modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
-                                )
-                            }
-                        }
-                    }
+//                    AnimatedVisibility(
+//                        !uiState.isCreateBookManually,
+//                    ) {
+//                        Column(modifier = Modifier.padding(top = 16.dp)) {
+//                            TextFieldWithTitleAndSuggestion(
+//                                platform = platform,
+//                                title = Strings.link,
+//                                enabledInput = uiState.urlFieldIsWork,
+//                                modifier = Modifier,
+//                                hintText = Strings.hint_past_url_book,
+//                                setAsSelected = !uiState.showParsingResult,
+//                                showClearButton = showClearButton,
+//                                textFieldValue = uiState.bookValues.parsingUrl,
+//                                onTextChanged = { url ->
+//                                    viewModel.sendEvent(BookCreatorEvents.UrlTextChangedEvent(url))
+//                                },
+//                                onClearButtonListener = {
+//                                    viewModel.sendEvent(
+//                                        BookCreatorEvents.OnShowDialogClearAllData(
+//                                            true
+//                                        )
+//                                    )
+//                                }
+//                            )
+//                            AnimatedVisibility(visible = !uiState.showParsingResult) {
+//                                InfoBlock(
+//                                    Strings.tooltip_parsing_book,
+//                                    modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
+//                                )
+//                            }
+//                        }
+//                    }
 
-                    AnimatedVisibility(visible = uiState.showLoadingIndicator) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(top = 12.dp, bottom = 24.dp).fillMaxWidth()
-                        ) {
-                            LoadingStatusIndicator(
-                                loadingStatus = uiState.loadingStatus,
-                                finishAnimationListener = {
-                                    viewModel.sendEvent(BookCreatorEvents.OnFinishParsingUrl)
-                                }
-                            )
-                            if (uiState.loadingStatus == LoadingStatus.ERROR) {
-                                ShowError {
-                                    viewModel.sendEvent(BookCreatorEvents.OnClearUrlAndCreateBookManuallyEvent)
-                                }
-                            }
-                        }
-                    }
+//                    AnimatedVisibility(visible = uiState.showLoadingIndicator) {
+//                        Column(
+//                            horizontalAlignment = Alignment.CenterHorizontally,
+//                            modifier = Modifier.padding(top = 12.dp, bottom = 24.dp).fillMaxWidth()
+//                        ) {
+//                            LoadingStatusIndicator(
+//                                loadingStatus = uiState.loadingStatus,
+//                                finishAnimationListener = {
+//                                    viewModel.sendEvent(BookCreatorEvents.OnFinishParsingUrl)
+//                                }
+//                            )
+//                            if (uiState.loadingStatus == LoadingStatus.ERROR) {
+//                                ShowError {
+//                                    viewModel.sendEvent(BookCreatorEvents.OnClearUrlAndCreateBookManuallyEvent)
+//                                }
+//                            }
+//                        }
+//                    }
 
-                    AnimatedVisibility(
-                        !uiState.isCreateBookManually
-                                && !uiState.showParsingResult
-                                && !uiState.showLoadingIndicator,
-                    ) {
-                        CenterBoxContainer {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(
-                                    text = Strings.or.uppercase(),
-                                    style = ApplicationTheme.typography.bodyBold,
-                                    color = ApplicationTheme.colors.mainTextColor,
-                                    modifier = Modifier.padding(bottom = 8.dp, top = 8.dp)
-                                )
-                                CreateBookButton(title = Strings.add_manually_button) {
-                                    viewModel.sendEvent(BookCreatorEvents.OnCreateBookManuallyEvent)
-                                }
-                            }
-                        }
-                    }
+//                    AnimatedVisibility(
+//                        !uiState.isCreateBookManually
+//                                && !uiState.showParsingResult
+//                                && !uiState.showLoadingIndicator,
+//                    ) {
+//                        CenterBoxContainer {
+//                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                                Text(
+//                                    text = Strings.or.uppercase(),
+//                                    style = ApplicationTheme.typography.bodyBold,
+//                                    color = ApplicationTheme.colors.mainTextColor,
+//                                    modifier = Modifier.padding(bottom = 8.dp, top = 8.dp)
+//                                )
+//                                CreateBookButton(title = Strings.add_manually_button) {
+//                                    viewModel.sendEvent(BookCreatorEvents.OnCreateBookManuallyEvent)
+//                                }
+//                            }
+//                        }
+//                    }
 
-                    AnimatedVisibility(
-                        uiState.isCreateBookManually || uiState.showParsingResult,
-                        enter = fadeIn(),
-                        exit = fadeOut()
-                    ) {
-                        Column {
-                            Spacer(modifier = Modifier.padding(top = 12.dp))
+//                    AnimatedVisibility(
+//                        uiState.isCreateBookManually || uiState.showParsingResult,
+//                        enter = fadeIn(),
+//                        exit = fadeOut()
+//                    ) {
+                    Column {
+                        Spacer(modifier = Modifier.padding(top = 12.dp))
 
-                            viewModel.BookEditor(
-                                platform = platform,
-                                bookValues = uiState.bookValues,
-                                similarSearchAuthors = uiState.similarSearchAuthors,
-                                selectedAuthor = uiState.selectedAuthor,
-                                createNewAuthor = uiState.needCreateNewAuthor,
-                                isKeyboardShown = isKeyboardShown.value,
-                                statusBookTextFieldValue = statusBookTextFieldValue.value,
-                                similarBooks = uiState.similarBooks,
-                                isSearchBookProcess = uiState.isSearchBookProcess,
-                            )
-                        }
+                        viewModel.BookEditor(
+                            platform = platform,
+                            bookValues = uiState.bookValues,
+                            similarSearchAuthors = uiState.similarSearchAuthors,
+                            selectedAuthor = uiState.selectedAuthor,
+                            createNewAuthor = uiState.needCreateNewAuthor,
+                            isKeyboardShown = isKeyboardShown.value,
+                            statusBookTextFieldValue = statusBookTextFieldValue,
+                            similarBooks = uiState.similarBooks,
+                            isSearchBookProcess = uiState.isSearchBookProcess,
+                            isCreateBookManually = uiState.isCreateBookManually,
+                            shortBook = uiState.shortBookItem
+                        )
                     }
+//                    }
                 }
             }
 
