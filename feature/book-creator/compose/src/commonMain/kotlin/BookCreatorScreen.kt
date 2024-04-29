@@ -81,12 +81,8 @@ fun BookCreatorScreen(
     val statusBookTextFieldValue =
         remember { mutableStateOf(TextFieldValue(text = uiState.defaultStatus.nameValue)) }
     val dataPickerState = rememberDatePickerState()
-    val linkToAuthor = remember { mutableStateOf(false) }
     val showClearButton =
         remember(uiState.showClearButtonOfUrlElement) { mutableStateOf(uiState.showClearButtonOfUrlElement) }
-    val selectedAuthor = remember(uiState.selectedAuthor) { mutableStateOf(uiState.selectedAuthor) }
-    val needCreateNewAuthor =
-        remember(uiState.needCreateNewAuthor) { mutableStateOf(uiState.needCreateNewAuthor) }
 
     val animatedVerticalPadding by animateDpAsState(
         targetValue = targetVerticalPadding,
@@ -310,11 +306,10 @@ fun BookCreatorScreen(
                                 platform = platform,
                                 bookValues = uiState.bookValues,
                                 similarSearchAuthors = uiState.similarSearchAuthors,
-                                selectedAuthor = selectedAuthor,
-                                createNewAuthor = needCreateNewAuthor,
-                                linkToAuthor = linkToAuthor,
-                                isKeyboardShown = isKeyboardShown,
-                                statusBookTextFieldValue = statusBookTextFieldValue,
+                                selectedAuthor = uiState.selectedAuthor,
+                                createNewAuthor = uiState.needCreateNewAuthor,
+                                isKeyboardShown = isKeyboardShown.value,
+                                statusBookTextFieldValue = statusBookTextFieldValue.value,
                                 similarBooks = uiState.similarBooks
                             )
                         }

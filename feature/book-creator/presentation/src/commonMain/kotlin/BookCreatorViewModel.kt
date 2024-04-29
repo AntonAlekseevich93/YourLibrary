@@ -47,6 +47,10 @@ class BookCreatorViewModel(
 
             is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
             is BookEditorEvents.OnBookSelected -> setSelectedBook(event.shortBook)
+            is BookEditorEvents.OnChangeNeedCreateNewAuthor -> {
+                updateUIState(uiStateValue.copy(needCreateNewAuthor = event.needCreate))
+            }
+
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
             is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.UrlTextChangedEvent -> urlTextChanged(event.urlTextFieldValue)

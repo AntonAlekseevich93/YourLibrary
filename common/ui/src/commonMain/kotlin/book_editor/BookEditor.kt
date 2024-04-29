@@ -32,35 +32,29 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import book_editor.book_selector.BookSelector
-import date.DatePickerEvents
 import info.InfoBlock
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.AuthorVo
 import main_models.BookValues
-import main_models.DatePickerType
-import main_models.ReadingStatus
 import main_models.books.BookShortVo
 import platform.Platform
 import platform.isMobile
-import reading_status.getStatusColor
 import text_fields.DELAY_FOR_LISTENER_PROCESSING
 import text_fields.DropdownSuggestionItem
 import text_fields.TextFieldWithTitleAndSuggestion
@@ -70,11 +64,10 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     platform: Platform,
     bookValues: BookValues,
     similarSearchAuthors: SnapshotStateList<AuthorVo>,
-    selectedAuthor: State<AuthorVo?>,
-    statusBookTextFieldValue: MutableState<TextFieldValue>,
-    isKeyboardShown: State<Boolean>,
-    createNewAuthor: MutableState<Boolean>,
-    linkToAuthor: MutableState<Boolean>,
+    selectedAuthor: AuthorVo?,
+    statusBookTextFieldValue: TextFieldValue,
+    isKeyboardShown: Boolean,
+    createNewAuthor: Boolean,
     modifier: Modifier = Modifier,
     canShowError: Boolean = false,
     similarBooks: SnapshotStateList<BookShortVo> = mutableStateListOf(),
@@ -98,7 +91,9 @@ fun BaseEventScope<BaseEvent>.BookEditor(
         }
     }
 
-    val authorIsSelected by remember(key1 = selectedAuthor.value) { mutableStateOf(selectedAuthor.value != null) }
+    var linkToAuthor by remember { mutableStateOf(false) }
+
+    val authorIsSelected by remember(key1 = selectedAuthor) { mutableStateOf(selectedAuthor != null) }
 
     Column(modifier = modifier) {
         AnimatedVisibility(
@@ -172,7 +167,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                             )
                         )
                     },
-                    setAsSelected = !authorIsSelected && similarSearchAuthors.isNotEmpty() && !createNewAuthor.value && !linkToAuthor.value,
+                    setAsSelected = !authorIsSelected && similarSearchAuthors.isNotEmpty() && !createNewAuthor && !linkToAuthor,
                     innerContent = {
                         Row(
                             modifier = Modifier.fillMaxSize().padding(10.dp),
@@ -194,7 +189,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     },
                     bottomContent = {
                         AnimatedVisibility(
-                            visible = similarSearchAuthors.isNotEmpty() && selectedAuthor.value == null && !createNewAuthor.value && !linkToAuthor.value,
+                            visible = similarSearchAuthors.isNotEmpty() && selectedAuthor == null && !createNewAuthor && !linkToAuthor,
                             exit = fadeOut(
                                 animationSpec = tween(
                                     1,
@@ -236,8 +231,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         }
 
                         AnimatedVisibility(
-                            visible = (platform.isMobile() || canShowError) && selectedAuthor.value == null &&
-                                    similarSearchAuthors.isNotEmpty() && !createNewAuthor.value && !linkToAuthor.value
+                            visible = (platform.isMobile() || canShowError) && selectedAuthor == null &&
+                                    similarSearchAuthors.isNotEmpty() && !createNewAuthor && !linkToAuthor
                         ) {
                             AuthorIsNotSelectedInfo(modifier = Modifier.padding(top = 8.dp))
                         }
@@ -245,22 +240,28 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         AnimatedVisibility(visible = bookValues.authorName.value.text.length >= 2 && !authorIsSelected) {
                             Row {
                                 NewAuthorButton(
-                                    createNewAuthor = createNewAuthor.value,
+                                    createNewAuthor = createNewAuthor,
                                     modifier = Modifier.weight(1f)
                                 ) {
-                                    createNewAuthor.value = !createNewAuthor.value
-                                    if (createNewAuthor.value) {
-                                        linkToAuthor.value = false
+                                    this@BookEditor.sendEvent(
+                                        BookEditorEvents.OnChangeNeedCreateNewAuthor(
+                                            !createNewAuthor
+                                        )
+                                    )
+                                    if (createNewAuthor) {
+                                        linkToAuthor = false
                                     }
                                 }
 
                                 LinkToAuthorButton(
-                                    linkToAuthor = linkToAuthor.value,
+                                    linkToAuthor = linkToAuthor,
                                     modifier = Modifier.weight(1f)
                                 ) {
-                                    linkToAuthor.value = !linkToAuthor.value
-                                    if (linkToAuthor.value) {
-                                        createNewAuthor.value = false
+                                    linkToAuthor = !linkToAuthor
+                                    if (linkToAuthor) {
+                                        this@BookEditor.sendEvent(
+                                            BookEditorEvents.OnChangeNeedCreateNewAuthor(false)
+                                        )
                                     }
                                 }
                             }
@@ -388,7 +389,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
 
                 /**this use for add padding if keyboard shown**/
                 if (platform.isMobile()) {
-                    if (isKeyboardShown.value) {
+                    if (isKeyboardShown) {
                         Spacer(Modifier.padding(160.dp))
                     } else {
                         Spacer(Modifier.padding(50.dp))

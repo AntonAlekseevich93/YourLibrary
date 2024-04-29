@@ -178,22 +178,22 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
 
                     Column(modifier = Modifier.verticalScroll(scrollableState)) {
                         AnimatedVisibility(isEditMode.value) {
-                            BookEditor(
-                                platform = platform,
-                                bookValues = bookValues.value,
-                                similarSearchAuthors = similarAuthorList,
-                                selectedAuthor = selectedAuthor,
-                                statusBookTextFieldValue = statusBookTextFieldValue,
-                                canShowError = true,
-                                modifier = Modifier.padding(
-                                    top = 24.dp,
-                                    start = 16.dp,
-                                    end = 16.dp
-                                ),
-                                createNewAuthor = needCreateNewAuthor,
-                                linkToAuthor = linkToAuthor,
-                                isKeyboardShown = isKeyboardShown,
-                            )
+//                            BookEditor(
+//                                platform = platform,
+//                                bookValues = bookValues.value,
+//                                similarSearchAuthors = similarAuthorList,
+//                                selectedAuthor = selectedAuthor,
+//                                statusBookTextFieldValue = statusBookTextFieldValue,
+//                                canShowError = true,
+//                                modifier = Modifier.padding(
+//                                    top = 24.dp,
+//                                    start = 16.dp,
+//                                    end = 16.dp
+//                                ),
+//                                createNewAuthor = needCreateNewAuthor,
+//                                linkToAuthor = linkToAuthor,
+//                                isKeyboardShown = isKeyboardShown,
+//                            )
                         }
                     }
 
