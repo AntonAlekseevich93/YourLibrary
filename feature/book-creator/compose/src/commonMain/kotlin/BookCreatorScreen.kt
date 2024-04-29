@@ -42,8 +42,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import book_editor.AuthorIsNotSelectedInfo
 import book_editor.BookEditor
+import book_editor.elements.AuthorIsNotSelectedInfo
 import containters.CenterBoxContainer
 import date.CommonDatePicker
 import date.DatePickerEvents
@@ -310,7 +310,8 @@ fun BookCreatorScreen(
                                 createNewAuthor = uiState.needCreateNewAuthor,
                                 isKeyboardShown = isKeyboardShown.value,
                                 statusBookTextFieldValue = statusBookTextFieldValue.value,
-                                similarBooks = uiState.similarBooks
+                                similarBooks = uiState.similarBooks,
+                                isSearchBookProcess = uiState.isSearchBookProcess,
                             )
                         }
                     }

@@ -121,4 +121,6 @@ object Strings {
         "Мы отправили вам письмо с подтверждением.\nПожалуйста, проверьте вашу электронную почтy"
     const val refresh = "Обновить"
     const val admin_panel = "Админ панель"
+    const val searching_title_result = "Вот что удалось найти:"
+    const val loading_book_search_info = "Роемся в книжных полках..."
 }

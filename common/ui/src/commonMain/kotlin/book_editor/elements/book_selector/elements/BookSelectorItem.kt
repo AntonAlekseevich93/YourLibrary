@@ -1,4 +1,4 @@
-package book_editor.book_selector.elements
+package book_editor.elements.book_selector.elements
 
 import ApplicationTheme
 import androidx.compose.foundation.clickable
@@ -14,11 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.books.BookShortVo
+
+private val MAX_ITEM_WITH = 130.dp
 
 @Composable
 fun BookSelectorItem(
@@ -41,16 +44,21 @@ fun BookSelectorItem(
         is Resource.Failure -> {
         }
     }
-    Column(modifier.clickable(interactionSource = MutableInteractionSource(), null) {
-        onClick(bookItem)
-    }, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = modifier
+            .clickable(interactionSource = MutableInteractionSource(), null) {
+                onClick(bookItem)
+            }
+            .sizeIn(maxWidth = MAX_ITEM_WITH),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Card(
             modifier = Modifier
                 .sizeIn(
                     minHeight = 200.dp,
-                    minWidth = 130.dp,
+                    minWidth = MAX_ITEM_WITH,
                     maxHeight = 200.dp,
-                    maxWidth = 130.dp
+                    maxWidth = MAX_ITEM_WITH
                 ),
             colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
             shape = RoundedCornerShape(12.dp),
@@ -73,14 +81,16 @@ fun BookSelectorItem(
             text = bookItem.originalAuthorName,
             style = ApplicationTheme.typography.footnoteRegular,
             color = ApplicationTheme.colors.mainTextColor,
-            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+            textAlign = TextAlign.Center
         )
 
         Text(
             text = bookItem.bookName,
             style = ApplicationTheme.typography.footnoteBold,
             color = ApplicationTheme.colors.mainTextColor,
-            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+            textAlign = TextAlign.Center
         )
     }
 }

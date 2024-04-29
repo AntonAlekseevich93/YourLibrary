@@ -1,5 +1,4 @@
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -265,8 +264,11 @@ class BookCreatorViewModel(
 
     private fun searchBookName(bookName: String) {
         searchJob?.cancel()
+        updateUIState(uiStateValue.copy(isSearchBookProcess = false))
         val uppercaseBookName = bookName.trim().uppercase()
+        uiStateValue.similarBooks.clear()
         if (bookName.length >= 2) {
+            updateUIState(uiStateValue.copy(isSearchBookProcess = true))
             searchJob = scope.launch {
                 delay(500)
                 val response = interactor.searchInBooks(uppercaseBookName)
@@ -275,7 +277,8 @@ class BookCreatorViewModel(
                 withContext(Dispatchers.Main) {
                     updateUIState(
                         uiStateValue.copy(
-                            similarBooks = newList
+                            similarBooks = newList,
+                            isSearchBookProcess = false
                         )
                     )
                 }

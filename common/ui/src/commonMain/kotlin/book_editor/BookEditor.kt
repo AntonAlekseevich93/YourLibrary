@@ -10,8 +10,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,17 +17,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckBox
-import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,13 +33,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import book_editor.book_selector.BookSelector
-import info.InfoBlock
+import book_editor.elements.AuthorIsNotSelectedInfo
+import book_editor.elements.LinkToAuthorButton
+import book_editor.elements.NewAuthorButton
+import book_editor.elements.book_selector.BookSelector
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -68,6 +62,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     statusBookTextFieldValue: TextFieldValue,
     isKeyboardShown: Boolean,
     createNewAuthor: Boolean,
+    isSearchBookProcess: Boolean,
     modifier: Modifier = Modifier,
     canShowError: Boolean = false,
     similarBooks: SnapshotStateList<BookShortVo> = mutableStateListOf(),
@@ -143,9 +138,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     hintText = Strings.hint_type_title_book,
                     onTextChanged = {
                         bookValues.bookName.value = it
-                        if (it.text.isNotEmpty() && it.text.length > 1) {
-                            sendEvent(BookEditorEvents.OnBookNameChanged(it.text))
-                        }
+                        sendEvent(BookEditorEvents.OnBookNameChanged(it.text))
                     },
                     disableSingleLineIfFocused = true,
                     textFieldValue = bookValues.bookName
@@ -271,7 +264,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
 
                 BookSelector(
                     similarBooks = similarBooks,
-                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp, start = 8.dp),
+                    isLoading = isSearchBookProcess,
+                    modifier = Modifier.padding(top = 24.dp, bottom = 16.dp, start = 8.dp),
                     onClick = {
                         sendEvent(BookEditorEvents.OnBookSelected(it))
                     }
@@ -402,109 +396,6 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     }
 }
 
-@Composable
-fun AuthorIsNotSelectedInfo(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        InfoBlock(
-            text = Strings.error_author_can_exist,
-            textColor = ApplicationTheme.colors.errorColor,
-        )
-    }
-}
 
 
-@Composable
-fun NewAuthorButton(
-    createNewAuthor: Boolean,
-    modifier: Modifier = Modifier,
-    createNewAuthorButtonListener: () -> Unit,
-) {
-    Card(
-        modifier = modifier
-            .padding(end = 16.dp, top = 8.dp, bottom = 4.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .clickable {
-                createNewAuthorButtonListener.invoke()
-            },
-        colors = CardDefaults.cardColors(ApplicationTheme.colors.mainBackgroundColor),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(8.dp).fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            Icon(
-                imageVector = if (createNewAuthor)
-                    Icons.Default.CheckBox
-                else
-                    Icons.Default.CheckBoxOutlineBlank,
-                contentDescription = null,
-                tint = if (createNewAuthor)
-                    ApplicationTheme.colors.primaryButtonColor
-                else
-                    ApplicationTheme.colors.mainIconsColor,
-                modifier = Modifier.padding().size(20.dp),
-            )
-
-            Text(
-                text = Strings.create_new_author,
-                style = ApplicationTheme.typography.footnoteRegular,
-                color = if (createNewAuthor)
-                    ApplicationTheme.colors.primaryButtonColor
-                else ApplicationTheme.colors.mainTextColor,
-                modifier = Modifier.padding(start = 8.dp, end = 2.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun LinkToAuthorButton(
-    linkToAuthor: Boolean,
-    modifier: Modifier = Modifier,
-    createNewAuthorButtonListener: () -> Unit,
-) {
-    Card(
-        modifier = modifier
-            .padding(top = 8.dp, bottom = 4.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .clickable {
-                createNewAuthorButtonListener.invoke()
-            },
-        colors = CardDefaults.cardColors(ApplicationTheme.colors.mainBackgroundColor),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(8.dp).fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = if (linkToAuthor)
-                    Icons.Default.CheckBox
-                else
-                    Icons.Default.CheckBoxOutlineBlank,
-                contentDescription = null,
-                tint = if (linkToAuthor)
-                    ApplicationTheme.colors.primaryButtonColor
-                else
-                    ApplicationTheme.colors.mainIconsColor,
-                modifier = Modifier.padding().size(20.dp),
-            )
-
-            Text(
-                text = Strings.link_to_author,
-                style = ApplicationTheme.typography.footnoteRegular,
-                color = if (linkToAuthor)
-                    ApplicationTheme.colors.primaryButtonColor
-                else ApplicationTheme.colors.mainTextColor,
-                modifier = Modifier.padding(start = 8.dp, end = 2.dp)
-            )
-        }
-    }
-}
 
