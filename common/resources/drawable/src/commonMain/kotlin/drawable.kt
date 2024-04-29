@@ -39,4 +39,5 @@ object Drawable {
     const val drawable_ic_user = "ic_user.xml"
     const val drawable_ic_exit = "ic_exit.xml"
     const val drawable_ic_email = "ic_email.xml"
+    const val drawable_ic_server = "ic_server.xml"
 }

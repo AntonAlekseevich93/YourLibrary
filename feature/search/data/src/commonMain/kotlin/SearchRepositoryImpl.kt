@@ -1,13 +1,36 @@
 import database.LocalSearchDataSource
+import ktor.RemoteSearchDataSource
 import main_models.AuthorVo
-import main_models.local_models.toVo
+import main_models.books.BookShortVo
+import main_models.rest.authors.toAuthorVo
+import main_models.rest.books.toVo
 
 class SearchRepositoryImpl(
-    private val localSearchDataSource: LocalSearchDataSource
+    private val localSearchDataSource: LocalSearchDataSource,
+    private val remoteSearchDataSource: RemoteSearchDataSource
 ) : SearchRepository {
 
-    override suspend fun searchInAuthorsName(searchedText: String): List<AuthorVo> =
-        localSearchDataSource.getAllMatchesByAuthorName(searchedText)
-            .mapNotNull { it.toVo(emptyList(), emptyList()) }
+    //    override suspend fun searchInAuthorsName(searchedText: String): List<AuthorVo> =
+//        localSearchDataSource.getAllMatchesByAuthorName(searchedText)
+//            .mapNotNull { it.toVo(emptyList(), emptyList()) }
+    override suspend fun searchInAuthorsName(searchedText: String): List<AuthorVo> {
+        val response = remoteSearchDataSource.getAllMatchesByAuthorName(searchedText)
+
+        return if (response?.result == null) {
+            emptyList()
+        } else {
+            response.result!!.authors.mapNotNull { it.toAuthorVo() }
+        }
+    }
+
+    override suspend fun searchInBooks(uppercaseBookName: String): List<BookShortVo> {
+        val response =
+            remoteSearchDataSource.getAllMatchesByBookName(searchedText = uppercaseBookName)
+        return if (response?.result == null) {
+            emptyList()
+        } else {
+            response.result!!.books.mapNotNull { it.toVo() }
+        }
+    }
 
 }

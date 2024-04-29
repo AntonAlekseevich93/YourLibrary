@@ -49,6 +49,7 @@ class DatabaseUtils {
 
         fun AuthorsTable.toAuthorLocalDto() = AuthorLocalDto(
             id = id,
+            serverId = serverId?.toInt(),
             name = name,
             uppercaseName = uppercaseName,
             relatedToAuthorId = relatedToAuthorId,

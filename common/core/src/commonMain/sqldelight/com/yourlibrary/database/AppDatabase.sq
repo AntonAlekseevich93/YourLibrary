@@ -165,6 +165,7 @@ SET originalAuthorId=?, originalAuthorName=? WHERE originalAuthorId=?;
 -- ------------------------------------------------------------------AUTHORS TABLE:
 
 CREATE TABLE IF NOT EXISTS AuthorsTable (
+  serverId INTEGER,
   id TEXT NOT NULL,
   name TEXT NOT NULL,
   uppercaseName TEXT NOT NULL,
@@ -175,8 +176,8 @@ CREATE TABLE IF NOT EXISTS AuthorsTable (
 );
 
 createAuthor:
-INSERT INTO AuthorsTable (id, name, uppercaseName,  relatedToAuthorId, isMainAuthor, timestampOfCreating, timestampOfUpdating)
-VALUES(?,? , ?, ?, ?, ?, ?);
+INSERT INTO AuthorsTable (serverId, id, name, uppercaseName,  relatedToAuthorId, isMainAuthor, timestampOfCreating, timestampOfUpdating)
+VALUES(?,?,? , ?, ?, ?, ?, ?);
 
 deleteAuthor:
 DELETE FROM AuthorsTable WHERE id =:id;

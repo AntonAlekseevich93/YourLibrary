@@ -22,22 +22,24 @@ class BookInfoInteractor(
     }
 
     suspend fun searchInAuthorsNameWithRelates(authorName: String): List<AuthorVo> {
-        val response = searchRepository.searchInAuthorsName(authorName)
-        val finishedSet = mutableSetOf<AuthorVo>()
-        response.forEach { author ->
-            if (author.isMainAuthor) {
-                val relates = authorRepository.getAllRelatedAuthors(author.id)
-                finishedSet.add(author.apply { relatedAuthors = relates })
-            } else if (author.relatedToAuthorId != null) {
-                authorRepository.getAuthorByIdWithoutRelates(author.relatedToAuthorId!!)
-                    ?.let { mainAuthor ->
-                        val relates =
-                            authorRepository.getAllRelatedAuthors(mainAuthor.id)
-                        finishedSet.add(mainAuthor.apply { relatedAuthors = relates })
-                    }
-            }
-        }
-        return finishedSet.toList()
+//        val response = searchRepository.searchInAuthorsName(authorName)
+//        val finishedSet = mutableSetOf<AuthorVo>()
+//        response.forEach { author ->
+//            if (author.isMainAuthor) {
+//                val relates = authorRepository.getAllRelatedAuthors(author.id)
+//                finishedSet.add(author.apply { relatedAuthors = relates })
+//            } else if (author.relatedToAuthorId != null) {
+//                authorRepository.getAuthorByIdWithoutRelates(author.relatedToAuthorId!!)
+//                    ?.let { mainAuthor ->
+//                        val relates =
+//                            authorRepository.getAllRelatedAuthors(mainAuthor.id)
+//                        finishedSet.add(mainAuthor.apply { relatedAuthors = relates })
+//                    }
+//            }
+//        }
+//        return finishedSet.toList()
+        //todo
+        return emptyList()
     }
 
     suspend fun getAuthorWithRelatesWithoutBooks(id: String): AuthorVo? =

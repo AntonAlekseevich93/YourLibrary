@@ -16,6 +16,10 @@ val domainModule = DI.Module("domainModule") {
         AuthorsInteractor(instance(), instance())
     }
 
+    bind<AdminInteractor>() with provider {
+        AdminInteractor(instance())
+    }
+
     bind<ApplicationInteractor>() with provider {
         ApplicationInteractor(instance())
     }

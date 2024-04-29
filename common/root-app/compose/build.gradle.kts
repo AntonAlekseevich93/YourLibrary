@@ -25,6 +25,7 @@ kotlin {
                 implementation(project(":feature:book-creator:compose"))
                 implementation(project(":feature:settings:compose"))
                 implementation(project(":feature:authors:compose"))
+                implementation(project(":feature:admin:compose"))
                 implementation(project(":feature:user:compose"))
             }
         }

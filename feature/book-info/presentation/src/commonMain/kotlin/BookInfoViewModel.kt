@@ -135,7 +135,9 @@ class BookInfoViewModel(
         _uiState.value.apply {
             return AuthorVo(
                 id = AuthorVo.generateId(),
+                serverId = null,
                 name = authorName,
+                uppercaseName = authorName.uppercase(),
                 isMainAuthor = true,
                 timestampOfCreating = platformInfo.getCurrentTime().timeInMillis,
                 timestampOfUpdating = platformInfo.getCurrentTime().timeInMillis,

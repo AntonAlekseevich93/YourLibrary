@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -46,6 +47,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import book_editor.book_selector.BookSelector
 import date.DatePickerEvents
 import info.InfoBlock
 import io.kamel.core.Resource
@@ -55,6 +57,7 @@ import main_models.AuthorVo
 import main_models.BookValues
 import main_models.DatePickerType
 import main_models.ReadingStatus
+import main_models.books.BookShortVo
 import platform.Platform
 import platform.isMobile
 import reading_status.getStatusColor
@@ -74,6 +77,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     linkToAuthor: MutableState<Boolean>,
     modifier: Modifier = Modifier,
     canShowError: Boolean = false,
+    similarBooks: SnapshotStateList<BookShortVo> = mutableStateListOf(),
 ) {
     val showImage = remember { mutableStateOf(false) }
     val painter = asyncPainterResource(
@@ -137,7 +141,20 @@ fun BaseEventScope<BaseEvent>.BookEditor(
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
+
                 TextFieldWithTitleAndSuggestion(
+                    platform = platform,
+                    title = Strings.title,
+                    hintText = Strings.hint_type_title_book,
+                    onTextChanged = {
+                        bookValues.bookName.value = it
+                    },
+                    disableSingleLineIfFocused = true,
+                    textFieldValue = bookValues.bookName
+                )
+
+                TextFieldWithTitleAndSuggestion(
+                    modifier = Modifier.padding(top = 2.dp),
                     platform = platform,
                     title = Strings.autor,
                     hintText = Strings.hint_type_author,
@@ -248,127 +265,123 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     }
                 )
 
-                TextFieldWithTitleAndSuggestion(
-                    platform = platform,
-                    title = Strings.title,
-                    modifier = Modifier.padding(top = 2.dp),
-                    hintText = Strings.hint_type_title_book,
-                    onTextChanged = {
-                        bookValues.bookName.value = it
-                    },
-                    disableSingleLineIfFocused = true,
-                    textFieldValue = bookValues.bookName
-                )
-
-                TextFieldWithTitleAndSuggestion(
-                    platform = platform,
-                    title = Strings.status,
-                    modifier = Modifier.padding(top = 2.dp),
-                    hintText = ReadingStatus.PLANNED.nameValue,
-                    textFieldValue = statusBookTextFieldValue,
-                    enabledInput = false,
-                    onSuggestionClickListener = {
-                        bookValues.selectedStatus.value = when (it) {
-                            ReadingStatus.PLANNED.nameValue -> {
-                                ReadingStatus.PLANNED
-                            }
-
-                            ReadingStatus.READING.nameValue -> {
-                                ReadingStatus.READING
-                            }
-
-                            ReadingStatus.DONE.nameValue -> {
-                                ReadingStatus.DONE
-                            }
-
-                            ReadingStatus.DEFERRED.nameValue -> {
-                                ReadingStatus.DEFERRED
-                            }
-
-                            else -> throw Exception("The type does not match")
-                        }
-                        statusBookTextFieldValue.value =
-                            statusBookTextFieldValue.value.copy(
-                                text = it,
-                                selection = TextRange(it.length)
-                            )
-                    },
-                    showSuggestionAsTag = true,
-                    freezeFocusWhenOnClick = true,
-                    suggestionList = mutableStateOf(ReadingStatus.entries.map { it.nameValue }),
-                    tagColor = bookValues.selectedStatus.value.getStatusColor()
-                )
-
-                TextFieldWithTitleAndSuggestion(
-                    platform = platform,
-                    title = Strings.pages_title,
-                    modifier = Modifier.padding(top = 2.dp),
-                    hintText = Strings.hint_number_of_pages,
-                    onTextChanged = {
-                        bookValues.numberOfPages.value = it
-                    },
-                    textFieldValue = bookValues.numberOfPages
-                )
-
-                TextFieldWithTitleAndSuggestion(
-                    platform = platform,
-                    title = Strings.cover,
-                    modifier = Modifier.padding(top = 2.dp),
-                    hintText = Strings.hint_link_to_cover,
-                    onTextChanged = {
-                        bookValues.coverUrl.value = it
-                    },
-                    disableSingleLineIfFocused = true,
-                    textFieldValue = bookValues.coverUrl
-                )
-
-                TextFieldWithTitleAndSuggestion(
-                    platform = platform,
-                    title = Strings.start_date_title,
-                    text = bookValues.startDateInString,
-                    modifier = Modifier.padding(top = 2.dp),
-                    hintText = Strings.hint_reading_start_date,
-                    enabledInput = false,
+                BookSelector(
+                    similarBooks = similarBooks,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp, start = 8.dp),
                     onClick = {
-                        this@BookEditor.sendEvent(DatePickerEvents.OnShowDatePicker(DatePickerType.StartDate))
+
                     }
                 )
 
-                TextFieldWithTitleAndSuggestion(
-                    platform = platform,
-                    text = bookValues.endDateInString,
-                    title = Strings.end_date_title,
-                    modifier = Modifier.padding(top = 2.dp),
-                    hintText = Strings.hint_reading_end_date,
-                    enabledInput = false,
-                    onClick = {
-                        this@BookEditor.sendEvent(DatePickerEvents.OnShowDatePicker(DatePickerType.EndDate))
-                    }
-                )
-
-                TextFieldWithTitleAndSuggestion(
-                    platform = platform,
-                    title = Strings.description,
-                    modifier = Modifier.padding(top = 2.dp),
-                    hintText = Strings.hint_book_description,
-                    onTextChanged = {
-                        bookValues.description.value = it
-                    },
-                    disableSingleLineIfFocused = true,
-                    textFieldValue = bookValues.description,
-                    maxLines = 200,
-                )
-
-                TextFieldWithTitleAndSuggestion(
-                    platform = platform,
-                    title = Strings.isbn,
-                    modifier = Modifier.padding(top = 2.dp),
-                    hintText = Strings.hint_isbn_number,
-                    onTextChanged = {
-                        bookValues.isbn.value = it
-                    },
-                    textFieldValue = bookValues.isbn
-                )
+//                TextFieldWithTitleAndSuggestion(
+//                    platform = platform,
+//                    title = Strings.status,
+//                    modifier = Modifier.padding(top = 2.dp),
+//                    hintText = ReadingStatus.PLANNED.nameValue,
+//                    textFieldValue = statusBookTextFieldValue,
+//                    enabledInput = false,
+//                    onSuggestionClickListener = {
+//                        bookValues.selectedStatus.value = when (it) {
+//                            ReadingStatus.PLANNED.nameValue -> {
+//                                ReadingStatus.PLANNED
+//                            }
+//
+//                            ReadingStatus.READING.nameValue -> {
+//                                ReadingStatus.READING
+//                            }
+//
+//                            ReadingStatus.DONE.nameValue -> {
+//                                ReadingStatus.DONE
+//                            }
+//
+//                            ReadingStatus.DEFERRED.nameValue -> {
+//                                ReadingStatus.DEFERRED
+//                            }
+//
+//                            else -> throw Exception("The type does not match")
+//                        }
+//                        statusBookTextFieldValue.value =
+//                            statusBookTextFieldValue.value.copy(
+//                                text = it,
+//                                selection = TextRange(it.length)
+//                            )
+//                    },
+//                    showSuggestionAsTag = true,
+//                    freezeFocusWhenOnClick = true,
+//                    suggestionList = mutableStateOf(ReadingStatus.entries.map { it.nameValue }),
+//                    tagColor = bookValues.selectedStatus.value.getStatusColor()
+//                )
+//
+//                TextFieldWithTitleAndSuggestion(
+//                    platform = platform,
+//                    title = Strings.pages_title,
+//                    modifier = Modifier.padding(top = 2.dp),
+//                    hintText = Strings.hint_number_of_pages,
+//                    onTextChanged = {
+//                        bookValues.numberOfPages.value = it
+//                    },
+//                    textFieldValue = bookValues.numberOfPages
+//                )
+//
+//                TextFieldWithTitleAndSuggestion(
+//                    platform = platform,
+//                    title = Strings.cover,
+//                    modifier = Modifier.padding(top = 2.dp),
+//                    hintText = Strings.hint_link_to_cover,
+//                    onTextChanged = {
+//                        bookValues.coverUrl.value = it
+//                    },
+//                    disableSingleLineIfFocused = true,
+//                    textFieldValue = bookValues.coverUrl
+//                )
+//
+//                TextFieldWithTitleAndSuggestion(
+//                    platform = platform,
+//                    title = Strings.start_date_title,
+//                    text = bookValues.startDateInString,
+//                    modifier = Modifier.padding(top = 2.dp),
+//                    hintText = Strings.hint_reading_start_date,
+//                    enabledInput = false,
+//                    onClick = {
+//                        this@BookEditor.sendEvent(DatePickerEvents.OnShowDatePicker(DatePickerType.StartDate))
+//                    }
+//                )
+//
+//                TextFieldWithTitleAndSuggestion(
+//                    platform = platform,
+//                    text = bookValues.endDateInString,
+//                    title = Strings.end_date_title,
+//                    modifier = Modifier.padding(top = 2.dp),
+//                    hintText = Strings.hint_reading_end_date,
+//                    enabledInput = false,
+//                    onClick = {
+//                        this@BookEditor.sendEvent(DatePickerEvents.OnShowDatePicker(DatePickerType.EndDate))
+//                    }
+//                )
+//
+//                TextFieldWithTitleAndSuggestion(
+//                    platform = platform,
+//                    title = Strings.description,
+//                    modifier = Modifier.padding(top = 2.dp),
+//                    hintText = Strings.hint_book_description,
+//                    onTextChanged = {
+//                        bookValues.description.value = it
+//                    },
+//                    disableSingleLineIfFocused = true,
+//                    textFieldValue = bookValues.description,
+//                    maxLines = 200,
+//                )
+//
+//                TextFieldWithTitleAndSuggestion(
+//                    platform = platform,
+//                    title = Strings.isbn,
+//                    modifier = Modifier.padding(top = 2.dp),
+//                    hintText = Strings.hint_isbn_number,
+//                    onTextChanged = {
+//                        bookValues.isbn.value = it
+//                    },
+//                    textFieldValue = bookValues.isbn
+//                )
 
                 /**this use for add padding if keyboard shown**/
                 if (platform.isMobile()) {

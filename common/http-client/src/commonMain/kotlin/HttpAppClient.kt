@@ -2,6 +2,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
@@ -52,13 +53,17 @@ class HttpAppClient(
     suspend fun <TResult : Any, TError : Any> get(
         url: String,
         resultClass: KClass<TResult>,
-        errorClass: KClass<TError>
+        errorClass: KClass<TError>,
+        params: Map<String, String> = emptyMap()
     ): BaseResponse<TResult, TError>? {
         return try {
             val response: HttpResponse = httpClient.get(getFullUrl(url)) {
                 contentType(ContentType.Application.Json)
                 header(TOKEN_KEY, appConfig.authToken)
                 header(DEVICE_ID_KEY, appConfig.deviceId)
+                params.forEach {
+                    parameter(key = it.key, value = it.value)
+                }
             }
             val jsonAsString: String = response.body<String>()
             val json = Json { ignoreUnknownKeys = true }
@@ -69,7 +74,7 @@ class HttpAppClient(
 
             baseResponse
         } catch (e: Exception) {
-            println("GET EXSEPTIONS = ${e.message}")
+            println("YOUR LIBRARY.INNER App Exception = ${e.message}")
             null
         } finally {
 //            httpClient.close()

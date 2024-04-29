@@ -20,13 +20,14 @@ class AuthorsInteractor(
         }
     }
 
-    suspend fun searchAuthorExceptId(
-        searchingName: String,
-        exceptionAuthorId: String
-    ): LinkedHashMap<String, MutableList<AuthorVo>> {
-        val result = searchRepository.searchInAuthorsName(searchingName)
-        return getAuthorsByAlphabet(result, exceptionAuthorId)
-    }
+//    suspend fun searchAuthorExceptId(
+//        searchingName: String,
+//        exceptionAuthorId: String
+//    ): LinkedHashMap<String, MutableList<AuthorVo>> {
+////        val result = searchRepository.searchInAuthorsName(searchingName)
+////        return getAuthorsByAlphabet(result, exceptionAuthorId)
+//        //todo добавлен поиск на бэке
+//    }
 
     suspend fun addAuthorToRelates(
         originalAuthorId: String,

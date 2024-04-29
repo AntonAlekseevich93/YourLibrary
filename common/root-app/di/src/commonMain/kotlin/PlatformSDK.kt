@@ -56,6 +56,7 @@ object PlatformSDK {
                     urlParserModule,
                     settingsModule,
                     authorsModule,
+                    adminModule,
                     userModule,
                     domainModule,
                     viewModelsModule,

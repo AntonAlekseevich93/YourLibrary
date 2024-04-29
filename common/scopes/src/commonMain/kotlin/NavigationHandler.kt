@@ -11,4 +11,5 @@ interface NavigationHandler {
     fun navigateToJoinAuthorsScreen()
     fun navigateToSettingsScreen()
     fun navigateToProfile()
+    fun navigateToAdminPanel()
 }

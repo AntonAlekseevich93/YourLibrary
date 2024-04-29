@@ -4,8 +4,10 @@ import java.util.UUID
 
 //todo we can`t use var values in data classes
 data class AuthorVo(
+    val serverId: Int?,
     val id: String,
     var name: String,
+    var uppercaseName: String,
     var relatedToAuthorId: String?,
     var isMainAuthor: Boolean,
     val timestampOfCreating: Long,
@@ -16,6 +18,8 @@ data class AuthorVo(
     companion object {
         fun generateId() = UUID.randomUUID().toString() //todo подумать над другой реализацией id
         fun getEmptyAuthor() = AuthorVo(
+            null,
+            "",
             "",
             "",
             null,

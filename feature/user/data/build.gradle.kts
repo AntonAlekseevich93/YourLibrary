@@ -1,12 +1,14 @@
 plugins {
     id("multiplatform-compose-setup")
     id("android-setup")
+    kotlin("plugin.serialization")
 }
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(Dependencies.Ktor.serialization)
                 api(project(":feature:user:api"))
                 implementation(project(":common:constants"))
                 implementation(project(":common:core"))

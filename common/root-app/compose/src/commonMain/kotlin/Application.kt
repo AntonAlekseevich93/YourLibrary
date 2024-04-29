@@ -189,6 +189,18 @@ fun Application(
                             )
                         }
 
+                        scene(
+                            route = Routes.admin_screen_route,
+                            navTransition = NavTransition(
+                                createTransition = expandHorizontally(),
+                                destroyTransition = slideOutHorizontally(tween(100))
+                            )
+                        ) {
+                            AdminPanelScreen(
+                                showLeftDrawer = uiState.showLeftDrawerState
+                            )
+                        }
+
 
                     }
                 }

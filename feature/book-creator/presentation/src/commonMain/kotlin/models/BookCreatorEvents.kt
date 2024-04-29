@@ -12,4 +12,5 @@ sealed class BookCreatorEvents : BaseEvent {
     data object OnCreateBookManuallyEvent : BookCreatorEvents()
     data object DisableCreateBookManuallyEvent : BookCreatorEvents()
     data object OnClearUrlAndCreateBookManuallyEvent : BookCreatorEvents()
+    data object ClearAllAuthorInfo : BookCreatorEvents()
 }

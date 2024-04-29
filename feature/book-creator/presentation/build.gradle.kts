@@ -8,6 +8,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":common:core"))
+                implementation(project(":common:arch"))
                 implementation(project(":common:scopes"))
                 implementation(project(":common:models"))
                 implementation(project(":common:ui"))

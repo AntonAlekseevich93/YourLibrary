@@ -120,4 +120,5 @@ object Strings {
     const val info_block_verify_user =
         "Мы отправили вам письмо с подтверждением.\nПожалуйста, проверьте вашу электронную почтy"
     const val refresh = "Обновить"
+    const val admin_panel = "Админ панель"
 }

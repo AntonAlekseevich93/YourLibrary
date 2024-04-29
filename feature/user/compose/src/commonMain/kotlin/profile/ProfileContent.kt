@@ -59,8 +59,7 @@ fun BaseEventScope<BaseEvent>.ProfileContent(userInfo: State<UserVo>) {
             Text(
                 text = userInfo.value.email,
                 style = ApplicationTheme.typography.headlineRegular,
-                color = ApplicationTheme.colors.mainTextColor,
-                modifier = Modifier.padding()
+                color = ApplicationTheme.colors.mainTextColor
             )
         }
 

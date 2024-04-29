@@ -7,4 +7,5 @@ object Routes {
     const val join_authors_screen_route = "/join_authors_screen"
     const val settings_screen_route = "/settings_screen"
     const val profile_screen_route = "/profile_screen"
+    const val admin_screen_route = "/admin_screen"
 }

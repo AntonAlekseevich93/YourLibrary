@@ -174,6 +174,13 @@ fun createNavigationHandler(
             }
         }
 
+        override fun navigateToAdminPanel() {
+            if (currentRoute.value != Routes.admin_screen_route) {
+                navigator.value?.navigate(
+                    route = Routes.admin_screen_route
+                )
+            }
+        }
 
     }
     return handler

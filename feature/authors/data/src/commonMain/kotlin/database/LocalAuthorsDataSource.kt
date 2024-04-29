@@ -19,6 +19,7 @@ class LocalAuthorsDataSource(
             ) {
                 db.appQuery.createAuthor(
                     id = id!!,
+                    serverId = null,
                     name = name!!,
                     uppercaseName = uppercaseName!!,
                     relatedToAuthorId = relatedToAuthorId,

@@ -110,7 +110,7 @@ fun BookCreatorScreen(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
-                        uiState.clearAllAuthorInfo()
+                        viewModel.sendEvent(BookCreatorEvents.ClearAllAuthorInfo)
                         viewModel.sendEvent(BookCreatorEvents.GoBack)
                     },
                 )
@@ -192,31 +192,31 @@ fun BookCreatorScreen(
                                 interactionSource = MutableInteractionSource(),
                                 indication = null,
                                 onClick = {
-                                    uiState.clearAllAuthorInfo()
+                                    viewModel.sendEvent(BookCreatorEvents.ClearAllAuthorInfo)
                                     viewModel.sendEvent(BookCreatorEvents.GoBack)
                                 }
                             )
                         )
                     }
 
-                    if (uiState.isCreateBookManually.value && !uiState.showParsingResult.value) {
-                        Box(
-                            modifier = Modifier.fillMaxSize().padding(start = 10.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = null,
-                                tint = ApplicationTheme.colors.mainIconsColor,
-                                modifier = Modifier.size(26.dp).clickable(
-                                    interactionSource = MutableInteractionSource(),
-                                    null
-                                ) {
-                                    viewModel.sendEvent(BookCreatorEvents.DisableCreateBookManuallyEvent)
-                                }
-                            )
-                        }
-                    }
+//                    if (uiState.isCreateBookManually.value && !uiState.showParsingResult.value) {
+//                        Box(
+//                            modifier = Modifier.fillMaxSize().padding(start = 10.dp),
+//                            contentAlignment = Alignment.CenterStart
+//                        ) {
+//                            Icon(
+//                                imageVector = Icons.Default.ArrowBack,
+//                                contentDescription = null,
+//                                tint = ApplicationTheme.colors.mainIconsColor,
+//                                modifier = Modifier.size(26.dp).clickable(
+//                                    interactionSource = MutableInteractionSource(),
+//                                    null
+//                                ) {
+//                                    viewModel.sendEvent(BookCreatorEvents.DisableCreateBookManuallyEvent)
+//                                }
+//                            )
+//                        }
+//                    }
                 }
 
                 Column(
@@ -309,6 +309,7 @@ fun BookCreatorScreen(
                                 linkToAuthor = linkToAuthor,
                                 isKeyboardShown = isKeyboardShown,
                                 statusBookTextFieldValue = statusBookTextFieldValue,
+                                similarBooks = uiState.similarBooks
                             )
                         }
                     }

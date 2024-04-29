@@ -4,6 +4,7 @@ import main_models.AuthorVo
 
 /** need update DatabaseUtils if change values **/
 data class AuthorLocalDto(
+    val serverId: Int?,
     val id: String?,
     val name: String?,
     val uppercaseName: String?,
@@ -15,6 +16,7 @@ data class AuthorLocalDto(
 
 fun AuthorVo.toDto() = AuthorLocalDto(
     id = id,
+    serverId = serverId,
     name = name,
     uppercaseName = name.uppercase(),
     relatedToAuthorId = relatedToAuthorId,
@@ -29,7 +31,9 @@ fun AuthorLocalDto.toVo(
 ): AuthorVo? {
     return AuthorVo(
         id = id ?: return null,
+        serverId = serverId,
         name = name ?: return null,
+        uppercaseName = name.uppercase(),
         relatedToAuthorId = relatedToAuthorId,
         isMainAuthor = isMainAuthor == 0,
         timestampOfCreating = timestampOfCreating ?: return null,

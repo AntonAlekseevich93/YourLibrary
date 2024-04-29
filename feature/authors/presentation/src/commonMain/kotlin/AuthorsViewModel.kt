@@ -130,12 +130,13 @@ class AuthorsViewModel(
 
     private fun searchAuthors(searchingAuthorName: String, exceptId: String) {
         scope.launch {
-            val result = interactor.searchAuthorExceptId(
-                searchingAuthorName, exceptId
-            )
-            withContext(Dispatchers.Main) {
-                updateUIState(uiStateValue.copy(searchingAuthorResult = mutableStateOf(result)))
-            }
+            //todo добавлен поиск на бэке
+//            val result = interactor.searchAuthorExceptId(
+//                searchingAuthorName, exceptId
+//            )
+//            withContext(Dispatchers.Main) {
+//                updateUIState(uiStateValue.copy(searchingAuthorResult = mutableStateOf(result)))
+//            }
         }
     }
 

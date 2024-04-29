@@ -39,6 +39,8 @@ kotlin {
                 implementation(project(":feature:settings:presentation"))
                 implementation(project(":feature:authors:data"))
                 implementation(project(":feature:authors:domain"))
+                implementation(project(":feature:admin:data"))
+                implementation(project(":feature:admin:domain"))
                 implementation(project(":feature:user:data"))
                 implementation(project(":feature:user:domain"))
             }

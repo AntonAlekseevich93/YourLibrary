@@ -1,6 +1,7 @@
 import main_models.AuthorVo
 import main_models.BookItemResponse
 import main_models.BookItemVo
+import main_models.books.BookShortVo
 
 class BookCreatorInteractor(
     private val repository: BookCreatorRepository,
@@ -35,4 +36,7 @@ class BookCreatorInteractor(
     suspend fun createAuthor(author: AuthorVo) {
         authorRepository.createAuthor(author)
     }
+
+    suspend fun searchInBooks(uppercaseBookName: String): List<BookShortVo> =
+        searchRepository.searchInBooks(uppercaseBookName)
 }
