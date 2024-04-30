@@ -49,6 +49,7 @@ import date.DatePickerEvents
 import di.Inject
 import main_models.DatePickerType
 import models.BookCreatorEvents
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import platform.Platform
@@ -178,7 +179,7 @@ fun BookCreatorScreen(
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Image(
-                            painter = painterResource(Drawable.drawable_ic_close_128px),
+                            painter = painterResource(DrawableResource(Drawable.drawable_ic_close_128px)),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                             modifier = Modifier.size(22.dp).clickable(

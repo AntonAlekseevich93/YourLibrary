@@ -64,11 +64,11 @@ fun BaseEventScope<BaseEvent>.CommonDatePicker(
     ) {
         DatePicker(
             state = state,
-            dateFormatter = DatePickerFormatter(
-                DateUtils.DATE_FORMAT,
-                DateUtils.DATE_FORMAT,
-                DateUtils.DATE_FORMAT
-            ),
+//            dateFormatter = DatePickerFormatter(
+//                DateUtils.DATE_FORMAT,
+//                DateUtils.DATE_FORMAT,
+//                DateUtils.DATE_FORMAT
+//            ),
             colors = getDatePickerAppColor(),
             title = {
                 Text(

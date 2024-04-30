@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import main_models.path.PathInfoVo
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import text_fields.CommonTextField
@@ -137,7 +138,7 @@ internal fun PathInfoBlock(
                 Column {
                     if (!renameMode) {
                         Image(
-                            painter = painterResource(Drawable.drawable_ic_menu_button),
+                            painter = painterResource(DrawableResource(Drawable.drawable_ic_menu_button)),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(iconBackground),
                             modifier = Modifier.size(20.dp).padding(start = 8.dp)

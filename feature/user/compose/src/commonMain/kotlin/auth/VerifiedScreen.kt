@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import info.InfoBlock
 import models.UserEvents
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import tags.CustomTag
@@ -28,7 +29,7 @@ fun BaseEventScope<BaseEvent>.VerifiedScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(Drawable.drawable_app_logo),
+            painter = painterResource(DrawableResource(Drawable.drawable_app_logo)),
             contentDescription = null,
             modifier = Modifier.padding(bottom = 24.dp)
         )

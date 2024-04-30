@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import main_models.ShelfVo
 import models.BookItemCardConfig
 import models.ShelfEvents
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -59,7 +60,7 @@ fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
                 color = ApplicationTheme.colors.mainTextColor,
             )
             Image(
-                painter = painterResource(Drawable.drawable_ic_expand_shape),
+                painter = painterResource(DrawableResource(Drawable.drawable_ic_expand_shape)),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                 modifier = Modifier.padding(start = 16.dp, top = 4.dp).size(16.dp)

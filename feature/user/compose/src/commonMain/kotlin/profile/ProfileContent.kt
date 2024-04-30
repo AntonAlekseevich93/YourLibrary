@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import common.HoveredTextWithIcon
 import main_models.user.UserVo
 import models.UserEvents
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import profile.elements.Title
@@ -50,7 +51,7 @@ fun BaseEventScope<BaseEvent>.ProfileContent(userInfo: State<UserVo>) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
-                painter = painterResource(Drawable.drawable_ic_email),
+                painter = painterResource(DrawableResource(Drawable.drawable_ic_email)),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                 modifier = Modifier.size(54.dp).padding(end = 6.dp, start = 24.dp)

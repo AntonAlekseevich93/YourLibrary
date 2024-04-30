@@ -35,6 +35,7 @@ import authors_screen.AuthorItemMenu
 import containters.CenterBoxContainer
 import main_models.AuthorVo
 import models.AuthorsEvents
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -78,7 +79,7 @@ fun BaseEventScope<BaseEvent>.JoinAllAuthors(
             shape = RoundedCornerShape(12.dp),
             leadingIcon = {
                 Image(
-                    painter = painterResource(Drawable.drawable_ic_search_glass),
+                    painter = painterResource(DrawableResource(Drawable.drawable_ic_search_glass)),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.searchIconColor),
                     modifier = Modifier.size(20.dp)

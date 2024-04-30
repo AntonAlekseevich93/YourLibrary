@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -55,7 +56,7 @@ fun HoveredTextWithIcon(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
-                painter = painterResource(iconRes),
+                painter = painterResource(DrawableResource(iconRes)),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                 modifier = Modifier.size(44.dp).padding(end = 6.dp, start = 12.dp)

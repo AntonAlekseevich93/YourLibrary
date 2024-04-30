@@ -17,6 +17,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.DrawableResource
 import selected_pointer_event_card.SelectedPointerEventCard
 
 @OptIn(ExperimentalResourceApi::class)
@@ -37,7 +38,7 @@ internal fun RecentSearchedItem(
             modifier = innerModifier
         ) {
             Image(
-                painter = painterResource(Drawable.drawable_ic_search_glass),
+                painter = painterResource(DrawableResource(Drawable.drawable_ic_search_glass)),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(ApplicationTheme.colors.searchIconColor),
                 modifier = Modifier.size(14.dp)

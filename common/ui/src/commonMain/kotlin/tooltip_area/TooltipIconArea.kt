@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import main_models.TooltipItem
 import main_models.TooltipPosition
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -88,7 +89,7 @@ fun TooltipIconArea(
         colors = CardDefaults.cardColors(cardBackground)
     ) {
         Image(
-            painter = painterResource(drawableResName),
+            painter = painterResource(DrawableResource(drawableResName)),
             contentDescription = null,
             colorFilter = ColorFilter.tint(iconTint),
             modifier = imageModifier

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -27,6 +26,7 @@ import containters.CenterBoxContainer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import main_models.rest.LoadingStatus
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -99,7 +99,7 @@ fun LoadingStatusIndicator(
             ) {
                 if (loadingStatus == LoadingStatus.SUCCESS) {
                     Image(
-                        painter = painterResource(Drawable.drawable_ic_check),
+                        painter = painterResource(DrawableResource(Drawable.drawable_ic_check)),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(ApplicationTheme.colors.successColor),
                         modifier = Modifier
@@ -107,7 +107,7 @@ fun LoadingStatusIndicator(
                 }
                 if (loadingStatus == LoadingStatus.ERROR) {
                     Image(
-                        painter = painterResource(Drawable.drawable_ic_close_128px),
+                        painter = painterResource(DrawableResource(Drawable.drawable_ic_close_128px)),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(ApplicationTheme.colors.errorColor),
                         modifier = Modifier

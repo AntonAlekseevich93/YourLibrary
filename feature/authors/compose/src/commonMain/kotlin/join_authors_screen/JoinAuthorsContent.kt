@@ -32,6 +32,7 @@ import join_authors_screen.components.JoinRelatesAuthorBlock
 import main_models.AuthorVo
 import models.AuthorsEvents
 import models.JoiningAuthorsUiState
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import renaming_author.RenamingAuthorBlock
@@ -54,7 +55,7 @@ fun BaseEventScope<BaseEvent>.JoinAuthorsContent(
 
             CenterBoxContainer {
                 Image(
-                    painter = painterResource(drawable_ic_join),
+                    painter = painterResource(DrawableResource(drawable_ic_join)),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                     modifier = Modifier
@@ -79,7 +80,7 @@ fun BaseEventScope<BaseEvent>.JoinAuthorsContent(
 
             CenterBoxContainer {
                 Image(
-                    painter = painterResource(drawable_ic_arrow_in_box),
+                    painter = painterResource(DrawableResource(drawable_ic_arrow_in_box)),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                     modifier = Modifier

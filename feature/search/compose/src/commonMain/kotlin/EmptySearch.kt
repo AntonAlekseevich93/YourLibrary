@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -23,7 +24,7 @@ fun EmptySearch() {
         modifier = Modifier.fillMaxWidth().heightIn(min = 240.dp)
     ) {
         Image(
-            painter = painterResource(Drawable.drawable_ic_empty_search),
+            painter = painterResource(DrawableResource(Drawable.drawable_ic_empty_search)),
             contentDescription = null,
             colorFilter = ColorFilter.tint(ApplicationTheme.colors.searchIconColor),
             modifier = Modifier

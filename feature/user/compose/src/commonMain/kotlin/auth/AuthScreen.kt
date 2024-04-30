@@ -20,6 +20,7 @@ import auth.elements.ButtonSwitcher
 import auth.elements.SignInFields
 import auth.elements.SignUpFields
 import models.UserEvents
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -45,7 +46,7 @@ fun BaseEventScope<BaseEvent>.AuthScreen(isSignUnState: State<Boolean>) {
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(Drawable.drawable_app_logo),
+            painter = painterResource(DrawableResource(Drawable.drawable_app_logo)),
             contentDescription = null,
             modifier = Modifier.padding(bottom = 44.dp)
         )

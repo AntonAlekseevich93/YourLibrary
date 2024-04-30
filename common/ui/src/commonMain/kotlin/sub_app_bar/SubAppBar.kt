@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import main_models.TooltipPosition
 import main_models.ViewsType
 import navigation_drawer.contents.models.DrawerEvents
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import tooltip_area.TooltipEvents
@@ -279,7 +280,7 @@ internal fun DropDownItemView(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Image(
-            painter = painterResource(iconResName),
+            painter = painterResource(DrawableResource(iconResName)),
             contentDescription = null,
             colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
             modifier = Modifier

@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
 import main_models.path.PathInfoVo
 import models.ProjectFoldersEvents
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -89,7 +90,7 @@ fun BaseEventScope<BaseEvent>.CreationAndSelectionProjectFolderScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painter = painterResource(Drawable.drawable_app_logo),
+                    painter = painterResource(DrawableResource(Drawable.drawable_app_logo)),
                     contentDescription = null,
                     modifier = Modifier.padding(top = 64.dp, bottom = 10.dp)
                 )

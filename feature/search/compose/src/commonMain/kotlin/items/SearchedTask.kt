@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import models.SearchTaskItemUiState
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import selected_pointer_event_card.SelectedPointerEventCard
@@ -39,7 +40,7 @@ internal fun SearchedTask(
             modifier = innerModifier
         ) {
             Image(
-                painter = painterResource(Drawable.drawable_ic_task),
+                painter = painterResource(DrawableResource(Drawable.drawable_ic_task)),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(ApplicationTheme.colors.searchIconColor),
                 modifier = Modifier.size(24.dp)
