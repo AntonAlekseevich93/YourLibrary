@@ -1,3 +1,4 @@
+import alert_dialog.CommonAlertDialog
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -338,6 +339,18 @@ fun BookCreatorScreen(
                         viewModel.sendEvent(BookCreatorEvents.OnShowDialogClearAllData(false))
                     }, onClick = {
                         viewModel.sendEvent(BookCreatorEvents.ClearUrlEvent)
+                    }
+                )
+            }
+
+            if (uiState.showCommonAlertDialog && uiState.alertDialogConfig != null) {
+                CommonAlertDialog(
+                    config = uiState.alertDialogConfig!!,
+                    acceptListener = {
+                        viewModel.sendEvent(BookCreatorEvents.SetBookCoverManually)
+                    },
+                    onDismissRequest = {
+                        viewModel.sendEvent(BookCreatorEvents.DismissCommonAlertDialog)
                     }
                 )
             }

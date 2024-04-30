@@ -4,6 +4,7 @@ import ApplicationTheme
 import BaseEvent
 import BaseEventScope
 import Strings
+import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -352,7 +353,16 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         textFieldValue = bookValues.coverUrl,
                         onClick = {
                             if (shortBook != null && !isBookCoverManually) {
-                                sendEvent(BookEditorEvents.SetBookCoverIsManually(true))
+                                sendEvent(
+                                    BookEditorEvents.OnShowAlertDialog(
+                                        CommonAlertDialogConfig(
+                                            title = Strings.alert_dialog_delete_cover_title,
+                                            description = Strings.alert_dialog_delete_cover_description,
+                                            acceptButtonTitle = Strings.delete,
+                                            dismissButtonTitle = Strings.non_delete
+                                        )
+                                    )
+                                )
                             }
                         }
                     )

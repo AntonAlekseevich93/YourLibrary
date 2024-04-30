@@ -50,9 +50,13 @@ class BookCreatorViewModel(
                 updateUIState(uiStateValue.copy(needCreateNewAuthor = event.needCreate))
             }
 
-            is BookEditorEvents.SetBookCoverIsManually -> {
-                uiStateValue.bookValues.clearCoverUrl()
-                updateUIState(uiStateValue.copy(isBookCoverManually = event.isManually))
+            is BookEditorEvents.OnShowAlertDialog -> {
+                updateUIState(
+                    uiStateValue.copy(
+                        showCommonAlertDialog = true,
+                        alertDialogConfig = event.config
+                    )
+                )
             }
 
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
@@ -93,6 +97,26 @@ class BookCreatorViewModel(
 
             is BookCreatorEvents.OnShowDialogClearAllData -> {
                 updateUIState(uiStateValue.copy(showDialogClearAllData = event.show))
+            }
+
+            is BookCreatorEvents.DismissCommonAlertDialog -> {
+                updateUIState(
+                    uiStateValue.copy(
+                        showCommonAlertDialog = false,
+                        alertDialogConfig = null
+                    )
+                )
+            }
+
+            is BookCreatorEvents.SetBookCoverManually -> {
+                uiStateValue.bookValues.clearCoverUrl()
+                updateUIState(
+                    uiStateValue.copy(
+                        isBookCoverManually = true,
+                        showCommonAlertDialog = false,
+                        alertDialogConfig = null
+                    )
+                )
             }
 
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)

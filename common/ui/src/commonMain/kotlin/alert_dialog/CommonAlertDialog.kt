@@ -1,5 +1,6 @@
 package alert_dialog
 
+import ApplicationTheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -9,7 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,7 +31,7 @@ fun CommonAlertDialog(
     onDismissRequest: () -> Unit,
 ) {
     val interactionSource = MutableInteractionSource()
-    AlertDialog(
+    BasicAlertDialog(
         onDismissRequest = onDismissRequest,
         modifier = modifier,
         properties = DialogProperties(usePlatformDefaultWidth = true)

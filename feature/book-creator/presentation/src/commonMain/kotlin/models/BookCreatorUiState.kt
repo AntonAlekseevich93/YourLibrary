@@ -1,5 +1,6 @@
 package models
 
+import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import base.BaseUIState
@@ -31,4 +32,6 @@ data class BookCreatorUiState(
     val similarBooks: SnapshotStateList<BookShortVo> = mutableStateListOf(),
     val isSearchBookProcess: Boolean = false,
     val isBookCoverManually: Boolean = false,
+    val showCommonAlertDialog: Boolean = false,
+    val alertDialogConfig: CommonAlertDialogConfig? = null,
 ) : BaseUIState
