@@ -8,5 +8,6 @@ sealed class AdminEvents : BaseEvent {
     data object ApprovedBook : AdminEvents()
     data object CanceledBook : AdminEvents()
     data object ApprovedWithChangesBook : AdminEvents()
+    data object UploadBookCover : AdminEvents()
     data class SelectBook(val selectedBook: BookShortVo) : AdminEvents()
 }

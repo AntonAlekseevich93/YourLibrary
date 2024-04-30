@@ -9,7 +9,8 @@ import main_models.rest.books.toVo
 
 class AdminRepositoryImpl(
     private val remoteAdminDataSource: RemoteAdminDataSource,
-    private val localAdminDataSource: LocalAdminDataSource
+    private val localAdminDataSource: LocalAdminDataSource,
+    private val remoteConfig: RemoteConfig,
 ) : AdminRepository {
 
     override suspend fun getBooksForModeration(): Response<NonModerationBooksResponse?> {
@@ -17,7 +18,12 @@ class AdminRepositoryImpl(
         return if (response?.result?.books != null) {
             Response.Success(
                 NonModerationBooksResponse(
-                    books = response.result?.books?.mapNotNull { it.toVo(null) },
+                    books = response.result?.books?.mapNotNull {
+                        it.toVo(
+                            remoteConfig.S3_IMAGE_URL_PREFIX,
+                            canShowEmptyImage = true
+                        )
+                    },
                     error = null
                 )
             )
@@ -32,4 +38,12 @@ class AdminRepositoryImpl(
     override suspend fun setBookAsApproved(book: BookShortVo) {
         remoteAdminDataSource.setBookAsApproved(book.toDto())
     }
+
+    override suspend fun uploadBookImage(book: BookShortVo): String? {
+        val imageName = remoteAdminDataSource.uploadBookImage(book = book.toDto())?.result
+        return if (imageName != null) {
+            remoteConfig.getImageUrl(imageName)
+        } else null
+    }
+
 }

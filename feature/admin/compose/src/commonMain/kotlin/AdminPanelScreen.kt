@@ -48,7 +48,7 @@ fun AdminPanelScreen(
                 )
             }
 
-            AnimatedVisibility(visible = uiState.selectedItem == null) {
+            AnimatedVisibility(visible = uiState.moderationBookState.selectedItem == null) {
                 Text(
                     text = "Получить книги для модерации",
                     style = ApplicationTheme.typography.bodyBold,
@@ -59,10 +59,9 @@ fun AdminPanelScreen(
                 )
             }
 
-            AnimatedVisibility(visible = uiState.selectedItem != null) {
+            AnimatedVisibility(visible = uiState.moderationBookState.selectedItem != null) {
                 viewModel.ModerationBooksScreen(
-                    booksForModeration = uiState.booksForModeration,
-                    selectedItem = uiState.selectedItem,
+                    state = uiState.moderationBookState,
                 )
             }
         }

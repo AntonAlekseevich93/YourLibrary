@@ -42,6 +42,7 @@ data class AppColors(
     val secondaryButtonColor: Color,
     val joinAuthorsColors: JoinAuthorsColors,
     val authorsContainerColor: Color,
+    val adminPanelButtons: AdminPanelButtons,
 )
 
 class ReadingStatusesColor(
@@ -54,6 +55,13 @@ class ReadingStatusesColor(
 class JoinAuthorsColors(
     val mainAuthorColor: Color,
     val relatesAuthorsColor: Color,
+)
+
+class AdminPanelButtons(
+    val approvedColor: Color,
+    val approvedWithChangesColor: Color,
+    val disapprovedColor: Color,
+    val uploadColor: Color,
 )
 
 val lightPaletteTheme = AppColors(
@@ -110,6 +118,12 @@ val lightPaletteTheme = AppColors(
         relatesAuthorsColor = Color(0xFF17B978),
     ),
     authorsContainerColor = Color(0xFF252525),
+    adminPanelButtons = AdminPanelButtons(
+        approvedColor = Color(0xFF8ac926),
+        approvedWithChangesColor = Color(0xFFffbd00),
+        disapprovedColor = Color(0xFFd00000),
+        uploadColor = Color(0xFF16db65),
+    ),
 )
 
 val darkPaletteTheme = AppColors(
@@ -166,4 +180,10 @@ val darkPaletteTheme = AppColors(
         relatesAuthorsColor = Color(0xFF17B978),
     ),
     authorsContainerColor = Color(0xFF252525),
+    adminPanelButtons = AdminPanelButtons(
+        approvedColor = Color(0xFF8ac926),
+        approvedWithChangesColor = Color(0xFFffbd00),
+        disapprovedColor = Color(0xFFd00000),
+        uploadColor = Color(0xFF16db65),
+    ),
 )

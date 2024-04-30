@@ -25,9 +25,12 @@ data class BookShortRemoteDto(
     @SerialName("bookGenre") val bookGenreName: String? = null,
 )
 
-fun BookShortRemoteDto.toVo(imagePrefixUrl: String?): BookShortVo? {
+fun BookShortRemoteDto.toVo(
+    imagePrefixUrl: String?,
+    canShowEmptyImage: Boolean = false
+): BookShortVo? {
     val imageUrl =
-        if (imagePrefixUrl == null) imageName else if (imageName != null) imagePrefixUrl + imageName else null
+        if (imagePrefixUrl == null) imageName else if (!imageName.isNullOrEmpty()) imagePrefixUrl + imageName else if (canShowEmptyImage) "" else null
     return BookShortVo(
         id = id ?: return null,
         bookId = bookId ?: return null,

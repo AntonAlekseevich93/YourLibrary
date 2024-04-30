@@ -1,5 +1,6 @@
 package tags
 
+import ApplicationTheme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape

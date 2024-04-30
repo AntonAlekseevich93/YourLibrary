@@ -5,7 +5,12 @@ import base.BaseUIState
 import main_models.books.BookShortVo
 
 data class AdminUiState(
+    val isLoading: Boolean = false,
+    val moderationBookState: ModerationBookState = ModerationBookState()
+) : BaseUIState
+
+data class ModerationBookState(
     val booksForModeration: SnapshotStateList<BookShortVo> = SnapshotStateList(),
     val selectedItem: BookShortVo? = null,
-    val isLoading: Boolean = false
-) : BaseUIState
+    val isUploadingBookImage: Boolean = false,
+)

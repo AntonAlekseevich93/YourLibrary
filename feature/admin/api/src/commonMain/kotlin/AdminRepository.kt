@@ -6,4 +6,5 @@ import main_models.rest.admin.NonModerationBooksResponse
 interface AdminRepository {
     suspend fun getBooksForModeration(): Response<NonModerationBooksResponse?>
     suspend fun setBookAsApproved(book: BookShortVo)
+    suspend fun uploadBookImage(book: BookShortVo): String?
 }
