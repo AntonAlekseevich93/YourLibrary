@@ -17,7 +17,7 @@ class AdminRepositoryImpl(
         return if (response?.result?.books != null) {
             Response.Success(
                 NonModerationBooksResponse(
-                    books = response.result?.books?.mapNotNull { it.toVo() },
+                    books = response.result?.books?.mapNotNull { it.toVo(null) },
                     error = null
                 )
             )

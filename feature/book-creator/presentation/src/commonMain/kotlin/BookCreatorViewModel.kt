@@ -59,6 +59,10 @@ class BookCreatorViewModel(
                 )
             }
 
+            is BookEditorEvents.OnCreateBookManually -> {
+                updateUIState(uiStateValue.copy(isCreateBookManually = true))
+            }
+
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
             is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.UrlTextChangedEvent -> urlTextChanged(event.urlTextFieldValue)
@@ -302,6 +306,7 @@ class BookCreatorViewModel(
                 delay(500)
                 val response = interactor.searchInBooks(uppercaseBookName)
                 val newList = mutableStateListOf<BookShortVo>()
+
                 newList.addAll(response)
                 withContext(Dispatchers.Main) {
                     updateUIState(

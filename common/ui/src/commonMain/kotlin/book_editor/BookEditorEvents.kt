@@ -15,4 +15,5 @@ sealed class BookEditorEvents : BaseEvent {
     class OnBookSelected(val shortBook: BookShortVo) : BookEditorEvents()
     class OnChangeNeedCreateNewAuthor(val needCreate: Boolean) : BookEditorEvents()
     class OnShowAlertDialog(val config: CommonAlertDialogConfig) : BookEditorEvents()
+    data object OnCreateBookManually : BookEditorEvents()
 }

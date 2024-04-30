@@ -22,7 +22,7 @@ import org.jetbrains.compose.resources.painterResource
 internal fun SearchBookError() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().heightIn(min = 240.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
         Image(
             painter = painterResource(DrawableResource(Drawable.drawable_ic_empty_search)),

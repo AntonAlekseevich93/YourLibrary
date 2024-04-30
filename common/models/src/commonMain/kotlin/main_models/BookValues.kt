@@ -148,7 +148,7 @@ class BookValues(
         numberOfPages.value = TextFieldValue(book.numbersOfPages.toString())
         description.value = TextFieldValue(book.description)
         coverUrl.value =
-            TextFieldValue(book.coverUrl)
+            TextFieldValue(book.imageResultUrl)
         isbn.value = TextFieldValue(book.isbn)
         originalAuthorName = book.originalAuthorName
         originalAuthorId = book.originalAuthorId

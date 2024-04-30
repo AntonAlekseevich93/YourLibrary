@@ -284,6 +284,9 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         showError = showSearchBookError,
                         onClick = {
                             sendEvent(BookEditorEvents.OnBookSelected(it))
+                        },
+                        onClickManually = {
+                            sendEvent(BookEditorEvents.OnCreateBookManually)
                         }
                     )
                 }

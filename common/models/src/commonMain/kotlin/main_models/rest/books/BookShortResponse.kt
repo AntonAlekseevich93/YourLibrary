@@ -18,13 +18,16 @@ data class BookShortRemoteDto(
     @SerialName("originalAuthorName") val originalAuthorName: String? = null,
     @SerialName("description") val description: String? = null,
     @SerialName("coverUrl") val coverUrl: String? = null,
+    @SerialName("imageName") val imageName: String? = null,
     @SerialName("numbersOfPages") val numbersOfPages: Int? = null,
     @SerialName("isbn") val isbn: String? = null,
     @SerialName("bookGenreId") val bookGenreId: Int? = null,
     @SerialName("bookGenre") val bookGenreName: String? = null,
 )
 
-fun BookShortRemoteDto.toVo(): BookShortVo? {
+fun BookShortRemoteDto.toVo(imagePrefixUrl: String?): BookShortVo? {
+    val imageUrl =
+        if (imagePrefixUrl == null) imageName else if (imageName != null) imagePrefixUrl + imageName else null
     return BookShortVo(
         id = id ?: return null,
         bookId = bookId ?: return null,
@@ -32,7 +35,8 @@ fun BookShortRemoteDto.toVo(): BookShortVo? {
         bookName = bookName ?: return null,
         originalAuthorName = originalAuthorName ?: return null,
         description = description ?: return null,
-        coverUrl = coverUrl ?: return null,
+        coverUrl = coverUrl,
+        imageResultUrl = imageUrl ?: return null,
         numbersOfPages = numbersOfPages ?: return null,
         isbn = isbn ?: return null,
         bookGenreId = bookGenreId ?: return null,
@@ -49,6 +53,7 @@ fun BookShortVo.toDto(): BookShortRemoteDto {
         originalAuthorName = originalAuthorName,
         description = description,
         coverUrl = coverUrl,
+        imageName = imageResultUrl,
         numbersOfPages = numbersOfPages,
         isbn = isbn,
         bookGenreId = bookGenreId,

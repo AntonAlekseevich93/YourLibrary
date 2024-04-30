@@ -13,6 +13,7 @@ kotlin {
                 implementation(project(":common:core"))
                 implementation(project(":common:utils:database-utils"))
                 implementation(project(":common:http-client"))
+                implementation(project(":common:app-config"))
             }
         }
     }

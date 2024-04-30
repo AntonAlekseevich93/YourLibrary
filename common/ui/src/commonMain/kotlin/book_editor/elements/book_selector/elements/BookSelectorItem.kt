@@ -30,8 +30,8 @@ fun BookSelectorItem(
     onClick: (book: BookShortVo) -> Unit,
 ) {
     val painter = asyncPainterResource(
-        data = bookItem.coverUrl,
-        key = bookItem.coverUrl
+        data = bookItem.imageResultUrl,
+        key = bookItem.imageResultUrl
     )
     when (painter) {
         is Resource.Loading -> {

@@ -19,6 +19,10 @@ val applicationModule = DI.Module("applicationModule") {
         AppConfig()
     }
 
+    bind<RemoteConfig>() with singleton {
+        RemoteConfig()
+    }
+
     bind<HttpAppClient>() with singleton {
         HttpAppClient(
             instance(),

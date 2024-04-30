@@ -51,7 +51,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 modifier = Modifier.padding(top = 24.dp, start = 24.dp)
             ) {
                 BookCover(
-                    book.coverUrl, modifier = Modifier
+                    book.coverUrl.orEmpty(), modifier = Modifier
                         .sizeIn(
                             minHeight = 250.dp,
                             minWidth = 180.dp,
@@ -63,7 +63,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 LazyRow(modifier = Modifier.sizeIn(maxHeight = 400.dp).padding(start = 4.dp)) {
                     itemsIndexed(booksForModeration) { index, item ->
                         if (item.id != book.id) {
-                            BookCover(coverUrl = item.coverUrl, modifier = Modifier
+                            BookCover(coverUrl = item.coverUrl.orEmpty(), modifier = Modifier
                                 .sizeIn(
                                     minHeight = 165.dp,
                                     minWidth = 130.dp,

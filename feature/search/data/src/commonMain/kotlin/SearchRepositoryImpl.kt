@@ -7,7 +7,8 @@ import main_models.rest.books.toVo
 
 class SearchRepositoryImpl(
     private val localSearchDataSource: LocalSearchDataSource,
-    private val remoteSearchDataSource: RemoteSearchDataSource
+    private val remoteSearchDataSource: RemoteSearchDataSource,
+    private val remoteConfig: RemoteConfig
 ) : SearchRepository {
 
     //    override suspend fun searchInAuthorsName(searchedText: String): List<AuthorVo> =
@@ -29,7 +30,8 @@ class SearchRepositoryImpl(
         return if (response?.result == null) {
             emptyList()
         } else {
-            response.result!!.books.mapNotNull { it.toVo() }
+            val urlPrefix = remoteConfig.s3_FULL_PREFIX + remoteConfig.S3_BOOK_IMAGES_PATH
+            response.result!!.books.mapNotNull { it.toVo(imagePrefixUrl = urlPrefix) }
         }
     }
 
