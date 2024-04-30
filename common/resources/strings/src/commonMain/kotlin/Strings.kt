@@ -123,4 +123,5 @@ object Strings {
     const val admin_panel = "Админ панель"
     const val searching_title_result = "Вот что удалось найти:"
     const val loading_book_search_info = "Роемся в книжных полках..."
+    const val cover_book_manually_title = "Вы можете добавить ссылку на свою обложку"
 }

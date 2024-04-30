@@ -13,4 +13,5 @@ sealed class BookEditorEvents : BaseEvent {
     class OnBookNameChanged(val bookName: String) : BookEditorEvents()
     class OnBookSelected(val shortBook: BookShortVo) : BookEditorEvents()
     class OnChangeNeedCreateNewAuthor(val needCreate: Boolean) : BookEditorEvents()
+    class SetBookCoverIsManually(val isManually: Boolean): BookEditorEvents()
 }

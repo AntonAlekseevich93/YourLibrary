@@ -50,6 +50,11 @@ class BookCreatorViewModel(
                 updateUIState(uiStateValue.copy(needCreateNewAuthor = event.needCreate))
             }
 
+            is BookEditorEvents.SetBookCoverIsManually -> {
+                uiStateValue.bookValues.clearCoverUrl()
+                updateUIState(uiStateValue.copy(isBookCoverManually = event.isManually))
+            }
+
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
             is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.UrlTextChangedEvent -> urlTextChanged(event.urlTextFieldValue)

@@ -73,6 +73,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     canShowError: Boolean = false,
     isCreateBookManually: Boolean = true,
     shortBook: BookShortVo? = null,
+    isBookCoverManually: Boolean = false,
     similarBooks: SnapshotStateList<BookShortVo> = mutableStateListOf(),
 ) {
     val showImage = remember { mutableStateOf(false) }
@@ -342,13 +343,18 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         title = Strings.cover,
                         modifier = Modifier.padding(top = 2.dp),
                         hintText = Strings.hint_link_to_cover,
-                        enabledInput = shortBook == null,
-                        hiddenText = if (shortBook == null) null else "Вы можете добавить ссылку на свою обложку",
+                        enabledInput = shortBook == null || isBookCoverManually,
+                        hiddenText = if (shortBook == null || isBookCoverManually) null else Strings.cover_book_manually_title,
                         onTextChanged = {
                             bookValues.coverUrl.value = it
                         },
                         disableSingleLineIfFocused = true,
-                        textFieldValue = bookValues.coverUrl
+                        textFieldValue = bookValues.coverUrl,
+                        onClick = {
+                            if (shortBook != null && !isBookCoverManually) {
+                                sendEvent(BookEditorEvents.SetBookCoverIsManually(true))
+                            }
+                        }
                     )
 
                     TextFieldWithTitleAndSuggestion(

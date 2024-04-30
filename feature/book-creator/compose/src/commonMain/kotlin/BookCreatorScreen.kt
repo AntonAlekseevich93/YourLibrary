@@ -309,7 +309,8 @@ fun BookCreatorScreen(
                             similarBooks = uiState.similarBooks,
                             isSearchBookProcess = uiState.isSearchBookProcess,
                             isCreateBookManually = uiState.isCreateBookManually,
-                            shortBook = uiState.shortBookItem
+                            shortBook = uiState.shortBookItem,
+                            isBookCoverManually = uiState.isBookCoverManually,
                         )
                     }
 //                    }
