@@ -34,4 +34,5 @@ data class BookCreatorUiState(
     val isBookCoverManually: Boolean = false,
     val showCommonAlertDialog: Boolean = false,
     val alertDialogConfig: CommonAlertDialogConfig? = null,
+    val showSearchBookError: Boolean = false,
 ) : BaseUIState

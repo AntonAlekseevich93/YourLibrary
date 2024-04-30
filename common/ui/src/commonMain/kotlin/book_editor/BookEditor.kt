@@ -72,6 +72,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     isSearchBookProcess: Boolean,
     modifier: Modifier = Modifier,
     canShowError: Boolean = false,
+    showSearchBookError: Boolean,
     isCreateBookManually: Boolean = true,
     shortBook: BookShortVo? = null,
     isBookCoverManually: Boolean = false,
@@ -280,6 +281,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         similarBooks = similarBooks,
                         isLoading = isSearchBookProcess,
                         modifier = Modifier.padding(top = 24.dp, bottom = 16.dp, start = 8.dp),
+                        showError = showSearchBookError,
                         onClick = {
                             sendEvent(BookEditorEvents.OnBookSelected(it))
                         }

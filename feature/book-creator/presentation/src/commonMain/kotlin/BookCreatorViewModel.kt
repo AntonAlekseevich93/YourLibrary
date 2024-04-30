@@ -293,7 +293,7 @@ class BookCreatorViewModel(
 
     private fun searchBookName(bookName: String) {
         searchJob?.cancel()
-        updateUIState(uiStateValue.copy(isSearchBookProcess = false))
+        updateUIState(uiStateValue.copy(isSearchBookProcess = false, showSearchBookError = false))
         val uppercaseBookName = bookName.trim().uppercase()
         uiStateValue.similarBooks.clear()
         if (bookName.length >= 2) {
@@ -307,7 +307,8 @@ class BookCreatorViewModel(
                     updateUIState(
                         uiStateValue.copy(
                             similarBooks = newList,
-                            isSearchBookProcess = false
+                            isSearchBookProcess = false,
+                            showSearchBookError = newList.isEmpty()
                         )
                     )
                 }

@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import book_editor.elements.book_selector.elements.BookSelectorItem
 import book_editor.elements.book_selector.elements.LoadingBookProcess
+import book_editor.elements.book_selector.elements.SearchBookError
 import containters.CenterBoxContainer
 import main_models.books.BookShortVo
 
@@ -21,6 +22,7 @@ import main_models.books.BookShortVo
 fun BookSearchSelector(
     similarBooks: SnapshotStateList<BookShortVo>,
     isLoading: Boolean,
+    showError: Boolean,
     modifier: Modifier = Modifier,
     onClick: (book: BookShortVo) -> Unit,
 ) {
@@ -43,6 +45,8 @@ fun BookSearchSelector(
                     BookSelectorItem(it, modifier = Modifier.padding(end = 16.dp), onClick)
                 }
             }
+        } else if (showError) {
+            SearchBookError()
         }
     }
 }

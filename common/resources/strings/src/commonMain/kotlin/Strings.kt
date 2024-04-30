@@ -128,4 +128,5 @@ object Strings {
     const val alert_dialog_delete_cover_title = "Вы действительно хотите удалить обложку?"
     const val alert_dialog_delete_cover_description =
         "После удаления обложки, вы можете указать ссылку на свою обложку"
+    const val search_is_empty = "Ничего не найдено"
 }

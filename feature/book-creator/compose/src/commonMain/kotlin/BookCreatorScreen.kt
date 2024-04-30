@@ -312,6 +312,7 @@ fun BookCreatorScreen(
                             isCreateBookManually = uiState.isCreateBookManually,
                             shortBook = uiState.shortBookItem,
                             isBookCoverManually = uiState.isBookCoverManually,
+                            showSearchBookError = uiState.showSearchBookError
                         )
                     }
 //                    }
