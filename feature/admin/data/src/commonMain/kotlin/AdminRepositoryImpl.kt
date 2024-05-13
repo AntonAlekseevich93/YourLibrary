@@ -39,6 +39,10 @@ class AdminRepositoryImpl(
         remoteAdminDataSource.setBookAsApproved(book.toDto())
     }
 
+    override suspend fun setBookAsDiscarded(book: BookShortVo) {
+        remoteAdminDataSource.setBookAsDiscarded(book.toDto())
+    }
+
     override suspend fun uploadBookImage(book: BookShortVo): String? {
         val imageName = remoteAdminDataSource.uploadBookImage(book = book.toDto())?.result
         return if (imageName != null) {

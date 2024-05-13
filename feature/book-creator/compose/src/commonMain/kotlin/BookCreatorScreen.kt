@@ -78,8 +78,6 @@ fun BookCreatorScreen(
     val statusBookTextFieldValue =
         remember { mutableStateOf(TextFieldValue(text = uiState.defaultStatus.nameValue)) }
     val dataPickerState = rememberDatePickerState()
-    val showClearButton =
-        remember(uiState.showClearButtonOfUrlElement) { mutableStateOf(uiState.showClearButtonOfUrlElement) }
 
     val animatedVerticalPadding by animateDpAsState(
         targetValue = targetVerticalPadding,
@@ -165,7 +163,7 @@ fun BookCreatorScreen(
                             )
                         } else {
                             Text(
-                                text = if (uiState.showParsingResult) uiState.bookValues.bookName.value.text else Strings.add_book,
+                                text = if (uiState.isCreateBookManually || uiState.shortBookItem != null) Strings.add_book else "Поиск",
                                 modifier = Modifier.padding(top = 8.dp),
                                 style = ApplicationTheme.typography.title2Bold,
                                 color = ApplicationTheme.colors.mainTextColor,
@@ -193,25 +191,6 @@ fun BookCreatorScreen(
                             )
                         )
                     }
-
-//                    if (uiState.isCreateBookManually.value && !uiState.showParsingResult.value) {
-//                        Box(
-//                            modifier = Modifier.fillMaxSize().padding(start = 10.dp),
-//                            contentAlignment = Alignment.CenterStart
-//                        ) {
-//                            Icon(
-//                                imageVector = Icons.Default.ArrowBack,
-//                                contentDescription = null,
-//                                tint = ApplicationTheme.colors.mainIconsColor,
-//                                modifier = Modifier.size(26.dp).clickable(
-//                                    interactionSource = MutableInteractionSource(),
-//                                    null
-//                                ) {
-//                                    viewModel.sendEvent(BookCreatorEvents.DisableCreateBookManuallyEvent)
-//                                }
-//                            )
-//                        }
-//                    }
                 }
 
                 Column(
@@ -219,83 +198,6 @@ fun BookCreatorScreen(
                         .fillMaxWidth()
                         .verticalScroll(scrollableState)
                 ) {
-//                    AnimatedVisibility(
-//                        !uiState.isCreateBookManually,
-//                    ) {
-//                        Column(modifier = Modifier.padding(top = 16.dp)) {
-//                            TextFieldWithTitleAndSuggestion(
-//                                platform = platform,
-//                                title = Strings.link,
-//                                enabledInput = uiState.urlFieldIsWork,
-//                                modifier = Modifier,
-//                                hintText = Strings.hint_past_url_book,
-//                                setAsSelected = !uiState.showParsingResult,
-//                                showClearButton = showClearButton,
-//                                textFieldValue = uiState.bookValues.parsingUrl,
-//                                onTextChanged = { url ->
-//                                    viewModel.sendEvent(BookCreatorEvents.UrlTextChangedEvent(url))
-//                                },
-//                                onClearButtonListener = {
-//                                    viewModel.sendEvent(
-//                                        BookCreatorEvents.OnShowDialogClearAllData(
-//                                            true
-//                                        )
-//                                    )
-//                                }
-//                            )
-//                            AnimatedVisibility(visible = !uiState.showParsingResult) {
-//                                InfoBlock(
-//                                    Strings.tooltip_parsing_book,
-//                                    modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
-//                                )
-//                            }
-//                        }
-//                    }
-
-//                    AnimatedVisibility(visible = uiState.showLoadingIndicator) {
-//                        Column(
-//                            horizontalAlignment = Alignment.CenterHorizontally,
-//                            modifier = Modifier.padding(top = 12.dp, bottom = 24.dp).fillMaxWidth()
-//                        ) {
-//                            LoadingStatusIndicator(
-//                                loadingStatus = uiState.loadingStatus,
-//                                finishAnimationListener = {
-//                                    viewModel.sendEvent(BookCreatorEvents.OnFinishParsingUrl)
-//                                }
-//                            )
-//                            if (uiState.loadingStatus == LoadingStatus.ERROR) {
-//                                ShowError {
-//                                    viewModel.sendEvent(BookCreatorEvents.OnClearUrlAndCreateBookManuallyEvent)
-//                                }
-//                            }
-//                        }
-//                    }
-
-//                    AnimatedVisibility(
-//                        !uiState.isCreateBookManually
-//                                && !uiState.showParsingResult
-//                                && !uiState.showLoadingIndicator,
-//                    ) {
-//                        CenterBoxContainer {
-//                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                                Text(
-//                                    text = Strings.or.uppercase(),
-//                                    style = ApplicationTheme.typography.bodyBold,
-//                                    color = ApplicationTheme.colors.mainTextColor,
-//                                    modifier = Modifier.padding(bottom = 8.dp, top = 8.dp)
-//                                )
-//                                CreateBookButton(title = Strings.add_manually_button) {
-//                                    viewModel.sendEvent(BookCreatorEvents.OnCreateBookManuallyEvent)
-//                                }
-//                            }
-//                        }
-//                    }
-
-//                    AnimatedVisibility(
-//                        uiState.isCreateBookManually || uiState.showParsingResult,
-//                        enter = fadeIn(),
-//                        exit = fadeOut()
-//                    ) {
                     Column {
                         Spacer(modifier = Modifier.padding(top = 12.dp))
 
@@ -309,13 +211,14 @@ fun BookCreatorScreen(
                             statusBookTextFieldValue = statusBookTextFieldValue,
                             similarBooks = uiState.similarBooks,
                             isSearchBookProcess = uiState.isSearchBookProcess,
+                            isSearchAuthorProcess = uiState.isSearchAuthorProcess,
                             isCreateBookManually = uiState.isCreateBookManually,
                             shortBook = uiState.shortBookItem,
                             isBookCoverManually = uiState.isBookCoverManually,
-                            showSearchBookError = uiState.showSearchBookError
+                            showSearchBookError = uiState.showSearchBookError,
+                            showSearchAuthorError= uiState.showSearchAuthorError,
                         )
                     }
-//                    }
                 }
             }
 

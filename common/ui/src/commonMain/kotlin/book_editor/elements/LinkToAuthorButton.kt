@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 
+//todo delete if this is wont be used
 @Composable
 fun LinkToAuthorButton(
     linkToAuthor: Boolean,

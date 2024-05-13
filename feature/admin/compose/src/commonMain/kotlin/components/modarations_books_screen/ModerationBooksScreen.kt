@@ -24,6 +24,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.modarations_books_screen.elements.BookCover
@@ -37,12 +40,14 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
 ) {
     val resultBook by remember(state.selectedItem?.id) { mutableStateOf(state.selectedItem) }
     val scrollableState = rememberScrollState()
+    val haptic = LocalHapticFeedback.current
     resultBook?.let { book ->
         Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollableState)) {
             Row(
                 verticalAlignment = Alignment.Bottom,
                 modifier = Modifier.padding(top = 24.dp, start = 24.dp)
             ) {
+
                 BookCover(
                     coverUrl = book.coverUrl.orEmpty(),
                     modifier = Modifier
@@ -85,19 +90,19 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 LazyRow(modifier = Modifier.sizeIn(maxHeight = 400.dp).padding(start = 4.dp)) {
                     itemsIndexed(state.booksForModeration) { index, item ->
                         if (item.id != book.id) {
-                            BookCover(coverUrl = item.coverUrl.orEmpty(), modifier = Modifier
-                                .sizeIn(
-                                    minHeight = 165.dp,
-                                    minWidth = 130.dp,
-                                    maxHeight = 165.dp,
-                                    maxWidth = 130.dp
-                                ).padding(horizontal = 12.dp),
-                                onClick = {
-                                    if (!state.isUploadingBookImage) {
-                                        sendEvent(AdminEvents.SelectBook(item))
+                                BookCover(coverUrl = item.coverUrl.orEmpty(), modifier = Modifier
+                                    .sizeIn(
+                                        minHeight = 165.dp,
+                                        minWidth = 130.dp,
+                                        maxHeight = 165.dp,
+                                        maxWidth = 130.dp
+                                    ).padding(horizontal = 12.dp),
+                                    onClick = {
+                                        if (!state.isUploadingBookImage) {
+                                            sendEvent(AdminEvents.SelectBook(item))
+                                        }
                                     }
-                                }
-                            )
+                                )
                         }
                     }
                 }
@@ -123,20 +128,59 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
 
             }
 
+            Row(modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Название:",
+                    style = ApplicationTheme.typography.footnoteBold,
+                    color = if(book.bookName.isEmpty()){
+                        ApplicationTheme.colors.adminPanelButtons.disapprovedColor
+                    } else {
+                        ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
+                    }
+                )
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = book.bookName,
+                    style = ApplicationTheme.typography.bodyBold,
+                    color = ApplicationTheme.colors.mainTextColor
+                )
+            }
 
-            Text(
-                modifier = Modifier.padding(start = 24.dp, bottom = 12.dp, top = 16.dp),
-                text = book.bookName,
-                style = ApplicationTheme.typography.bodyBold,
-                color = ApplicationTheme.colors.mainTextColor
-            )
+            Row(modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Автор:",
+                    style = ApplicationTheme.typography.footnoteBold,
+                    color = if (book.originalAuthorName.isEmpty()) {
+                        ApplicationTheme.colors.adminPanelButtons.disapprovedColor
+                    } else {
+                        ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
+                    }
+                )
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = book.originalAuthorName,
+                    style = ApplicationTheme.typography.footnoteRegular,
+                    color = ApplicationTheme.colors.mainTextColor
+                )
+            }
 
-            Text(
-                modifier = Modifier.padding(start = 24.dp),
-                text = book.originalAuthorName,
-                style = ApplicationTheme.typography.footnoteRegular,
-                color = ApplicationTheme.colors.mainTextColor
-            )
+            Row(modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "ServerId:",
+                    style = ApplicationTheme.typography.footnoteBold,
+                    color = if(book.id.toString().isEmpty()){
+                        ApplicationTheme.colors.adminPanelButtons.disapprovedColor
+                    } else {
+                        ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
+                    }
+                )
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = book.id.toString(),
+                    style = ApplicationTheme.typography.footnoteRegular,
+                    color = ApplicationTheme.colors.mainTextColor
+                )
+            }
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 18.dp),
@@ -144,18 +188,53 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 color = ApplicationTheme.colors.dividerLight
             )
 
-            Text(
-                modifier = Modifier.padding(start = 24.dp),
-                text = book.bookGenreName,
-                style = ApplicationTheme.typography.footnoteRegular,
-                color = ApplicationTheme.colors.mainTextColor
-            )
+            Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
+                Text(
+                    text = "Жанр:",
+                    style = ApplicationTheme.typography.footnoteBold,
+                    color = if(book.bookGenreName.isEmpty()){
+                        ApplicationTheme.colors.adminPanelButtons.disapprovedColor
+                    } else {
+                        ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
+                    }
+                )
+
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = book.bookGenreName,
+                    style = ApplicationTheme.typography.footnoteRegular,
+                    color = ApplicationTheme.colors.mainTextColor
+                )
+            }
+
+            Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
+                Text(
+                    text = "Возрастные ограничения:",
+                    style = ApplicationTheme.typography.footnoteBold,
+                    color = if(book.ageRestrictions.isEmpty()){
+                        ApplicationTheme.colors.adminPanelButtons.disapprovedColor
+                    } else {
+                        ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
+                    }
+                )
+
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = book.ageRestrictions,
+                    style = ApplicationTheme.typography.footnoteRegular,
+                    color = ApplicationTheme.colors.mainTextColor
+                )
+            }
 
             Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
                 Text(
                     text = "${Strings.pages_title}:",
                     style = ApplicationTheme.typography.footnoteBold,
-                    color = ApplicationTheme.colors.mainTextColor
+                    color = if(book.numbersOfPages.toString().isEmpty()){
+                        ApplicationTheme.colors.adminPanelButtons.disapprovedColor
+                    } else {
+                        ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
+                    }
                 )
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
@@ -169,7 +248,11 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 Text(
                     text = "${Strings.isbn}:",
                     style = ApplicationTheme.typography.footnoteBold,
-                    color = ApplicationTheme.colors.mainTextColor
+                    color = if(book.isbn.isEmpty()){
+                        ApplicationTheme.colors.adminPanelButtons.disapprovedColor
+                    } else {
+                        ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
+                    }
                 )
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
@@ -187,12 +270,14 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
             )
 
             if (!state.isUploadingBookImage) {
-                Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
+                Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp, bottom = 84.dp)) { // todo fix bottom padding its for mobile
                     if (!state.selectedItem?.imageResultUrl.isNullOrEmpty()) {
                         CustomTag(
                             text = "Одобрено",
                             color = ApplicationTheme.colors.adminPanelButtons.approvedColor,
                             onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                HapticFeedbackType.LongPress
                                 this@ModerationBooksScreen.sendEvent(AdminEvents.ApprovedBook)
                             }
                         )
@@ -211,6 +296,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                             color = ApplicationTheme.colors.adminPanelButtons.uploadColor,
                             modifier = Modifier.padding(end = 16.dp),
                             onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                 sendEvent(AdminEvents.UploadBookCover)
                             }
                         )
@@ -220,7 +306,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                         text = "Отказано",
                         color = ApplicationTheme.colors.adminPanelButtons.disapprovedColor,
                         onClick = {
-
+                            this@ModerationBooksScreen.sendEvent(AdminEvents.DiscardBook)
                         }
                     )
                 }

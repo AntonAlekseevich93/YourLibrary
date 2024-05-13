@@ -1,6 +1,7 @@
 package models
 
 import alert_dialog.CommonAlertDialogConfig
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import base.BaseUIState
@@ -11,7 +12,6 @@ import main_models.DatePickerType
 import main_models.ReadingStatus
 import main_models.books.BookShortVo
 import main_models.rest.LoadingStatus
-
 data class BookCreatorUiState(
     val bookItem: BookItemVo? = null,
     val shortBookItem: BookShortVo? = null,
@@ -31,8 +31,10 @@ data class BookCreatorUiState(
     val isCreateBookManually: Boolean = false,
     val similarBooks: SnapshotStateList<BookShortVo> = mutableStateListOf(),
     val isSearchBookProcess: Boolean = false,
+    val isSearchAuthorProcess: Boolean = false,
     val isBookCoverManually: Boolean = false,
     val showCommonAlertDialog: Boolean = false,
     val alertDialogConfig: CommonAlertDialogConfig? = null,
     val showSearchBookError: Boolean = false,
+    val showSearchAuthorError: Boolean = false,
 ) : BaseUIState

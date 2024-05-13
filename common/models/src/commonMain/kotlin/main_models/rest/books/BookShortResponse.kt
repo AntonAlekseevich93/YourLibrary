@@ -23,6 +23,7 @@ data class BookShortRemoteDto(
     @SerialName("isbn") val isbn: String? = null,
     @SerialName("bookGenreId") val bookGenreId: Int? = null,
     @SerialName("bookGenre") val bookGenreName: String? = null,
+    @SerialName("ageRestrictions") val ageRestrictions: String? = null,
 )
 
 fun BookShortRemoteDto.toVo(
@@ -43,7 +44,8 @@ fun BookShortRemoteDto.toVo(
         numbersOfPages = numbersOfPages ?: return null,
         isbn = isbn ?: return null,
         bookGenreId = bookGenreId ?: return null,
-        bookGenreName = bookGenreName ?: return null
+        bookGenreName = bookGenreName ?: return null,
+        ageRestrictions = ageRestrictions.orEmpty()
     )
 }
 
@@ -60,6 +62,7 @@ fun BookShortVo.toDto(): BookShortRemoteDto {
         numbersOfPages = numbersOfPages,
         isbn = isbn,
         bookGenreId = bookGenreId,
-        bookGenreName = bookGenreName
+        bookGenreName = bookGenreName,
+        ageRestrictions = ageRestrictions
     )
 }

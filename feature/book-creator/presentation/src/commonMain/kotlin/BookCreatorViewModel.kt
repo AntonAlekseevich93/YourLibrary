@@ -60,7 +60,16 @@ class BookCreatorViewModel(
             }
 
             is BookEditorEvents.OnCreateBookManually -> {
-                updateUIState(uiStateValue.copy(isCreateBookManually = true))
+                updateUIState(uiStateValue.copy(isCreateBookManually = true, showSearchAuthorError = false))
+            }
+
+            is BookEditorEvents.OnSearchAuthorClick -> {
+                searchAuthor(event.name)
+            }
+
+            is BookEditorEvents.ClearBookSearch -> {
+                uiStateValue.similarBooks.clear()
+                updateUIState(uiStateValue.copy(showSearchBookError = false))
             }
 
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
@@ -172,9 +181,10 @@ class BookCreatorViewModel(
         }
     }
 
-    private fun clearSearchAuthor() {
+    private fun clearSearchAuthor(showError: Boolean = false) {
+        uiStateValue.similarSearchAuthors.clear()
         updateUIState(
-            state = uiStateValue.copy(similarSearchAuthors = mutableStateListOf())
+            state = uiStateValue.copy(isSearchAuthorProcess = false, showSearchAuthorError = showError)
         )
     }
 
@@ -255,15 +265,19 @@ class BookCreatorViewModel(
 
         if (textFieldValue.text.isEmpty()) {
             clearSearchAuthor()
-        } else if (textWasChanged) {
-            searchAuthor(textFieldValue.text)
         }
+//        else if (textWasChanged) {
+//            searchAuthor(textFieldValue.text)
+//        }
     }
 
     private fun searchAuthor(authorName: String) {
         searchJob?.cancel()
+        uiStateValue.similarSearchAuthors.clear()
+        updateUIState(uiStateValue.copy(isSearchAuthorProcess = false))
         val uppercaseName = authorName.trim().uppercase()
         if (authorName.length >= 2) {
+            updateUIState(uiStateValue.copy(isSearchAuthorProcess = true))
             searchJob = scope.launch {
                 delay(500)
                 val response = interactor.searchInAuthorsNameWithRelates(uppercaseName)
@@ -275,19 +289,21 @@ class BookCreatorViewModel(
                     if (exactMatchAuthor == null) {
                         updateUIState(
                             uiStateValue.copy(
-                                similarSearchAuthors = list
+                                similarSearchAuthors = list,
+                                isSearchAuthorProcess = false
                             )
                         )
                     } else {
                         updateUIState(
                             uiStateValue.copy(
                                 similarSearchAuthors = list,
-                                selectedAuthor = exactMatchAuthor
+                                selectedAuthor = exactMatchAuthor,
+                                isSearchAuthorProcess = false
                             )
                         )
                     }
                 } else {
-                    clearSearchAuthor()
+                    clearSearchAuthor(showError = true)
                 }
             }
         } else {

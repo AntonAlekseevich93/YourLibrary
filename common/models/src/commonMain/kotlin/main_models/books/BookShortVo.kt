@@ -15,5 +15,6 @@ data class BookShortVo(
     val numbersOfPages: Int,
     val isbn: String,
     val bookGenreId: Int,
-    val bookGenreName: String
+    val bookGenreName: String,
+    val ageRestrictions: String,
 )

@@ -3,6 +3,8 @@ package text_fields
 import ApplicationTheme
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
@@ -33,6 +35,8 @@ fun CommonTextField(
     ),
     textStyle: TextStyle = LocalTextStyle.current,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions(),
 ) {
     BasicCustomTextField(
         textFieldValue = textState,
@@ -53,6 +57,8 @@ fun CommonTextField(
         shape = shape,
         focusedIndicatorLineThickness = focusedIndicatorLineThickness,
         unfocusedIndicatorLineThickness = unfocusedIndicatorLineThickness,
-        visualTransformation = visualTransformation
+        visualTransformation = visualTransformation,
+        keyboardActions = keyboardActions,
+        keyboardOptions = keyboardOptions
     )
 }

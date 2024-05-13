@@ -24,6 +24,7 @@ class AdminViewModel(
         when (event) {
             is AdminEvents.GetBooksForModerating -> getBooksForModeration()
             is AdminEvents.ApprovedBook -> setBookAsApprove()
+            is AdminEvents.DiscardBook -> setBookAsDiscarded()
             is AdminEvents.SelectBook -> selectBook(event.selectedBook)
             is AdminEvents.UploadBookCover -> uploadBookImage()
         }
@@ -54,6 +55,16 @@ class AdminViewModel(
         if (currentBook != null) {
             scope.launch {
                 interactor.setBookAsApproved(currentBook)
+            }
+            selectNextBook()
+        }
+    }
+
+    private fun setBookAsDiscarded(){
+        val currentBook = uiStateValue.moderationBookState.selectedItem?.copy()
+        if (currentBook != null) {
+            scope.launch {
+                interactor.setBookAsDiscarded(currentBook)
             }
             selectNextBook()
         }

@@ -1,4 +1,4 @@
-package book_editor.elements.book_selector.elements
+package loader
 
 import ApplicationTheme
 import Strings
@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun LoadingBookProcess() {
-    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+fun LoadingProcessWithTitle(text: String, modifier: Modifier = Modifier) {
+    Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         CircularProgressIndicator(color = ApplicationTheme.colors.hintColor, strokeWidth = 2.dp)
         Text(
-            text = Strings.loading_book_search_info,
+            text = text,
             style = ApplicationTheme.typography.footnoteRegularItalic,
             color = ApplicationTheme.colors.mainTextColor,
             modifier = Modifier.padding(top = 8.dp)
