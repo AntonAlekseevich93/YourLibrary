@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
@@ -73,151 +72,150 @@ fun Application(
 
         Box(modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundColor)) {
 
-                Row {
-                    AnimatedVisibility(platform.isDesktop() && canShowLeftBar.value) {
-                        viewModel.LeftMenuBar(
-                            open = {
-                            },
-                        )
-                    }
-                    PlatformNavigationDrawer(
-                        platform = platform,
-                        leftDrawerContent = {
-                            Row {
-                                viewModel.PlatformLeftDrawerContent(
-                                    title = uiState.selectedPathInfo.value.libraryName,
-                                    platform = platform,
-                                    canShowHomeButton = canShowMainButton,
-                                    content = {
-                                        viewModel.LeftDrawerBooksContent(booksInfoUiState = uiState.booksInfoUiState)
-                                    }
-                                )
-                                Divider(
-                                    modifier = Modifier.fillMaxHeight().width(1.dp),
-                                    thickness = 1.dp,
-                                    color = ApplicationTheme.colors.divider
-                                )
-                            }
+            Row {
+                AnimatedVisibility(platform.isDesktop() && canShowLeftBar.value) {
+                    viewModel.LeftMenuBar(
+                        open = {
                         },
-                        leftDrawerState = leftDrawerState,
-                        showLeftDrawer = uiState.showLeftDrawerState
+                    )
+                }
+                PlatformNavigationDrawer(
+                    platform = platform,
+                    leftDrawerContent = {
+                        Row {
+                            viewModel.PlatformLeftDrawerContent(
+                                title = uiState.selectedPathInfo.value.libraryName,
+                                platform = platform,
+                                canShowHomeButton = canShowMainButton,
+                                content = {
+                                    viewModel.LeftDrawerBooksContent(booksInfoUiState = uiState.booksInfoUiState)
+                                }
+                            )
+                            Divider(
+                                modifier = Modifier.fillMaxHeight().width(1.dp),
+                                thickness = 1.dp,
+                                color = ApplicationTheme.colors.divider
+                            )
+                        }
+                    },
+                    leftDrawerState = leftDrawerState,
+                    showLeftDrawer = uiState.showLeftDrawerState
+                ) {
+                    NavHost(
+                        navigator = navigator,
+                        initialRoute = if (platform.isDesktop() && !dbPathExist.value) Routes.vault_route else Routes.main_route,
+                        navTransition = NavTransition(
+                            createTransition = fadeIn(animationSpec = tween(durationMillis = 1)),
+                            destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
+                        ),
                     ) {
-                        NavHost(
-                            navigator = navigator,
-                            initialRoute = if (platform.isDesktop() && !dbPathExist.value) Routes.vault_route else Routes.main_route,
+                        scene(
+                            route = Routes.main_route,
                             navTransition = NavTransition(
-                                createTransition = fadeIn(animationSpec = tween(durationMillis = 1)),
+                                createTransition = fadeIn(tween(1)),
                                 destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
-                            ),
+                            )
                         ) {
-                            scene(
-                                route = Routes.main_route,
-                                navTransition = NavTransition(
-                                    createTransition = fadeIn(tween(1)),
-                                    destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
-                                )
-                            ) {
-                                MainScreen(
-                                    platform = platform,
-                                    showLeftDrawer = uiState.showLeftDrawerState,
-                                    showSearch = showSearch,
-                                    leftDrawerState = leftDrawerState,
-                                )
-                            }
-
-                            dialog(route = Routes.book_info_route) {
-                                BookScreen(
-                                    platform = platform,
-                                    bookItemId = uiState.selectedBookId.value,
-                                    showLeftDrawer = uiState.showLeftDrawerState,
-                                    showRightDrawer = uiState.showRightDrawerState,
-                                    showSearch = showSearch,
-                                    fullScreenBookInfo = uiState.fullScreenBookInfo,
-                                    painterInCache = uiState.painterSelectedBookInCache.value,
-                                    isKeyboardShown = isKeyboardShown,
-                                )
-                            }
-
-                            dialog(route = Routes.book_creator_route) {
-                                BookCreatorScreen(
-                                    platform = platform,
-                                    fullScreenBookCreator = mutableStateOf(false),
-                                    isKeyboardShown = isKeyboardShown,
-                                    showRightDrawer = uiState.showRightDrawerState,
-                                )
-                            }
-
-                            scene(
-                                route = Routes.vault_route,
-                                navTransition = NavTransition(
-                                    createTransition = fadeIn(tween(1)),
-                                    destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
-                                )
-                            ) {
-                                viewModel.CreationAndSelectionProjectFolderScreen(
-                                    pathInfoList = uiState.pathInfoList,
-                                )
-                            }
-
-                            scene(
-                                route = Routes.authors_screen_route,
-                                navTransition = NavTransition(
-                                    createTransition = expandHorizontally(),
-                                    destroyTransition = slideOutHorizontally(tween(100))
-                                )
-                            ) {
-                                AuthorsScreen(
-                                    showLeftDrawer = uiState.showLeftDrawerState
-                                )
-                            }
-
-                            dialog(route = Routes.join_authors_screen_route) {
-                                JoinAuthorsScreen(
-                                    showLeftDrawer = uiState.showLeftDrawerState,
-                                )
-                            }
-
-                            dialog(route = Routes.settings_screen_route) {
-                                SettingsScreen(platform)
-                            }
-
-                            scene(
-                                route = Routes.profile_screen_route,
-                                navTransition = NavTransition(
-                                    createTransition = expandHorizontally(),
-                                    destroyTransition = slideOutHorizontally(tween(100))
-                                )
-                            ) {
-                                ProfileScreen(
-                                    showLeftDrawer = uiState.showLeftDrawerState
-                                )
-                            }
-
-                            scene(
-                                route = Routes.admin_screen_route,
-                                navTransition = NavTransition(
-                                    createTransition = expandHorizontally(),
-                                    destroyTransition = slideOutHorizontally(tween(100))
-                                )
-                            ) {
-                                AdminPanelScreen(
-                                    showLeftDrawer = uiState.showLeftDrawerState
-                                )
-                            }
-
-
+                            MainScreen(
+                                platform = platform,
+                                showLeftDrawer = uiState.showLeftDrawerState,
+                                showSearch = showSearch,
+                                leftDrawerState = leftDrawerState,
+                            )
                         }
 
-                }
-//                AnimatedVisibility(platform.isMobile() && canShowLeftBar.value) {
+                        dialog(route = Routes.book_info_route) {
+                            BookScreen(
+                                platform = platform,
+                                bookItemId = uiState.selectedBookId.value,
+                                showLeftDrawer = uiState.showLeftDrawerState,
+                                showRightDrawer = uiState.showRightDrawerState,
+                                showSearch = showSearch,
+                                fullScreenBookInfo = uiState.fullScreenBookInfo,
+                                painterInCache = uiState.painterSelectedBookInCache.value,
+                                isKeyboardShown = isKeyboardShown,
+                            )
+                        }
 
-//                }
+                        dialog(route = Routes.book_creator_route) {
+                            BookCreatorScreen(
+                                platform = platform,
+                                fullScreenBookCreator = mutableStateOf(false),
+                                isKeyboardShown = isKeyboardShown,
+                                showRightDrawer = uiState.showRightDrawerState,
+                            )
+                        }
+
+                        scene(
+                            route = Routes.vault_route,
+                            navTransition = NavTransition(
+                                createTransition = fadeIn(tween(1)),
+                                destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
+                            )
+                        ) {
+                            viewModel.CreationAndSelectionProjectFolderScreen(
+                                pathInfoList = uiState.pathInfoList,
+                            )
+                        }
+
+                        scene(
+                            route = Routes.authors_screen_route,
+                            navTransition = NavTransition(
+                                createTransition = expandHorizontally(),
+                                destroyTransition = slideOutHorizontally(tween(100))
+                            )
+                        ) {
+                            AuthorsScreen(
+                                showLeftDrawer = uiState.showLeftDrawerState
+                            )
+                        }
+
+                        dialog(route = Routes.join_authors_screen_route) {
+                            JoinAuthorsScreen(
+                                showLeftDrawer = uiState.showLeftDrawerState,
+                            )
+                        }
+
+                        dialog(route = Routes.settings_screen_route) {
+                            SettingsScreen(platform)
+                        }
+
+                        scene(
+                            route = Routes.profile_screen_route,
+                            navTransition = NavTransition(
+                                createTransition = expandHorizontally(),
+                                destroyTransition = slideOutHorizontally(tween(100))
+                            )
+                        ) {
+                            ProfileScreen(
+                                showLeftDrawer = uiState.showLeftDrawerState
+                            )
+                        }
+
+                        scene(
+                            route = Routes.admin_screen_route,
+                            navTransition = NavTransition(
+                                createTransition = expandHorizontally(),
+                                destroyTransition = slideOutHorizontally(tween(100))
+                            )
+                        ) {
+                            AdminPanelScreen(
+                                showLeftDrawer = uiState.showLeftDrawerState
+                            )
+                        }
+
+
+                    }
+
+                }
             }
-            viewModel.BottomMenuBar (
-                open = {
-                },
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
+            AnimatedVisibility(platform.isMobile()) {
+                viewModel.BottomMenuBar(
+                    open = {
+                    },
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
+            }
             if (platform.isDesktop() && desktopTooltip?.value?.showTooltip == true) {
                 ShowTooltip(desktopTooltip.value)
             }

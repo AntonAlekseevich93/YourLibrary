@@ -12,7 +12,7 @@ sealed class BookCreatorEvents : BaseEvent {
     data object OnCreateBookManuallyEvent : BookCreatorEvents()
     data object DisableCreateBookManuallyEvent : BookCreatorEvents()
     data object OnClearUrlAndCreateBookManuallyEvent : BookCreatorEvents()
-    data object ClearAllAuthorInfo : BookCreatorEvents()
+    data object ClearAllBookInfo : BookCreatorEvents()
     data class OnShowDialogClearAllData(val show: Boolean) : BookCreatorEvents()
     data object DismissCommonAlertDialog : BookCreatorEvents()
     data object SetBookCoverManually : BookCreatorEvents()

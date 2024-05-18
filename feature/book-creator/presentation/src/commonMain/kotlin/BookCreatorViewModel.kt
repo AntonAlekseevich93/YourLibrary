@@ -60,7 +60,12 @@ class BookCreatorViewModel(
             }
 
             is BookEditorEvents.OnCreateBookManually -> {
-                updateUIState(uiStateValue.copy(isCreateBookManually = true, showSearchAuthorError = false))
+                updateUIState(
+                    uiStateValue.copy(
+                        isCreateBookManually = true,
+                        showSearchAuthorError = false
+                    )
+                )
             }
 
             is BookEditorEvents.OnSearchAuthorClick -> {
@@ -104,8 +109,8 @@ class BookCreatorViewModel(
                 )
             }
 
-            is BookCreatorEvents.ClearAllAuthorInfo -> {
-                clearAllAuthorInfo()
+            is BookCreatorEvents.ClearAllBookInfo -> {
+                clearAllBookInfo()
             }
 
             is BookCreatorEvents.OnShowDialogClearAllData -> {
@@ -144,13 +149,10 @@ class BookCreatorViewModel(
         }
     }
 
-    private fun clearAllAuthorInfo() {
-        updateUIState(
-            uiStateValue.copy(
-                selectedAuthor = null
+    private fun clearAllBookInfo() {
+            updateUIState(
+                BookCreatorUiState()
             )
-        )
-        uiStateValue.similarSearchAuthors.clear()
     }
 
     private fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
@@ -174,7 +176,7 @@ class BookCreatorViewModel(
                 }
 
                 launch {
-                    clearAllAuthorInfo()
+                    clearAllBookInfo()
                     navigationHandler.goBack()
                 }
             }
@@ -184,7 +186,10 @@ class BookCreatorViewModel(
     private fun clearSearchAuthor(showError: Boolean = false) {
         uiStateValue.similarSearchAuthors.clear()
         updateUIState(
-            state = uiStateValue.copy(isSearchAuthorProcess = false, showSearchAuthorError = showError)
+            state = uiStateValue.copy(
+                isSearchAuthorProcess = false,
+                showSearchAuthorError = showError
+            )
         )
     }
 

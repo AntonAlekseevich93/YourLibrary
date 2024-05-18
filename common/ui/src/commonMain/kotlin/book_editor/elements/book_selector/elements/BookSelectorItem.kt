@@ -78,16 +78,16 @@ fun BookSelectorItem(
         }
 
         Text(
-            text = bookItem.originalAuthorName,
-            style = ApplicationTheme.typography.footnoteRegular,
+            text = bookItem.bookName,
+            style = ApplicationTheme.typography.footnoteBold,
             color = ApplicationTheme.colors.mainTextColor,
             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = bookItem.bookName,
-            style = ApplicationTheme.typography.footnoteBold,
+            text = bookItem.originalAuthorName,
+            style = ApplicationTheme.typography.footnoteRegular,
             color = ApplicationTheme.colors.mainTextColor,
             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
             textAlign = TextAlign.Center

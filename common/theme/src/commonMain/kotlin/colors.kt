@@ -43,6 +43,8 @@ data class AppColors(
     val joinAuthorsColors: JoinAuthorsColors,
     val authorsContainerColor: Color,
     val adminPanelButtons: AdminPanelButtons,
+    val titleColors: TitleColors,
+    val screenColor: ScreenColor,
 )
 
 class ReadingStatusesColor(
@@ -62,6 +64,17 @@ class AdminPanelButtons(
     val approvedWithChangesColor: Color,
     val disapprovedColor: Color,
     val uploadColor: Color,
+)
+
+class TitleColors(
+    val booksTitleInfoColor: Color,
+)
+
+class ScreenColor(
+    val background: Color,
+    val appBarColor: Color,
+    val iconColor: Color,
+    val textColor: Color,
 )
 
 val lightPaletteTheme = AppColors(
@@ -124,6 +137,15 @@ val lightPaletteTheme = AppColors(
         disapprovedColor = Color(0xFFd00000),
         uploadColor = Color(0xFF16db65),
     ),
+    titleColors = TitleColors(
+        booksTitleInfoColor = Color(0xFFffbd00),
+    ),
+    screenColor = ScreenColor(
+        background = Color(0xFF2A2A2A),
+        appBarColor = Color(0xFF252525),
+        iconColor = Color(0xFFd4d4d4),
+        textColor = Color(0xFFe5e5e5)
+    ),
 )
 
 val darkPaletteTheme = AppColors(
@@ -185,5 +207,14 @@ val darkPaletteTheme = AppColors(
         approvedWithChangesColor = Color(0xFFffbd00),
         disapprovedColor = Color(0xFFd00000),
         uploadColor = Color(0xFF16db65),
+    ),
+    titleColors = TitleColors(
+        booksTitleInfoColor = Color(0xFFffbd00),
+    ),
+    screenColor = ScreenColor(
+        background = Color(0xFF2A2A2A),
+        appBarColor = Color(0xFF252525),
+        iconColor = Color(0xFFd4d4d4),
+        textColor = Color(0xFFe5e5e5)
     ),
 )

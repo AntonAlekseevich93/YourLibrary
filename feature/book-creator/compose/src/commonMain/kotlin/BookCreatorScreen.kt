@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,7 +24,10 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -36,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.TextFieldValue
@@ -43,7 +46,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import book_editor.BookEditor
-import book_editor.elements.AuthorIsNotSelectedInfo
 import containters.CenterBoxContainer
 import date.CommonDatePicker
 import date.DatePickerEvents
@@ -56,7 +58,6 @@ import org.jetbrains.compose.resources.painterResource
 import platform.Platform
 import platform.isDesktop
 import platform.isMobile
-import tags.CustomTag
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
@@ -103,7 +104,6 @@ fun BookCreatorScreen(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
-                        viewModel.sendEvent(BookCreatorEvents.ClearAllAuthorInfo)
                         viewModel.sendEvent(BookCreatorEvents.GoBack)
                     },
                 )
@@ -112,7 +112,7 @@ fun BookCreatorScreen(
         Card(
             shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(
-                containerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor
+                containerColor = ApplicationTheme.colors.screenColor.background
             ),
             modifier = Modifier
                 .fillMaxSize()
@@ -129,134 +129,160 @@ fun BookCreatorScreen(
                     )
                 },
         ) {
-            Column(
-                modifier = Modifier.padding(
-                    start = if (platform.isDesktop()) 24.dp else 8.dp,
-                    end = if (platform.isDesktop()) 24.dp else 8.dp,
-                    top = 2.dp,
-                    bottom = 16.dp
-                )
-            ) {
-                Box(
-                    modifier = Modifier
-                        .sizeIn(maxHeight = 52.dp, minHeight = 52.dp)
-                        .padding(top = 4.dp)
-                ) {
-                    CenterBoxContainer {
-                        if (
-                            platform.isDesktop() &&
-                            uiState.selectedAuthor == null &&
-                            uiState.similarSearchAuthors.isNotEmpty() && !uiState.needCreateNewAuthor
-                        ) {
-                            AuthorIsNotSelectedInfo()
-                        } else if (
-                            uiState.bookValues.isRequiredFieldsFilled() && uiState.needCreateNewAuthor ||
-                            uiState.bookValues.isRequiredFieldsFilled() && uiState.selectedAuthor != null
-                        ) {
-                            CustomTag(
-                                text = Strings.save,
-                                color = ApplicationTheme.colors.mainAddButtonColor,
-                                textStyle = ApplicationTheme.typography.footnoteBold,
-                                textModifier = Modifier,
-                                maxHeight = 50.dp,
-                                onClick = { viewModel.sendEvent(BookCreatorEvents.CreateBookEvent) }
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(containerColor = ApplicationTheme.colors.screenColor.appBarColor),
+                        title = {
+                            CenterBoxContainer {
+                                Text(
+                                    text = if (uiState.isCreateBookManually || uiState.shortBookItem != null) Strings.add_book else "Поиск",
+                                    style = ApplicationTheme.typography.title2Bold,
+                                    color = ApplicationTheme.colors.screenColor.textColor,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                        },
+                        navigationIcon = {
+                            if (uiState.isCreateBookManually) {
+                                Image(
+                                    painter = painterResource(DrawableResource(Drawable.drawable_ic_main_search)),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(ApplicationTheme.colors.screenColor.iconColor),
+                                    modifier = Modifier.padding(start = 24.dp).size(22.dp)
+                                        .clickable(
+                                            interactionSource = MutableInteractionSource(),
+                                            indication = null,
+                                            onClick = {
+
+                                            }
+                                        ),
+                                )
+                            }
+                        },
+                        actions = {
+                            Image(
+                                painter = painterResource(DrawableResource(Drawable.drawable_ic_main_close)),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(ApplicationTheme.colors.screenColor.iconColor),
+                                modifier = Modifier.padding(end = 24.dp).size(22.dp).clickable(
+                                    interactionSource = MutableInteractionSource(),
+                                    indication = null,
+                                    onClick = {
+                                        viewModel.sendEvent(BookCreatorEvents.GoBack)
+                                    }
+                                ),
                             )
-                        } else {
-                            Text(
-                                text = if (uiState.isCreateBookManually || uiState.shortBookItem != null) Strings.add_book else "Поиск",
-                                modifier = Modifier.padding(top = 8.dp),
-                                style = ApplicationTheme.typography.title2Bold,
-                                color = ApplicationTheme.colors.mainTextColor,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
+                        }
+                    )
+                },
+                containerColor = Color.Transparent,
+                contentColor = Color.Transparent
+            ) {
+                Column(
+                    modifier = Modifier.padding(it).padding(
+                        start = if (platform.isDesktop()) 24.dp else 8.dp,
+                        end = if (platform.isDesktop()) 24.dp else 8.dp,
+                        top = 2.dp,
+                        bottom = 16.dp
+                    )
+                ) {
+//                    Row(
+//                        modifier = Modifier
+//                            .sizeIn(maxHeight = 52.dp, minHeight = 52.dp)
+//                            .padding(top = 4.dp)
+//                    ) {
+//
+//                        CenterBoxContainer(modifier = Modifier.weight(1f)) {
+//                            if (
+//                                platform.isDesktop() &&
+//                                uiState.selectedAuthor == null &&
+//                                uiState.similarSearchAuthors.isNotEmpty() && !uiState.needCreateNewAuthor
+//                            ) {
+//                                AuthorIsNotSelectedInfo()
+//                            } else if (
+//                                uiState.bookValues.isRequiredFieldsFilled() && uiState.needCreateNewAuthor ||
+//                                uiState.bookValues.isRequiredFieldsFilled() && uiState.selectedAuthor != null
+//                            ) {
+//                                CustomTag(
+//                                    text = Strings.save,
+//                                    color = ApplicationTheme.colors.mainAddButtonColor,
+//                                    textStyle = ApplicationTheme.typography.footnoteBold,
+//                                    textModifier = Modifier,
+//                                    maxHeight = 50.dp,
+//                                    onClick = { viewModel.sendEvent(BookCreatorEvents.CreateBookEvent) }
+//                                )
+//                            } else {
+//                            }
+//                        }
+//                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(scrollableState)
+                    ) {
+                        Column {
+                            Spacer(modifier = Modifier.padding(top = 12.dp))
+
+                            viewModel.BookEditor(
+                                platform = platform,
+                                bookValues = uiState.bookValues,
+                                similarSearchAuthors = uiState.similarSearchAuthors,
+                                selectedAuthor = uiState.selectedAuthor,
+                                createNewAuthor = uiState.needCreateNewAuthor,
+                                isKeyboardShown = isKeyboardShown.value,
+                                statusBookTextFieldValue = statusBookTextFieldValue,
+                                similarBooks = uiState.similarBooks,
+                                isSearchBookProcess = uiState.isSearchBookProcess,
+                                isSearchAuthorProcess = uiState.isSearchAuthorProcess,
+                                isCreateBookManually = uiState.isCreateBookManually,
+                                shortBook = uiState.shortBookItem,
+                                isBookCoverManually = uiState.isBookCoverManually,
+                                showSearchBookError = uiState.showSearchBookError,
+                                showSearchAuthorError = uiState.showSearchAuthorError,
                             )
                         }
                     }
-
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        Image(
-                            painter = painterResource(DrawableResource(Drawable.drawable_ic_close_128px)),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
-                            modifier = Modifier.size(22.dp).clickable(
-                                interactionSource = MutableInteractionSource(),
-                                indication = null,
-                                onClick = {
-                                    viewModel.sendEvent(BookCreatorEvents.ClearAllAuthorInfo)
-                                    viewModel.sendEvent(BookCreatorEvents.GoBack)
-                                }
-                            )
-                        )
-                    }
                 }
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(scrollableState)
+                AnimatedVisibility(uiState.showDatePicker) {
+                    val timePickerTitle =
+                        remember { if (uiState.datePickerType == DatePickerType.StartDate) Strings.start_date else Strings.end_date }
+                    viewModel.CommonDatePicker(
+                        state = dataPickerState,
+                        title = timePickerTitle,
+                        onDismissRequest = {
+                            viewModel.sendEvent(DatePickerEvents.OnHideDatePicker)
+                        },
+                    )
+                }
+
+                AnimatedVisibility(
+                    visible = uiState.showDialogClearAllData,
+                    exit = fadeOut(animationSpec = tween(durationMillis = 1))
                 ) {
-                    Column {
-                        Spacer(modifier = Modifier.padding(top = 12.dp))
-
-                        viewModel.BookEditor(
-                            platform = platform,
-                            bookValues = uiState.bookValues,
-                            similarSearchAuthors = uiState.similarSearchAuthors,
-                            selectedAuthor = uiState.selectedAuthor,
-                            createNewAuthor = uiState.needCreateNewAuthor,
-                            isKeyboardShown = isKeyboardShown.value,
-                            statusBookTextFieldValue = statusBookTextFieldValue,
-                            similarBooks = uiState.similarBooks,
-                            isSearchBookProcess = uiState.isSearchBookProcess,
-                            isSearchAuthorProcess = uiState.isSearchAuthorProcess,
-                            isCreateBookManually = uiState.isCreateBookManually,
-                            shortBook = uiState.shortBookItem,
-                            isBookCoverManually = uiState.isBookCoverManually,
-                            showSearchBookError = uiState.showSearchBookError,
-                            showSearchAuthorError= uiState.showSearchAuthorError,
-                        )
-                    }
+                    ClearDataAlertDialog(
+                        onDismissRequest = {
+                            viewModel.sendEvent(BookCreatorEvents.OnShowDialogClearAllData(false))
+                        }, onClick = {
+                            viewModel.sendEvent(BookCreatorEvents.ClearUrlEvent)
+                        }
+                    )
                 }
-            }
 
-            AnimatedVisibility(uiState.showDatePicker) {
-                val timePickerTitle =
-                    remember { if (uiState.datePickerType == DatePickerType.StartDate) Strings.start_date else Strings.end_date }
-                viewModel.CommonDatePicker(
-                    state = dataPickerState,
-                    title = timePickerTitle,
-                    onDismissRequest = {
-                        viewModel.sendEvent(DatePickerEvents.OnHideDatePicker)
-                    },
-                )
-            }
-
-            AnimatedVisibility(
-                visible = uiState.showDialogClearAllData,
-                exit = fadeOut(animationSpec = tween(durationMillis = 1))
-            ) {
-                ClearDataAlertDialog(
-                    onDismissRequest = {
-                        viewModel.sendEvent(BookCreatorEvents.OnShowDialogClearAllData(false))
-                    }, onClick = {
-                        viewModel.sendEvent(BookCreatorEvents.ClearUrlEvent)
-                    }
-                )
-            }
-
-            if (uiState.showCommonAlertDialog && uiState.alertDialogConfig != null) {
-                CommonAlertDialog(
-                    config = uiState.alertDialogConfig!!,
-                    acceptListener = {
-                        viewModel.sendEvent(BookCreatorEvents.SetBookCoverManually)
-                    },
-                    onDismissRequest = {
-                        viewModel.sendEvent(BookCreatorEvents.DismissCommonAlertDialog)
-                    }
-                )
+                if (uiState.showCommonAlertDialog && uiState.alertDialogConfig != null) {
+                    CommonAlertDialog(
+                        config = uiState.alertDialogConfig!!,
+                        acceptListener = {
+                            viewModel.sendEvent(BookCreatorEvents.SetBookCoverManually)
+                        },
+                        onDismissRequest = {
+                            viewModel.sendEvent(BookCreatorEvents.DismissCommonAlertDialog)
+                        }
+                    )
+                }
             }
         }
     }

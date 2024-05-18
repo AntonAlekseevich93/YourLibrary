@@ -241,7 +241,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         enabledInput = shortBook == null,
                         disableBorder = shortBook != null,
                         textFieldValue = bookValues.bookName,
-                        maxLines = 1
+                        maxLines = 1,
+                        titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 
                     TextFieldWithTitleAndSuggestion(
@@ -283,6 +284,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                 )
                             }
                         },
+                        titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 
                     AnimatedVisibility(
@@ -349,7 +351,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         showSuggestionAsTag = true,
                         freezeFocusWhenOnClick = true,
                         suggestionList = mutableStateOf(ReadingStatus.entries.map { it.nameValue }),
-                        tagColor = bookValues.selectedStatus.value.getStatusColor()
+                        tagColor = bookValues.selectedStatus.value.getStatusColor(),
+                        titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 
                     TextFieldWithTitleAndSuggestion(
@@ -362,7 +365,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         onTextChanged = {
                             bookValues.numberOfPages.value = it
                         },
-                        textFieldValue = bookValues.numberOfPages
+                        textFieldValue = bookValues.numberOfPages,
+                        titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 
                     TextFieldWithTitleAndSuggestion(
@@ -390,7 +394,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                     )
                                 )
                             }
-                        }
+                        },
+                        titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 
                     TextFieldWithTitleAndSuggestion(
@@ -406,7 +411,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                     DatePickerType.StartDate
                                 )
                             )
-                        }
+                        },
+                        titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 
                     TextFieldWithTitleAndSuggestion(
@@ -422,7 +428,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                     DatePickerType.EndDate
                                 )
                             )
-                        }
+                        },
+                        titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 
                     TextFieldWithTitleAndSuggestion(
@@ -438,6 +445,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         disableSingleLineIfFocused = true,
                         textFieldValue = bookValues.description,
                         maxLines = 200,
+                        titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 
                     TextFieldWithTitleAndSuggestion(
@@ -450,7 +458,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         onTextChanged = {
                             bookValues.isbn.value = it
                         },
-                        textFieldValue = bookValues.isbn
+                        textFieldValue = bookValues.isbn,
+                        titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
                 }
 

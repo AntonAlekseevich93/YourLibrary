@@ -56,6 +56,7 @@ const val DELAY_FOR_LISTENER_PROCESSING = 170L
 fun TextFieldWithTitleAndSuggestion(
     platform: Platform,
     title: String,
+    titleColor: Color = ApplicationTheme.colors.mainTextColor,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     hintText: String = "",
@@ -125,18 +126,21 @@ fun TextFieldWithTitleAndSuggestion(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = icon ?: Icons.Default.List,
-                    contentDescription = null,
-                    tint = ApplicationTheme.colors.mainIconsColor,
-                    modifier = Modifier.padding(end = 4.dp, start = 4.dp).size(18.dp)
-                )
+                icon?.let {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = ApplicationTheme.colors.mainIconsColor,
+                        modifier = Modifier.padding(end = 4.dp, start = 4.dp).size(18.dp)
+                    )
+                }
+
                 Text(
                     text = title,
                     modifier = Modifier.padding(end = 2.dp, start = 4.dp)
-                        .sizeIn(minWidth = if (platform.isDesktop()) 100.dp else 80.dp),
+                        .sizeIn(minWidth = if (platform.isDesktop()) 80.dp else 80.dp),
                     style = ApplicationTheme.typography.footnoteRegular,
-                    color = ApplicationTheme.colors.mainTextColor,
+                    color = titleColor,
                 )
                 if (enabledInput) {
                     Box {
