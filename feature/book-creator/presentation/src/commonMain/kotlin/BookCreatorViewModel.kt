@@ -276,6 +276,7 @@ class BookCreatorViewModel(
     }
 
     private fun onAuthorTextChanged(textFieldValue: TextFieldValue, textWasChanged: Boolean) {
+        uiStateValue.similarBooks.clear()
         if (uiStateValue.selectedAuthor != null && uiStateValue.bookValues.isSelectedAuthorNameWasChanged()) {
             updateUIState(uiStateValue.copy(selectedAuthor = null))
         }
@@ -335,7 +336,7 @@ class BookCreatorViewModel(
         uiStateValue.similarBooks.clear()
         if (bookName.length >= 2) {
             updateUIState(uiStateValue.copy(isSearchBookProcess = true))
-            searchJob = scope.launch {
+            searchJob = scope.launch(Dispatchers.IO) {
                 delay(500)
                 val response = interactor.searchInBooks(uppercaseBookName)
                 val newList = mutableStateListOf<BookShortVo>()
@@ -356,10 +357,32 @@ class BookCreatorViewModel(
 
     private fun onSuggestionAuthorClick(author: AuthorVo) {
         updateUIState(uiStateValue.copy(selectedAuthor = author))
-
         scope.launch {
             delay(DELAY_FOR_LISTENER_PROCESSING)
             clearSearchAuthor()
+            getAllBooksByAuthor(author)
+        }
+    }
+
+    private fun getAllBooksByAuthor(author: AuthorVo) {
+        updateUIState(uiStateValue.copy(isSearchBookProcess = false, showSearchBookError = false))
+        searchJob?.cancel()
+        searchJob = scope.launch(Dispatchers.IO) {
+            updateUIState(uiStateValue.copy(isSearchBookProcess = true))
+            uiStateValue.similarBooks.clear()
+            val response = interactor.getAllBooksByAuthor(author.id)
+
+            uiStateValue.similarBooks.clear()
+            uiStateValue.similarBooks.addAll(response)
+
+            withContext(Dispatchers.Main) {
+                updateUIState(
+                    uiStateValue.copy(
+                        isSearchBookProcess = false,
+                        showSearchBookError = response.isEmpty()
+                    )
+                )
+            }
         }
     }
 

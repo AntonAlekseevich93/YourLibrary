@@ -1,5 +1,6 @@
 package book_editor.elements.authors_selector
 
+import ApplicationTheme
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -13,8 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import book_editor.BookEditor
-import book_editor.BookEditorEvents
 import book_editor.elements.CreateBookButton
 import containters.CenterBoxContainer
 import error.SearchError
@@ -54,8 +53,7 @@ fun AuthorsListSelector(
                 colors = CardDefaults.cardColors(
                     containerColor = ApplicationTheme.colors.dropdownBackground
                 ),
-                modifier = Modifier.sizeIn(maxHeight = 140.dp)
-
+                modifier = Modifier.sizeIn(maxHeight = 700.dp)
             ) {
                 LazyColumn(modifier = Modifier.padding(vertical = 8.dp)) {
                     items(similarSearchAuthors) { author ->

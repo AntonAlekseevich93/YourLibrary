@@ -39,4 +39,7 @@ class BookCreatorInteractor(
 
     suspend fun searchInBooks(uppercaseBookName: String): List<BookShortVo> =
         searchRepository.searchInBooks(uppercaseBookName)
+
+    suspend fun getAllBooksByAuthor(id: String): List<BookShortVo> =
+        searchRepository.getAllBooksByAuthor(id)
 }

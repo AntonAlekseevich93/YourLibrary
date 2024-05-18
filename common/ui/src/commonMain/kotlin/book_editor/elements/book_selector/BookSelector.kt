@@ -33,6 +33,16 @@ fun BookSearchSelector(
         if (isLoading) {
             LoadingProcessWithTitle(text = Strings.loading_book_search_info)
         } else if (similarBooks.isNotEmpty()) {
+
+            CenterBoxContainer {
+                CreateBookButton(
+                    title = "Нет нужной книги",
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    onClickManually()
+                }
+            }
+
             CenterBoxContainer {
                 Text(
                     text = Strings.searching_title_result.uppercase(),
@@ -45,15 +55,6 @@ fun BookSearchSelector(
             LazyRow(state = state) {
                 items(similarBooks) {
                     BookSelectorItem(it, modifier = Modifier.padding(end = 16.dp), onClick)
-                }
-            }
-
-            CenterBoxContainer {
-                CreateBookButton(
-                    title = "Создать новую книгу",
-                    modifier = Modifier.padding(top = 24.dp)
-                ) {
-                    onClickManually()
                 }
             }
 

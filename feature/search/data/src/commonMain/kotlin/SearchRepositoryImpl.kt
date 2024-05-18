@@ -35,4 +35,14 @@ class SearchRepositoryImpl(
         }
     }
 
+    override suspend fun getAllBooksByAuthor(id: String): List<BookShortVo> {
+        val response = remoteSearchDataSource.getAllBooksByAuthor(id)
+        return if (response?.result == null) {
+            emptyList()
+        } else {
+            val urlPrefix = remoteConfig.s3_FULL_PREFIX + remoteConfig.S3_BOOK_IMAGES_PATH
+            response.result!!.books.mapNotNull { it.toVo(imagePrefixUrl = urlPrefix) }
+        }
+    }
+
 }
