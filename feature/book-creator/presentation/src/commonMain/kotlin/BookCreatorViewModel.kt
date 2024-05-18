@@ -50,11 +50,14 @@ class BookCreatorViewModel(
                 updateUIState(uiStateValue.copy(needCreateNewAuthor = event.needCreate))
             }
 
-            is BookEditorEvents.OnShowAlertDialog -> {
+            is BookEditorEvents.OnShowAlertDialogDeleteBookCover -> {
                 updateUIState(
                     uiStateValue.copy(
                         showCommonAlertDialog = true,
-                        alertDialogConfig = event.config
+                        alertDialogConfig = event.config.copy(
+                            acceptEvent = BookCreatorEvents.SetBookCoverManually,
+                            dismissEvent = BookCreatorEvents.DismissCommonAlertDialog
+                        ),
                     )
                 )
             }
@@ -117,6 +120,15 @@ class BookCreatorViewModel(
                 updateUIState(uiStateValue.copy(showDialogClearAllData = event.show))
             }
 
+            is BookCreatorEvents.OnShowCommonAlertDialog -> {
+                updateUIState(
+                    uiStateValue.copy(
+                        showCommonAlertDialog = true,
+                        alertDialogConfig = event.config
+                    )
+                )
+            }
+
             is BookCreatorEvents.DismissCommonAlertDialog -> {
                 updateUIState(
                     uiStateValue.copy(
@@ -150,9 +162,9 @@ class BookCreatorViewModel(
     }
 
     private fun clearAllBookInfo() {
-            updateUIState(
-                BookCreatorUiState()
-            )
+        updateUIState(
+            BookCreatorUiState()
+        )
     }
 
     private fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis

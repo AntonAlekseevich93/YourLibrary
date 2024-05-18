@@ -46,7 +46,6 @@ import date.DatePickerEvents
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import loader.LoadingProcessWithTitle
 import main_models.AuthorVo
 import main_models.BookValues
 import main_models.DatePickerType
@@ -384,12 +383,12 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         onClick = {
                             if (shortBook != null && !isBookCoverManually) {
                                 sendEvent(
-                                    BookEditorEvents.OnShowAlertDialog(
+                                    BookEditorEvents.OnShowAlertDialogDeleteBookCover(
                                         CommonAlertDialogConfig(
                                             title = Strings.alert_dialog_delete_cover_title,
                                             description = Strings.alert_dialog_delete_cover_description,
                                             acceptButtonTitle = Strings.delete,
-                                            dismissButtonTitle = Strings.non_delete
+                                            dismissButtonTitle = Strings.non_delete,
                                         )
                                     )
                                 )

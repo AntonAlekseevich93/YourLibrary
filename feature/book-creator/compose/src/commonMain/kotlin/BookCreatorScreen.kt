@@ -1,4 +1,5 @@
 import alert_dialog.CommonAlertDialog
+import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -145,7 +146,7 @@ fun BookCreatorScreen(
                             }
                         },
                         navigationIcon = {
-                            if (uiState.isCreateBookManually) {
+                            if (uiState.isCreateBookManually || uiState.shortBookItem != null) {
                                 Image(
                                     painter = painterResource(DrawableResource(Drawable.drawable_ic_main_search)),
                                     contentDescription = null,
@@ -155,7 +156,18 @@ fun BookCreatorScreen(
                                             interactionSource = MutableInteractionSource(),
                                             indication = null,
                                             onClick = {
-
+                                                viewModel.sendEvent(
+                                                    BookCreatorEvents.OnShowCommonAlertDialog(
+                                                        CommonAlertDialogConfig(
+                                                            title = Strings.alert_dialog_go_to_search_and_clear_data_title,
+                                                            description = Strings.alert_dialog_go_to_search_and_clear_data_description,
+                                                            acceptButtonTitle = Strings.alert_dialog_go_to_search_and_clear_data_button_ok,
+                                                            dismissButtonTitle = Strings.alert_dialog_go_to_search_and_clear_data_button_dismiss,
+                                                            acceptEvent = BookCreatorEvents.ClearAllBookInfo,
+                                                            dismissEvent = BookCreatorEvents.DismissCommonAlertDialog
+                                                        )
+                                                    )
+                                                )
                                             }
                                         ),
                                 )
@@ -272,16 +284,18 @@ fun BookCreatorScreen(
                     )
                 }
 
-                if (uiState.showCommonAlertDialog && uiState.alertDialogConfig != null) {
-                    CommonAlertDialog(
-                        config = uiState.alertDialogConfig!!,
-                        acceptListener = {
-                            viewModel.sendEvent(BookCreatorEvents.SetBookCoverManually)
-                        },
-                        onDismissRequest = {
-                            viewModel.sendEvent(BookCreatorEvents.DismissCommonAlertDialog)
-                        }
-                    )
+                if (uiState.showCommonAlertDialog) {
+                    uiState.alertDialogConfig?.let { config ->
+                        CommonAlertDialog(
+                            config = config,
+                            acceptListener = {
+                                config.acceptEvent?.let { viewModel.sendEvent(it) }
+                            },
+                            onDismissRequest = {
+                                config.dismissEvent?.let { viewModel.sendEvent(it) }
+                            }
+                        )
+                    }
                 }
             }
         }
