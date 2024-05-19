@@ -200,36 +200,6 @@ fun BookCreatorScreen(
                         bottom = 16.dp
                     )
                 ) {
-//                    Row(
-//                        modifier = Modifier
-//                            .sizeIn(maxHeight = 52.dp, minHeight = 52.dp)
-//                            .padding(top = 4.dp)
-//                    ) {
-//
-//                        CenterBoxContainer(modifier = Modifier.weight(1f)) {
-//                            if (
-//                                platform.isDesktop() &&
-//                                uiState.selectedAuthor == null &&
-//                                uiState.similarSearchAuthors.isNotEmpty() && !uiState.needCreateNewAuthor
-//                            ) {
-//                                AuthorIsNotSelectedInfo()
-//                            } else if (
-//                                uiState.bookValues.isRequiredFieldsFilled() && uiState.needCreateNewAuthor ||
-//                                uiState.bookValues.isRequiredFieldsFilled() && uiState.selectedAuthor != null
-//                            ) {
-//                                CustomTag(
-//                                    text = Strings.save,
-//                                    color = ApplicationTheme.colors.mainAddButtonColor,
-//                                    textStyle = ApplicationTheme.typography.footnoteBold,
-//                                    textModifier = Modifier,
-//                                    maxHeight = 50.dp,
-//                                    onClick = { viewModel.sendEvent(BookCreatorEvents.CreateBookEvent) }
-//                                )
-//                            } else {
-//                            }
-//                        }
-//                    }
-
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -254,6 +224,9 @@ fun BookCreatorScreen(
                                 isBookCoverManually = uiState.isBookCoverManually,
                                 showSearchBookError = uiState.showSearchBookError,
                                 showSearchAuthorError = uiState.showSearchAuthorError,
+                                onClickSave = {
+                                    viewModel.sendEvent(BookCreatorEvents.CreateBookEvent)
+                                }
                             )
                         }
                     }

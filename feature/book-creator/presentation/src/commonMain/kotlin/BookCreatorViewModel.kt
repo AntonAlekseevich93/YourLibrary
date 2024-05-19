@@ -178,26 +178,31 @@ class BookCreatorViewModel(
     private fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
 
     private fun createBook() {
-        uiStateValue.bookValues.createBookItemWithoutAuthorIdOrNull(
-            timestampOfCreating = getCurrentTimeInMillis(),
-            timestampOfUpdating = getCurrentTimeInMillis(),
-        )?.let { bookItem ->
-            scope.launch {
-                launch {
-                    val authorId = if (uiStateValue.needCreateNewAuthor) {
-                        val newAuthor =
-                            createNewAuthor(authorName = bookItem.originalAuthorName)
-                        interactor.createAuthor(newAuthor)
-                        newAuthor.id
-                    } else {
-                        uiStateValue.selectedAuthor!!.id
-                    }
-                    interactor.createBook(bookItem.copy(originalAuthorId = authorId))
-                }
+        if (uiStateValue.shortBookItem != null) {
+            //todo нужно проверить изменялась ли обложка
 
-                launch {
-                    clearAllBookInfo()
-                    navigationHandler.goBack()
+        } else {
+            uiStateValue.bookValues.createBookItemWithoutAuthorIdOrNull(
+                timestampOfCreating = getCurrentTimeInMillis(),
+                timestampOfUpdating = getCurrentTimeInMillis(),
+            )?.let { bookItem ->
+                scope.launch {
+                    launch {
+                        val authorId = if (uiStateValue.needCreateNewAuthor) {
+                            val newAuthor =
+                                createNewAuthor(authorName = bookItem.originalAuthorName)
+                            interactor.createAuthor(newAuthor)
+                            newAuthor.id
+                        } else {
+                            uiStateValue.selectedAuthor!!.id
+                        }
+                        interactor.createBook(bookItem.copy(originalAuthorId = authorId))
+                    }
+
+                    launch {
+                        clearAllBookInfo()
+                        navigationHandler.goBack()
+                    }
                 }
             }
         }

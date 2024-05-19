@@ -52,6 +52,7 @@ import main_models.books.BookShortVo
 import platform.Platform
 import platform.isMobile
 import reading_status.getStatusColor
+import tags.CustomTag
 import text_fields.SearchTextField
 import text_fields.TextFieldWithTitleAndSuggestion
 
@@ -74,6 +75,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     shortBook: BookShortVo? = null,
     isBookCoverManually: Boolean = false,
     similarBooks: List<BookShortVo> = listOf(),
+    onClickSave: (() -> Unit)? = null,
 ) {
     val showImage = remember { mutableStateOf(false) }
     val painter = asyncPainterResource(
@@ -136,6 +138,21 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                 }
 
                 Spacer(modifier = Modifier.padding(10.dp))
+                if (
+                    bookValues.isRequiredFieldsFilled() && createNewAuthor ||
+                    bookValues.isRequiredFieldsFilled() && shortBook != null
+                ) {
+                    CustomTag(
+                        text = Strings.save,
+                        color = ApplicationTheme.colors.mainAddButtonColor,
+                        textStyle = ApplicationTheme.typography.footnoteBold,
+                        textModifier = Modifier,
+                        maxHeight = 50.dp,
+                        onClick = {
+                            onClickSave?.invoke()
+                        }
+                    )
+                }
             }
         }
 
@@ -225,8 +242,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                             bookValues.bookName.value = it
                         },
                         disableSingleLineIfFocused = true,
-                        enabledInput = shortBook == null,
-                        disableBorder = shortBook != null,
+                        enabledInput = false,
+                        disableBorder = false,
                         textFieldValue = bookValues.bookName,
                         maxLines = 1,
                         titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
