@@ -28,7 +28,7 @@ import text_fields.DropdownSuggestionItem
 
 @Composable
 fun BaseEventScope<BaseEvent>.AuthorsListSelector(
-    similarSearchAuthors: SnapshotStateList<AuthorVo>,
+    similarSearchAuthors: List<AuthorVo>,
     isSearchAuthorProcess: Boolean,
     showError: Boolean,
     bookValues: BookValues,

@@ -1,5 +1,5 @@
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import base.BaseMVIViewModel
@@ -79,11 +79,11 @@ class BookCreatorViewModel(
 
             is BookEditorEvents.ClearBookSearch -> {
                 if (uiStateValue.selectedAuthor == null) {
-                    uiStateValue.similarBooks.clear()
-                    uiStateValue.similarBooksCache.clear()
+                    updateSimilarBooks(emptyList())
+                    updateSimilarBooksCache(emptyList())
                 } else {
-                    uiStateValue.similarBooks.clear()
-                    uiStateValue.similarBooks.addAll(uiStateValue.similarBooksCache)
+                    updateSimilarBooks(emptyList())
+                    uiStateValue.similarBooks = uiStateValue.similarBooksCache.toMutableStateList()
                 }
                 updateUIState(uiStateValue.copy(showSearchBookError = false))
             }
@@ -204,11 +204,11 @@ class BookCreatorViewModel(
     }
 
     private fun clearSearchAuthor(showError: Boolean = false) {
-        uiStateValue.similarSearchAuthors.clear()
         updateUIState(
             state = uiStateValue.copy(
                 isSearchAuthorProcess = false,
-                showSearchAuthorError = showError
+                showSearchAuthorError = showError,
+                similarSearchAuthors = emptyList()
             )
         )
     }
@@ -288,8 +288,8 @@ class BookCreatorViewModel(
         textWasChanged: Boolean,
         needNewSearch: Boolean
     ) {
-        uiStateValue.similarBooks.clear()
-        uiStateValue.similarBooksCache.clear()
+        updateSimilarBooks(emptyList())
+        updateSimilarBooksCache(emptyList())
         if (uiStateValue.selectedAuthor != null && uiStateValue.bookValues.isSelectedAuthorNameWasChanged()) {
             updateUIState(uiStateValue.copy(selectedAuthor = null))
         }
@@ -307,8 +307,12 @@ class BookCreatorViewModel(
 
     private fun searchAuthor(authorName: String) {
         searchJob?.cancel()
-        uiStateValue.similarSearchAuthors.clear()
-        updateUIState(uiStateValue.copy(isSearchAuthorProcess = false))
+        updateUIState(
+            uiStateValue.copy(
+                isSearchAuthorProcess = false,
+                similarSearchAuthors = emptyList()
+            )
+        )
         val uppercaseName = authorName.trim().uppercase()
         if (authorName.length >= 2) {
             updateUIState(uiStateValue.copy(isSearchAuthorProcess = true))
@@ -316,7 +320,7 @@ class BookCreatorViewModel(
                 delay(500)
                 val response = interactor.searchInAuthorsNameWithRelates(uppercaseName)
                 if (response.isNotEmpty()) {
-                    val list: SnapshotStateList<AuthorVo> = mutableStateListOf()
+                    val list: MutableList<AuthorVo> = mutableListOf()
                     list.addAll(response.sortedBy { it.name })
                     val exactMatchAuthor = list.find { it.uppercaseName == uppercaseName }
 
@@ -348,13 +352,12 @@ class BookCreatorViewModel(
     private fun searchBookName(bookName: String) {
         searchJob?.cancel()
         updateUIState(uiStateValue.copy(isSearchBookProcess = false, showSearchBookError = false))
-        val uppercaseBookName = bookName.trim().uppercase()
-
         if (uiStateValue.selectedAuthor != null) {
             findInSimilarBooks(bookName)
         } else {
-            uiStateValue.similarBooks.clear()
-            uiStateValue.similarBooksCache.clear()
+            val uppercaseBookName = bookName.trim().uppercase()
+            updateSimilarBooks(emptyList())
+            updateSimilarBooksCache(emptyList())
             if (bookName.length >= 2) {
                 updateUIState(uiStateValue.copy(isSearchBookProcess = true))
                 searchJob = scope.launch(Dispatchers.IO) {
@@ -379,15 +382,18 @@ class BookCreatorViewModel(
     }
 
     private fun findInSimilarBooks(bookName: String) {
-        val result = uiStateValue.similarBooksCache.filter {
+        val result = getAllBooksFromCacheWhereNameIs(bookName)
+        updateSimilarBooks(result)
+    }
+
+    private fun getAllBooksFromCacheWhereNameIs(name: String): List<BookShortVo> {
+        val newList = uiStateValue.similarBooksCache.filter {
             it.bookName.contains(
-                bookName,
+                name,
                 ignoreCase = true
             )
         }
-
-        uiStateValue.similarBooks.clear()
-        uiStateValue.similarBooks.addAll(result)
+        return newList
     }
 
     private fun onSuggestionAuthorClick(author: AuthorVo) {
@@ -406,10 +412,15 @@ class BookCreatorViewModel(
             updateUIState(uiStateValue.copy(isSearchBookProcess = true))
             val response = interactor.getAllBooksByAuthor(author.id)
 
-            uiStateValue.similarBooks.clear()
-            uiStateValue.similarBooksCache.clear()
-            uiStateValue.similarBooks.addAll(response)
-            uiStateValue.similarBooksCache.addAll(response)
+            uiStateValue.similarBooks
+            updateSimilarBooksCache(response)
+            val bookName = uiStateValue.bookValues.bookName.value.text
+            if (bookName.isNotEmpty()) {
+                uiStateValue.similarBooks =
+                    getAllBooksFromCacheWhereNameIs(bookName).toMutableStateList()
+            } else {
+                uiStateValue.similarBooks = response.toMutableStateList()
+            }
 
             withContext(Dispatchers.Main) {
                 updateUIState(
@@ -420,6 +431,18 @@ class BookCreatorViewModel(
                 )
             }
         }
+    }
+
+    private fun updateSimilarBooksCache(list: List<BookShortVo>) {
+        updateUIState(
+            uiStateValue.copy(similarBooksCache = list)
+        )
+    }
+
+    private fun updateSimilarBooks(list: List<BookShortVo>) {
+        updateUIState(
+            uiStateValue.copy(similarBooks = list)
+        )
     }
 
     private fun urlTextChanged(urlTextFieldValue: TextFieldValue) {

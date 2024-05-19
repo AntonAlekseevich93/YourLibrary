@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import book_editor.elements.CreateBookButton
@@ -21,7 +20,7 @@ import main_models.books.BookShortVo
 
 @Composable
 fun BookSearchSelector(
-    similarBooks: SnapshotStateList<BookShortVo>,
+    similarBooks: List<BookShortVo>,
     isLoading: Boolean,
     showError: Boolean,
     modifier: Modifier = Modifier,
