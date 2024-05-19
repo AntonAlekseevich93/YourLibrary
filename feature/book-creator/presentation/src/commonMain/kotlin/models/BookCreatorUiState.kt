@@ -30,6 +30,7 @@ data class BookCreatorUiState(
     val showDatePicker: Boolean = false,
     val isCreateBookManually: Boolean = false,
     val similarBooks: SnapshotStateList<BookShortVo> = mutableStateListOf(),
+    val similarBooksCache: SnapshotStateList<BookShortVo> = mutableStateListOf(),
     val isSearchBookProcess: Boolean = false,
     val isSearchAuthorProcess: Boolean = false,
     val isBookCoverManually: Boolean = false,

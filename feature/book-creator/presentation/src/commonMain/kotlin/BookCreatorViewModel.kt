@@ -37,7 +37,8 @@ class BookCreatorViewModel(
         when (event) {
             is BookEditorEvents.OnAuthorTextChanged -> onAuthorTextChanged(
                 event.textFieldValue,
-                event.textWasChanged
+                event.textWasChanged,
+                event.needNewSearch
             )
 
             is BookEditorEvents.OnBookNameChanged -> {
@@ -66,7 +67,8 @@ class BookCreatorViewModel(
                 updateUIState(
                     uiStateValue.copy(
                         isCreateBookManually = true,
-                        showSearchAuthorError = false
+                        showSearchAuthorError = false,
+                        needCreateNewAuthor = event.setCreateNewAuthor
                     )
                 )
             }
@@ -76,7 +78,13 @@ class BookCreatorViewModel(
             }
 
             is BookEditorEvents.ClearBookSearch -> {
-                uiStateValue.similarBooks.clear()
+                if (uiStateValue.selectedAuthor == null) {
+                    uiStateValue.similarBooks.clear()
+                    uiStateValue.similarBooksCache.clear()
+                } else {
+                    uiStateValue.similarBooks.clear()
+                    uiStateValue.similarBooks.addAll(uiStateValue.similarBooksCache)
+                }
                 updateUIState(uiStateValue.copy(showSearchBookError = false))
             }
 
@@ -275,18 +283,26 @@ class BookCreatorViewModel(
         )
     }
 
-    private fun onAuthorTextChanged(textFieldValue: TextFieldValue, textWasChanged: Boolean) {
+    private fun onAuthorTextChanged(
+        textFieldValue: TextFieldValue,
+        textWasChanged: Boolean,
+        needNewSearch: Boolean
+    ) {
         uiStateValue.similarBooks.clear()
+        uiStateValue.similarBooksCache.clear()
         if (uiStateValue.selectedAuthor != null && uiStateValue.bookValues.isSelectedAuthorNameWasChanged()) {
             updateUIState(uiStateValue.copy(selectedAuthor = null))
         }
 
         if (textFieldValue.text.isEmpty()) {
             clearSearchAuthor()
+        } else if (needNewSearch) {
+            searchJob?.cancel()
+            searchJob = scope.launch(Dispatchers.IO) {
+                delay(1500)
+                searchAuthor(textFieldValue.text)
+            }
         }
-//        else if (textWasChanged) {
-//            searchAuthor(textFieldValue.text)
-//        }
     }
 
     private fun searchAuthor(authorName: String) {
@@ -301,7 +317,7 @@ class BookCreatorViewModel(
                 val response = interactor.searchInAuthorsNameWithRelates(uppercaseName)
                 if (response.isNotEmpty()) {
                     val list: SnapshotStateList<AuthorVo> = mutableStateListOf()
-                    list.addAll(response)
+                    list.addAll(response.sortedBy { it.name })
                     val exactMatchAuthor = list.find { it.uppercaseName == uppercaseName }
 
                     if (exactMatchAuthor == null) {
@@ -333,26 +349,45 @@ class BookCreatorViewModel(
         searchJob?.cancel()
         updateUIState(uiStateValue.copy(isSearchBookProcess = false, showSearchBookError = false))
         val uppercaseBookName = bookName.trim().uppercase()
-        uiStateValue.similarBooks.clear()
-        if (bookName.length >= 2) {
-            updateUIState(uiStateValue.copy(isSearchBookProcess = true))
-            searchJob = scope.launch(Dispatchers.IO) {
-                delay(500)
-                val response = interactor.searchInBooks(uppercaseBookName)
-                val newList = mutableStateListOf<BookShortVo>()
 
-                newList.addAll(response)
-                withContext(Dispatchers.Main) {
-                    updateUIState(
-                        uiStateValue.copy(
-                            similarBooks = newList,
-                            isSearchBookProcess = false,
-                            showSearchBookError = newList.isEmpty()
+        if (uiStateValue.selectedAuthor != null) {
+            findInSimilarBooks(bookName)
+        } else {
+            uiStateValue.similarBooks.clear()
+            uiStateValue.similarBooksCache.clear()
+            if (bookName.length >= 2) {
+                updateUIState(uiStateValue.copy(isSearchBookProcess = true))
+                searchJob = scope.launch(Dispatchers.IO) {
+                    delay(500)
+                    val response = interactor.searchInBooks(uppercaseBookName)
+                    val newList = mutableStateListOf<BookShortVo>()
+
+                    newList.addAll(response)
+                    withContext(Dispatchers.Main) {
+                        updateUIState(
+                            uiStateValue.copy(
+                                similarBooks = newList,
+                                similarBooksCache = newList,
+                                isSearchBookProcess = false,
+                                showSearchBookError = newList.isEmpty()
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
+    }
+
+    private fun findInSimilarBooks(bookName: String) {
+        val result = uiStateValue.similarBooksCache.filter {
+            it.bookName.contains(
+                bookName,
+                ignoreCase = true
+            )
+        }
+
+        uiStateValue.similarBooks.clear()
+        uiStateValue.similarBooks.addAll(result)
     }
 
     private fun onSuggestionAuthorClick(author: AuthorVo) {
@@ -369,11 +404,12 @@ class BookCreatorViewModel(
         searchJob?.cancel()
         searchJob = scope.launch(Dispatchers.IO) {
             updateUIState(uiStateValue.copy(isSearchBookProcess = true))
-            uiStateValue.similarBooks.clear()
             val response = interactor.getAllBooksByAuthor(author.id)
 
             uiStateValue.similarBooks.clear()
+            uiStateValue.similarBooksCache.clear()
             uiStateValue.similarBooks.addAll(response)
+            uiStateValue.similarBooksCache.addAll(response)
 
             withContext(Dispatchers.Main) {
                 updateUIState(

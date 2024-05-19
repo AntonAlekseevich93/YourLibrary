@@ -100,7 +100,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
 
     val authorIsSelected by remember(key1 = selectedAuthor) { mutableStateOf(selectedAuthor != null) }
 
-    var lastSearchAuthorName by remember { mutableStateOf("") }
+    var lastSearchBookName by remember { mutableStateOf("") }
 
     Column(modifier = modifier) {
         AnimatedVisibility(
@@ -149,19 +149,21 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                 ) {
                     Column {
                         SearchTextField(
-                            hintText = "Поиск по названию книги",
+                            hintText = if (selectedAuthor != null) "Поиск среди книг автора ${selectedAuthor.name}" else "Поиск по названию книги",
                             textFieldValue = bookValues.bookName,
                             onTextChanged = {
-                                if (it.text.isEmpty()) {
+                                if (it.text.trim().isEmpty()) {
                                     sendEvent(BookEditorEvents.ClearBookSearch)
+                                } else if (authorIsSelected) {
+                                    sendEvent(BookEditorEvents.OnBookNameChanged(it.text))
                                 }
 
                                 bookValues.bookName.value = it
                             },
                             onClickSearch = {
                                 val newSearch = bookValues.bookName.value.text
-                                if (lastSearchAuthorName != newSearch) {
-                                    lastSearchAuthorName = newSearch
+                                if (lastSearchBookName != newSearch) {
+                                    lastSearchBookName = newSearch
                                     sendEvent(BookEditorEvents.OnBookNameChanged(newSearch))
                                 }
                             },
@@ -190,27 +192,14 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     }
                 }
 
-
-
-                AuthorsListSelector(
-                    isSearchAuthorProcess = isSearchAuthorProcess,
-                    showError = showSearchAuthorError,
-                    similarSearchAuthors = similarSearchAuthors,
-                    itemClickListener = { author, textPostfix ->
-                        bookValues.setSelectedAuthorName(
-                            author.name,
-                            relatedAuthorsNames = textPostfix
-                        )
-                        this@BookEditor.sendEvent(
-                            BookEditorEvents.OnSuggestionAuthorClickEvent(
-                                author
-                            )
-                        )
-                    },
-                    onClickManually = {
-                        sendEvent(BookEditorEvents.OnCreateBookManually)
-                    }
-                )
+                if (!isCreateBookManually) {
+                    AuthorsListSelector(
+                        isSearchAuthorProcess = isSearchAuthorProcess,
+                        showError = showSearchAuthorError,
+                        similarSearchAuthors = similarSearchAuthors,
+                        bookValues = bookValues
+                    )
+                }
 
                 if (shortBook == null && !isCreateBookManually) {
                     BookSearchSelector(
@@ -222,7 +211,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                             sendEvent(BookEditorEvents.OnBookSelected(it))
                         },
                         onClickManually = {
-                            sendEvent(BookEditorEvents.OnCreateBookManually)
+                            sendEvent(BookEditorEvents.OnCreateBookManually())
                         }
                     )
                 }
@@ -251,15 +240,16 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         hintText = Strings.hint_type_author,
                         textFieldValue = bookValues.authorName,
                         maxLines = 1,
-                        enabledInput = shortBook == null,
-                        disableBorder = shortBook != null,
+                        enabledInput = shortBook == null && selectedAuthor == null && !createNewAuthor,
+                        disableBorder = shortBook != null && selectedAuthor == null && !createNewAuthor,
                         onTextChanged = {
                             val oldText = bookValues.authorName.value.text
                             bookValues.authorName.value = it
                             this@BookEditor.sendEvent(
                                 BookEditorEvents.OnAuthorTextChanged(
                                     textFieldValue = it,
-                                    textWasChanged = oldText != it.text
+                                    textWasChanged = oldText != it.text,
+                                    needNewSearch = true
                                 )
                             )
                         },
@@ -286,14 +276,24 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 
+                    if (isCreateBookManually && !createNewAuthor) {
+                        AuthorsListSelector(
+                            isSearchAuthorProcess = isSearchAuthorProcess,
+                            showError = false,
+                            similarSearchAuthors = similarSearchAuthors,
+                            bookValues = bookValues,
+                            maxHeight = 120.dp
+                        )
+                    }
+
                     AnimatedVisibility(
-                        visible = (platform.isMobile() || canShowError) && shortBook == null && selectedAuthor == null &&
-                                similarSearchAuthors.isNotEmpty() && !createNewAuthor && !linkToAuthor
+                        visible = shortBook == null && selectedAuthor == null &&
+                                similarSearchAuthors.isNotEmpty() && !createNewAuthor
                     ) {
                         AuthorIsNotSelectedInfo(modifier = Modifier.padding(top = 8.dp))
                     }
 
-                    AnimatedVisibility(visible = shortBook == null && bookValues.authorName.value.text.length >= 2 && !authorIsSelected && similarSearchAuthors.isNotEmpty()) {
+                    if (shortBook == null && bookValues.authorName.value.text.length >= 2 && !authorIsSelected) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
