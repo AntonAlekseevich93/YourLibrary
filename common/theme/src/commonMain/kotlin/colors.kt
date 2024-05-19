@@ -68,6 +68,7 @@ class AdminPanelButtons(
 
 class TitleColors(
     val booksTitleInfoColor: Color,
+    val secondaryBooksTitleInfoColor: Color,
 )
 
 class ScreenColor(
@@ -139,6 +140,7 @@ val lightPaletteTheme = AppColors(
     ),
     titleColors = TitleColors(
         booksTitleInfoColor = Color(0xFFffbd00),
+        secondaryBooksTitleInfoColor = Color(0xFF16db65),
     ),
     screenColor = ScreenColor(
         background = Color(0xFF2A2A2A),
@@ -210,6 +212,7 @@ val darkPaletteTheme = AppColors(
     ),
     titleColors = TitleColors(
         booksTitleInfoColor = Color(0xFFffbd00),
+        secondaryBooksTitleInfoColor = Color(0xFF16db65),
     ),
     screenColor = ScreenColor(
         background = Color(0xFF2A2A2A),

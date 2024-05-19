@@ -205,6 +205,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         isLoading = isSearchBookProcess,
                         modifier = Modifier.padding(top = 24.dp, bottom = 16.dp, start = 8.dp),
                         showError = showSearchBookError,
+                        bookValues = bookValues,
                         onClick = {
                             sendEvent(BookEditorEvents.OnBookSelected(it))
                         },

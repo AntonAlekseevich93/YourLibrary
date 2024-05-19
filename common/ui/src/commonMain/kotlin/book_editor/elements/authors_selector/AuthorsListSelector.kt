@@ -3,6 +3,7 @@ package book_editor.elements.authors_selector
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
+import Strings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -13,8 +14,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import book_editor.BookEditorEvents
@@ -43,7 +46,26 @@ fun BaseEventScope<BaseEvent>.AuthorsListSelector(
         }
 
         if (showError) {
-            SearchError()
+            SearchError(
+                titleAnnotationString = buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = ApplicationTheme.colors.mainTextColor)) {
+                        append(Strings.search_is_empty)
+                    }
+                    if (bookValues.authorName.value.text.isNotEmpty()) {
+                        withStyle(style = SpanStyle(color = ApplicationTheme.colors.titleColors.booksTitleInfoColor)) {
+                            append("\n")
+                            append(bookValues.authorName.value.text)
+                        }
+                    }
+                    if (bookValues.bookName.value.text.isNotEmpty()) {
+                        withStyle(style = SpanStyle(color = ApplicationTheme.colors.titleColors.secondaryBooksTitleInfoColor)) {
+                            append("\n")
+                            append(bookValues.bookName.value.text)
+                        }
+                    }
+                },
+                title = null
+            )
 
             CenterBoxContainer {
                 CreateBookButton(

@@ -10,12 +10,16 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import book_editor.elements.CreateBookButton
 import book_editor.elements.book_selector.elements.BookSelectorItem
 import containters.CenterBoxContainer
 import error.SearchError
 import loader.LoadingProcessWithTitle
+import main_models.BookValues
 import main_models.books.BookShortVo
 
 @Composable
@@ -24,6 +28,7 @@ fun BookSearchSelector(
     isLoading: Boolean,
     showError: Boolean,
     modifier: Modifier = Modifier,
+    bookValues: BookValues,
     onClick: (book: BookShortVo) -> Unit,
     onClickManually: () -> Unit,
 ) {
@@ -58,7 +63,27 @@ fun BookSearchSelector(
             }
 
         } else if (showError) {
-            SearchError()
+            SearchError(
+                titleAnnotationString = buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = ApplicationTheme.colors.mainTextColor)) {
+                        append(Strings.search_is_empty)
+                        append(" ")
+                    }
+                    if (bookValues.authorName.value.text.isNotEmpty()) {
+                        withStyle(style = SpanStyle(color = ApplicationTheme.colors.titleColors.booksTitleInfoColor)) {
+                            append("\n")
+                            append(bookValues.authorName.value.text)
+                        }
+                    }
+                    if (bookValues.bookName.value.text.isNotEmpty()) {
+                        withStyle(style = SpanStyle(color = ApplicationTheme.colors.titleColors.secondaryBooksTitleInfoColor)) {
+                            append("\n")
+                            append(bookValues.bookName.value.text)
+                        }
+                    }
+                },
+                title = null
+            )
             CenterBoxContainer {
                 CreateBookButton(
                     title = "Создать новую книгу",

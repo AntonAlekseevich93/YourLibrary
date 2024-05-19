@@ -1,5 +1,7 @@
 package error
 
+import ApplicationTheme
+import Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -18,7 +21,10 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun SearchError() {
+internal fun SearchError(
+    title: String?,
+    titleAnnotationString: AnnotatedString?
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
@@ -31,12 +37,21 @@ fun SearchError() {
                 .padding(top = 16.dp)
                 .size(128.dp)
         )
-        Text(
-            text = Strings.search_is_empty,
-            style = ApplicationTheme.typography.title3Bold,
-            color = ApplicationTheme.colors.mainTextColor,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        title?.let {
+            Text(
+                text = it,
+                style = ApplicationTheme.typography.title3Bold,
+                color = ApplicationTheme.colors.mainTextColor,
+                textAlign = TextAlign.Center
+            )
+        }
+        titleAnnotationString?.let {
+            Text(
+                text = it,
+                style = ApplicationTheme.typography.title3Bold,
+                color = ApplicationTheme.colors.mainTextColor,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }

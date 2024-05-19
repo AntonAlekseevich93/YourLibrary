@@ -294,6 +294,10 @@ class BookCreatorViewModel(
             updateUIState(uiStateValue.copy(selectedAuthor = null))
         }
 
+        if (uiStateValue.showSearchBookError) {
+            updateUIState(uiStateValue.copy(showSearchBookError = false))
+        }
+
         if (textFieldValue.text.isEmpty()) {
             clearSearchAuthor()
         } else if (needNewSearch) {
@@ -310,7 +314,8 @@ class BookCreatorViewModel(
         updateUIState(
             uiStateValue.copy(
                 isSearchAuthorProcess = false,
-                similarSearchAuthors = emptyList()
+                similarSearchAuthors = emptyList(),
+                showSearchBookError = false
             )
         )
         val uppercaseName = authorName.trim().uppercase()
@@ -383,6 +388,7 @@ class BookCreatorViewModel(
 
     private fun findInSimilarBooks(bookName: String) {
         val result = getAllBooksFromCacheWhereNameIs(bookName)
+        updateUIState(uiStateValue.copy(showSearchBookError = result.isEmpty()))
         updateSimilarBooks(result)
     }
 
