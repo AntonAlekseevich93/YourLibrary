@@ -4,6 +4,8 @@ plugins {
     id("com.android.library").apply(false)
     kotlin("android").apply(false)
     kotlin("multiplatform").apply(false)
+    alias(deps.plugins.room).apply(false)
+    alias(deps.plugins.ksp).apply(false)
 }
 
 tasks.register("clean", Delete::class) {

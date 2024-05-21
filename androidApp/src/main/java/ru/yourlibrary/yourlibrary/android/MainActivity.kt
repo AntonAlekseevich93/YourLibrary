@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
         val currentRoute = mutableStateOf("")
 
         PlatformSDK.init(
-            configuration = PlatformConfiguration(this),
+            configuration = PlatformConfiguration(applicationContext),
             platformInfo = PlatformInfo(),
             platform = Platform.MOBILE(),
             navigationHandler = createNavigationHandler(

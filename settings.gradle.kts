@@ -11,6 +11,11 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+    versionCatalogs {
+        create("deps") {
+            from(files("gradle/deps.versions.toml"))
+        }
+    }
 }
 
 

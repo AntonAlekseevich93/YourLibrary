@@ -1,10 +1,16 @@
 package database
 
+import database.room.RoomMainDataSource
+import database.room.entities.BookEntity
 import main_models.local_models.BookItemLocalDto
 
 class LocalBookCreatorDataSource(
-    private val db: SqlDelightDataSource
+    private val db: SqlDelightDataSource,
+    roomDb: RoomMainDataSource,
 ) {
+    private val booksDao = roomDb.booksDao
+
+    @Deprecated("replaced by room db")
     suspend fun createBook(bookItem: BookItemLocalDto) {
         bookItem.apply {
             db.appQuery.addBook(
@@ -31,5 +37,9 @@ class LocalBookCreatorDataSource(
                 timestampOfUpdating = timestampOfUpdating,
             )
         }
+    }
+
+    suspend fun createBook(book: BookEntity) {
+        booksDao.insertBook(book)
     }
 }

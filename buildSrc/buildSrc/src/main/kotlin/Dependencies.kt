@@ -5,7 +5,8 @@ object Dependencies {
     }
 
     object Kotlin {
-        private const val version = "1.9.21"
+        /** The ksp version (in deps) should be equal to Kotlin's major version like 1.9, 2.1 etc **/
+        private const val version = "1.9.23"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
 
         object Serialization {
@@ -42,6 +43,7 @@ object Dependencies {
         const val gradlePlugin = "com.android.tools.build:gradle:8.1.0"
     }
 
+    //todo will be replaced by ROOM
     object SqlDelight {
         private const val version = "2.0.0"
         const val gradlePlugin = "app.cash.sqldelight:gradle-plugin:$version"
@@ -84,7 +86,7 @@ object Dependencies {
         const val fileManager = "com.squareup.okio:okio:$version"
     }
 
-    object LocalSettings{
+    object LocalSettings {
         private const val version = "1.1.1"
         const val settings = "com.russhwolf:multiplatform-settings-no-arg:$version"
     }

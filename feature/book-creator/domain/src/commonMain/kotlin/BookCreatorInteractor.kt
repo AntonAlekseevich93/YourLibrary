@@ -1,6 +1,7 @@
 import main_models.AuthorVo
 import main_models.BookItemResponse
 import main_models.BookItemVo
+import main_models.BookVo
 import main_models.books.BookShortVo
 
 class BookCreatorInteractor(
@@ -29,8 +30,13 @@ class BookCreatorInteractor(
         return finishedSet.toList()
     }
 
+    @Deprecated("replaced by room db")
     suspend fun createBook(bookItemVo: BookItemVo) {
         repository.createBook(bookItemVo)
+    }
+
+    suspend fun createBook(book: BookVo) {
+        repository.createBook(book)
     }
 
     suspend fun createAuthor(author: AuthorVo) {

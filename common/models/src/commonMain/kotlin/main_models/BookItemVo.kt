@@ -2,23 +2,23 @@ package main_models
 
 import java.util.UUID
 
-//todo we can`t use var values in data classes
+//todo changed by BookVo. Will need delete
 data class BookItemVo(
     val id: String,
     val originalAuthorId: String,
     val modifiedAuthorId: String?,
-    var statusId: String,
-    var shelfId: String? = null,
-    var bookName: String,
-    var originalAuthorName: String,
-    var modifiedAuthorName: String?,
-    var description: String = "",
-    var coverUrl: String = "",
-    var coverUrlFromParsing: String = "",
-    var numbersOfPages: Int = 0,
-    var isbn: String = "",
-    var quotes: String = "",
-    var readingStatus: ReadingStatus = ReadingStatus.PLANNED,
+    val statusId: String,
+    val shelfId: String? = null,
+    val bookName: String,
+    val originalAuthorName: String,
+    val modifiedAuthorName: String?,
+    val description: String = "",
+    val coverUrl: String = "",
+    val coverUrlFromParsing: String = "",
+    val numbersOfPages: Int = 0,
+    val isbn: String = "",
+    val quotes: String = "",
+    val readingStatus: ReadingStatus = ReadingStatus.PLANNED,
     val startDateInString: String = "",
     val endDateInString: String = "",
     val startDateInMillis: Long = -1,

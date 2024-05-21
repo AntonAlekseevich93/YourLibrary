@@ -2,10 +2,11 @@ plugins {
     id("multiplatform-setup") // используем это потому что это кор и здесь не будет ui
     id("android-setup")
     kotlin("plugin.serialization")
+    alias(deps.plugins.room)
+    id("com.google.devtools.ksp")
 }
 
 kotlin {
-
     sourceSets {
         commonMain {
             dependencies {
@@ -23,6 +24,10 @@ kotlin {
 
                 implementation(Dependencies.SqlDelight.runtime)
                 api(Dependencies.SqlDelight.coroutinesExtension)
+
+                implementation(deps.androidx.room.runtime)
+                implementation(deps.sqlite.bundled)
+                implementation(deps.sqlite)
             }
         }
 
@@ -50,6 +55,18 @@ kotlin {
     }
 }
 
+dependencies {
+    add("kspAndroid", deps.androidx.room.compiler)
+    add("kspDesktop", deps.androidx.room.compiler)
+//    add("kspIosSimulatorArm64", deps.androidx.room.compiler)
+//    add("kspIosX64", deps.androidx.room.compiler)
+//    add("kspIosArm64", deps.androidx.room.compiler)
+}
+
 android {
     namespace = "ru.yourlibrary.yourlibrary"
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
