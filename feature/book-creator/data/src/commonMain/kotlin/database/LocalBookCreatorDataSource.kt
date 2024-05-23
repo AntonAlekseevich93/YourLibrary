@@ -3,9 +3,11 @@ package database
 import database.room.RoomMainDataSource
 import database.room.entities.BookEntity
 import main_models.local_models.BookItemLocalDto
+import platform.PlatformInfoData
 
 class LocalBookCreatorDataSource(
     private val db: SqlDelightDataSource,
+    private val platformInfo: PlatformInfoData,
     roomDb: RoomMainDataSource,
 ) {
     private val booksDao = roomDb.booksDao
@@ -39,7 +41,14 @@ class LocalBookCreatorDataSource(
         }
     }
 
-    suspend fun createBook(book: BookEntity) {
-        booksDao.insertBook(book)
+    suspend fun createBook(book: BookEntity): BookEntity {
+        val time = platformInfo.getCurrentTime().timeInMillis
+        val id = booksDao.insertBook(
+            book.copy(
+                timestampOfCreating = time,
+                timestampOfUpdating = time,
+            )
+        )
+        return booksDao.getBookByRoomId(id).first()
     }
 }

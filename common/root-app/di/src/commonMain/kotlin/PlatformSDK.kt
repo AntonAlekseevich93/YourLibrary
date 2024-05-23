@@ -8,11 +8,12 @@ import org.kodein.di.direct
 import org.kodein.di.instance
 import org.kodein.di.singleton
 import platform.Platform
+import platform.PlatformInfoData
 
 object PlatformSDK {
     fun init(
         configuration: PlatformConfiguration,
-        platformInfo: PlatformInfo,
+        platformInfo: PlatformInfoData,
         platform: Platform,
         navigationHandler: NavigationHandler,
         tooltipHandler: TooltipHandler,
@@ -28,7 +29,7 @@ object PlatformSDK {
                 }
                 bind<Platform>() with singleton { platform }
                 bind<FileManager>() with singleton { FileManager() }
-                bind<PlatformInfo>() with singleton { platformInfo }
+                bind<PlatformInfoData>() with singleton { platformInfo }
                 bind<ApplicationScope>() with singleton {
                     Inject.instance<ApplicationViewModel>()
                 }

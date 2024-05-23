@@ -17,13 +17,14 @@ data class BookShortRemoteDto(
     @SerialName("bookName") val bookName: String? = null,
     @SerialName("originalAuthorName") val originalAuthorName: String? = null,
     @SerialName("description") val description: String? = null,
-    @SerialName("coverUrl") val coverUrl: String? = null,
+    @SerialName("coverUrl") val rawCoverUrl: String? = null,
     @SerialName("imageName") val imageName: String? = null,
     @SerialName("numbersOfPages") val numbersOfPages: Int? = null,
     @SerialName("isbn") val isbn: String? = null,
     @SerialName("bookGenreId") val bookGenreId: Int? = null,
     @SerialName("bookGenre") val bookGenreName: String? = null,
     @SerialName("ageRestrictions") val ageRestrictions: String? = null,
+    @SerialName("isRussian") val isRussian: Boolean? = null,
 )
 
 fun BookShortRemoteDto.toVo(
@@ -39,13 +40,15 @@ fun BookShortRemoteDto.toVo(
         bookName = bookName ?: return null,
         originalAuthorName = originalAuthorName ?: return null,
         description = description ?: return null,
-        coverUrl = coverUrl,
         imageResultUrl = imageUrl ?: return null,
         numbersOfPages = numbersOfPages ?: return null,
         isbn = isbn ?: return null,
         bookGenreId = bookGenreId ?: return null,
         bookGenreName = bookGenreName ?: return null,
-        ageRestrictions = ageRestrictions.orEmpty()
+        ageRestrictions = ageRestrictions,
+        imageName = imageName,
+        isRussian = isRussian,
+        rawCoverUrl = rawCoverUrl
     )
 }
 
@@ -57,12 +60,13 @@ fun BookShortVo.toDto(): BookShortRemoteDto {
         bookName = bookName,
         originalAuthorName = originalAuthorName,
         description = description,
-        coverUrl = coverUrl,
-        imageName = imageResultUrl,
+        imageName = imageName,
         numbersOfPages = numbersOfPages,
         isbn = isbn,
         bookGenreId = bookGenreId,
         bookGenreName = bookGenreName,
-        ageRestrictions = ageRestrictions
+        ageRestrictions = ageRestrictions,
+        isRussian = isRussian,
+        rawCoverUrl = rawCoverUrl
     )
 }

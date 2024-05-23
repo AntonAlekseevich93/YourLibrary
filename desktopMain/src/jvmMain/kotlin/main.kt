@@ -54,6 +54,7 @@ import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.PopUpTo
 import moe.tlaster.precompose.navigation.rememberNavigator
 import platform.Platform
+import platform.PlatformInfoData
 import java.awt.FileDialog
 import java.awt.Frame
 
@@ -215,7 +216,7 @@ private fun ApplicationScope.MainWindow(
 
     PlatformSDK.init(
         configuration = PlatformConfiguration(buildVariant),
-        platformInfo = PlatformInfo(),
+        platformInfo = PlatformInfoData(),
         platform = Platform.DESKTOP(isDebug = buildVariant.isDebug()),
         navigationHandler = createNavigationHandler(
             navigator,

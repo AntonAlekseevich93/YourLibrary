@@ -1,5 +1,7 @@
+package platform
+
 import java.util.Calendar
 
-expect class PlatformInfo() {
+expect class PlatformInfoData() {
     fun getCurrentTime(): Calendar
 }

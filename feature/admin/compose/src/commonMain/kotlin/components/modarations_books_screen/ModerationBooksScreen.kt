@@ -49,7 +49,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
             ) {
 
                 BookCover(
-                    coverUrl = book.coverUrl.orEmpty(),
+                    coverUrl = book.rawCoverUrl.orEmpty(),
                     modifier = Modifier
                         .sizeIn(
                             minHeight = 250.dp,
@@ -90,19 +90,19 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 LazyRow(modifier = Modifier.sizeIn(maxHeight = 400.dp).padding(start = 4.dp)) {
                     itemsIndexed(state.booksForModeration) { index, item ->
                         if (item.id != book.id) {
-                                BookCover(coverUrl = item.coverUrl.orEmpty(), modifier = Modifier
-                                    .sizeIn(
-                                        minHeight = 165.dp,
-                                        minWidth = 130.dp,
-                                        maxHeight = 165.dp,
-                                        maxWidth = 130.dp
-                                    ).padding(horizontal = 12.dp),
-                                    onClick = {
-                                        if (!state.isUploadingBookImage) {
-                                            sendEvent(AdminEvents.SelectBook(item))
-                                        }
+                            BookCover(coverUrl = item.rawCoverUrl.orEmpty(), modifier = Modifier
+                                .sizeIn(
+                                    minHeight = 165.dp,
+                                    minWidth = 130.dp,
+                                    maxHeight = 165.dp,
+                                    maxWidth = 130.dp
+                                ).padding(horizontal = 12.dp),
+                                onClick = {
+                                    if (!state.isUploadingBookImage) {
+                                        sendEvent(AdminEvents.SelectBook(item))
                                     }
-                                )
+                                }
+                            )
                         }
                     }
                 }
@@ -128,11 +128,14 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
 
             }
 
-            Row(modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "Название:",
                     style = ApplicationTheme.typography.footnoteBold,
-                    color = if(book.bookName.isEmpty()){
+                    color = if (book.bookName.isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
                         ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
@@ -146,7 +149,10 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 )
             }
 
-            Row(modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "Автор:",
                     style = ApplicationTheme.typography.footnoteBold,
@@ -164,11 +170,14 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 )
             }
 
-            Row(modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "ServerId:",
                     style = ApplicationTheme.typography.footnoteBold,
-                    color = if(book.id.toString().isEmpty()){
+                    color = if (book.id.toString().isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
                         ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
@@ -192,7 +201,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 Text(
                     text = "Жанр:",
                     style = ApplicationTheme.typography.footnoteBold,
-                    color = if(book.bookGenreName.isEmpty()){
+                    color = if (book.bookGenreName.isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
                         ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
@@ -211,26 +220,27 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 Text(
                     text = "Возрастные ограничения:",
                     style = ApplicationTheme.typography.footnoteBold,
-                    color = if(book.ageRestrictions.isEmpty()){
+                    color = if (book.ageRestrictions.isNullOrEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
                         ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
                     }
                 )
-
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = book.ageRestrictions,
-                    style = ApplicationTheme.typography.footnoteRegular,
-                    color = ApplicationTheme.colors.mainTextColor
-                )
+                book.ageRestrictions?.let {
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = it,
+                        style = ApplicationTheme.typography.footnoteRegular,
+                        color = ApplicationTheme.colors.mainTextColor
+                    )
+                }
             }
 
             Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
                 Text(
                     text = "${Strings.pages_title}:",
                     style = ApplicationTheme.typography.footnoteBold,
-                    color = if(book.numbersOfPages.toString().isEmpty()){
+                    color = if (book.numbersOfPages.toString().isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
                         ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
@@ -248,7 +258,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 Text(
                     text = "${Strings.isbn}:",
                     style = ApplicationTheme.typography.footnoteBold,
-                    color = if(book.isbn.isEmpty()){
+                    color = if (book.isbn.isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
                         ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
@@ -270,7 +280,14 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
             )
 
             if (!state.isUploadingBookImage) {
-                Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp, bottom = 84.dp)) { // todo fix bottom padding its for mobile
+                Row(
+                    modifier = Modifier.padding(
+                        start = 24.dp,
+                        top = 12.dp,
+                        end = 24.dp,
+                        bottom = 84.dp
+                    )
+                ) { // todo fix bottom padding its for mobile
                     if (!state.selectedItem?.imageResultUrl.isNullOrEmpty()) {
                         CustomTag(
                             text = "Одобрено",

@@ -18,11 +18,12 @@ import models.BookInfoScope
 import models.BookInfoUiState
 import models.BookScreenEvents
 import navigation_drawer.contents.models.DrawerEvents
+import platform.PlatformInfoData
 import toolbar.ToolbarEvents
 import tooltip_area.TooltipEvents
 
 class BookInfoViewModel(
-    private val platformInfo: PlatformInfo,
+    private val platformInfo: PlatformInfoData,
     private val interactor: BookInfoInteractor,
     private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,

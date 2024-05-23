@@ -16,16 +16,18 @@ import kotlinx.coroutines.withContext
 import main_models.AuthorVo
 import main_models.BookItemVo
 import main_models.BookValues
+import main_models.BookVo
 import main_models.DatePickerType
 import main_models.ReadingStatus
 import main_models.books.BookShortVo
 import main_models.rest.LoadingStatus
 import models.BookCreatorEvents
 import models.BookCreatorUiState
+import platform.PlatformInfoData
 import text_fields.DELAY_FOR_LISTENER_PROCESSING
 
 class BookCreatorViewModel(
-    private val platformInfo: PlatformInfo,
+    private val platformInfo: PlatformInfoData,
     private val interactor: BookCreatorInteractor,
     private val navigationHandler: NavigationHandler,
 ) : BaseMVIViewModel<BookCreatorUiState, BaseEvent>(BookCreatorUiState()) {
@@ -179,32 +181,35 @@ class BookCreatorViewModel(
 
     private fun createBook() {
         if (uiStateValue.shortBookItem != null) {
-            //todo нужно проверить изменялась ли обложка
+            scope.launch(Dispatchers.IO) {
+                val newBook = createUserBookBasedOnShortBook(uiStateValue.shortBookItem!!)
+                interactor.createBook(newBook)
+            }
 
         } else {
-            uiStateValue.bookValues.createBookItemWithoutAuthorIdOrNull(
-                timestampOfCreating = getCurrentTimeInMillis(),
-                timestampOfUpdating = getCurrentTimeInMillis(),
-            )?.let { bookItem ->
-                scope.launch {
-                    launch {
-                        val authorId = if (uiStateValue.needCreateNewAuthor) {
-                            val newAuthor =
-                                createNewAuthor(authorName = bookItem.originalAuthorName)
-                            interactor.createAuthor(newAuthor)
-                            newAuthor.id
-                        } else {
-                            uiStateValue.selectedAuthor!!.id
-                        }
-                        interactor.createBook(bookItem.copy(originalAuthorId = authorId))
-                    }
-
-                    launch {
-                        clearAllBookInfo()
-                        navigationHandler.goBack()
-                    }
-                }
-            }
+//            uiStateValue.bookValues.createBookItemWithoutAuthorIdOrNull(
+//                timestampOfCreating = getCurrentTimeInMillis(),
+//                timestampOfUpdating = getCurrentTimeInMillis(),
+//            )?.let { bookItem ->
+//                scope.launch {
+//                    launch {
+//                        val authorId = if (uiStateValue.needCreateNewAuthor) {
+//                            val newAuthor =
+//                                createNewAuthor(authorName = bookItem.originalAuthorName)
+//                            interactor.createAuthor(newAuthor)
+//                            newAuthor.id
+//                        } else {
+//                            uiStateValue.selectedAuthor!!.id
+//                        }
+//                        interactor.createBook(bookItem.copy(originalAuthorId = authorId))
+//                    }
+//
+//                    launch {
+//                        clearAllBookInfo()
+//                        navigationHandler.goBack()
+//                    }
+//                }
+//            }
         }
     }
 
@@ -613,4 +618,31 @@ class BookCreatorViewModel(
             )
         )
     }
+
+    private fun createUserBookBasedOnShortBook(shortBook: BookShortVo): BookVo =
+        BookVo(
+            roomId = null,
+            bookId = shortBook.bookId,
+            serverId = shortBook.id,
+            originalAuthorId = shortBook.originalAuthorId,
+            bookName = shortBook.bookName,
+            originalAuthorName = shortBook.originalAuthorName,
+            description = shortBook.description,
+            coverUrl = shortBook.imageResultUrl,
+            userCoverUrl = null, //todo
+            pageCount = shortBook.numbersOfPages,
+            isbn = shortBook.isbn,
+            readingStatus = uiStateValue.bookValues.selectedStatus.value,
+            ageRestrictions = shortBook.ageRestrictions,
+            bookGenreId = shortBook.bookGenreId,
+            bookGenreName = shortBook.bookGenreName,
+            startDateInString = uiStateValue.bookValues.startDateInString.value,
+            endDateInString = uiStateValue.bookValues.endDateInString.value,
+            startDateInMillis = uiStateValue.bookValues.startDateInMillis.value,
+            endDateInMillis = uiStateValue.bookValues.endDateInMillis.value,
+            timestampOfCreating = 0,
+            timestampOfUpdating = 0,
+            isRussian = shortBook.isRussian,
+            imageName = shortBook.imageName,
+        )
 }

@@ -23,3 +23,15 @@ enum class ReadingStatus(val id: String, val nameValue: String) {
     DONE(id = "id_done", nameValue = Strings.reading_status_done),
     DEFERRED(id = "id_deferred", nameValue = Strings.reading_status_deferred),
 }
+
+object ReadingStatusUtils {
+    fun textToReadingStatus(text: String) = when (text) {
+        ReadingStatus.PLANNED.nameValue -> ReadingStatus.PLANNED
+        ReadingStatus.READING.nameValue -> ReadingStatus.READING
+        ReadingStatus.DONE.nameValue -> ReadingStatus.DONE
+        ReadingStatus.DEFERRED.nameValue -> ReadingStatus.DEFERRED
+        else -> {
+            ReadingStatus.PLANNED
+        }
+    }
+}

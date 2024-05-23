@@ -3,7 +3,7 @@ package ru.yourlibrary.yourlibrary.android
 import AppTheme
 import Application
 import NavigationHandler
-import PlatformInfo
+import platform.PlatformInfoData
 import PlatformSDK
 import Routes
 import TooltipHandler
@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
 
         PlatformSDK.init(
             configuration = PlatformConfiguration(applicationContext),
-            platformInfo = PlatformInfo(),
+            platformInfo = PlatformInfoData(),
             platform = Platform.MOBILE(),
             navigationHandler = createNavigationHandler(
                 navigator = navigator,
