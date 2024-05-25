@@ -7,14 +7,12 @@ import main_models.ReadingStatusUtils
 
 @Entity
 data class BookEntity(
-    @PrimaryKey(autoGenerate = true)
-    val roomId: Long?,
+    @PrimaryKey(autoGenerate = false)
     val bookId: String,
     val serverId: Int?,
     val originalAuthorId: String,
     val bookName: String,
     val originalAuthorName: String,
-    val description: String,
     val userCoverUrl: String?,
     val pageCount: Int,
     val isbn: String?,
@@ -30,10 +28,11 @@ data class BookEntity(
     val timestampOfUpdating: Long,
     val isRussian: Boolean?,
     val imageName: String?,
+    val description: String,
+    val userId: Long,
 )
 
-fun BookVo.toLocalDto(): BookEntity = BookEntity(
-    roomId = roomId,
+fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
     bookId = bookId,
     serverId = serverId,
     originalAuthorId = originalAuthorId,
@@ -54,12 +53,12 @@ fun BookVo.toLocalDto(): BookEntity = BookEntity(
     timestampOfCreating = timestampOfCreating,
     timestampOfUpdating = timestampOfUpdating,
     isRussian = isRussian,
-    imageName = imageName
+    imageName = imageName,
+    userId = userId
 )
 
 fun BookEntity.toVo(): BookVo =
     BookVo(
-        roomId = roomId,
         bookId = bookId,
         serverId = serverId,
         originalAuthorId = originalAuthorId,
@@ -81,5 +80,5 @@ fun BookEntity.toVo(): BookVo =
         timestampOfCreating = timestampOfCreating,
         timestampOfUpdating = timestampOfUpdating,
         isRussian = isRussian,
-        imageName = imageName
+        imageName = imageName,
     )

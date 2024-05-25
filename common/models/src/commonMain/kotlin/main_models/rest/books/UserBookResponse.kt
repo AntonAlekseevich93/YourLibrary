@@ -3,6 +3,7 @@ package main_models.rest.books
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import main_models.BookVo
+import main_models.ReadingStatusUtils
 
 @Serializable
 data class UserBookResponse(
@@ -58,3 +59,31 @@ fun BookVo.toRemoteDto(): UserBookRemoteDto = UserBookRemoteDto(
     timestampOfCreating = timestampOfCreating,
     timestampOfUpdating = timestampOfUpdating,
 )
+
+fun UserBookRemoteDto.toVo(): BookVo? {
+    return BookVo(
+        serverId = id,
+        bookId = bookId ?: return null,
+        originalAuthorId = originalAuthorId ?: return null,
+        originalAuthorName = originalAuthorName ?: return null,
+        bookName = bookName ?: return null,
+        description = description ?: return null,
+        userCoverUrl = userCoverUrl,
+        pageCount = pageCount ?: return null,
+        isbn = isbn,
+        readingStatus = readingStatus?.let { ReadingStatusUtils.textToReadingStatus(it) }
+            ?: return null,
+        ageRestrictions = ageRestrictions,
+        bookGenreId = bookGenreId ?: return null,
+        bookGenreName = bookGenreName ?: return null,
+        isRussian = isRussian,
+        imageName = imageName,
+        startDateInString = startDateInString,
+        endDateInString = endDateInString,
+        startDateInMillis = startDateInMillis,
+        endDateInMillis = endDateInMillis,
+        timestampOfCreating = timestampOfCreating ?: return null,
+        timestampOfUpdating = timestampOfUpdating ?: return null,
+        coverUrl = null
+    )
+}

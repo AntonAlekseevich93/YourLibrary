@@ -621,7 +621,6 @@ class BookCreatorViewModel(
 
     private fun createUserBookBasedOnShortBook(shortBook: BookShortVo): BookVo =
         BookVo(
-            roomId = null,
             bookId = shortBook.bookId,
             serverId = shortBook.id,
             originalAuthorId = shortBook.originalAuthorId,
@@ -635,7 +634,8 @@ class BookCreatorViewModel(
             readingStatus = uiStateValue.bookValues.selectedStatus.value,
             ageRestrictions = shortBook.ageRestrictions,
             bookGenreId = shortBook.bookGenreId,
-            bookGenreName = shortBook.bookGenreName,
+//            bookGenreName = shortBook.bookGenreName,
+            bookGenreName = "ТЕСТ",//todo fix this
             startDateInString = uiStateValue.bookValues.startDateInString.value,
             endDateInString = uiStateValue.bookValues.endDateInString.value,
             startDateInMillis = uiStateValue.bookValues.startDateInMillis.value,

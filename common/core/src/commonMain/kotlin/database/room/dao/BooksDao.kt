@@ -10,13 +10,13 @@ import database.room.entities.BookEntity
 @Dao
 interface BooksDao {
     @Insert
-    suspend fun insertBook(book: BookEntity): Long
+    suspend fun insertBook(book: BookEntity)
 
     @Update
     suspend fun updateBook(book: BookEntity)
 
-    @Query("UPDATE BookEntity SET readingStatus = :readingStatus WHERE roomId = :roomId")
-    suspend fun updateBookReadingStatus(readingStatus: String, roomId: Long)
+    @Query("UPDATE BookEntity SET readingStatus = :readingStatus WHERE bookId = :bookId")
+    suspend fun updateBookReadingStatus(readingStatus: String, bookId: String)
 
     @Delete
     suspend fun deleteBook(book: BookEntity)
@@ -24,7 +24,7 @@ interface BooksDao {
     @Query("SELECT * FROM BookEntity")
     suspend fun getAllBooks(): List<BookEntity>
 
-    @Query("SELECT * FROM BookEntity WHERE roomId = :roomId")
-    suspend fun getBookByRoomId(roomId: Long): List<BookEntity>
+    @Query("SELECT * FROM BookEntity WHERE bookId = :bookId")
+    suspend fun getBookByRoomId(bookId: String): List<BookEntity>
 
 }

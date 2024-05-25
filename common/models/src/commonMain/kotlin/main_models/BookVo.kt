@@ -1,7 +1,6 @@
 package main_models
 
 data class BookVo(
-    val roomId: Long?,
     val bookId: String,
     val serverId: Int?,
     val originalAuthorId: String,
