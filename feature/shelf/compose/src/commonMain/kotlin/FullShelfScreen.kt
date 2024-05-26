@@ -41,7 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import main_models.BookItemVo
+import main_models.BookVo
 import models.BookItemCardConfig
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -53,7 +53,7 @@ import platform.isDesktop
 @Composable
 fun BaseEventScope<BaseEvent>.FullShelfScreen(
     platform: Platform,
-    bookList: List<BookItemVo>,
+    bookList: List<BookVo>,
     config: BookItemCardConfig,
     index: Int,
     searchListener: (text: String, shelfIndex: Int) -> Unit,

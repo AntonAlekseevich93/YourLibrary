@@ -29,11 +29,11 @@ class ShelfViewModel(
     init {
         ReadingStatus.entries.forEach { status ->
             scope.launch {
-                repository.getBooksByStatusId(status.id).collect {
-                    withContext(Dispatchers.Main) {
-                        _uiState.value.addBooksToShelf(shelfId = status.id, books = it)
-                    }
-                }
+//                repository.getBooksByStatusId(status.id).collect {
+//                    withContext(Dispatchers.Main) {
+//                        _uiState.value.addBooksToShelf(shelfId = status.id, books = it)
+//                    }
+//                }
             }
         }
     }

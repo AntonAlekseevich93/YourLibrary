@@ -13,7 +13,6 @@ kotlin {
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
                 implementation(project(":common:file-manager"))
-                implementation(project(":common:utils:database-utils"))
                 implementation(project(":common:utils:json-utils"))
 
             }

@@ -25,7 +25,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import main_models.BookItemVo
+import main_models.BookVo
 import main_models.BooksInfoHeader
 import main_models.TooltipPosition
 import tooltip_area.TooltipEvents
@@ -33,7 +33,7 @@ import tooltip_area.TooltipIconArea
 
 @Composable
 fun BaseEventScope<BaseEvent>.LeftDrawerBooksContent(
-    booksInfoUiState: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookItemVo>>,
+    booksInfoUiState: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookVo>>,
 ) {
     var booksButtonIsSelected by remember { mutableStateOf(true) }
     var authorButtonIsSelected by remember { mutableStateOf(false) }

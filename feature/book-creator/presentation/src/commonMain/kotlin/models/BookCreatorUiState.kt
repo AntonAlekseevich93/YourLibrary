@@ -3,7 +3,6 @@ package models
 import alert_dialog.CommonAlertDialogConfig
 import base.BaseUIState
 import main_models.AuthorVo
-import main_models.BookItemVo
 import main_models.BookValues
 import main_models.DatePickerType
 import main_models.ReadingStatus
@@ -11,7 +10,6 @@ import main_models.books.BookShortVo
 import main_models.rest.LoadingStatus
 
 data class BookCreatorUiState(
-    val bookItem: BookItemVo? = null,
     val shortBookItem: BookShortVo? = null,
     val showLoadingIndicator: Boolean = false,
     val loadingStatus: LoadingStatus = LoadingStatus.LOADING,

@@ -6,27 +6,24 @@ import java.util.UUID
 data class AuthorVo(
     val serverId: Int?,
     val id: String,
-    var name: String,
-    var uppercaseName: String,
-    var relatedToAuthorId: String?,
-    var isMainAuthor: Boolean,
+    val name: String,
+    val uppercaseName: String,
     val timestampOfCreating: Long,
-    var timestampOfUpdating: Long,
-    var relatedAuthors: List<AuthorVo> = emptyList(),
-    var books: List<BookItemVo>,
+    val timestampOfUpdating: Long,
+    val isCreatedByUser: Boolean?
 ) {
     companion object {
         fun generateId() = UUID.randomUUID().toString() //todo подумать над другой реализацией id
-        fun getEmptyAuthor() = AuthorVo(
+        fun getEmptyAuthor() = AuthorVo( //todo need delete this?
             null,
             "",
             "",
             "",
-            null,
-            true,
             0,
             0,
-            books = emptyList()
+
+
+            isCreatedByUser = false
         )
     }
 }

@@ -18,6 +18,7 @@ data class AuthorResponse(
     @SerialName("isApproved") val isApproved: Boolean? = null,
     @SerialName("timestampOfCreating") val timestampOfCreating: Long? = null,
     @SerialName("timestampOfUpdating") val timestampOfUpdating: Long? = null,
+    @SerialName("isCreatedByUser") val isCreatedByUser: Boolean? = null
 )
 
 fun AuthorResponse.toAuthorVo(): AuthorVo? {
@@ -26,10 +27,8 @@ fun AuthorResponse.toAuthorVo(): AuthorVo? {
         serverId = serverId ?: return null,
         name = name ?: return null,
         uppercaseName = name.uppercase(),
-        relatedToAuthorId = null,
-        isMainAuthor = true,
         timestampOfCreating = timestampOfCreating ?: return null,
         timestampOfUpdating = timestampOfUpdating ?: return null,
-        books = emptyList()
+        isCreatedByUser = isCreatedByUser
     )
 }

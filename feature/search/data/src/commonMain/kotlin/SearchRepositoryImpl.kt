@@ -11,9 +11,6 @@ class SearchRepositoryImpl(
     private val remoteConfig: RemoteConfig
 ) : SearchRepository {
 
-    //    override suspend fun searchInAuthorsName(searchedText: String): List<AuthorVo> =
-//        localSearchDataSource.getAllMatchesByAuthorName(searchedText)
-//            .mapNotNull { it.toVo(emptyList(), emptyList()) }
     override suspend fun searchInAuthorsName(searchedText: String): List<AuthorVo> {
         val response = remoteSearchDataSource.getAllMatchesByAuthorName(searchedText)
 

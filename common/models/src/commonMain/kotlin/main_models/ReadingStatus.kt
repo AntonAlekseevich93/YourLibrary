@@ -4,14 +4,12 @@ import Strings
 
 data class ReadingStatusVo(
     val status: ReadingStatus,
-    val booksList: MutableList<BookItemVo> = mutableListOf()
 ) {
     companion object {
         fun createShelvesListFromStatuses(): List<ShelfVo> = ReadingStatus.entries.map { status ->
             ShelfVo(
                 id = status.id,
                 name = status.nameValue,
-                booksList = mutableListOf()
             )
         }
     }

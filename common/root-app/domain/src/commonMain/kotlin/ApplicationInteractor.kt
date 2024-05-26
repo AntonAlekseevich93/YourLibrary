@@ -1,6 +1,4 @@
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
-import main_models.BookItemVo
 import main_models.path.PathInfoVo
 import platform.Platform
 import java.io.File
@@ -33,8 +31,6 @@ class ApplicationInteractor(
         }
         return id
     }
-
-    suspend fun getAllBooks(): Flow<List<BookItemVo>> = repository.getAllBooks()
 
     suspend fun getPathByOs(path: String): String {
         val osDivider =

@@ -6,7 +6,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.graphics.painter.Painter
 import io.kamel.core.Resource
-import main_models.BookItemVo
+import main_models.BookVo
 import main_models.BooksInfoHeader
 import main_models.ReadingStatus
 import main_models.path.PathInfoVo
@@ -27,7 +27,7 @@ class ApplicationUiState(
     val selectedPathInfo: MutableState<PathInfoVo> = mutableStateOf(PathInfoVo())
 
     private val booksInfoHeaderList: MutableList<BooksInfoHeader> = mutableListOf()
-    val booksInfoUiState: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookItemVo>> =
+    val booksInfoUiState: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookVo>> =
         initializeBookInfo()
 
     fun addPathInfo(pathInfo: PathInfoVo) {
@@ -44,31 +44,13 @@ class ApplicationUiState(
         }
     }
 
-    fun addBookToBooksInfo(book: BookItemVo) {
-        booksInfoHeaderList.forEach { header ->
-            val elementNonExist =
-                ((booksInfoUiState[header]?.count { it.id == book.id } ?: 0) == 0)
-            if (!header.isShelf) {
-                if (book.statusId == header.id) {
-                    if (elementNonExist) {
-                        booksInfoUiState[header]?.add(book)
-                    }
-                }
-            } else if (book.shelfId == header.id) {
-                if (elementNonExist) {
-                    booksInfoUiState[header]?.add(book)
-                }
-            }
-        }
-    }
-
     fun removeBookBooksInfoUiState(id: String, bookId: String) {
         val header = booksInfoHeaderList.find { it.id == id }
-        booksInfoUiState[header]?.removeAll { it.id == bookId }
+        booksInfoUiState[header]?.removeAll { it.bookId == bookId }
     }
 
-    private fun initializeBookInfo(): SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookItemVo>> {
-        val map: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookItemVo>> =
+    private fun initializeBookInfo(): SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookVo>> {
+        val map: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookVo>> =
             mutableStateMapOf()
         ReadingStatus.entries.forEachIndexed { index, item ->
             val key = BooksInfoHeader(

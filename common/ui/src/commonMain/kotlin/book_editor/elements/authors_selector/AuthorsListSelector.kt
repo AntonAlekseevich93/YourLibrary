@@ -84,16 +84,12 @@ fun BaseEventScope<BaseEvent>.AuthorsListSelector(
             ) {
                 LazyColumn(modifier = Modifier.padding(vertical = 8.dp)) {
                     items(similarSearchAuthors) { author ->
-                        val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
-                            "(${author.relatedAuthors.joinToString { it.name }})"
-                        } else ""
-                        val text = "${author.name}$textPostfix"
                         DropdownSuggestionItem(
-                            text = text,
+                            text = author.name,
                             itemClickListener = {
                                 bookValues.setSelectedAuthorName(
                                     author.name,
-                                    relatedAuthorsNames = textPostfix
+                                    relatedAuthorsNames = author.name
                                 )
                                 sendEvent(
                                     BookEditorEvents.OnSuggestionAuthorClickEvent(

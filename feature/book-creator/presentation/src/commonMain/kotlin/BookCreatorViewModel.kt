@@ -1,6 +1,5 @@
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.toMutableStateList
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import base.BaseMVIViewModel
 import book_editor.BookEditorEvents
@@ -10,15 +9,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_models.AuthorVo
-import main_models.BookItemVo
-import main_models.BookValues
 import main_models.BookVo
 import main_models.DatePickerType
-import main_models.ReadingStatus
 import main_models.books.BookShortVo
 import main_models.rest.LoadingStatus
 import models.BookCreatorEvents
@@ -33,7 +28,6 @@ class BookCreatorViewModel(
     private val navigationHandler: NavigationHandler,
 ) : BaseMVIViewModel<BookCreatorUiState, BaseEvent>(BookCreatorUiState()) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
-    private var parsingJob: Job? = null
     private var searchJob: Job? = null
 
     override fun sendEvent(event: BaseEvent) {
@@ -93,7 +87,6 @@ class BookCreatorViewModel(
 
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
             is BookCreatorEvents.CreateBookEvent -> createBook()
-            is BookCreatorEvents.UrlTextChangedEvent -> urlTextChanged(event.urlTextFieldValue)
             is BookCreatorEvents.ClearUrlEvent -> clearUrl()
             is BookCreatorEvents.OnClearUrlAndCreateBookManuallyEvent -> {
                 uiStateValue.bookValues.parsingUrl.value = TextFieldValue()
@@ -178,8 +171,6 @@ class BookCreatorViewModel(
         )
     }
 
-    private fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
-
     private fun createBook() {
         scope.launch(Dispatchers.IO) {
             val newBook = if (uiStateValue.shortBookItem != null) {
@@ -198,76 +189,6 @@ class BookCreatorViewModel(
                 showSearchAuthorError = showError,
                 similarSearchAuthors = emptyList()
             )
-        )
-    }
-
-    private fun splitAuthorsNameAndSearch(authorName: String) {
-        searchJob?.cancel()
-//        val resultSet = mutableSetOf<AuthorVo>()
-//        searchJob = scope.launch {
-//            authorName.split(" ").forEach { searchName ->
-//                if (searchName.length >= 3) {
-//                    val response = interactor.searchInAuthorsNameWithRelates(searchName)
-//                    if (response.isNotEmpty()) {
-//                        resultSet.addAll(response)
-//                        setSelectedAuthorIfExist(authorName = authorName, similarAuthors = response)
-//                    }
-//                }
-//            }
-//
-//            if (resultSet.isNotEmpty()) {
-//                _uiState.value.addSimilarAuthors(similarAuthors = resultSet.toList())
-//            } else {
-//                clearSearchAuthor()
-//            }
-//        }
-        //todo добавлен поиск на бэке
-    }
-
-    private fun setSelectedAuthorIfExist(authorName: String, similarAuthors: List<AuthorVo>) {
-        similarAuthors.forEach { authorItem ->
-            if (authorItem.name.equals(authorName, ignoreCase = true)) {
-                updateUIState(uiStateValue.copy(selectedAuthor = authorItem))
-                setSelectedAuthorName()
-                return@forEach
-            } else {
-                authorItem.relatedAuthors.forEach {
-                    if (it.name.equals(authorName, ignoreCase = true)) {
-                        updateUIState(uiStateValue.copy(selectedAuthor = authorItem))
-                        setSelectedAuthorName()
-                        return@forEach
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setSelectedAuthorName() {
-        uiStateValue.selectedAuthor?.let { author ->
-            val textPostfix = if (author.relatedAuthors.isNotEmpty()) {
-                "(${author.relatedAuthors.joinToString { it.name }})"
-            } else ""
-            uiStateValue.bookValues.setSelectedAuthorName(
-                author.name,
-                relatedAuthorsNames = textPostfix
-            )
-        }
-    }
-
-
-    private fun createNewAuthor(
-        authorName: String
-    ): AuthorVo {
-        return AuthorVo(
-            id = AuthorVo.generateId(),
-            serverId = null,
-            name = authorName,
-            uppercaseName = authorName.uppercase(),
-            isMainAuthor = true,
-            timestampOfCreating = platformInfo.getCurrentTime().timeInMillis,
-            timestampOfUpdating = platformInfo.getCurrentTime().timeInMillis,
-            relatedToAuthorId = null,
-            books = emptyList()
         )
     }
 
@@ -439,71 +360,6 @@ class BookCreatorViewModel(
         )
     }
 
-    private fun urlTextChanged(urlTextFieldValue: TextFieldValue) {
-        uiStateValue.bookValues.parsingUrl.value = urlTextFieldValue
-        if (urlTextFieldValue.text.isNotEmpty() && urlTextFieldValue.text.length > 5) {
-            startParseBook(url = urlTextFieldValue.text)
-        } else {
-            stopParsingBook()
-        }
-    }
-
-    private fun startParseBook(url: String) {
-        parsingJob?.cancel()
-        parsingJob = scope.launch() {
-            updateUIState(
-                uiStateValue.copy(
-                    loadingStatus = LoadingStatus.LOADING,
-                    showLoadingIndicator = true
-                )
-            )
-
-            val response = interactor.parseBookUrl(url)
-            if (this@launch.isActive) {
-                if (response.bookError != null) {
-                    updateUIState(
-                        uiStateValue.copy(
-                            loadingStatus = LoadingStatus.ERROR
-                        )
-                    )
-                } else if (response.bookItem != null) {
-                    updateUIState(
-                        uiStateValue.copy(
-                            bookItem = response.bookItem
-                        )
-                    )
-                    updateBookInfo()
-                    updateUIState(
-                        uiStateValue.copy(
-                            loadingStatus = LoadingStatus.SUCCESS
-                        )
-                    )
-                    splitAuthorsNameAndSearch(response.bookItem!!.originalAuthorName)
-                }
-            }
-        }
-    }
-
-    private fun updateBookInfo() {
-        updateUIState(
-            uiStateValue.copy(
-                urlFieldIsWork = false
-            )
-        )
-        uiStateValue.bookItem?.let { book ->
-            updateBookValues(bookValues = uiStateValue.bookValues, book = book)
-        }
-    }
-
-    private fun stopParsingBook() {
-        parsingJob?.cancel()
-        updateUIState(
-            uiStateValue.copy(
-                showLoadingIndicator = false
-            )
-        )
-    }
-
     private fun clearUrl() {
         uiStateValue.bookValues.clearAll()
         updateUIState(
@@ -511,7 +367,6 @@ class BookCreatorViewModel(
                 urlFieldIsWork = true,
                 showClearButtonOfUrlElement = false,
                 showParsingResult = false,
-                bookItem = null,
                 showDialogClearAllData = false,
             )
         )
@@ -540,40 +395,6 @@ class BookCreatorViewModel(
                 showDatePicker = true
             )
         )
-    }
-
-    private fun updateBookValues(
-        bookValues: BookValues,
-        book: BookItemVo
-    ) {
-        bookValues.apply {
-            authorName.value = authorName.value.copy(
-                text = book.modifiedAuthorName ?: book.originalAuthorName,
-                selection = TextRange(book.originalAuthorName.length)
-            )
-            bookName.value = bookName.value.copy(
-                text = book.bookName,
-                selection = TextRange(book.bookName.length)
-            )
-            numberOfPages.value = numberOfPages.value.copy(
-                text = book.numbersOfPages.toString(),
-                selection = TextRange(book.numbersOfPages.toString().length)
-            )
-            description.value = description.value.copy(
-                text = book.description,
-                selection = TextRange(book.description.length)
-            )
-            selectedStatus.value = ReadingStatus.PLANNED
-
-            coverUrl.value = coverUrl.value.copy(
-                text = book.coverUrlFromParsing,
-                selection = TextRange(book.coverUrlFromParsing.length)
-            )
-            isbn.value = isbn.value.copy(
-                text = book.isbn,
-                selection = TextRange(book.isbn.length)
-            )
-        }
     }
 
     private fun finishParsing() {
@@ -606,7 +427,7 @@ class BookCreatorViewModel(
             originalAuthorName = shortBook.originalAuthorName,
             description = shortBook.description,
             coverUrl = shortBook.imageResultUrl,
-            userCoverUrl = null, //todo
+            userCoverUrl = uiStateValue.bookValues.coverUrl.value.text,
             pageCount = shortBook.numbersOfPages,
             isbn = shortBook.isbn,
             readingStatus = uiStateValue.bookValues.selectedStatus.value,

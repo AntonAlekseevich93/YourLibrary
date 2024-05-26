@@ -285,12 +285,12 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                     style = ApplicationTheme.typography.bodyRegular,
                                     color = Color.Transparent
                                 )
-                                Text(
-                                    modifier = Modifier.padding(start = 6.dp, top = 2.dp),
-                                    text = bookValues.relatedAuthorsNames.value,
-                                    style = ApplicationTheme.typography.footnoteRegular,
-                                    color = ApplicationTheme.colors.hintColor
-                                )
+//                                Text(
+//                                    modifier = Modifier.padding(start = 6.dp, top = 2.dp),
+//                                    text = bookValues.relatedAuthorsNames.value,
+//                                    style = ApplicationTheme.typography.footnoteRegular,
+//                                    color = ApplicationTheme.colors.hintColor
+//                                )
                             }
                         },
                         titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,

@@ -36,8 +36,9 @@ fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
     config: BookItemCardConfig,
     index: Int,
 ) {
-    val firstElements =
-        remember(shelfVo.booksList) { shelfVo.booksList.take(config.maxItemsInHorizontalShelf) }
+    //todo
+//    val firstElements =
+//        remember(shelfVo.booksList) { shelfVo.booksList.take(config.maxItemsInHorizontalShelf) }
     val state = rememberLazyListState()
 
     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp)) {
@@ -73,12 +74,13 @@ fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
             )
         ) {
             LazyRow(modifier = Modifier, state = state) {
-                items(firstElements) { bookItem ->
-                    BookItemShelfCard(
-                        config = config,
-                        bookItem = bookItem,
-                    )
-                }
+                //todo
+//                items(firstElements) { bookItem ->
+//                    BookItemShelfCard(
+//                        config = config,
+//                        bookItem = bookItem,
+//                    )
+//                }
                 item {
                     Card(
                         modifier = Modifier.size(

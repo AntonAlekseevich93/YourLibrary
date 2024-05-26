@@ -14,7 +14,6 @@ kotlin {
                 implementation(project(":common:core"))
                 implementation(project(":common:http-client"))
                 implementation(project(":common:models"))
-                implementation(project(":common:utils:database-utils"))
             }
         }
     }

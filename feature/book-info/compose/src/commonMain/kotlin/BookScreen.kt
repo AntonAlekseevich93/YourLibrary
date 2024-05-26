@@ -37,11 +37,13 @@ fun BookScreen(
     val uiState by viewModel.uiState.collectAsState()
     val bookValues = uiState.bookValues
     uiState.bookItem.value?.let {
-        bookValues.value.setBookItem(it)
+        //todo
+//        bookValues.value.setBookItem(it)
     }
 
     LaunchedEffect(key1 = bookItemId) {
-        viewModel.getBookItem(bookItemId)
+        //todo
+//        viewModel.getBookItem(bookItemId)
     }
 
     val scope = rememberCoroutineScope()

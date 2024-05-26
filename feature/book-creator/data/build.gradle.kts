@@ -9,7 +9,6 @@ kotlin {
             dependencies {
                 api(project(":feature:book-creator:api"))
                 implementation(project(":common:utils:url-parser:api"))
-                implementation(project(":common:utils:database-utils"))
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
                 implementation(project(":common:constants"))

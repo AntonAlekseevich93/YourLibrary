@@ -23,11 +23,6 @@ class BookValues(
     private var selectedAuthorName: String = ""
     private var originalAuthorName: String = ""
     private var originalAuthorId: String = ""
-    private var modifierAuthorName: String = ""
-    var modifierAuthorId: String = ""
-        private set
-
-    val relatedAuthorsNames: MutableState<String> = mutableStateOf("")
 
     fun clearAll() {
         parsingUrl.value = TextFieldValue()
@@ -61,87 +56,6 @@ class BookValues(
         return null
     }
 
-    fun createBookItemWithoutAuthorIdOrNull(
-        timestampOfCreating: Long,
-        timestampOfUpdating: Long,
-    ): BookItemVo? {
-        return BookItemVo(
-            id = BookItemVo.generateId(),
-            originalAuthorId = "",
-            modifiedAuthorId = null,
-            statusId = selectedStatus.value.id,
-            shelfId = null,//todo
-            bookName = bookName.value.text.takeIf { it.isNotEmpty() } ?: return null,
-            originalAuthorName = authorName.value.text.takeIf { it.isNotEmpty() }
-                ?: return null,
-            modifiedAuthorName = null,
-            description = description.value.text,
-            coverUrl = "",
-            coverUrlFromParsing = coverUrl.value.text,
-            numbersOfPages = getNumberOfPagesAsIntOrNull() ?: 0,
-            isbn = isbn.value.text,
-            quotes = "",
-            readingStatus = selectedStatus.value,
-            startDateInString = startDateInString.value,
-            endDateInString = endDateInString.value,
-            startDateInMillis = startDateInMillis.value,
-            endDateInMillis = endDateInMillis.value,
-            timestampOfCreating = timestampOfCreating,
-            timestampOfUpdating = timestampOfUpdating,
-        )
-    }
-
-    fun updateBookWithEmptyAuthorId(
-        bookId: String,
-        timestampOfCreating: Long,
-        timestampOfUpdating: Long,
-    ): BookItemVo? {
-        return BookItemVo(
-            id = bookId,
-            originalAuthorId = originalAuthorId,
-            modifiedAuthorId = modifierAuthorId.ifEmpty { null },
-            statusId = selectedStatus.value.id,
-            shelfId = null, //todo
-            bookName = bookName.value.text.takeIf { it.isNotEmpty() } ?: return null,
-            originalAuthorName = originalAuthorName,
-            modifiedAuthorName = modifierAuthorName.ifEmpty { null },
-            description = description.value.text,
-            coverUrl = "",
-            coverUrlFromParsing = coverUrl.value.text,
-            numbersOfPages = getNumberOfPagesAsIntOrNull() ?: 0,
-            isbn = isbn.value.text,
-            quotes = "",
-            readingStatus = selectedStatus.value,
-            startDateInString = startDateInString.value,
-            endDateInString = endDateInString.value,
-            startDateInMillis = startDateInMillis.value,
-            endDateInMillis = endDateInMillis.value,
-            timestampOfCreating = timestampOfCreating,
-            timestampOfUpdating = timestampOfUpdating,
-        )
-    }
-
-    fun getChangedAuthorName() = authorName.value.text.takeIf { it.isNotEmpty() }
-
-    fun setBookItem(book: BookItemVo) {
-        authorName.value = TextFieldValue(book.modifiedAuthorName ?: book.originalAuthorName)
-        bookName.value = TextFieldValue(book.bookName)
-        numberOfPages.value = TextFieldValue(book.numbersOfPages.toString())
-        description.value = TextFieldValue(book.description)
-        selectedStatus.value = book.readingStatus
-        startDateInMillis.value = book.startDateInMillis
-        startDateInString.value = book.startDateInString
-        endDateInMillis.value = book.endDateInMillis
-        endDateInString.value = book.endDateInString
-        coverUrl.value =
-            TextFieldValue(book.coverUrl.takeIf { it.isNotEmpty() } ?: book.coverUrlFromParsing)
-        isbn.value = TextFieldValue(book.isbn)
-        originalAuthorName = book.originalAuthorName
-        originalAuthorId = book.originalAuthorId
-        modifierAuthorName = book.modifiedAuthorName.orEmpty()
-        modifierAuthorId = book.modifiedAuthorId.orEmpty()
-    }
-
     fun setShortBook(book: BookShortVo) {
         authorName.value = TextFieldValue(book.originalAuthorName)
         bookName.value = TextFieldValue(book.bookName)
@@ -156,7 +70,6 @@ class BookValues(
 
     fun setSelectedAuthorName(authorName: String, relatedAuthorsNames: String) {
         selectedAuthorName = authorName
-        this.relatedAuthorsNames.value = relatedAuthorsNames
         this.authorName.value =
             TextFieldValue(text = authorName, selection = TextRange(authorName.length))
     }
@@ -164,7 +77,6 @@ class BookValues(
     fun isSelectedAuthorNameWasChanged(): Boolean {
         return if (selectedAuthorName != authorName.value.text) {
             selectedAuthorName = ""
-            relatedAuthorsNames.value = ""
             true
         } else false
     }

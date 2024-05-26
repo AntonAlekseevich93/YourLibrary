@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import main_models.BookItemVo
 import main_models.TooltipItem
 import main_models.path.PathInfoVo
 import menu_bar.LeftMenuBarEvents
@@ -27,7 +26,6 @@ class ApplicationViewModel(
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val _uiState = MutableStateFlow(ApplicationUiState())
     val uiState: StateFlow<ApplicationUiState> = _uiState
-    private val booksMap: MutableMap<String, BookItemVo> = mutableMapOf()
 
     init {
         scope.launch {
@@ -138,12 +136,6 @@ class ApplicationViewModel(
         tooltipHandler.setTooltip(tooltip)
     }
 
-    override fun checkIfNeedUpdateBookItem(oldItem: BookItemVo, newItem: BookItemVo) {
-        if (oldItem.bookName != newItem.bookName) {
-            _uiState.value.removeBookBooksInfoUiState(id = newItem.statusId, bookId = newItem.id)
-        }
-    }
-
     override fun changedReadingStatus(oldStatusId: String, bookId: String) {
         _uiState.value.removeBookBooksInfoUiState(id = oldStatusId, bookId = bookId)
     }
@@ -202,12 +194,12 @@ class ApplicationViewModel(
     }
 
     private suspend fun getAllBooks() {
-        interactor.getAllBooks().collect { books ->
-            val unique = books.subtract(booksMap.values)
-            unique.forEach { book ->
-                _uiState.value.addBookToBooksInfo(book)
-                booksMap[book.id] = book
-            }
-        }
+//        interactor.getAllBooks().collect { books ->
+//            val unique = books.subtract(booksMap.values)
+//            unique.forEach { book ->
+//                _uiState.value.addBookToBooksInfo(book)
+//                booksMap[book.id] = book
+//            }
+//        }
     }
 }

@@ -11,7 +11,6 @@ kotlin {
                 api(project(":common:models"))
                 implementation(project(":common:constants"))
                 implementation(project(":common:core"))
-                implementation(project(":common:utils:database-utils"))
                 implementation(project(":common:http-client"))
                 implementation(project(":common:app-config"))
             }

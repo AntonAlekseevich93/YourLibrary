@@ -69,15 +69,6 @@ fun BaseEventScope<BaseEvent>.AuthorItem(
                 style = ApplicationTheme.typography.bodyRegular,
                 color = ApplicationTheme.colors.mainTextColor,
             )
-
-            if (author.relatedAuthors.isNotEmpty()) {
-                Text(
-                    modifier = Modifier.padding(start = 6.dp),
-                    text = author.relatedAuthors.joinToString { it.name },
-                    style = ApplicationTheme.typography.bodyRegular,
-                    color = ApplicationTheme.colors.hintColor
-                )
-            }
         }
     }
 

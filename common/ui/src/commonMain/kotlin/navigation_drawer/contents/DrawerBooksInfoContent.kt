@@ -34,7 +34,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import main_models.BookItemVo
+import main_models.BookVo
 import main_models.BooksInfoHeader
 import navigation_drawer.contents.models.DrawerEvents
 
@@ -42,7 +42,7 @@ import navigation_drawer.contents.models.DrawerEvents
 @Composable
 fun BaseEventScope<BaseEvent>.DrawerBooksInfoContent(
     booksLazyState: LazyListState,
-    booksInfo: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookItemVo>>,
+    booksInfo: SnapshotStateMap<BooksInfoHeader, SnapshotStateList<BookVo>>,
 ) {
     /**don`t use padding in LazyColumn because items uses hovered **/
     LazyColumn(state = booksLazyState) {
@@ -104,7 +104,7 @@ fun BaseEventScope<BaseEvent>.DrawerBooksInfoContent(
                                     this@DrawerBooksInfoContent.sendEvent(
                                         DrawerEvents.OpenBook(
                                             painterSelectedBookInCache = null,
-                                            book.id
+                                            book.bookId
                                         )
                                     )
                                 }

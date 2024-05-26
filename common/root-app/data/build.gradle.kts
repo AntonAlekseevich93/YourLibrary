@@ -11,7 +11,6 @@ kotlin {
                 api(project(":common:root-app:api"))
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
-                implementation(project(":common:utils:database-utils"))
             }
         }
     }

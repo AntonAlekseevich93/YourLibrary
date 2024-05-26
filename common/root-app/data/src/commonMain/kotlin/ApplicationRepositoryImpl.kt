@@ -1,9 +1,6 @@
 import database.LocalApplicationDataSource
 import database.SqlDelightDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import main_models.BookItemVo
-import main_models.local_models.toVo
 import main_models.path.PathInfoVo
 import platform.Platform
 
@@ -33,7 +30,7 @@ class ApplicationRepositoryImpl(
     override fun createDbPath(path: String, libraryName: String): Int? =
         rootDatabase.createDbPath(path, libraryName)
 
-    override suspend fun getAllBooks(): Flow<List<BookItemVo>> =
-        db.getAllBooks().map { list -> list.map { item -> item.toVo() } }
+//    override suspend fun getAllBooks(): Flow<List<BookItemVo>> =
+//        db.getAllBooks().map { list -> list.map { item -> item.toVo() } }
 
 }

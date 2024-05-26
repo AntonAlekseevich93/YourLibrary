@@ -48,39 +48,6 @@ fun BaseEventScope<BaseEvent>.JoinRelatesAuthorBlock(
                 color = ApplicationTheme.colors.hintColor,
                 modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
             )
-
-            mainAuthor.value.relatedAuthors.forEach { author ->
-                var showDropdown by remember { mutableStateOf(false) }
-                Box {
-                    AuthorButtonContainer(
-                        text = author.name,
-                        color = ApplicationTheme.colors.joinAuthorsColors.relatesAuthorsColor
-                    ) {
-                        showDropdown = true
-                    }
-                    DropdownMenu(
-                        expanded = showDropdown,
-                        onDismissRequest = {
-                            showDropdown = false
-                        },
-                        modifier = Modifier.background(ApplicationTheme.colors.mainBackgroundColor),
-                        content = {
-                            RelatesAuthorsDropMenu(
-                                modifiedAuthor = mainAuthor.value,
-                                originalAuthor = author,
-                                showAlertDialog = { config, newAuthor ->
-                                    showDropdown = false
-                                    showAlertDialog.invoke(config, newAuthor)
-                                },
-                                onClose = {
-                                    showDropdown = false
-                                }
-                            )
-                        }
-                    )
-                }
-                Spacer(modifier = Modifier.padding(bottom = 16.dp))
-            }
         }
     }
 }

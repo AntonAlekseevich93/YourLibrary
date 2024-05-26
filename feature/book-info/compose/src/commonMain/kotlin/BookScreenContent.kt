@@ -39,8 +39,8 @@ import date.CommonDatePicker
 import date.DatePickerEvents
 import io.kamel.core.Resource
 import main_models.AuthorVo
-import main_models.BookItemVo
 import main_models.BookValues
+import main_models.BookVo
 import main_models.DatePickerType
 import models.BookScreenEvents
 import navigation_drawer.PlatformNavigationDrawer
@@ -53,7 +53,7 @@ import platform.isMobile
 @Composable
 fun BaseEventScope<BaseEvent>.BookScreenContent(
     platform: Platform,
-    bookItem: BookItemVo,
+    bookItem: BookVo,
     bookValues: MutableState<BookValues>,
     similarAuthorList: SnapshotStateList<AuthorVo>,
     selectedAuthor: State<AuthorVo?>,

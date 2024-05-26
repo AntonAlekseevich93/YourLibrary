@@ -13,7 +13,6 @@ kotlin {
                 implementation(project(":common:constants"))
                 implementation(project(":common:app-config"))
                 implementation(project(":common:http-client"))
-                implementation(project(":common:utils:database-utils"))
             }
         }
     }

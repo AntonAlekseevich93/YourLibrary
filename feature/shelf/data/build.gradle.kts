@@ -10,7 +10,6 @@ kotlin {
                 api(project(":feature:shelf:api"))
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
-                implementation(project(":common:utils:database-utils"))
             }
         }
     }

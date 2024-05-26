@@ -31,7 +31,7 @@ import containters.CenterBoxContainer
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import main_models.BookItemVo
+import main_models.BookVo
 import main_models.ReadingStatus
 import models.BookScreenEvents
 import platform.Platform
@@ -43,10 +43,10 @@ import tags.CustomTag
 @Composable
 fun BaseEventScope<BaseEvent>.BookContent(
     platform: Platform,
-    bookItem: BookItemVo,
+    bookItem: BookVo,
     painterInCache: Resource<Painter>? = null,
 ) {
-    val url = bookItem.coverUrlFromParsing.ifEmpty { bookItem.coverUrl }
+    val url = bookItem.userCoverUrl ?: bookItem.coverUrl.orEmpty()
     val painter = painterInCache ?: asyncPainterResource(data = url)
     val hasDescriptionTextOverflow = remember { mutableStateOf(false) }
     val showFullDescription = remember { mutableStateOf(false) }
@@ -117,7 +117,7 @@ fun BaseEventScope<BaseEvent>.BookContent(
                                     this@BookContent.sendEvent(
                                         BookScreenEvents.ChangeReadingStatusEvent(
                                             it,
-                                            bookItem.statusId
+                                            bookItem.readingStatus.id
                                         )
                                     )
                                 }
@@ -127,7 +127,7 @@ fun BaseEventScope<BaseEvent>.BookContent(
 
                     SelectionContainer {
                         Text(
-                            text = bookItem.modifiedAuthorName ?: bookItem.originalAuthorName,
+                            text = bookItem.originalAuthorName,
                             style = ApplicationTheme.typography.buttonRegular,
                             color = ApplicationTheme.colors.mainTextColor,
                             maxLines = 1,
@@ -186,7 +186,7 @@ fun BaseEventScope<BaseEvent>.BookContent(
 @Composable
 private fun BookCoverWithInfo(
     platform: Platform,
-    bookItem: BookItemVo,
+    bookItem: BookVo,
     painter: Resource<Painter>,
 ) {
     Column {
@@ -215,18 +215,18 @@ private fun BookCoverWithInfo(
 }
 
 @Composable
-private fun BookInfo(bookItem: BookItemVo) {
+private fun BookInfo(bookItem: BookVo) {
     SelectionContainer {
         Column {
-            if (bookItem.numbersOfPages > 0) {
+            if (bookItem.pageCount > 0) {
                 Text(
                     modifier = Modifier.padding(bottom = 4.dp),
-                    text = "${bookItem.numbersOfPages} ${Strings.page_short}",
+                    text = "${bookItem.pageCount} ${Strings.page_short}",
                     style = ApplicationTheme.typography.footnoteBold,
                     color = ApplicationTheme.colors.mainTextColor,
                 )
             }
-            if (bookItem.isbn.isNotEmpty()) {
+            if (!bookItem.isbn.isNullOrEmpty()) {
                 Row {
                     Text(
                         modifier = Modifier,
@@ -236,7 +236,7 @@ private fun BookInfo(bookItem: BookItemVo) {
                     )
                     Text(
                         modifier = Modifier,
-                        text = bookItem.isbn,
+                        text = bookItem.isbn!!,
                         style = ApplicationTheme.typography.footnoteRegular,
                         color = ApplicationTheme.colors.mainTextColor,
                     )
