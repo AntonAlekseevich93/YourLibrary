@@ -25,6 +25,7 @@ import models.BookCreatorEvents
 import models.BookCreatorUiState
 import platform.PlatformInfoData
 import text_fields.DELAY_FOR_LISTENER_PROCESSING
+import java.util.UUID
 
 class BookCreatorViewModel(
     private val platformInfo: PlatformInfoData,
@@ -180,36 +181,13 @@ class BookCreatorViewModel(
     private fun getCurrentTimeInMillis(): Long = platformInfo.getCurrentTime().timeInMillis
 
     private fun createBook() {
-        if (uiStateValue.shortBookItem != null) {
-            scope.launch(Dispatchers.IO) {
-                val newBook = createUserBookBasedOnShortBook(uiStateValue.shortBookItem!!)
-                interactor.createBook(newBook)
+        scope.launch(Dispatchers.IO) {
+            val newBook = if (uiStateValue.shortBookItem != null) {
+                createUserBookBasedOnShortBook(uiStateValue.shortBookItem!!)
+            } else {
+                createManuallyUserBook()
             }
-
-        } else {
-//            uiStateValue.bookValues.createBookItemWithoutAuthorIdOrNull(
-//                timestampOfCreating = getCurrentTimeInMillis(),
-//                timestampOfUpdating = getCurrentTimeInMillis(),
-//            )?.let { bookItem ->
-//                scope.launch {
-//                    launch {
-//                        val authorId = if (uiStateValue.needCreateNewAuthor) {
-//                            val newAuthor =
-//                                createNewAuthor(authorName = bookItem.originalAuthorName)
-//                            interactor.createAuthor(newAuthor)
-//                            newAuthor.id
-//                        } else {
-//                            uiStateValue.selectedAuthor!!.id
-//                        }
-//                        interactor.createBook(bookItem.copy(originalAuthorId = authorId))
-//                    }
-//
-//                    launch {
-//                        clearAllBookInfo()
-//                        navigationHandler.goBack()
-//                    }
-//                }
-//            }
+            interactor.createBook(newBook)
         }
     }
 
@@ -644,5 +622,42 @@ class BookCreatorViewModel(
             timestampOfUpdating = 0,
             isRussian = shortBook.isRussian,
             imageName = shortBook.imageName,
+            authorIsCreatedManually = false,
+            isLoadedToServer = false,
+            bookIsCreatedManually = false
         )
+
+    private fun createManuallyUserBook(): BookVo {
+        val author = uiStateValue.selectedAuthor
+        uiStateValue.bookValues.apply {
+            return BookVo(
+                bookId = UUID.randomUUID().toString(),
+                serverId = null,
+                originalAuthorId = author?.id ?: UUID.randomUUID().toString(),
+                bookName = bookName.value.text,
+                originalAuthorName = author?.name ?: authorName.value.text,
+                description = description.value.text,
+                coverUrl = null,
+                userCoverUrl = coverUrl.value.text,
+                pageCount = numberOfPages.value.text.toInt(),
+                isbn = isbn.value.text,
+                readingStatus = selectedStatus.value,
+                ageRestrictions = null,
+                bookGenreId = -1, //todo fixThis
+//            bookGenreName = shortBook.bookGenreName,
+                bookGenreName = "ТЕСТ",//todo fix this
+                startDateInString = startDateInString.value,
+                endDateInString = endDateInString.value,
+                startDateInMillis = startDateInMillis.value,
+                endDateInMillis = endDateInMillis.value,
+                timestampOfCreating = 0,
+                timestampOfUpdating = 0,
+                isRussian = null,
+                imageName = null,
+                authorIsCreatedManually = author == null,
+                isLoadedToServer = false,
+                bookIsCreatedManually = true
+            )
+        }
+    }
 }

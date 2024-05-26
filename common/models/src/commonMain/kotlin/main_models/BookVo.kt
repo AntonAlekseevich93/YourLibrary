@@ -23,4 +23,7 @@ data class BookVo(
     val isRussian: Boolean?,
     val imageName: String?,
     val description: String,
+    val authorIsCreatedManually: Boolean,
+    val bookIsCreatedManually: Boolean,
+    val isLoadedToServer: Boolean,
 )

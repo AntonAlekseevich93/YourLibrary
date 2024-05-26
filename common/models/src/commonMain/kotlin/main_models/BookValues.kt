@@ -171,7 +171,7 @@ class BookValues(
 
     fun isRequiredFieldsFilled(): Boolean =
         authorName.value.text.length >= 2 && bookName.value.text.isNotEmpty()
-                && numberOfPages.value.text.isNotEmpty() && description.value.text.length > 3
+                && numberOfPages.value.text.isNotEmpty() && numberOfPages.value.text.toIntOrNull() != null && description.value.text.length > 3
 
 
     fun clearCoverUrl() {

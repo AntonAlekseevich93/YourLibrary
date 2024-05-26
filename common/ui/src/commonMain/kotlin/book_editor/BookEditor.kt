@@ -40,6 +40,7 @@ import book_editor.elements.AuthorIsNotSelectedInfo
 import book_editor.elements.NewAuthorButton
 import book_editor.elements.authors_selector.AuthorsListSelector
 import book_editor.elements.book_selector.BookSearchSelector
+import containters.CenterBoxContainer
 import date.DatePickerEvents
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
@@ -138,21 +139,24 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                 }
 
                 Spacer(modifier = Modifier.padding(10.dp))
-                if (
-                    bookValues.isRequiredFieldsFilled() && createNewAuthor ||
-                    bookValues.isRequiredFieldsFilled() && shortBook != null
-                ) {
-                    CustomTag(
-                        text = Strings.save,
-                        color = ApplicationTheme.colors.mainAddButtonColor,
-                        textStyle = ApplicationTheme.typography.footnoteBold,
-                        textModifier = Modifier,
-                        maxHeight = 50.dp,
-                        onClick = {
-                            onClickSave?.invoke()
-                        }
-                    )
-                }
+            }
+        }
+
+        if (
+            (bookValues.isRequiredFieldsFilled() && createNewAuthor || selectedAuthor != null) ||
+            bookValues.isRequiredFieldsFilled() && shortBook != null
+        ) {
+            CenterBoxContainer {
+                CustomTag(
+                    text = Strings.save,
+                    color = ApplicationTheme.colors.mainAddButtonColor,
+                    textStyle = ApplicationTheme.typography.footnoteBold,
+                    textModifier = Modifier,
+                    maxHeight = 50.dp,
+                    onClick = {
+                        onClickSave?.invoke()
+                    }
+                )
             }
         }
 
