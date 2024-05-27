@@ -443,7 +443,7 @@ class BookCreatorViewModel(
             timestampOfUpdating = 0,
             isRussian = shortBook.isRussian,
             imageName = shortBook.imageName,
-            authorIsCreatedManually = false,
+            authorIsCreatedManually = uiStateValue.selectedAuthor?.isCreatedByUser ?: false,
             isLoadedToServer = false,
             bookIsCreatedManually = false
         )
@@ -475,7 +475,7 @@ class BookCreatorViewModel(
                 timestampOfUpdating = 0,
                 isRussian = null,
                 imageName = null,
-                authorIsCreatedManually = author == null,
+                authorIsCreatedManually = author?.isCreatedByUser ?: true,
                 isLoadedToServer = false,
                 bookIsCreatedManually = true
             )

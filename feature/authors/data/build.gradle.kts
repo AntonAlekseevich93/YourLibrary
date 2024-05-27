@@ -10,6 +10,7 @@ kotlin {
                 api(project(":feature:authors:api"))
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
+                implementation(project(":common:app-config"))
             }
         }
     }

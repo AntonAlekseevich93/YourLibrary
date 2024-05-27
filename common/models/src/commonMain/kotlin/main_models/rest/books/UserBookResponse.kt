@@ -4,10 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import main_models.BookVo
 import main_models.ReadingStatusUtils
+import main_models.rest.authors.AuthorResponse
 
 @Serializable
 data class UserBookResponse(
     @SerialName("book") val book: UserBookRemoteDto? = null,
+    @SerialName("author") val author: AuthorResponse? = null,
     @SerialName("error") val error: String? = null,
 )
 

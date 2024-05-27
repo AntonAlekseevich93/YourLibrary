@@ -2,6 +2,8 @@ package database.room
 
 import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import database.room.dao.AuthorsDao
+import database.room.dao.AuthorsTimestampDao
 import database.room.dao.BookTimestampDao
 import database.room.dao.BooksDao
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +21,15 @@ class RoomMainDataSource(
     }
 
     val bookTimestampDao: BookTimestampDao by lazy {
-        db.getTimestampDao()
+        db.getBooksTimestampDao()
+    }
+
+    val authorsDao: AuthorsDao by lazy {
+        db.getAuthorsDao()
+    }
+
+    val authorsTimestampDao: AuthorsTimestampDao by lazy {
+        db.getAuthorsTimestampDao()
     }
 
     private fun getRoomDatabase(

@@ -29,6 +29,6 @@ fun AuthorResponse.toAuthorVo(): AuthorVo? {
         uppercaseName = name.uppercase(),
         timestampOfCreating = timestampOfCreating ?: return null,
         timestampOfUpdating = timestampOfUpdating ?: return null,
-        isCreatedByUser = isCreatedByUser
+        isCreatedByUser = isCreatedByUser ?: return null
     )
 }

@@ -40,234 +40,234 @@ SET `id`=?, `isSelected` = 0;
 
 -- ------------------------------------------------------------------SHELVES TABLE:
 
-CREATE TABLE IF NOT EXISTS ShelvesTable (
-  id TEXT NOT NULL,
-  name TEXT NOT NULL,
-  description Text
-);
-
-addShelf:
-INSERT INTO ShelvesTable (id, name, description)
-VALUES(?,? ,? );
-
-deleteShelfById:
-DELETE FROM ShelvesTable WHERE id =:id;
-
-getAllShelves:
-SELECT * FROM ShelvesTable;
+-- CREATE TABLE IF NOT EXISTS ShelvesTable (
+--   id TEXT NOT NULL,
+--   name TEXT NOT NULL,
+--   description Text
+-- );
+--
+-- addShelf:
+-- INSERT INTO ShelvesTable (id, name, description)
+-- VALUES(?,? ,? );
+--
+-- deleteShelfById:
+-- DELETE FROM ShelvesTable WHERE id =:id;
+--
+-- getAllShelves:
+-- SELECT * FROM ShelvesTable;
 
 -- ------------------------------------------------------------------BOOKS TABLE:
 
-CREATE TABLE IF NOT EXISTS BooksTable (
-  id TEXT NOT NULL,
-  originalAuthorId TEXT NOT NULL,
-  modifiedAuthorId TEXT,
-  statusId TEXT NOT NULL,
-  shelfId TEXT,
-  bookName Text NOT NULL,
-  originalAuthorName Text NOT NULL,
-  modifiedAuthorName Text,
-  description Text,
-  coverUrl Text,
-  coverUrlFromParsing Text,
-  numbersOfPages INTEGER,
-  isbn Text,
-  quotes Text,
-  readingStatus Text,
-  startDateInString TEXT,
-  endDateInString TEXT,
-  startDateInMillis INTEGER,
-  endDateInMillis INTEGER,
-  timestampOfCreating INTEGER,
-  timestampOfUpdating INTEGER
-);
-
-addBook:
-INSERT INTO BooksTable (id, originalAuthorId, modifiedAuthorId, statusId, shelfId, bookName, originalAuthorName,modifiedAuthorName, description, coverUrl,
- coverUrlFromParsing, numbersOfPages, isbn, quotes, readingStatus, startDateInString,
-  endDateInString, startDateInMillis, endDateInMillis, timestampOfCreating, timestampOfUpdating)
-VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-
-updateShelfIdForAllBooks:
-UPDATE BooksTable
-SET `shelfId`=? WHERE shelfId=?;
-
-updateStatusIdForAllBooks:
-UPDATE BooksTable
-SET `statusId`=? WHERE statusId=?;
-
-deleteBook:
-DELETE FROM BooksTable WHERE id =:id;
-
-getAllBooks:
-SELECT * FROM BooksTable;
-
-updateBook:
-UPDATE BooksTable SET
-  originalAuthorId = :originalAuthorId,
-  modifiedAuthorId = :modifiedAuthorId,
-  statusId = :statusId,
-  shelfId = :shelfId,
-  bookName = :bookName,
-  originalAuthorName = :originalAuthorName,
-  modifiedAuthorName = :modifiedAuthorName,
-  description = :description,
-  coverUrl = :coverUrl,
-  coverUrlFromParsing = :coverUrlFromParsing,
-  numbersOfPages = :numbersOfPages,
-  isbn = :isbn,
-  quotes = :quotes,
-  readingStatus = :readingStatus,
-  startDateInString = :startDateInString,
-  endDateInString = :endDateInString,
-  startDateInMillis = :startDateInMillis,
-  endDateInMillis = :endDateInMillis,
-  timestampOfCreating = :timestampOfCreating,
-  timestampOfUpdating = :timestampOfUpdating
-WHERE id = :id;
-
-updateBookStatusId:
-UPDATE BooksTable
-SET statusId=?, readingStatus=? WHERE id=?;
-
-updateOriginalAuthorNameForAllBooks:
-UPDATE BooksTable
-SET originalAuthorName=? WHERE originalAuthorId=?;
-
-updateModifiedAuthorNameForAllBooks:
-UPDATE BooksTable
-SET modifiedAuthorName=? WHERE modifiedAuthorId=?;
-
-getAllBooksByShelfId:
-SELECT * FROM BooksTable WHERE shelfId =:shelfId;
-
-getAllBooksByStatusId:
-SELECT * FROM BooksTable WHERE statusId =:statusId;
-
-deleteAllBooks:
-DELETE FROM BooksTable;
-
-getBookById:
-SELECT * FROM BooksTable WHERE id =:id;
-
-setModifierAuthor:
-UPDATE BooksTable
-SET `modifiedAuthorId`=?, modifiedAuthorName=? WHERE originalAuthorId=?;
-
-clearModifierAuthor:
-UPDATE BooksTable
-SET `modifiedAuthorId`=NULL, modifiedAuthorName=NULL WHERE originalAuthorId=?;
-
-changeMainAuthorForAllBooks:
-UPDATE BooksTable
-SET originalAuthorId=?, originalAuthorName=? WHERE originalAuthorId=?;
+-- CREATE TABLE IF NOT EXISTS BooksTable (
+--   id TEXT NOT NULL,
+--   originalAuthorId TEXT NOT NULL,
+--   modifiedAuthorId TEXT,
+--   statusId TEXT NOT NULL,
+--   shelfId TEXT,
+--   bookName Text NOT NULL,
+--   originalAuthorName Text NOT NULL,
+--   modifiedAuthorName Text,
+--   description Text,
+--   coverUrl Text,
+--   coverUrlFromParsing Text,
+--   numbersOfPages INTEGER,
+--   isbn Text,
+--   quotes Text,
+--   readingStatus Text,
+--   startDateInString TEXT,
+--   endDateInString TEXT,
+--   startDateInMillis INTEGER,
+--   endDateInMillis INTEGER,
+--   timestampOfCreating INTEGER,
+--   timestampOfUpdating INTEGER
+-- );
+--
+-- addBook:
+-- INSERT INTO BooksTable (id, originalAuthorId, modifiedAuthorId, statusId, shelfId, bookName, originalAuthorName,modifiedAuthorName, description, coverUrl,
+--  coverUrlFromParsing, numbersOfPages, isbn, quotes, readingStatus, startDateInString,
+--   endDateInString, startDateInMillis, endDateInMillis, timestampOfCreating, timestampOfUpdating)
+-- VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+--
+-- updateShelfIdForAllBooks:
+-- UPDATE BooksTable
+-- SET `shelfId`=? WHERE shelfId=?;
+--
+-- updateStatusIdForAllBooks:
+-- UPDATE BooksTable
+-- SET `statusId`=? WHERE statusId=?;
+--
+-- deleteBook:
+-- DELETE FROM BooksTable WHERE id =:id;
+--
+-- getAllBooks:
+-- SELECT * FROM BooksTable;
+--
+-- updateBook:
+-- UPDATE BooksTable SET
+--   originalAuthorId = :originalAuthorId,
+--   modifiedAuthorId = :modifiedAuthorId,
+--   statusId = :statusId,
+--   shelfId = :shelfId,
+--   bookName = :bookName,
+--   originalAuthorName = :originalAuthorName,
+--   modifiedAuthorName = :modifiedAuthorName,
+--   description = :description,
+--   coverUrl = :coverUrl,
+--   coverUrlFromParsing = :coverUrlFromParsing,
+--   numbersOfPages = :numbersOfPages,
+--   isbn = :isbn,
+--   quotes = :quotes,
+--   readingStatus = :readingStatus,
+--   startDateInString = :startDateInString,
+--   endDateInString = :endDateInString,
+--   startDateInMillis = :startDateInMillis,
+--   endDateInMillis = :endDateInMillis,
+--   timestampOfCreating = :timestampOfCreating,
+--   timestampOfUpdating = :timestampOfUpdating
+-- WHERE id = :id;
+--
+-- updateBookStatusId:
+-- UPDATE BooksTable
+-- SET statusId=?, readingStatus=? WHERE id=?;
+--
+-- updateOriginalAuthorNameForAllBooks:
+-- UPDATE BooksTable
+-- SET originalAuthorName=? WHERE originalAuthorId=?;
+--
+-- updateModifiedAuthorNameForAllBooks:
+-- UPDATE BooksTable
+-- SET modifiedAuthorName=? WHERE modifiedAuthorId=?;
+--
+-- getAllBooksByShelfId:
+-- SELECT * FROM BooksTable WHERE shelfId =:shelfId;
+--
+-- getAllBooksByStatusId:
+-- SELECT * FROM BooksTable WHERE statusId =:statusId;
+--
+-- deleteAllBooks:
+-- DELETE FROM BooksTable;
+--
+-- getBookById:
+-- SELECT * FROM BooksTable WHERE id =:id;
+--
+-- setModifierAuthor:
+-- UPDATE BooksTable
+-- SET `modifiedAuthorId`=?, modifiedAuthorName=? WHERE originalAuthorId=?;
+--
+-- clearModifierAuthor:
+-- UPDATE BooksTable
+-- SET `modifiedAuthorId`=NULL, modifiedAuthorName=NULL WHERE originalAuthorId=?;
+--
+-- changeMainAuthorForAllBooks:
+-- UPDATE BooksTable
+-- SET originalAuthorId=?, originalAuthorName=? WHERE originalAuthorId=?;
 
 -- ------------------------------------------------------------------AUTHORS TABLE:
 
-CREATE TABLE IF NOT EXISTS AuthorsTable (
-  serverId INTEGER,
-  id TEXT NOT NULL,
-  name TEXT NOT NULL,
-  uppercaseName TEXT NOT NULL,
-  relatedToAuthorId TEXT,
-  isMainAuthor INTEGER NOT NULL,
-  timestampOfCreating INTEGER NOT NULL,
-  timestampOfUpdating INTEGER NOT NULL
-);
+-- CREATE TABLE IF NOT EXISTS AuthorsTable (
+--   serverId INTEGER,
+--   id TEXT NOT NULL,
+--   name TEXT NOT NULL,
+--   uppercaseName TEXT NOT NULL,
+--   relatedToAuthorId TEXT,
+--   isMainAuthor INTEGER NOT NULL,
+--   timestampOfCreating INTEGER NOT NULL,
+--   timestampOfUpdating INTEGER NOT NULL
+-- );
 
-createAuthor:
-INSERT INTO AuthorsTable (serverId, id, name, uppercaseName,  relatedToAuthorId, isMainAuthor, timestampOfCreating, timestampOfUpdating)
-VALUES(?,?,? , ?, ?, ?, ?, ?);
-
-deleteAuthor:
-DELETE FROM AuthorsTable WHERE id =:id;
-
-getAllAuthors:
-SELECT * FROM AuthorsTable;
-
-getAllRelatedAuthors:
-SELECT * FROM AuthorsTable WHERE relatedToAuthorId =:id;
-
-getAuthorById:
-SELECT * FROM AuthorsTable WHERE id =:id;
-
-updateAuthor:
-UPDATE AuthorsTable SET
-  name = :name,
-  uppercaseName = :uppercaseName,
-  relatedToAuthorId = :relatedToAuthorId,
-  isMainAuthor = :isMainAuthor,
-  timestampOfCreating = :timestampOfCreating,
-  timestampOfUpdating = :timestampOfUpdating
-WHERE id = :id;
-
-disableMainAuthor:
-UPDATE AuthorsTable
-SET `isMainAuthor`=1 WHERE id=?;
-
-setAsMainAuthor:
-UPDATE AuthorsTable
-SET `isMainAuthor`=0 WHERE id=?;
-
-setAsNotMainAuthor:
-UPDATE AuthorsTable
-SET `isMainAuthor`=1 WHERE id=?;
-
-updateRelatedToAuthorId:
-UPDATE AuthorsTable
-SET `relatedToAuthorId`=? WHERE id=?;
-
--- dont forget set author how not main
-updateRelationToAuthor:
-UPDATE AuthorsTable
-SET `relatedToAuthorId`=? WHERE id=?;
-
-renameAuthor:
-UPDATE AuthorsTable
-SET name=?, uppercaseName=? WHERE id=?;
-
--- dont forget set author how main
-removeAuthorFromRelates:
-UPDATE AuthorsTable
-SET `relatedToAuthorId`="" WHERE id=?;
-
-getAllAuthorByName:
-SELECT * FROM AuthorsTable WHERE uppercaseName LIKE ?;
-
-getAuthorIfNameWithoutUppercaseExist:
-SELECT * FROM AuthorsTable WHERE name=?;
-
-getAllMainAuthors:
-SELECT * FROM AuthorsTable WHERE isMainAuthor =0;
+-- createAuthor:
+-- INSERT INTO AuthorsTable (serverId, id, name, uppercaseName,  relatedToAuthorId, isMainAuthor, timestampOfCreating, timestampOfUpdating)
+-- VALUES(?,?,? , ?, ?, ?, ?, ?);
+--
+-- deleteAuthor:
+-- DELETE FROM AuthorsTable WHERE id =:id;
+--
+-- getAllAuthors:
+-- SELECT * FROM AuthorsTable;
+--
+-- getAllRelatedAuthors:
+-- SELECT * FROM AuthorsTable WHERE relatedToAuthorId =:id;
+--
+-- getAuthorById:
+-- SELECT * FROM AuthorsTable WHERE id =:id;
+--
+-- updateAuthor:
+-- UPDATE AuthorsTable SET
+--   name = :name,
+--   uppercaseName = :uppercaseName,
+--   relatedToAuthorId = :relatedToAuthorId,
+--   isMainAuthor = :isMainAuthor,
+--   timestampOfCreating = :timestampOfCreating,
+--   timestampOfUpdating = :timestampOfUpdating
+-- WHERE id = :id;
+--
+-- disableMainAuthor:
+-- UPDATE AuthorsTable
+-- SET `isMainAuthor`=1 WHERE id=?;
+--
+-- setAsMainAuthor:
+-- UPDATE AuthorsTable
+-- SET `isMainAuthor`=0 WHERE id=?;
+--
+-- setAsNotMainAuthor:
+-- UPDATE AuthorsTable
+-- SET `isMainAuthor`=1 WHERE id=?;
+--
+-- updateRelatedToAuthorId:
+-- UPDATE AuthorsTable
+-- SET `relatedToAuthorId`=? WHERE id=?;
+--
+-- -- dont forget set author how not main
+-- updateRelationToAuthor:
+-- UPDATE AuthorsTable
+-- SET `relatedToAuthorId`=? WHERE id=?;
+--
+-- renameAuthor:
+-- UPDATE AuthorsTable
+-- SET name=?, uppercaseName=? WHERE id=?;
+--
+-- -- dont forget set author how main
+-- removeAuthorFromRelates:
+-- UPDATE AuthorsTable
+-- SET `relatedToAuthorId`="" WHERE id=?;
+--
+-- getAllAuthorByName:
+-- SELECT * FROM AuthorsTable WHERE uppercaseName LIKE ?;
+--
+-- getAuthorIfNameWithoutUppercaseExist:
+-- SELECT * FROM AuthorsTable WHERE name=?;
+--
+-- getAllMainAuthors:
+-- SELECT * FROM AuthorsTable WHERE isMainAuthor =0;
 
 -- ------------------------------------------------------------------USER TABLE:
 
-CREATE TABLE IF NOT EXISTS UserTable (
-  id INTEGER NOT NULL,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  isVerified INTEGER NOT NULL,
-  isAuthorized INTEGER NOT NULL
-);
-
-createUser:
-INSERT INTO UserTable (id, name,  email, isVerified, isAuthorized)
-VALUES(?,? , ?, ?,?);
-
-getAuthorizedUser:
-SELECT * FROM UserTable WHERE  isAuthorized =0;
-
-getUserByEmail:
-SELECT * FROM UserTable WHERE email =?;
-
-logOut:
-UPDATE UserTable SET isAuthorized=1 WHERE isAuthorized=0;
-
-updateUserByEmail:
-UPDATE UserTable SET
-  id = :id,
-  name = :name,
-  email = :email,
-  isVerified = :isVerified,
-  isAuthorized =:isAuthorized
-WHERE email = :email;
+-- CREATE TABLE IF NOT EXISTS UserTable (
+--   id INTEGER NOT NULL,
+--   name TEXT NOT NULL,
+--   email TEXT NOT NULL,
+--   isVerified INTEGER NOT NULL,
+--   isAuthorized INTEGER NOT NULL
+-- );
+--
+-- createUser:
+-- INSERT INTO UserTable (id, name,  email, isVerified, isAuthorized)
+-- VALUES(?,? , ?, ?,?);
+--
+-- getAuthorizedUser:
+-- SELECT * FROM UserTable WHERE  isAuthorized =0;
+--
+-- getUserByEmail:
+-- SELECT * FROM UserTable WHERE email =?;
+--
+-- logOut:
+-- UPDATE UserTable SET isAuthorized=1 WHERE isAuthorized=0;
+--
+-- updateUserByEmail:
+-- UPDATE UserTable SET
+--   id = :id,
+--   name = :name,
+--   email = :email,
+--   isVerified = :isVerified,
+--   isAuthorized =:isAuthorized
+-- WHERE email = :email;

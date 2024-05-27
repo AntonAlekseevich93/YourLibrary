@@ -8,6 +8,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":feature:book-creator:api"))
+                api(project(":feature:authors:api"))
                 implementation(project(":common:utils:url-parser:api"))
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))

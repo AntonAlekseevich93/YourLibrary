@@ -8,7 +8,7 @@ import org.kodein.di.singleton
 
 val authorsModule = DI.Module("authorsModule") {
     bind<AuthorsRepository>() with singleton {
-        AuthorsRepositoryImpl(instance(), instance())
+        AuthorsRepositoryImpl(instance(), instance(), instance())
     }
 
     bind<LocalAuthorsDataSource>() with provider {
