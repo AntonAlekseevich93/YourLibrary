@@ -445,7 +445,8 @@ class BookCreatorViewModel(
             imageName = shortBook.imageName,
             authorIsCreatedManually = uiStateValue.selectedAuthor?.isCreatedByUser ?: false,
             isLoadedToServer = false,
-            bookIsCreatedManually = false
+            bookIsCreatedManually = false,
+            imageFolderId = shortBook.imageFolderId,
         )
 
     private fun createManuallyUserBook(): BookVo {
@@ -477,7 +478,8 @@ class BookCreatorViewModel(
                 imageName = null,
                 authorIsCreatedManually = author?.isCreatedByUser ?: true,
                 isLoadedToServer = false,
-                bookIsCreatedManually = true
+                bookIsCreatedManually = true,
+                imageFolderId = null,
             )
         }
     }

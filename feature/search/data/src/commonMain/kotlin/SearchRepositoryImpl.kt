@@ -27,8 +27,15 @@ class SearchRepositoryImpl(
         return if (response?.result == null) {
             emptyList()
         } else {
-            val urlPrefix = remoteConfig.s3_FULL_PREFIX + remoteConfig.S3_BOOK_IMAGES_PATH
-            response.result!!.books.mapNotNull { it.toVo(imagePrefixUrl = urlPrefix) }
+            response.result!!.books.mapNotNull {
+                it.toVo(
+                    imageUrl = remoteConfig.getImageUrl(
+                        imageName = it.imageName,
+                        imageFolderId = it.imageFolderId,
+                        bookServerId = it.id
+                    ),
+                )
+            }
         }
     }
 
@@ -37,8 +44,15 @@ class SearchRepositoryImpl(
         return if (response?.result == null) {
             emptyList()
         } else {
-            val urlPrefix = remoteConfig.s3_FULL_PREFIX + remoteConfig.S3_BOOK_IMAGES_PATH
-            response.result!!.books.mapNotNull { it.toVo(imagePrefixUrl = urlPrefix) }
+            response.result!!.books.mapNotNull {
+                it.toVo(
+                    imageUrl = remoteConfig.getImageUrl(
+                        imageName = it.imageName,
+                        imageFolderId = it.imageFolderId,
+                        bookServerId = it.id
+                    ),
+                )
+            }
         }
     }
 

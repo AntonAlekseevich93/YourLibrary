@@ -38,6 +38,7 @@ data class UserBookRemoteDto(
     @SerialName("description") val description: String? = null,
     @SerialName("authorIsCreatedManually") val authorIsCreatedManually: Boolean? = null,
     @SerialName("isCreatedManually") val isCreatedManually: Boolean? = null,
+    @SerialName("imageFolderId") val imageFolderId: Int? = null,
 )
 
 fun BookVo.toRemoteDto(): UserBookRemoteDto = UserBookRemoteDto(
@@ -63,7 +64,8 @@ fun BookVo.toRemoteDto(): UserBookRemoteDto = UserBookRemoteDto(
     timestampOfCreating = timestampOfCreating,
     timestampOfUpdating = timestampOfUpdating,
     authorIsCreatedManually = authorIsCreatedManually,
-    isCreatedManually = bookIsCreatedManually
+    isCreatedManually = bookIsCreatedManually,
+    imageFolderId = imageFolderId
 )
 
 fun UserBookRemoteDto.toVo(): BookVo? {
@@ -94,5 +96,6 @@ fun UserBookRemoteDto.toVo(): BookVo? {
         authorIsCreatedManually = authorIsCreatedManually ?: return null,
         isLoadedToServer = true,
         bookIsCreatedManually = isCreatedManually ?: return null,
+        imageFolderId = imageFolderId
     )
 }

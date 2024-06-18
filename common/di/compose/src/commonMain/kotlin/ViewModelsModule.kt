@@ -37,6 +37,6 @@ val viewModelsModule = DI.Module("viewModelsModule") {
     }
 
     bind<AdminViewModel>() with singleton {
-        AdminViewModel(instance(), instance(), instance(), instance(), instance())
+        AdminViewModel(instance(), instance(), instance(), instance(), instance(), instance())
     }
 }

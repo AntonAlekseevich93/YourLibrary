@@ -10,4 +10,5 @@ sealed class AdminEvents : BaseEvent {
     data object ApprovedWithChangesBook : AdminEvents()
     data object UploadBookCover : AdminEvents()
     data class SelectBook(val selectedBook: BookShortVo) : AdminEvents()
+    data object ChangeSkipImageLongLoadingSettings : AdminEvents()
 }

@@ -209,7 +209,7 @@ fun Application(
 
                 }
             }
-            AnimatedVisibility(platform.isMobile()) {
+            if (platform.isMobile()) {
                 viewModel.BottomMenuBar(
                     open = {
                     },

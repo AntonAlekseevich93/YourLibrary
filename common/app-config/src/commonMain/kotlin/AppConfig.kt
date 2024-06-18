@@ -13,6 +13,9 @@ class AppConfig() {
     val userId
         get() = settings.getLong(key = currentUserEmail, defaultValue = -1)
 
+    val skipLongImageLoading
+        get() = settings.getBoolean(key = SKIP_LONG_IMAGE_LOADING, defaultValue = false)
+
     private val currentUserEmail
         get() = settings.getString(key = CURRENT_USER_EMAIL_KEY, defaultValue = DEFAULT_LOCAL_EMAIL)
 
@@ -40,11 +43,16 @@ class AppConfig() {
         settings.putLong(key = currentUserEmail, value = userId)
     }
 
+    fun changeSkipLongImageLoading(skip: Boolean){
+        settings.putBoolean(key = SKIP_LONG_IMAGE_LOADING, value = skip)
+    }
+
     companion object {
         private const val AUTH_TOKEN_KEY = "auth_token_key"
         private const val DEVICE_ID_KEY = "device_id_key"
         private const val DEFAULT_LOCAL_TOKEN = "default_local_token"
         private const val CURRENT_USER_EMAIL_KEY = "current_user_email_key"
         private const val DEFAULT_LOCAL_EMAIL = "default_local_email"
+        private const val SKIP_LONG_IMAGE_LOADING = "skip_long_image_loading"
     }
 }

@@ -1,5 +1,6 @@
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.timeout
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
@@ -24,7 +25,8 @@ class HttpAppClient(
         url: String,
         bodyRequest: Any,
         resultClass: KClass<TResult>,
-        errorClass: KClass<TError>
+        errorClass: KClass<TError>,
+        requestTimeout: Long? = null,
     ): BaseResponse<TResult, TError>? {
         return try {
             val response: HttpResponse = httpClient.post(getFullUrl(url)) {
@@ -32,6 +34,13 @@ class HttpAppClient(
                 header(TOKEN_KEY, appConfig.authToken)
                 header(DEVICE_ID_KEY, appConfig.deviceId)
                 setBody(bodyRequest)
+                if(requestTimeout != null) {
+                    timeout {
+                        requestTimeoutMillis = requestTimeout
+                        connectTimeoutMillis = requestTimeout
+                        socketTimeoutMillis = requestTimeout
+                    }
+                }
             }
             val jsonAsString: String = response.body<String>()
             val json = Json { ignoreUnknownKeys = true }

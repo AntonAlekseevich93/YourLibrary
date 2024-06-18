@@ -18,6 +18,7 @@ class BookValues(
     var endDateInMillis: MutableState<Long> = mutableStateOf(0),
     var endDateInString: MutableState<String> = mutableStateOf(""),
     var coverUrl: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
+    var userCoverUrl: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
     var isbn: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
 ) {
     private var selectedAuthorName: String = ""

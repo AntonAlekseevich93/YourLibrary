@@ -17,8 +17,13 @@ class AdminViewModel(
     private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,
     private val drawerScope: DrawerScope,
+    private val appConfig: AppConfig,
 ) : BaseMVIViewModel<AdminUiState, BaseEvent>(AdminUiState()) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
+
+    init {
+        updateUIState(uiStateValue.copy(skipLongImageLoading = appConfig.skipLongImageLoading))
+    }
 
     override fun sendEvent(event: BaseEvent) {
         when (event) {
@@ -27,6 +32,10 @@ class AdminViewModel(
             is AdminEvents.DiscardBook -> setBookAsDiscarded()
             is AdminEvents.SelectBook -> selectBook(event.selectedBook)
             is AdminEvents.UploadBookCover -> uploadBookImage()
+            is AdminEvents.ChangeSkipImageLongLoadingSettings -> {
+                appConfig.changeSkipLongImageLoading(!uiStateValue.skipLongImageLoading)
+                updateUIState(uiStateValue.copy(skipLongImageLoading = appConfig.skipLongImageLoading))
+            }
         }
     }
 
@@ -60,7 +69,7 @@ class AdminViewModel(
         }
     }
 
-    private fun setBookAsDiscarded(){
+    private fun setBookAsDiscarded() {
         val currentBook = uiStateValue.moderationBookState.selectedItem?.copy()
         if (currentBook != null) {
             scope.launch {
@@ -121,20 +130,21 @@ class AdminViewModel(
             )
 
             scope.launch(Dispatchers.IO) {
-                val url = interactor.uploadBookImage(book)
-                val resultBook = book.copy(
-                    imageResultUrl = url.orEmpty()
-                )
+                val bookResponse = interactor.uploadBookImage(book)
                 withContext(Dispatchers.Main) {
                     updateUIState(
                         uiStateValue.copy(
                             moderationBookState = uiStateValue.moderationBookState.copy(
                                 isUploadingBookImage = false,
-                                selectedItem = resultBook
+                                selectedItem = bookResponse ?: book
                             )
                         )
                     )
-                    uiStateValue.moderationBookState.booksForModeration.replaceAll { if (it.id == resultBook.id) resultBook else it }
+                    if (bookResponse != null) {
+                        uiStateValue.moderationBookState.booksForModeration.replaceAll { if (it.id == bookResponse.id) bookResponse else it }
+                    } else if (appConfig.skipLongImageLoading) {
+                        selectNextBook()
+                    }
                 }
             }
         }

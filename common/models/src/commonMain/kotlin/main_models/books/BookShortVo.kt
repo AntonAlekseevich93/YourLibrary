@@ -19,4 +19,5 @@ data class BookShortVo(
     val bookGenreName: String,
     val ageRestrictions: String?,
     val isRussian: Boolean?,
+    val imageFolderId: Int?,
 )

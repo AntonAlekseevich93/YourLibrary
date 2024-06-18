@@ -16,6 +16,6 @@ val adminModule = DI.Module("adminModule") {
     }
 
     bind<RemoteAdminDataSource>() with provider {
-        RemoteAdminDataSource(instance())
+        RemoteAdminDataSource(instance(), instance())
     }
 }

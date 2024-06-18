@@ -26,4 +26,5 @@ data class BookVo(
     val authorIsCreatedManually: Boolean,
     val bookIsCreatedManually: Boolean,
     val isLoadedToServer: Boolean,
+    val imageFolderId: Int?,
 )

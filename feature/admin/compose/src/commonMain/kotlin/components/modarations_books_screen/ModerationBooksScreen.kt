@@ -4,6 +4,8 @@ import ApplicationTheme
 import BaseEvent
 import BaseEventScope
 import Strings
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,15 +21,16 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import components.modarations_books_screen.elements.BookCover
 import models.AdminEvents
@@ -41,13 +44,17 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
     val resultBook by remember(state.selectedItem?.id) { mutableStateOf(state.selectedItem) }
     val scrollableState = rememberScrollState()
     val haptic = LocalHapticFeedback.current
+    val shortDescription = remember { mutableStateOf(false) }
+    val descriptionMaxLines by animateIntAsState(if (shortDescription.value) 3 else 2000)
+    LaunchedEffect(state.selectedItem?.imageResultUrl) {
+        shortDescription.value = !state.selectedItem?.imageResultUrl.isNullOrEmpty()
+    }
     resultBook?.let { book ->
         Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollableState)) {
             Row(
                 verticalAlignment = Alignment.Bottom,
                 modifier = Modifier.padding(top = 24.dp, start = 24.dp)
             ) {
-
                 BookCover(
                     coverUrl = book.rawCoverUrl.orEmpty(),
                     modifier = Modifier
@@ -273,10 +280,14 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
             }
 
             Text(
-                modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp),
+                modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).clickable {
+                    shortDescription.value = !shortDescription.value
+                },
                 text = book.description,
                 style = ApplicationTheme.typography.footnoteRegular,
-                color = ApplicationTheme.colors.mainTextColor
+                color = ApplicationTheme.colors.mainTextColor,
+                maxLines = descriptionMaxLines,
+                overflow = TextOverflow.Ellipsis
             )
 
             if (!state.isUploadingBookImage) {

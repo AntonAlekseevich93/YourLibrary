@@ -5,9 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +39,7 @@ fun AdminPanelScreen(
     ) {
         Column(
             modifier = Modifier
+                .background(ApplicationTheme.colors.mainBackgroundColor)
                 .fillMaxSize()
         ) {
             viewModel.CommonToolbar(showLeftDrawer) {
@@ -49,19 +52,42 @@ fun AdminPanelScreen(
             }
 
             AnimatedVisibility(visible = uiState.moderationBookState.selectedItem == null) {
-                Text(
-                    text = "Получить книги для модерации",
-                    style = ApplicationTheme.typography.bodyBold,
-                    color = ApplicationTheme.colors.mainTextColor,
-                    modifier = Modifier.padding(24.dp).clickable {
-                        viewModel.sendEvent(AdminEvents.GetBooksForModerating)
-                    }
-                )
+                Column(modifier = Modifier.padding(top = 24.dp, bottom = 24.dp)) {
+                    Text(
+                        text = "Получить книги для модерации",
+                        style = ApplicationTheme.typography.bodyBold,
+                        color = ApplicationTheme.colors.mainTextColor,
+                        modifier = Modifier.padding(start = 24.dp).clickable {
+                            viewModel.sendEvent(AdminEvents.GetBooksForModerating)
+                        }
+                    )
+                }
             }
 
             AnimatedVisibility(visible = uiState.moderationBookState.selectedItem != null) {
                 viewModel.ModerationBooksScreen(
                     state = uiState.moderationBookState,
+                )
+            }
+        }
+
+        if (uiState.moderationBookState.selectedItem == null) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 10.dp, bottom = 24.dp)
+                    .align(Alignment.BottomStart)
+            ) {
+                Checkbox(
+                    checked = uiState.skipLongImageLoading,
+                    onCheckedChange = {
+                        viewModel.sendEvent(AdminEvents.ChangeSkipImageLongLoadingSettings)
+                    }
+                )
+                Text(
+                    text = "Пропускать долгую загрузку фотографий",
+                    style = ApplicationTheme.typography.footnoteRegular,
+                    color = ApplicationTheme.colors.mainTextColor,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }

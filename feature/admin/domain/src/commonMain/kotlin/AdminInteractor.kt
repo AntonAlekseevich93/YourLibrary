@@ -16,7 +16,7 @@ class AdminInteractor(
         repository.setBookAsDiscarded(book)
     }
 
-    suspend fun uploadBookImage(book: BookShortVo): String? =
+    suspend fun uploadBookImage(book: BookShortVo): BookShortVo? =
         repository.uploadBookImage(book)
 
 }

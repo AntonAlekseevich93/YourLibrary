@@ -214,7 +214,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
         TooltipIconArea(
             text = Strings.search,
             drawableResName = Drawable.drawable_ic_search,
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(start = 10.dp),
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.RIGHT
@@ -233,7 +233,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(end = 10.dp),
             onClick = {
                 this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnCreateBookClickEvent)
             }
@@ -242,7 +242,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
         TooltipIconArea(
             text = Strings.quotes,
             drawableResName = Drawable.drawable_ic_quotes,
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(end = 10.dp),
             iconSize = 18.dp,
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
@@ -257,7 +257,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
         TooltipIconArea(
             text = Strings.authors,
             drawableResName = Drawable.drawable_ic_authors,
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(end = 10.dp),
             iconSize = 18.dp,
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
@@ -278,7 +278,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(end = 10.dp),
         ) {
             open.invoke()
         }
@@ -291,7 +291,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(end = 10.dp),
         ) {
             println("открыли меню")
         }
@@ -304,7 +304,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(end = 10.dp),
         ) {
             println("открыли меню")
         }
@@ -319,7 +319,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(bottom = 4.dp),
+            modifier = Modifier.padding(end = 4.dp),
             onClick = {
                 this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnAdminPanelClickEvent)
             },
@@ -333,7 +333,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(bottom = 4.dp),
+            modifier = Modifier.padding(end = 4.dp),
             onClick = {
                 this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnProfileClickEvent)
             },
@@ -347,7 +347,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(bottom = 4.dp),
+            modifier = Modifier.padding(end = 4.dp),
             onClick = {
                 this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnSelectAnotherVaultEvent)
             },
@@ -360,7 +360,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(bottom = 10.dp),
+            modifier = Modifier.padding(end = 10.dp),
             onClick = {
                 this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnSettingsClickEvent)
             }

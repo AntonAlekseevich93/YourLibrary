@@ -34,6 +34,7 @@ data class BookEntity(
     @SerialName("authorIsCreatedManually") val authorIsCreatedManually: Boolean,
     @SerialName("isLoadedToServer") val isLoadedToServer: Boolean,
     @SerialName("bookIsCreatedManually") val bookIsCreatedManually: Boolean,
+    @SerialName("imageFolderId") val imageFolderId: Int?,
 )
 
 fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
@@ -62,6 +63,7 @@ fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
     authorIsCreatedManually = authorIsCreatedManually,
     isLoadedToServer = isLoadedToServer,
     bookIsCreatedManually = bookIsCreatedManually,
+    imageFolderId = imageFolderId
 )
 
 fun BookEntity.toVo(): BookVo =
@@ -91,4 +93,5 @@ fun BookEntity.toVo(): BookVo =
         authorIsCreatedManually = authorIsCreatedManually,
         isLoadedToServer = isLoadedToServer,
         bookIsCreatedManually = bookIsCreatedManually,
+        imageFolderId = imageFolderId
     )

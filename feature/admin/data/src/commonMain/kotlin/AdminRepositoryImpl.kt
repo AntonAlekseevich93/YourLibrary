@@ -20,8 +20,11 @@ class AdminRepositoryImpl(
                 NonModerationBooksResponse(
                     books = response.result?.books?.mapNotNull {
                         it.toVo(
-                            remoteConfig.S3_IMAGE_URL_PREFIX,
-                            canShowEmptyImage = true
+                            imageUrl = if (it.imageName.isNullOrEmpty()) "" else remoteConfig.getImageUrl(
+                                imageName = it.imageName,
+                                imageFolderId = it.imageFolderId,
+                                bookServerId = it.id
+                            ),
                         )
                     },
                     error = null
@@ -43,10 +46,16 @@ class AdminRepositoryImpl(
         remoteAdminDataSource.setBookAsDiscarded(book.toDto())
     }
 
-    override suspend fun uploadBookImage(book: BookShortVo): String? {
-        val imageName = remoteAdminDataSource.uploadBookImage(book = book.toDto())?.result
-        return if (imageName != null) {
-            remoteConfig.getImageUrl(imageName)
+    override suspend fun uploadBookImage(book: BookShortVo): BookShortVo? {
+        val bookResult =
+            remoteAdminDataSource.uploadBookImage(book = book.toDto())?.result?.books?.firstOrNull()
+        return if (bookResult?.imageName != null) {
+            val imageUrl = remoteConfig.getImageUrl(
+                bookResult.imageName,
+                imageFolderId = bookResult.imageFolderId,
+                bookServerId = book.id
+            )
+            bookResult.toVo(imageUrl = imageUrl)
         } else null
     }
 

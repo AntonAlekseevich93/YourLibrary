@@ -25,14 +25,12 @@ data class BookShortRemoteDto(
     @SerialName("bookGenre") val bookGenreName: String? = null,
     @SerialName("ageRestrictions") val ageRestrictions: String? = null,
     @SerialName("isRussian") val isRussian: Boolean? = null,
+    @SerialName("imageFolderId") val imageFolderId: Int? = null,
 )
 
 fun BookShortRemoteDto.toVo(
-    imagePrefixUrl: String?,
-    canShowEmptyImage: Boolean = false
+    imageUrl: String?
 ): BookShortVo? {
-    val imageUrl =
-        if (imagePrefixUrl == null) imageName else if (!imageName.isNullOrEmpty()) imagePrefixUrl + imageName else if (canShowEmptyImage) "" else null
     return BookShortVo(
         id = id ?: return null,
         bookId = bookId ?: return null,
@@ -48,7 +46,8 @@ fun BookShortRemoteDto.toVo(
         ageRestrictions = ageRestrictions,
         imageName = imageName,
         isRussian = isRussian,
-        rawCoverUrl = rawCoverUrl
+        rawCoverUrl = rawCoverUrl,
+        imageFolderId = imageFolderId,
     )
 }
 
@@ -67,6 +66,7 @@ fun BookShortVo.toDto(): BookShortRemoteDto {
         bookGenreName = bookGenreName,
         ageRestrictions = ageRestrictions,
         isRussian = isRussian,
-        rawCoverUrl = rawCoverUrl
+        rawCoverUrl = rawCoverUrl,
+        imageFolderId = imageFolderId,
     )
 }

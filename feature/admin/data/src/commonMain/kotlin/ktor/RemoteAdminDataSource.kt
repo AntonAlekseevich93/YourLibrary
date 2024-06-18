@@ -1,5 +1,6 @@
 package ktor
 
+import AppConfig
 import HttpAppClient
 import HttpConstants.GET_ALL_NON_MODERATING_BOOKS
 import HttpConstants.SET_APPROVED_NON_MODERATING_BOOKS
@@ -8,7 +9,7 @@ import HttpConstants.UPLOAD_BOOK_IMAGE
 import main_models.rest.books.BookShortRemoteDto
 import main_models.rest.books.BookShortResponse
 
-class RemoteAdminDataSource(private val httpClient: HttpAppClient) {
+class RemoteAdminDataSource(private val httpClient: HttpAppClient, private val appConfig: AppConfig) {
     suspend fun getBooksForModeration() = httpClient.get(
         url = GET_ALL_NON_MODERATING_BOOKS,
         resultClass = BookShortResponse::class,
@@ -36,9 +37,10 @@ class RemoteAdminDataSource(private val httpClient: HttpAppClient) {
     suspend fun uploadBookImage(book: BookShortRemoteDto) =
         httpClient.post(
             url = UPLOAD_BOOK_IMAGE,
-            resultClass = String::class,
+            resultClass = BookShortResponse::class,
             bodyRequest = book,
-            errorClass = String::class
+            errorClass = String::class,
+            requestTimeout = if(appConfig.skipLongImageLoading) 2500 else null
         )
 
 }
