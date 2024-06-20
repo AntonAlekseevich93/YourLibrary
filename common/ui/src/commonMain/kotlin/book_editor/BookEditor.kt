@@ -232,6 +232,9 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         },
                         onClickManually = {
                             sendEvent(BookEditorEvents.OnCreateBookManually())
+                        },
+                        bookHaveReadingStatusEvent = {
+                            sendEvent(BookEditorEvents.BookHaveReadingStatusEvent(Strings.bookExistInLibrary))
                         }
                     )
                 }

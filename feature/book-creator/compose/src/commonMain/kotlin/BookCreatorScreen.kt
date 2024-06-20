@@ -26,6 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -80,7 +81,6 @@ fun BookCreatorScreen(
     val statusBookTextFieldValue =
         remember { mutableStateOf(TextFieldValue(text = uiState.defaultStatus.nameValue)) }
     val dataPickerState = rememberDatePickerState()
-
     val animatedVerticalPadding by animateDpAsState(
         targetValue = targetVerticalPadding,
         animationSpec = tween(
@@ -190,7 +190,10 @@ fun BookCreatorScreen(
                     )
                 },
                 containerColor = Color.Transparent,
-                contentColor = Color.Transparent
+                contentColor = Color.Transparent,
+                snackbarHost = {
+                    SnackbarHost(hostState = uiState.snackbarHostState)
+                }
             ) {
                 Column(
                     modifier = Modifier.padding(it).padding(

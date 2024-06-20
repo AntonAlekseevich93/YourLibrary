@@ -1,6 +1,7 @@
 package main_models.books
 
 import kotlinx.serialization.Serializable
+import main_models.ReadingStatus
 
 @Serializable
 data class BookShortVo(
@@ -20,4 +21,6 @@ data class BookShortVo(
     val ageRestrictions: String?,
     val isRussian: Boolean?,
     val imageFolderId: Int?,
-)
+) {
+    var readingStatus: ReadingStatus? = null
+}

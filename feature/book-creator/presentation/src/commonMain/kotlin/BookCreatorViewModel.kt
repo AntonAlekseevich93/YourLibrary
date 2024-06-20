@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import main_models.AuthorVo
 import main_models.BookVo
 import main_models.DatePickerType
+import main_models.ReadingStatus
 import main_models.books.BookShortVo
 import main_models.rest.LoadingStatus
 import models.BookCreatorEvents
@@ -83,6 +84,12 @@ class BookCreatorViewModel(
                     uiStateValue.similarBooks = uiStateValue.similarBooksCache.toMutableStateList()
                 }
                 updateUIState(uiStateValue.copy(showSearchBookError = false))
+            }
+
+            is BookEditorEvents.BookHaveReadingStatusEvent -> {
+                scope.launch {
+                    uiStateValue.snackbarHostState.showSnackbar(event.message)
+                }
             }
 
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
@@ -280,6 +287,11 @@ class BookCreatorViewModel(
                     val newList = mutableStateListOf<BookShortVo>()
 
                     newList.addAll(response)
+                    newList.map {
+                        val status: ReadingStatus? = interactor.getBookStatusByBookId(it.bookId)
+                        it.apply { readingStatus = status }
+                    }
+
                     withContext(Dispatchers.Main) {
                         updateUIState(
                             uiStateValue.copy(

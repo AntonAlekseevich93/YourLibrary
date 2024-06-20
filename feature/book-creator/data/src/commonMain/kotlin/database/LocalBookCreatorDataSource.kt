@@ -32,4 +32,7 @@ class LocalBookCreatorDataSource(
     suspend fun updateBook(book: BookEntity) {
         booksDao.updateBook(book)
     }
+
+    suspend fun getBookStatusByBookId(bookId: String): String? =
+        booksDao.getBookStatusByBookId(bookId).firstOrNull()?.readingStatus
 }

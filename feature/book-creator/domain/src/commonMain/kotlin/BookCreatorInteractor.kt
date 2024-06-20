@@ -1,5 +1,6 @@
 import main_models.AuthorVo
 import main_models.BookVo
+import main_models.ReadingStatus
 import main_models.books.BookShortVo
 
 class BookCreatorInteractor(
@@ -22,4 +23,8 @@ class BookCreatorInteractor(
 
     suspend fun getAllBooksByAuthor(id: String): List<BookShortVo> =
         searchRepository.getAllBooksByAuthor(id)
+
+    suspend fun getBookStatusByBookId(bookId: String): ReadingStatus? =
+        repository.getBookStatusByBookId(bookId)
+
 }

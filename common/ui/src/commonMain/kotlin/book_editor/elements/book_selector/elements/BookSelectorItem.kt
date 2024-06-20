@@ -3,6 +3,7 @@ package book_editor.elements.book_selector.elements
 import ApplicationTheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
@@ -20,6 +21,7 @@ import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import main_models.books.BookShortVo
+import reading_status.getStatusColor
 
 private val MAX_ITEM_WITH = 130.dp
 
@@ -28,6 +30,7 @@ fun BookSelectorItem(
     bookItem: BookShortVo,
     modifier: Modifier = Modifier,
     onClick: (book: BookShortVo) -> Unit,
+    bookHaveReadingStatusEvent: () -> Unit,
 ) {
     val painter = asyncPainterResource(
         data = bookItem.imageResultUrl,
@@ -47,7 +50,11 @@ fun BookSelectorItem(
     Column(
         modifier = modifier
             .clickable(interactionSource = MutableInteractionSource(), null) {
-                onClick(bookItem)
+                if (bookItem.readingStatus == null) {
+                    onClick(bookItem)
+                } else {
+                    bookHaveReadingStatusEvent()
+                }
             }
             .sizeIn(maxWidth = MAX_ITEM_WITH),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -64,17 +71,39 @@ fun BookSelectorItem(
             shape = RoundedCornerShape(12.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
-            KamelImage(
-                resource = painter,
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                onFailure = {
-                    //todo
-                },
-                onLoading = {
-                    //todo
-                },
-            )
+            Box {
+                KamelImage(
+                    resource = painter,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
+                    onFailure = {
+                        //todo
+                    },
+                    onLoading = {
+                        //todo
+                    },
+                )
+                bookItem.readingStatus?.let { readingStatus ->
+                    Column(Modifier.align(Alignment.TopStart)) {
+                        Card(
+                            shape = RoundedCornerShape(bottomEnd = 4.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = ApplicationTheme.colors.mainBackgroundColor.copy(
+                                    alpha = 0.7f
+                                )
+                            ),
+                        ) {
+                            Text(
+                                text = readingStatus.nameValue,
+                                style = ApplicationTheme.typography.footnoteBold,
+                                color = readingStatus.getStatusColor(),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         Text(

@@ -133,4 +133,5 @@ object Strings {
     const val alert_dialog_go_to_search_and_clear_data_description = "Вы действительно хотите перейти в поиск? Все данные будут очищены"
     const val alert_dialog_go_to_search_and_clear_data_button_ok = "Очистить"
     const val alert_dialog_go_to_search_and_clear_data_button_dismiss = "Не очищать"
+    const val bookExistInLibrary = "Данная книга уже есть в вашей библиотеке"
 }

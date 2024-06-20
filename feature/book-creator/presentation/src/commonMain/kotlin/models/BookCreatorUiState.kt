@@ -1,6 +1,7 @@
 package models
 
 import alert_dialog.CommonAlertDialogConfig
+import androidx.compose.material3.SnackbarHostState
 import base.BaseUIState
 import main_models.AuthorVo
 import main_models.BookValues
@@ -34,4 +35,5 @@ data class BookCreatorUiState(
     val alertDialogConfig: CommonAlertDialogConfig? = null,
     val showSearchBookError: Boolean = false,
     val showSearchAuthorError: Boolean = false,
+    val snackbarHostState: SnackbarHostState = SnackbarHostState(),
 ) : BaseUIState

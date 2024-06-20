@@ -27,4 +27,6 @@ interface BooksDao {
     @Query("SELECT * FROM BookEntity WHERE bookId = :bookId")
     suspend fun getBookByRoomId(bookId: String): List<BookEntity>
 
+    @Query("SELECT * FROM BookEntity WHERE bookId = :bookId")
+    suspend fun getBookStatusByBookId(bookId: String): List<BookEntity>
 }

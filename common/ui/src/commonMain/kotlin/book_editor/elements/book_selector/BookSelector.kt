@@ -31,6 +31,7 @@ fun BookSearchSelector(
     bookValues: BookValues,
     onClick: (book: BookShortVo) -> Unit,
     onClickManually: () -> Unit,
+    bookHaveReadingStatusEvent: () -> Unit,
 ) {
     val state = rememberLazyListState()
     Column(modifier = modifier) {
@@ -58,7 +59,12 @@ fun BookSearchSelector(
 
             LazyRow(state = state) {
                 items(similarBooks) {
-                    BookSelectorItem(it, modifier = Modifier.padding(end = 16.dp), onClick)
+                    BookSelectorItem(
+                        bookItem = it,
+                        modifier = Modifier.padding(end = 16.dp),
+                        onClick = onClick,
+                        bookHaveReadingStatusEvent = bookHaveReadingStatusEvent
+                    )
                 }
             }
 

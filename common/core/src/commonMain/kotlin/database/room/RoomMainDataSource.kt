@@ -38,6 +38,7 @@ class RoomMainDataSource(
         return builder
             .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
+            .fallbackToDestructiveMigration(true)//todo fix
             .build()
     }
 }
