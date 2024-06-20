@@ -13,7 +13,6 @@ data class BookVo(
     val readingStatus: ReadingStatus = ReadingStatus.PLANNED,
     val ageRestrictions: String?,
     val bookGenreId: Int,
-    val bookGenreName: String,
     val startDateInString: String?,
     val endDateInString: String?,
     val startDateInMillis: Long?,

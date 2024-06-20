@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import components.modarations_books_screen.elements.BookCover
+import main_models.genre.GenreUtils
 import models.AdminEvents
 import models.ModerationBookState
 import tags.CustomTag
@@ -205,10 +206,11 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
             )
 
             Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
+                val genreName = GenreUtils.getGenreNameById(book.bookGenreId)
                 Text(
                     text = "Жанр:",
                     style = ApplicationTheme.typography.footnoteBold,
-                    color = if (book.bookGenreName.isEmpty()) {
+                    color = if (genreName.isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
                         ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
@@ -217,7 +219,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
 
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
-                    text = book.bookGenreName,
+                    text = genreName,
                     style = ApplicationTheme.typography.footnoteRegular,
                     color = ApplicationTheme.colors.mainTextColor
                 )

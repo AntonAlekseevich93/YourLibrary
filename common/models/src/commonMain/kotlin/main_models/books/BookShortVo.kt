@@ -17,7 +17,6 @@ data class BookShortVo(
     val numbersOfPages: Int,
     val isbn: String,
     val bookGenreId: Int,
-    val bookGenreName: String,
     val ageRestrictions: String?,
     val isRussian: Boolean?,
     val imageFolderId: Int?,

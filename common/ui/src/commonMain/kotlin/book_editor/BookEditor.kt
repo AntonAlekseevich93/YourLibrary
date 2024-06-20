@@ -239,7 +239,6 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     )
                 }
 
-
                 if (isCreateBookManually || shortBook != null) {
                     TextFieldWithTitleAndSuggestion(
                         platform = platform,

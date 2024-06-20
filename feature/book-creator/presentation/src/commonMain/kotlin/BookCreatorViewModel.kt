@@ -186,6 +186,8 @@ class BookCreatorViewModel(
                 createManuallyUserBook()
             }
             interactor.createBook(newBook)
+            clearAllBookInfo()
+            navigationHandler.goBack()
         }
     }
 
@@ -445,8 +447,6 @@ class BookCreatorViewModel(
             readingStatus = uiStateValue.bookValues.selectedStatus.value,
             ageRestrictions = shortBook.ageRestrictions,
             bookGenreId = shortBook.bookGenreId,
-//            bookGenreName = shortBook.bookGenreName,
-            bookGenreName = "ТЕСТ",//todo fix this
             startDateInString = uiStateValue.bookValues.startDateInString.value,
             endDateInString = uiStateValue.bookValues.endDateInString.value,
             startDateInMillis = uiStateValue.bookValues.startDateInMillis.value,
@@ -478,8 +478,6 @@ class BookCreatorViewModel(
                 readingStatus = selectedStatus.value,
                 ageRestrictions = null,
                 bookGenreId = -1, //todo fixThis
-//            bookGenreName = shortBook.bookGenreName,
-                bookGenreName = "ТЕСТ",//todo fix this
                 startDateInString = startDateInString.value,
                 endDateInString = endDateInString.value,
                 startDateInMillis = startDateInMillis.value,
