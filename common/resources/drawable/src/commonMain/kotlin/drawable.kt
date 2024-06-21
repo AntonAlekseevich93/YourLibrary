@@ -42,4 +42,6 @@ object Drawable {
     const val drawable_ic_server = "ic_server.xml"
     const val drawable_ic_main_close = "ic_main_close.xml"
     const val drawable_ic_main_search = "ic_main_search.xml"
+    const val drawable_ic_arrow_right = "ic_arrow_right.xml"
+    const val drawable_ic_arrow_down = "ic_arrow_down.xml"
 }

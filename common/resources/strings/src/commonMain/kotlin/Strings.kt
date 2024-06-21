@@ -130,8 +130,11 @@ object Strings {
         "После удаления обложки, вы можете указать ссылку на свою обложку"
     const val search_is_empty = "Ничего не найдено"
     const val alert_dialog_go_to_search_and_clear_data_title = "Данные будут очищены"
-    const val alert_dialog_go_to_search_and_clear_data_description = "Вы действительно хотите перейти в поиск? Все данные будут очищены"
+    const val alert_dialog_go_to_search_and_clear_data_description =
+        "Вы действительно хотите перейти в поиск? Все данные будут очищены"
     const val alert_dialog_go_to_search_and_clear_data_button_ok = "Очистить"
     const val alert_dialog_go_to_search_and_clear_data_button_dismiss = "Не очищать"
     const val bookExistInLibrary = "Данная книга уже есть в вашей библиотеке"
+    const val genre = "Жанр"
+    const val genre_selector_hint_text = "Выбрать жанр (обязательно)"
 }

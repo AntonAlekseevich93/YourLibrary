@@ -160,6 +160,10 @@ class BookCreatorViewModel(
                 )
             }
 
+            is BookCreatorEvents.SetSelectedGenre -> {
+                uiStateValue.bookValues.genre.value = event.genre
+            }
+
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
             is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
             is DatePickerEvents.OnHideDatePicker -> {
@@ -477,7 +481,8 @@ class BookCreatorViewModel(
                 isbn = isbn.value.text,
                 readingStatus = selectedStatus.value,
                 ageRestrictions = null,
-                bookGenreId = -1, //todo fixThis
+                bookGenreId = uiStateValue.bookValues.genre.value?.id
+                    ?: throw Exception("BookCreatorViewModel.createManuallyUserBook genre is null"),
                 startDateInString = startDateInString.value,
                 endDateInString = endDateInString.value,
                 startDateInMillis = startDateInMillis.value,

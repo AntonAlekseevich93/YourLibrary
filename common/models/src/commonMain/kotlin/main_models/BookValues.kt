@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import main_models.books.BookShortVo
+import main_models.genre.Genre
 
 class BookValues(
     var parsingUrl: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
@@ -20,6 +21,7 @@ class BookValues(
     var coverUrl: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
     var userCoverUrl: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
     var isbn: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
+    val genre: MutableState<Genre?> = mutableStateOf(null)
 ) {
     private var selectedAuthorName: String = ""
     private var originalAuthorName: String = ""
@@ -84,7 +86,9 @@ class BookValues(
 
     fun isRequiredFieldsFilled(): Boolean =
         authorName.value.text.length >= 2 && bookName.value.text.isNotEmpty()
-                && numberOfPages.value.text.isNotEmpty() && numberOfPages.value.text.toIntOrNull() != null && description.value.text.length > 3
+                && numberOfPages.value.text.isNotEmpty() && numberOfPages.value.text.toIntOrNull() != null &&
+                description.value.text.length > 3 &&
+                genre.value != null
 
 
     fun clearCoverUrl() {

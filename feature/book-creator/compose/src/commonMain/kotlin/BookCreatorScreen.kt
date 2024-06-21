@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,6 +39,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,11 +49,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import book_editor.BookEditor
 import containters.CenterBoxContainer
 import date.CommonDatePicker
 import date.DatePickerEvents
 import di.Inject
+import genre.GenreSelector
 import main_models.DatePickerType
 import models.BookCreatorEvents
 import org.jetbrains.compose.resources.DrawableResource
@@ -97,6 +101,8 @@ fun BookCreatorScreen(
             easing = FastOutSlowInEasing
         )
     )
+
+    var selectionGenreState by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -227,6 +233,7 @@ fun BookCreatorScreen(
                                 isBookCoverManually = uiState.isBookCoverManually,
                                 showSearchBookError = uiState.showSearchBookError,
                                 showSearchAuthorError = uiState.showSearchAuthorError,
+                                genreSelectorListener = { selectionGenreState = true },
                                 onClickSave = {
                                     viewModel.sendEvent(BookCreatorEvents.CreateBookEvent)
                                 }
@@ -273,11 +280,28 @@ fun BookCreatorScreen(
                         )
                     }
                 }
+
+                AnimatedVisibility(selectionGenreState) {
+                    BasicAlertDialog(
+                        modifier = Modifier.fillMaxSize(),
+                        onDismissRequest = { selectionGenreState = false },
+                        properties = DialogProperties(usePlatformDefaultWidth = true)
+                    ) {
+                        GenreSelector(
+                            Modifier.background(ApplicationTheme.colors.screenColor.background)
+                                .padding(horizontal = 16.dp, vertical = 24.dp)
+                        ) { genre ->
+                            viewModel.sendEvent(BookCreatorEvents.SetSelectedGenre(genre = genre))
+                            selectionGenreState = false
+                        }
+                    }
+                }
             }
         }
     }
 }
 
+//todo remove maybe
 @Composable
 internal fun ShowError(
     createBookManuallyListener: () -> Unit

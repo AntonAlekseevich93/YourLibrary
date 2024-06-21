@@ -50,6 +50,7 @@ import main_models.BookValues
 import main_models.DatePickerType
 import main_models.ReadingStatus
 import main_models.books.BookShortVo
+import main_models.genre.GenreUtils
 import platform.Platform
 import platform.isMobile
 import reading_status.getStatusColor
@@ -77,6 +78,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     isBookCoverManually: Boolean = false,
     similarBooks: List<BookShortVo> = listOf(),
     onClickSave: (() -> Unit)? = null,
+    genreSelectorListener: () -> Unit,
 ) {
     val showImage = remember { mutableStateOf(false) }
     val painter = asyncPainterResource(
@@ -98,10 +100,17 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     }
 
     var linkToAuthor by remember { mutableStateOf(false) }
-
     val authorIsSelected by remember(key1 = selectedAuthor) { mutableStateOf(selectedAuthor != null) }
-
     var lastSearchBookName by remember { mutableStateOf("") }
+    val genre = remember(key1 = bookValues.genre.value, key2 = shortBook) {
+        if (shortBook != null) {
+            mutableStateOf(GenreUtils.getGenreById(shortBook.bookGenreId).name)
+        } else if (bookValues.genre.value != null) {
+            mutableStateOf(bookValues.genre.value!!.name)
+        } else {
+            mutableStateOf("")
+        }
+    }
 
     Column(modifier = modifier) {
         AnimatedVisibility(
@@ -287,12 +296,6 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                     style = ApplicationTheme.typography.bodyRegular,
                                     color = Color.Transparent
                                 )
-//                                Text(
-//                                    modifier = Modifier.padding(start = 6.dp, top = 2.dp),
-//                                    text = bookValues.relatedAuthorsNames.value,
-//                                    style = ApplicationTheme.typography.footnoteRegular,
-//                                    color = ApplicationTheme.colors.hintColor
-//                                )
                             }
                         },
                         titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
@@ -387,6 +390,21 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                             bookValues.numberOfPages.value = it
                         },
                         textFieldValue = bookValues.numberOfPages,
+                        titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
+                    )
+
+                    TextFieldWithTitleAndSuggestion(
+                        platform = platform,
+                        title = Strings.genre,
+                        modifier = Modifier.padding(top = 2.dp),
+                        text = genre,
+                        hintText = Strings.genre_selector_hint_text,
+                        enabledInput = false,
+                        onClick = {
+                            if (shortBook == null) {
+                                genreSelectorListener()
+                            }
+                        },
                         titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 

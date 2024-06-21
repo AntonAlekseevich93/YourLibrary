@@ -206,11 +206,11 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
             )
 
             Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
-                val genreName = GenreUtils.getGenreNameById(book.bookGenreId)
+                val genre = GenreUtils.getGenreById(book.bookGenreId)
                 Text(
-                    text = "Жанр:",
+                    text = "${Strings.genre}:",
                     style = ApplicationTheme.typography.footnoteBold,
-                    color = if (genreName.isEmpty()) {
+                    color = if (genre.name.isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
                         ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
@@ -219,7 +219,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
 
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
-                    text = genreName,
+                    text = genre.name,
                     style = ApplicationTheme.typography.footnoteRegular,
                     color = ApplicationTheme.colors.mainTextColor
                 )
