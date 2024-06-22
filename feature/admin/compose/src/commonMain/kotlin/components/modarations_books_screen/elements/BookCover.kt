@@ -1,6 +1,8 @@
 package components.modarations_books_screen.elements
 
+import ApplicationTheme
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -8,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import images.BookCoverFailureImage
+import images.BookCoverLoadingProcessImage
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -22,19 +26,6 @@ internal fun BookCover(
         data = coverUrl,
         key = coverUrl
     )
-    when (painter) {
-        is Resource.Loading -> {
-
-        }
-
-        is Resource.Success -> {
-
-        }
-
-        is Resource.Failure -> {
-
-        }
-    }
 
     Card(
         modifier = modifier.clickable {
@@ -44,17 +35,32 @@ internal fun BookCover(
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
-        KamelImage(
-            resource = painter,
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds,
-            onFailure = {
-                //todo
-            },
-            onLoading = {
-                //todo
-            },
-        )
+        Box {
+            KamelImage(
+                resource = painter,
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                onFailure = {
+                    //todo
+                },
+                onLoading = {
+                    //todo
+                },
+            )
+            when (painter) {
+                is Resource.Loading -> {
+                    BookCoverLoadingProcessImage(randomCover = false)
+                }
+
+                is Resource.Success -> {
+
+                }
+
+                is Resource.Failure -> {
+                    BookCoverFailureImage()
+                }
+            }
+        }
     }
 }
 

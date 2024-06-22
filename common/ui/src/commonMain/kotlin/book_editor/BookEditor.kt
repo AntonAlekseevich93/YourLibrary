@@ -42,6 +42,8 @@ import book_editor.elements.authors_selector.AuthorsListSelector
 import book_editor.elements.book_selector.BookSearchSelector
 import containters.CenterBoxContainer
 import date.DatePickerEvents
+import images.BookCoverFailureImage
+import images.BookCoverLoadingProcessImage
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -80,24 +82,10 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     onClickSave: (() -> Unit)? = null,
     genreSelectorListener: () -> Unit,
 ) {
-    val showImage = remember { mutableStateOf(false) }
     val painter = asyncPainterResource(
         data = bookValues.coverUrl.value.text,
         key = bookValues.coverUrl.value.text
     )
-    when (painter) {
-        is Resource.Loading -> {
-
-        }
-
-        is Resource.Success -> {
-            showImage.value = true
-        }
-
-        is Resource.Failure -> {
-            showImage.value = false
-        }
-    }
 
     var linkToAuthor by remember { mutableStateOf(false) }
     val authorIsSelected by remember(key1 = selectedAuthor) { mutableStateOf(selectedAuthor != null) }
@@ -114,7 +102,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
 
     Column(modifier = modifier) {
         AnimatedVisibility(
-            showImage.value,
+            isCreateBookManually || shortBook != null,
             enter = fadeIn() + slideInVertically(),
             exit = fadeOut() + slideOutVertically()
         ) {
@@ -134,17 +122,31 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     shape = RoundedCornerShape(12.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                 ) {
-                    KamelImage(
-                        resource = painter,
-                        contentDescription = null,
-                        contentScale = ContentScale.FillBounds,
-                        onFailure = {
-                            //todo
-                        },
-                        onLoading = {
-                            //todo
-                        },
-                    )
+                    Box {
+                        KamelImage(
+                            resource = painter,
+                            contentDescription = null,
+                            contentScale = ContentScale.FillBounds,
+                            onFailure = {
+                                //todo
+                            },
+                            onLoading = {
+                                //todo
+                            },
+                        )
+                        when (painter) {
+                            is Resource.Loading -> {
+                                BookCoverLoadingProcessImage(randomCover = false)
+                            }
+
+                            is Resource.Success -> {
+                            }
+
+                            is Resource.Failure -> {
+                                BookCoverFailureImage()
+                            }
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.padding(10.dp))

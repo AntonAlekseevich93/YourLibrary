@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import images.BookCoverFailureImage
+import images.BookCoverLoadingProcessImage
 import io.kamel.core.Resource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -36,17 +38,7 @@ fun BookSelectorItem(
         data = bookItem.imageResultUrl,
         key = bookItem.imageResultUrl
     )
-    when (painter) {
-        is Resource.Loading -> {
 
-        }
-
-        is Resource.Success -> {
-        }
-
-        is Resource.Failure -> {
-        }
-    }
     Column(
         modifier = modifier
             .clickable(interactionSource = MutableInteractionSource(), null) {
@@ -83,6 +75,18 @@ fun BookSelectorItem(
                         //todo
                     },
                 )
+                when (painter) {
+                    is Resource.Loading -> {
+                        BookCoverLoadingProcessImage(randomCover = false)
+                    }
+
+                    is Resource.Success -> {
+                    }
+
+                    is Resource.Failure -> {
+                        BookCoverFailureImage()
+                    }
+                }
                 bookItem.readingStatus?.let { readingStatus ->
                     Column(Modifier.align(Alignment.TopStart)) {
                         Card(
