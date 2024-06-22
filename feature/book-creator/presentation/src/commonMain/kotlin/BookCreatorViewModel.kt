@@ -92,6 +92,10 @@ class BookCreatorViewModel(
                 }
             }
 
+            is BookEditorEvents.HideSearchError -> {
+                hideSearchError()
+            }
+
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
             is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.ClearUrlEvent -> clearUrl()
@@ -210,19 +214,22 @@ class BookCreatorViewModel(
         textWasChanged: Boolean,
         needNewSearch: Boolean
     ) {
-        updateSimilarBooks(emptyList())
-        updateSimilarBooksCache(emptyList())
-        if (uiStateValue.selectedAuthor != null && uiStateValue.bookValues.isSelectedAuthorNameWasChanged()) {
+        if (textWasChanged) {
+            updateSimilarBooks(emptyList())
+            updateSimilarBooksCache(emptyList())
+        }
+
+        if (textWasChanged && uiStateValue.selectedAuthor != null && uiStateValue.bookValues.isSelectedAuthorNameWasChanged()) {
             updateUIState(uiStateValue.copy(selectedAuthor = null))
         }
 
-        if (uiStateValue.showSearchBookError) {
-            updateUIState(uiStateValue.copy(showSearchBookError = false))
+        if (textWasChanged && uiStateValue.showSearchAuthorError) {
+            updateUIState(uiStateValue.copy(showSearchAuthorError = false))
         }
 
         if (textFieldValue.text.isEmpty()) {
             clearSearchAuthor()
-        } else if (needNewSearch) {
+        } else if (textWasChanged && needNewSearch) {
             searchJob?.cancel()
             searchJob = scope.launch(Dispatchers.IO) {
                 delay(1500)
@@ -434,6 +441,10 @@ class BookCreatorViewModel(
                 shortBookItem = shortBook,
             )
         )
+    }
+
+    private fun hideSearchError() {
+        updateUIState(uiStateValue.copy(showSearchBookError = false))
     }
 
     private fun createUserBookBasedOnShortBook(shortBook: BookShortVo): BookVo =

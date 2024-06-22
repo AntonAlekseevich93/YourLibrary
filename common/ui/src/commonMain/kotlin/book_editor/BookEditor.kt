@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -99,6 +100,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
             mutableStateOf("")
         }
     }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(modifier = modifier) {
         AnimatedVisibility(
@@ -110,14 +112,15 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                val imageModifier = Modifier
+                    .sizeIn(
+                        minHeight = 200.dp,
+                        minWidth = 130.dp,
+                        maxHeight = 200.dp,
+                        maxWidth = 130.dp
+                    )
                 Card(
-                    modifier = Modifier
-                        .sizeIn(
-                            minHeight = 200.dp,
-                            minWidth = 130.dp,
-                            maxHeight = 200.dp,
-                            maxWidth = 130.dp
-                        ),
+                    modifier = imageModifier,
                     colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
                     shape = RoundedCornerShape(12.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
@@ -136,14 +139,17 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         )
                         when (painter) {
                             is Resource.Loading -> {
-                                BookCoverLoadingProcessImage(randomCover = false)
+                                BookCoverLoadingProcessImage(
+                                    modifier = imageModifier,
+                                    randomCover = false
+                                )
                             }
 
                             is Resource.Success -> {
                             }
 
                             is Resource.Failure -> {
-                                BookCoverFailureImage()
+                                BookCoverFailureImage(modifier = imageModifier)
                             }
                         }
                     }
@@ -154,7 +160,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
         }
 
         if (
-            (bookValues.isRequiredFieldsFilled() && createNewAuthor || selectedAuthor != null) ||
+            (bookValues.isRequiredFieldsFilled() && createNewAuthor || bookValues.isRequiredFieldsFilled() && selectedAuthor != null) ||
             bookValues.isRequiredFieldsFilled() && shortBook != null
         ) {
             CenterBoxContainer {
@@ -173,7 +179,6 @@ fun BaseEventScope<BaseEvent>.BookEditor(
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
-
                 AnimatedVisibility(
                     visible = !isCreateBookManually && shortBook == null,
                 ) {
@@ -182,15 +187,19 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                             hintText = if (selectedAuthor != null) "Поиск среди книг автора ${selectedAuthor.name}" else "Поиск по названию книги",
                             textFieldValue = bookValues.bookName,
                             onTextChanged = {
+                                val oldText = bookValues.bookName.value.text
                                 if (it.text.trim().isEmpty()) {
                                     sendEvent(BookEditorEvents.ClearBookSearch)
                                 } else if (authorIsSelected) {
                                     sendEvent(BookEditorEvents.OnBookNameChanged(it.text))
+                                } else if (showSearchBookError && oldText != it.text) {
+                                    sendEvent(BookEditorEvents.HideSearchError)
                                 }
 
                                 bookValues.bookName.value = it
                             },
                             onClickSearch = {
+                                keyboardController?.hide()
                                 val newSearch = bookValues.bookName.value.text
                                 if (lastSearchBookName != newSearch) {
                                     lastSearchBookName = newSearch
@@ -215,6 +224,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                 )
                             },
                             onClickSearch = {
+                                keyboardController?.hide()
                                 sendEvent(BookEditorEvents.OnSearchAuthorClick(bookValues.authorName.value.text))
                             },
                             iconResName = Drawable.drawable_ic_authors

@@ -51,14 +51,14 @@ fun BookSelectorItem(
             .sizeIn(maxWidth = MAX_ITEM_WITH),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val imageModifier = Modifier.sizeIn(
+            minHeight = 200.dp,
+            minWidth = MAX_ITEM_WITH,
+            maxHeight = 200.dp,
+            maxWidth = MAX_ITEM_WITH
+        )
         Card(
-            modifier = Modifier
-                .sizeIn(
-                    minHeight = 200.dp,
-                    minWidth = MAX_ITEM_WITH,
-                    maxHeight = 200.dp,
-                    maxWidth = MAX_ITEM_WITH
-                ),
+            modifier = imageModifier,
             colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
             shape = RoundedCornerShape(12.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
@@ -77,14 +77,14 @@ fun BookSelectorItem(
                 )
                 when (painter) {
                     is Resource.Loading -> {
-                        BookCoverLoadingProcessImage(randomCover = false)
+                        BookCoverLoadingProcessImage(modifier = imageModifier, randomCover = false)
                     }
 
                     is Resource.Success -> {
                     }
 
                     is Resource.Failure -> {
-                        BookCoverFailureImage()
+                        BookCoverFailureImage(modifier = imageModifier)
                     }
                 }
                 bookItem.readingStatus?.let { readingStatus ->

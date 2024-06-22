@@ -8,6 +8,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import org.jetbrains.compose.resources.DrawableResource
@@ -17,13 +18,14 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BookCoverLoadingProcessImage(randomCover: Boolean = true) {
+fun BookCoverLoadingProcessImage(modifier: Modifier = Modifier, randomCover: Boolean = true) {
     val coverRes = remember {
         if (randomCover) getRandomCoverRes() else Drawable.drawable_ic_default_book_cover_7
     }
 
     Box(contentAlignment = Alignment.Center) {
         Image(
+            modifier = modifier,
             painter = painterResource(DrawableResource(coverRes)),
             contentDescription = null,
             contentScale = ContentScale.FillBounds
@@ -37,12 +39,13 @@ fun BookCoverLoadingProcessImage(randomCover: Boolean = true) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BookCoverFailureImage(randomCover: Boolean = true) {
+fun BookCoverFailureImage(modifier: Modifier = Modifier, randomCover: Boolean = true) {
     val coverRes = remember {
         if (randomCover) getRandomCoverRes() else Drawable.drawable_ic_default_book_cover_7
     }
 
     Image(
+        modifier = modifier,
         painter = painterResource(DrawableResource(coverRes)),
         contentDescription = null,
         contentScale = ContentScale.FillBounds

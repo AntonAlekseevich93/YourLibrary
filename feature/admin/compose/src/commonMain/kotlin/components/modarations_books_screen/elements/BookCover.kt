@@ -49,7 +49,7 @@ internal fun BookCover(
             )
             when (painter) {
                 is Resource.Loading -> {
-                    BookCoverLoadingProcessImage(randomCover = false)
+                    BookCoverLoadingProcessImage(modifier = modifier, randomCover = false)
                 }
 
                 is Resource.Success -> {
@@ -57,7 +57,7 @@ internal fun BookCover(
                 }
 
                 is Resource.Failure -> {
-                    BookCoverFailureImage()
+                    BookCoverFailureImage(modifier = modifier)
                 }
             }
         }
