@@ -72,7 +72,6 @@ fun BookEntity.toVo(): BookVo =
         bookName = bookName,
         originalAuthorName = originalAuthorName,
         description = description,
-        coverUrl = null, //todo добавлять префикс к названию картинки
         userCoverUrl = userCoverUrl,
         pageCount = pageCount,
         isbn = isbn,

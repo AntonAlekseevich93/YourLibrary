@@ -6,6 +6,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import main_models.books.BookShortVo
 import main_models.genre.Genre
+import main_models.genre.GenreUtils
 
 class BookValues(
     var parsingUrl: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue()),
@@ -40,23 +41,7 @@ class BookValues(
         endDateInString.value = ""
         coverUrl.value = TextFieldValue()
         isbn.value = TextFieldValue()
-    }
-
-    private fun getNumberOfPagesAsIntOrNull(): Int? {
-        val onlyNumbers = StringBuilder()
-        numberOfPages.value.text.forEach {
-            if (it.isDigit()) {
-                onlyNumbers.append(it)
-            }
-        }
-        if (onlyNumbers.isNotEmpty()) {
-            try {
-                return onlyNumbers.toString().toIntOrNull()
-            } catch (_: Throwable) {
-
-            }
-        }
-        return null
+        genre.value = null
     }
 
     fun setShortBook(book: BookShortVo) {
@@ -69,6 +54,7 @@ class BookValues(
         isbn.value = TextFieldValue(book.isbn)
         originalAuthorName = book.originalAuthorName
         originalAuthorId = book.originalAuthorId
+        genre.value = GenreUtils.getGenreById(book.bookGenreId)
     }
 
     fun setSelectedAuthorName(authorName: String, relatedAuthorsNames: String) {

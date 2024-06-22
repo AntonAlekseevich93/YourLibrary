@@ -23,7 +23,7 @@ fun BaseEventScope<BaseEvent>.BookItemShelfCard(
     config: BookItemCardConfig,
     bookItem: BookVo,
 ) {
-    val url = bookItem.userCoverUrl ?: bookItem.coverUrl.orEmpty()
+    val url = bookItem.userCoverUrl.orEmpty() //todo fix this
     val painter =
         asyncPainterResource(data = url)
 

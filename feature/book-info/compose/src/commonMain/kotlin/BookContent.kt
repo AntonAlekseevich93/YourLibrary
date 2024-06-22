@@ -46,7 +46,7 @@ fun BaseEventScope<BaseEvent>.BookContent(
     bookItem: BookVo,
     painterInCache: Resource<Painter>? = null,
 ) {
-    val url = bookItem.userCoverUrl ?: bookItem.coverUrl.orEmpty()
+    val url = bookItem.userCoverUrl.orEmpty() //todo fix this
     val painter = painterInCache ?: asyncPainterResource(data = url)
     val hasDescriptionTextOverflow = remember { mutableStateOf(false) }
     val showFullDescription = remember { mutableStateOf(false) }

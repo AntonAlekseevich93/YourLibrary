@@ -89,7 +89,6 @@ fun UserBookRemoteDto.toVo(): BookVo? {
         endDateInMillis = endDateInMillis,
         timestampOfCreating = timestampOfCreating ?: return null,
         timestampOfUpdating = timestampOfUpdating ?: return null,
-        coverUrl = null,
         authorIsCreatedManually = authorIsCreatedManually ?: return null,
         isLoadedToServer = true,
         bookIsCreatedManually = isCreatedManually ?: return null,

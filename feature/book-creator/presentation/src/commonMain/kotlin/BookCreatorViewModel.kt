@@ -444,8 +444,8 @@ class BookCreatorViewModel(
             bookName = shortBook.bookName,
             originalAuthorName = shortBook.originalAuthorName,
             description = shortBook.description,
-            coverUrl = shortBook.imageResultUrl,
-            userCoverUrl = uiStateValue.bookValues.coverUrl.value.text,
+            /**we don`t save covers link. Only image imageName**/
+            userCoverUrl = null,
             pageCount = shortBook.numbersOfPages,
             isbn = shortBook.isbn,
             readingStatus = uiStateValue.bookValues.selectedStatus.value,
@@ -475,7 +475,6 @@ class BookCreatorViewModel(
                 bookName = bookName.value.text,
                 originalAuthorName = author?.name ?: authorName.value.text,
                 description = description.value.text,
-                coverUrl = null,
                 userCoverUrl = coverUrl.value.text,
                 pageCount = numberOfPages.value.text.toInt(),
                 isbn = isbn.value.text,

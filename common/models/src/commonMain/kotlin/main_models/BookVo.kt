@@ -6,7 +6,6 @@ data class BookVo(
     val originalAuthorId: String,
     val bookName: String,
     val originalAuthorName: String,
-    val coverUrl: String?,
     val userCoverUrl: String?,
     val pageCount: Int,
     val isbn: String?,
