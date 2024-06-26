@@ -226,13 +226,11 @@ class BookCreatorViewModel(
         if (textWasChanged && uiStateValue.showSearchAuthorError) {
             updateUIState(uiStateValue.copy(showSearchAuthorError = false))
         }
-
         if (textFieldValue.text.isEmpty()) {
             clearSearchAuthor()
         } else if (textWasChanged && needNewSearch) {
             searchJob?.cancel()
             searchJob = scope.launch(Dispatchers.IO) {
-                delay(1500)
                 searchAuthor(textFieldValue.text)
             }
         }

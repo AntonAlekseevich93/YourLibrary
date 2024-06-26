@@ -7,6 +7,8 @@ import Strings
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +40,7 @@ import models.AdminEvents
 import models.ModerationBookState
 import tags.CustomTag
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
     state: ModerationBookState
@@ -293,16 +296,16 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
             )
 
             if (!state.isUploadingBookImage) {
-                Row(
+                FlowRow(
                     modifier = Modifier.padding(
                         start = 24.dp,
-                        top = 12.dp,
                         end = 24.dp,
                         bottom = 84.dp
                     )
                 ) { // todo fix bottom padding its for mobile
                     if (!state.selectedItem?.imageResultUrl.isNullOrEmpty()) {
                         CustomTag(
+                            modifier = Modifier.padding(top = 12.dp),
                             text = "Одобрено",
                             color = ApplicationTheme.colors.adminPanelButtons.approvedColor,
                             onClick = {
@@ -315,7 +318,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                         CustomTag(
                             text = "Одобрено с изменениями",
                             color = ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor,
-                            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp),
                             onClick = {
 
                             }
@@ -324,7 +327,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                         CustomTag(
                             text = "Сохранить обложку в базу данных",
                             color = ApplicationTheme.colors.adminPanelButtons.uploadColor,
-                            modifier = Modifier.padding(end = 16.dp),
+                            modifier = Modifier.padding(end = 16.dp, top = 12.dp),
                             onClick = {
                                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                 sendEvent(AdminEvents.UploadBookCover)
@@ -333,6 +336,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                     }
 
                     CustomTag(
+                        modifier = Modifier.padding(top = 12.dp),
                         text = "Отказано",
                         color = ApplicationTheme.colors.adminPanelButtons.disapprovedColor,
                         onClick = {

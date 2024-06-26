@@ -81,6 +81,7 @@ fun TextFieldWithTitleAndSuggestion(
     onClick: (() -> Unit)? = null,
     suggestionMaxHeight: Dp = 320.dp,
     hiddenText: String? = null,
+    customIsFocused: MutableState<Boolean>? = null,
     topContent: @Composable ((isFocused: Boolean) -> Unit)? = null,
     innerContent: @Composable ((isFocused: Boolean) -> Unit)? = null,
     bottomContent: @Composable ((isFocused: Boolean) -> Unit)? = null,
@@ -88,7 +89,7 @@ fun TextFieldWithTitleAndSuggestion(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered = interactionSource.collectIsHoveredAsState()
     val textState = remember { mutableStateOf(TextFieldValue()) }
-    var isFocused by remember { mutableStateOf(false) }
+    var isFocused = customIsFocused ?: remember { mutableStateOf(false) }
     val maxLinesResult: MutableState<Int> = remember {
         mutableStateOf(
             maxLines
@@ -96,8 +97,8 @@ fun TextFieldWithTitleAndSuggestion(
     }
 
     if (disableSingleLineIfFocused) {
-        LaunchedEffect(isFocused) {
-            if (isFocused) {
+        LaunchedEffect(isFocused.value) {
+            if (isFocused.value) {
                 maxLinesResult.value = maxLinesIfDisableSingleLineWhenFocused
             } else {
                 maxLinesResult.value = 1
@@ -106,7 +107,7 @@ fun TextFieldWithTitleAndSuggestion(
     }
 
     Column {
-        topContent?.invoke(isFocused)
+        topContent?.invoke(isFocused.value)
 
         Card(
             modifier = modifier
@@ -117,8 +118,8 @@ fun TextFieldWithTitleAndSuggestion(
                 ),
             shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
-            border = if (!disableBorder && (setAsSelected || isHovered.value || isFocused)) BorderStroke(
-                if (isFocused || setAsSelected) 2.dp else if (isHovered.value) 1.dp else 0.dp,
+            border = if (!disableBorder && (setAsSelected || isHovered.value || isFocused.value)) BorderStroke(
+                if (isFocused.value || setAsSelected) 2.dp else if (isHovered.value) 1.dp else 0.dp,
                 color = ApplicationTheme.colors.textFieldColor
             ) else null
         ) {
@@ -147,7 +148,7 @@ fun TextFieldWithTitleAndSuggestion(
                         CommonTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .onFocusChanged { isFocused = it.isFocused },
+                                .onFocusChanged { isFocused.value = it.isFocused },
                             textState = textFieldValue?.value ?: textState.value,
                             onTextChanged = {
                                 if (textFieldValue == null) {
@@ -159,7 +160,7 @@ fun TextFieldWithTitleAndSuggestion(
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = ApplicationTheme.colors.mainTextColor,
                                 disabledTextColor = ApplicationTheme.colors.mainTextColor,
-                                backgroundColor = if (!disableBorder && (setAsSelected || isHovered.value || isFocused))
+                                backgroundColor = if (!disableBorder && (setAsSelected || isHovered.value || isFocused.value))
                                     ApplicationTheme.colors.focusedTextFillBackground
                                 else ApplicationTheme.colors.cardBackgroundDark,
                             ),
@@ -173,7 +174,7 @@ fun TextFieldWithTitleAndSuggestion(
                             maxLines = maxLinesResult.value,
                             textStyle = ApplicationTheme.typography.bodyRegular,
                         )
-                        innerContent?.invoke(isFocused)
+                        innerContent?.invoke(isFocused.value)
                         if (showClearButton.value) {
                             ClearButton(onClearButtonListener)
                         }
@@ -182,7 +183,7 @@ fun TextFieldWithTitleAndSuggestion(
                     Box(modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            if (!disableBorder && (setAsSelected || isHovered.value || isFocused))
+                            if (!disableBorder && (setAsSelected || isHovered.value || isFocused.value))
                                 ApplicationTheme.colors.focusedTextFillBackground
                             else ApplicationTheme.colors.cardBackgroundDark
                         ).clickable(
@@ -191,7 +192,7 @@ fun TextFieldWithTitleAndSuggestion(
                         ) {
                             onClick?.invoke()
                             if (freezeFocusWhenOnClick) {
-                                isFocused = true
+                                isFocused.value = true
                             }
                         }
                     ) {
@@ -231,7 +232,7 @@ fun TextFieldWithTitleAndSuggestion(
                                 ?: textState.value.text,
                                 color = tagColor,
                                 modifier = textModifier,
-                                onClick = { isFocused = true }
+                                onClick = { isFocused.value = true }
                             )
                         }
 
@@ -243,10 +244,10 @@ fun TextFieldWithTitleAndSuggestion(
             }
         }
 
-        bottomContent?.invoke(isFocused)
+        bottomContent?.invoke(isFocused.value)
 
         AnimatedVisibility(
-            visible = suggestionList.value.isNotEmpty() && isFocused
+            visible = suggestionList.value.isNotEmpty() && isFocused.value
                     || disableHiddenSuggestion && suggestionList.value.isNotEmpty(),
             /**the delay is necessary because otherwise the listener does not have time to work out**/
             exit = fadeOut(animationSpec = tween(1, DELAY_FOR_LISTENER_PROCESSING.toInt()))
@@ -266,7 +267,7 @@ fun TextFieldWithTitleAndSuggestion(
                     list = suggestionList.value,
                     itemClickListener = {
                         onSuggestionClickListener?.invoke(it)
-                        isFocused = false
+                        isFocused.value = false
                     },
                 )
             }

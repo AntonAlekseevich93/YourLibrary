@@ -22,7 +22,13 @@ class AdminViewModel(
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
 
     init {
-        updateUIState(uiStateValue.copy(skipLongImageLoading = appConfig.skipLongImageLoading))
+        updateUIState(
+            uiStateValue.copy(
+                skipLongImageLoading = appConfig.skipLongImageLoading,
+                useCustomHost = appConfig.useCustomHost,
+                customUrl = uiStateValue.customUrl.copy(text = appConfig.customUrl)
+            )
+        )
     }
 
     override fun sendEvent(event: BaseEvent) {
@@ -35,6 +41,16 @@ class AdminViewModel(
             is AdminEvents.ChangeSkipImageLongLoadingSettings -> {
                 appConfig.changeSkipLongImageLoading(!uiStateValue.skipLongImageLoading)
                 updateUIState(uiStateValue.copy(skipLongImageLoading = appConfig.skipLongImageLoading))
+            }
+            is AdminEvents.CustomUrlChanged -> {
+                appConfig.changeCustomUrl(event.url.text)
+                updateUIState(
+                    uiStateValue.copy(customUrl = event.url)
+                )
+            }
+            is AdminEvents.ChangeNeedUseCustomUrl -> {
+                appConfig.changeUseCustomHost(event.needUse)
+                updateUIState(uiStateValue.copy(useCustomHost = appConfig.useCustomHost))
             }
         }
     }

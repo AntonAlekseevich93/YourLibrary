@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import components.modarations_books_screen.ModerationBooksScreen
 import di.Inject
 import models.AdminEvents
+import text_fields.CommonTextField
 import toolbar.CommonToolbar
 
 @Composable
@@ -72,23 +74,41 @@ fun AdminPanelScreen(
         }
 
         if (uiState.moderationBookState.selectedItem == null) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 10.dp, bottom = 24.dp)
+            Column(
+                modifier = Modifier.padding(start = 10.dp, bottom = 44.dp)
                     .align(Alignment.BottomStart)
             ) {
-                Checkbox(
-                    checked = uiState.skipLongImageLoading,
-                    onCheckedChange = {
-                        viewModel.sendEvent(AdminEvents.ChangeSkipImageLongLoadingSettings)
-                    }
-                )
-                Text(
-                    text = "Пропускать долгую загрузку фотографий",
-                    style = ApplicationTheme.typography.footnoteRegular,
-                    color = ApplicationTheme.colors.mainTextColor,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
+                Row(verticalAlignment = Alignment.CenterVertically,) {
+                    Checkbox(
+                        checked = uiState.skipLongImageLoading,
+                        onCheckedChange = {
+                            viewModel.sendEvent(AdminEvents.ChangeSkipImageLongLoadingSettings)
+                        }
+                    )
+                    Text(
+                        text = "Пропускать долгую загрузку фотографий",
+                        style = ApplicationTheme.typography.footnoteRegular,
+                        color = ApplicationTheme.colors.mainTextColor,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 12.dp)) {
+                    Checkbox(
+                        checked = uiState.useCustomHost,
+                        onCheckedChange = {
+                            viewModel.sendEvent(AdminEvents.ChangeNeedUseCustomUrl(it))
+                        }
+                    )
+
+                    CommonTextField(
+                        textState = uiState.customUrl,
+                        onTextChanged = {
+                            viewModel.sendEvent(AdminEvents.CustomUrlChanged(it))
+                        },
+                        unfocusedIndicatorLineThickness = 1.dp
+                    )
+                }
             }
         }
 

@@ -19,9 +19,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -61,6 +65,7 @@ import tags.CustomTag
 import text_fields.SearchTextField
 import text_fields.TextFieldWithTitleAndSuggestion
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseEventScope<BaseEvent>.BookEditor(
     platform: Platform,
@@ -88,7 +93,6 @@ fun BaseEventScope<BaseEvent>.BookEditor(
         key = bookValues.coverUrl.value.text
     )
 
-    var linkToAuthor by remember { mutableStateOf(false) }
     val authorIsSelected by remember(key1 = selectedAuthor) { mutableStateOf(selectedAuthor != null) }
     var lastSearchBookName by remember { mutableStateOf("") }
     val genre = remember(key1 = bookValues.genre.value, key2 = shortBook) {
@@ -101,6 +105,24 @@ fun BaseEventScope<BaseEvent>.BookEditor(
         }
     }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val authorsScrollableState = rememberScrollState()
+    val authorFieldIsFocused = remember { mutableStateOf(false) }
+    var oldAuthorName by remember { mutableStateOf("") }
+    val needSearchAuthor = remember { mutableStateOf(false) }
+
+    if (needSearchAuthor.value && !authorFieldIsFocused.value) {
+        val authorTextField = bookValues.authorName.value
+
+        this@BookEditor.sendEvent(
+            BookEditorEvents.OnAuthorTextChanged(
+                textFieldValue = authorTextField,
+                textWasChanged = oldAuthorName != authorTextField.text,
+                needNewSearch = true
+            )
+        )
+        oldAuthorName = authorTextField.text
+        needSearchAuthor.value = false
+    }
 
     Column(modifier = modifier) {
         AnimatedVisibility(
@@ -184,7 +206,9 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                 ) {
                     Column {
                         SearchTextField(
-                            hintText = if (selectedAuthor != null) "Поиск среди книг автора ${selectedAuthor.name}" else "Поиск по названию книги",
+                            hintText = if (selectedAuthor != null)
+                                "${Strings.search_in_author_books} ${selectedAuthor.name}"
+                            else Strings.search_by_book_name,
                             textFieldValue = bookValues.bookName,
                             onTextChanged = {
                                 val oldText = bookValues.bookName.value.text
@@ -210,7 +234,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         )
 
                         SearchTextField(
-                            hintText = "Поиск по Автору",
+                            hintText = Strings.search_by_author,
                             textFieldValue = bookValues.authorName,
                             onTextChanged = {
                                 val oldText = bookValues.authorName.value.text
@@ -283,20 +307,13 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         hintText = Strings.hint_type_author,
                         textFieldValue = bookValues.authorName,
                         maxLines = 1,
-                        enabledInput = shortBook == null && selectedAuthor == null && !createNewAuthor,
-                        disableBorder = shortBook != null && selectedAuthor == null && !createNewAuthor,
+                        enabledInput = shortBook == null,
+                        disableBorder = shortBook != null,
                         onTextChanged = {
-                            val oldText = bookValues.authorName.value.text
                             bookValues.authorName.value = it
-                            this@BookEditor.sendEvent(
-                                BookEditorEvents.OnAuthorTextChanged(
-                                    textFieldValue = it,
-                                    textWasChanged = oldText != it.text,
-                                    needNewSearch = true
-                                )
-                            )
+                            needSearchAuthor.value = true
                         },
-                        setAsSelected = !authorIsSelected && similarSearchAuthors.isNotEmpty() && !createNewAuthor && !linkToAuthor,
+                        setAsSelected = !authorIsSelected && similarSearchAuthors.isNotEmpty() && !createNewAuthor,
                         innerContent = {
                             Row(
                                 modifier = Modifier.fillMaxSize().padding(10.dp),
@@ -310,24 +327,40 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                 )
                             }
                         },
+                        customIsFocused = authorFieldIsFocused,
                         titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
                     )
 
-                    if (isCreateBookManually && !createNewAuthor) {
-                        AuthorsListSelector(
-                            isSearchAuthorProcess = isSearchAuthorProcess,
-                            showError = false,
-                            similarSearchAuthors = similarSearchAuthors,
-                            bookValues = bookValues,
-                            maxHeight = 120.dp
-                        )
-                    }
+                    if (isCreateBookManually && !createNewAuthor && similarSearchAuthors.isNotEmpty()) {
+                        keyboardController?.hide()
+                        BasicAlertDialog(
+                            onDismissRequest = {}
+                        ) {
+                            Column(Modifier.verticalScroll(authorsScrollableState)) {
+                                AuthorIsNotSelectedInfo(modifier = Modifier.padding(top = 8.dp))
 
-                    AnimatedVisibility(
-                        visible = shortBook == null && selectedAuthor == null &&
-                                similarSearchAuthors.isNotEmpty() && !createNewAuthor
-                    ) {
-                        AuthorIsNotSelectedInfo(modifier = Modifier.padding(top = 8.dp))
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    NewAuthorButton(
+                                        createNewAuthor = false,
+                                        modifier = Modifier
+                                    ) {
+                                        this@BookEditor.sendEvent(
+                                            BookEditorEvents.OnChangeNeedCreateNewAuthor(true)
+                                        )
+                                    }
+                                }
+
+                                AuthorsListSelector(
+                                    isSearchAuthorProcess = isSearchAuthorProcess,
+                                    showError = false,
+                                    similarSearchAuthors = similarSearchAuthors,
+                                    bookValues = bookValues,
+                                )
+                            }
+                        }
                     }
 
                     if (shortBook == null && bookValues.authorName.value.text.length >= 2 && !authorIsSelected) {
@@ -344,9 +377,6 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                         !createNewAuthor
                                     )
                                 )
-                                if (createNewAuthor) {
-                                    linkToAuthor = false
-                                }
                             }
                         }
                     }

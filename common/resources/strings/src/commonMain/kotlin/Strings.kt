@@ -137,4 +137,6 @@ object Strings {
     const val bookExistInLibrary = "Данная книга уже есть в вашей библиотеке"
     const val genre = "Жанр"
     const val genre_selector_hint_text = "Выбрать жанр (обязательно)"
+    const val search_in_author_books = "Поиск среди книг автора"
+    const val search_by_book_name = "Поиск по названию книги"
 }
