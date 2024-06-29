@@ -355,9 +355,11 @@ class BookCreatorViewModel(
             uiStateValue.similarBooks
             updateSimilarBooksCache(response)
             val bookName = uiStateValue.bookValues.bookName.value.text
+            var showSearchBookError = response.isEmpty()
             if (bookName.isNotEmpty()) {
-                uiStateValue.similarBooks =
-                    getAllBooksFromCacheWhereNameIs(bookName).toMutableStateList()
+                val similarBooks = getAllBooksFromCacheWhereNameIs(bookName).toMutableStateList()
+                uiStateValue.similarBooks = similarBooks
+                showSearchBookError = similarBooks.isEmpty()
             } else {
                 uiStateValue.similarBooks = response.toMutableStateList()
             }
@@ -366,7 +368,7 @@ class BookCreatorViewModel(
                 updateUIState(
                     uiStateValue.copy(
                         isSearchBookProcess = false,
-                        showSearchBookError = response.isEmpty()
+                        showSearchBookError = showSearchBookError
                     )
                 )
             }
