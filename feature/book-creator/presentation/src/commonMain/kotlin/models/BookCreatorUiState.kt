@@ -19,6 +19,8 @@ data class BookCreatorUiState(
     val similarSearchAuthors: List<AuthorVo> = listOf(),
     val bookValues: BookValues = BookValues(),
     val needCreateNewAuthor: Boolean = false,
+    val bookWasNotFound: Boolean = false,
+    val authorWasNotFound: Boolean = false,
     val showClearButtonOfUrlElement: Boolean = false,
     val urlFieldIsWork: Boolean = true,
     val showParsingResult: Boolean = false,

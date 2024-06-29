@@ -84,6 +84,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     isCreateBookManually: Boolean = true,
     shortBook: BookShortVo? = null,
     isBookCoverManually: Boolean = false,
+    bookWasNotFound: Boolean = false,
+    authorWasNotFound: Boolean = false,
     similarBooks: List<BookShortVo> = listOf(),
     onClickSave: (() -> Unit)? = null,
     genreSelectorListener: () -> Unit,
@@ -276,7 +278,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                             sendEvent(BookEditorEvents.OnBookSelected(it))
                         },
                         onClickManually = {
-                            sendEvent(BookEditorEvents.OnCreateBookManually())
+                            sendEvent(BookEditorEvents.OnCreateBookManually(bookWasNotFound = true))
                         },
                         bookHaveReadingStatusEvent = {
                             sendEvent(BookEditorEvents.BookHaveReadingStatusEvent(Strings.bookExistInLibrary))
@@ -293,8 +295,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                             bookValues.bookName.value = it
                         },
                         disableSingleLineIfFocused = true,
-                        enabledInput = false,
-                        disableBorder = false,
+                        enabledInput = shortBook == null && !bookWasNotFound,
+                        disableBorder = shortBook == null,
                         textFieldValue = bookValues.bookName,
                         maxLines = 1,
                         titleColor = ApplicationTheme.colors.titleColors.booksTitleInfoColor,
@@ -307,7 +309,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         hintText = Strings.hint_type_author,
                         textFieldValue = bookValues.authorName,
                         maxLines = 1,
-                        enabledInput = shortBook == null,
+                        enabledInput = shortBook == null && !authorWasNotFound,
                         disableBorder = shortBook != null,
                         onTextChanged = {
                             bookValues.authorName.value = it
@@ -363,7 +365,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         }
                     }
 
-                    if (shortBook == null && bookValues.authorName.value.text.length >= 2 && !authorIsSelected) {
+                    if (shortBook == null && bookValues.authorName.value.text.length >= 2 && !authorIsSelected && !authorWasNotFound) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally

@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -18,6 +20,7 @@ import book_editor.elements.CreateBookButton
 import book_editor.elements.book_selector.elements.BookSelectorItem
 import containters.CenterBoxContainer
 import error.SearchError
+import kotlinx.coroutines.launch
 import loader.LoadingProcessWithTitle
 import main_models.BookValues
 import main_models.books.BookShortVo
@@ -34,6 +37,14 @@ fun BookSearchSelector(
     bookHaveReadingStatusEvent: () -> Unit,
 ) {
     val state = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(similarBooks) {
+        scope.launch {
+            state.scrollToItem(0)
+        }
+    }
+
     Column(modifier = modifier) {
         if (isLoading) {
             LoadingProcessWithTitle(text = Strings.loading_book_search_info)

@@ -71,7 +71,14 @@ fun BaseEventScope<BaseEvent>.AuthorsListSelector(
                 CreateBookButton(
                     title = "Создать новую книгу",
                     modifier = Modifier.padding(top = 24.dp),
-                    onClick = { sendEvent(BookEditorEvents.OnCreateBookManually(setCreateNewAuthor = true)) }
+                    onClick = {
+                        sendEvent(
+                            BookEditorEvents.OnCreateBookManually(
+                                setCreateNewAuthor = true,
+                                authorWasNotFound = true
+                            )
+                        )
+                    }
                 )
             }
         } else {

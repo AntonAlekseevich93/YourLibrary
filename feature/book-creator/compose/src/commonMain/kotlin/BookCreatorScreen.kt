@@ -234,6 +234,8 @@ fun BookCreatorScreen(
                                 showSearchBookError = uiState.showSearchBookError,
                                 showSearchAuthorError = uiState.showSearchAuthorError,
                                 genreSelectorListener = { selectionGenreState = true },
+                                bookWasNotFound = uiState.bookWasNotFound,
+                                authorWasNotFound = uiState.authorWasNotFound,
                                 onClickSave = {
                                     viewModel.sendEvent(BookCreatorEvents.CreateBookEvent)
                                 }
@@ -298,30 +300,6 @@ fun BookCreatorScreen(
                 }
             }
         }
-    }
-}
-
-//todo remove maybe
-@Composable
-internal fun ShowError(
-    createBookManuallyListener: () -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
-    ) {
-        Text(
-            text = Strings.parsingError,
-            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
-            style = ApplicationTheme.typography.footnoteRegular,
-            color = ApplicationTheme.colors.errorColor,
-            textAlign = TextAlign.Center
-        )
-
-        CreateBookButton(
-            title = Strings.add_manually_button,
-            onClick = createBookManuallyListener
-        )
     }
 }
 

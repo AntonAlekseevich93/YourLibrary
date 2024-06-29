@@ -66,7 +66,9 @@ class BookCreatorViewModel(
                     uiStateValue.copy(
                         isCreateBookManually = true,
                         showSearchAuthorError = false,
-                        needCreateNewAuthor = event.setCreateNewAuthor
+                        needCreateNewAuthor = event.setCreateNewAuthor,
+                        bookWasNotFound = event.bookWasNotFound,
+                        authorWasNotFound = event.authorWasNotFound,
                     )
                 )
             }
