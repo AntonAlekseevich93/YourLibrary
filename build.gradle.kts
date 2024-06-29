@@ -6,6 +6,7 @@ plugins {
     kotlin("multiplatform").apply(false)
     alias(deps.plugins.room).apply(false)
     alias(deps.plugins.ksp).apply(false)
+    alias(deps.plugins.compose.compiler).apply(false)
 }
 
 tasks.register("clean", Delete::class) {

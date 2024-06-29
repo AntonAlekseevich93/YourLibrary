@@ -6,7 +6,7 @@ object Dependencies {
 
     object Kotlin {
         /** The ksp version (in deps) should be equal to Kotlin's major version like 1.9, 2.1 etc **/
-        private const val version = "1.9.23"
+        private const val version = "2.0.0"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
 
         object Serialization {
@@ -22,7 +22,7 @@ object Dependencies {
     }
 
     object Compose {
-        private const val version = "1.6.2"
+        private const val version = "1.6.11"
         const val gradlePlugin = "org.jetbrains.compose:compose-gradle-plugin:$version"
     }
 

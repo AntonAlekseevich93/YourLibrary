@@ -1,6 +1,7 @@
 plugins {
     id("multiplatform-setup")
     id("android-setup")
+    alias(deps.plugins.compose.compiler)
 }
 
 kotlin {
@@ -8,6 +9,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":common:models"))
+                implementation(deps.compose.runtime)
             }
         }
     }

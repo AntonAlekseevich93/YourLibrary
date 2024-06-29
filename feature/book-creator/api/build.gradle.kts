@@ -1,6 +1,7 @@
 plugins {
     id("multiplatform-setup")
     id("android-setup")
+    alias(deps.plugins.compose.compiler)
 }
 
 kotlin {
@@ -9,6 +10,7 @@ kotlin {
             dependencies {
                 implementation(project(":common:models"))
                 implementation(Dependencies.SqlDelight.coroutinesExtension)
+                implementation(deps.compose.runtime)
             }
         }
     }

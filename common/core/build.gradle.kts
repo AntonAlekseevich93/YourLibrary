@@ -4,6 +4,7 @@ plugins {
     kotlin("plugin.serialization")
     alias(deps.plugins.room)
     id("com.google.devtools.ksp")
+    alias(deps.plugins.compose.compiler)
 }
 
 kotlin {
@@ -13,7 +14,7 @@ kotlin {
                 implementation(project(":common:models"))
                 api(Dependencies.Kotlin.Serialization.serialization)
                 api(Dependencies.Kotlin.Coroutines.core)
-
+                implementation(deps.compose.runtime)
                 api(Dependencies.Ktor.core)
                 implementation(Dependencies.Ktor.json)
                 implementation(Dependencies.Ktor.negotiation)

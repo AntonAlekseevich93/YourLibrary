@@ -1,6 +1,8 @@
 plugins {
     id("multiplatform-compose-setup")
     id("android-setup")
+    alias(deps.plugins.compose.compiler)
+
 }
 
 kotlin {
