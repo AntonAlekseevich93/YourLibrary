@@ -43,13 +43,13 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import main_models.BookVo
 import models.BookItemCardConfig
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import platform.Platform
 import platform.isDesktop
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_search_glass
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseEventScope<BaseEvent>.FullShelfScreen(
     platform: Platform,
@@ -101,7 +101,7 @@ fun BaseEventScope<BaseEvent>.FullShelfScreen(
                             shape = RoundedCornerShape(12.dp),
                             leadingIcon = {
                                 Image(
-                                    painter = painterResource(DrawableResource(Drawable.drawable_ic_search_glass)),
+                                    painter = painterResource(Res.drawable.ic_search_glass),
                                     contentDescription = null,
                                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.searchIconColor),
                                     modifier = Modifier.size(20.dp)

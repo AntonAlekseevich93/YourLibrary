@@ -20,11 +20,10 @@ import auth.elements.ButtonSwitcher
 import auth.elements.SignInFields
 import auth.elements.SignUpFields
 import models.UserEvents
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.app_logo
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun BaseEventScope<BaseEvent>.AuthScreen(isSignUnState: State<Boolean>) {
     val userName: MutableState<TextFieldValue> = remember { mutableStateOf(TextFieldValue()) }
@@ -46,7 +45,7 @@ fun BaseEventScope<BaseEvent>.AuthScreen(isSignUnState: State<Boolean>) {
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(DrawableResource(Drawable.drawable_app_logo)),
+            painter = painterResource(Res.drawable.app_logo),
             contentDescription = null,
             modifier = Modifier.padding(bottom = 44.dp)
         )

@@ -16,6 +16,7 @@ kotlin {
                 implementation(project(":common:arch"))
                 implementation(project(":common:resources:drawable"))
                 implementation(project(":common:resources:strings"))
+                implementation(project(":common:resources"))
                 implementation(project(":feature:settings:data"))
                 implementation(project(":feature:settings:presentation"))
             }

@@ -20,7 +20,6 @@ kotlin {
                 implementation(Dependencies.Ktor.negotiation)
                 implementation(Dependencies.Ktor.serialization)
                 implementation(Dependencies.Ktor.logging)
-
                 api(Dependencies.Kodein.core)
 
                 implementation(Dependencies.SqlDelight.runtime)
@@ -65,7 +64,7 @@ dependencies {
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary"
+    namespace = "ru.yourlibrary.yourlibrary.core"
 }
 
 room {

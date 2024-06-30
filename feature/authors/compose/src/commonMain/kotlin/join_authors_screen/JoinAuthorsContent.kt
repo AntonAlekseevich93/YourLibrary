@@ -3,8 +3,6 @@ package join_authors_screen
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import Drawable.drawable_ic_arrow_in_box
-import Drawable.drawable_ic_join
 import alert_dialog.CommonAlertDialog
 import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.animation.AnimatedVisibility
@@ -32,12 +30,12 @@ import join_authors_screen.components.JoinRelatesAuthorBlock
 import main_models.AuthorVo
 import models.AuthorsEvents
 import models.JoiningAuthorsUiState
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import renaming_author.RenamingAuthorBlock
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_arrow_in_box
+import yourlibrary.common.resources.generated.resources.ic_join
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun BaseEventScope<BaseEvent>.JoinAuthorsContent(
     state: State<JoiningAuthorsUiState>,
@@ -55,7 +53,7 @@ fun BaseEventScope<BaseEvent>.JoinAuthorsContent(
 
             CenterBoxContainer {
                 Image(
-                    painter = painterResource(DrawableResource(drawable_ic_join)),
+                    painter = painterResource(Res.drawable.ic_join),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                     modifier = Modifier
@@ -80,7 +78,7 @@ fun BaseEventScope<BaseEvent>.JoinAuthorsContent(
 
             CenterBoxContainer {
                 Image(
-                    painter = painterResource(DrawableResource(drawable_ic_arrow_in_box)),
+                    painter = painterResource(Res.drawable.ic_arrow_in_box),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                     modifier = Modifier

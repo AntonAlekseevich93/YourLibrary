@@ -3,6 +3,7 @@ package toolbar
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
+import Strings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -26,6 +27,10 @@ import main_models.TooltipPosition
 import navigation_drawer.contents.models.DrawerEvents
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_close
+import yourlibrary.common.resources.generated.resources.ic_home
+import yourlibrary.common.resources.generated.resources.ic_sidebar
 
 @Composable
 fun BaseEventScope<BaseEvent>.CommonToolbar(
@@ -48,7 +53,7 @@ fun BaseEventScope<BaseEvent>.CommonToolbar(
                 Row {
                     TooltipIconArea(
                         text = Strings.to_main,
-                        drawableResName = Drawable.drawable_ic_home,
+                        drawableResName = Res.drawable.ic_home,
                         modifier = Modifier.padding(start = 10.dp),
                         iconSize = 18.dp,
                         pointerInnerPadding = 4.dp,
@@ -64,7 +69,7 @@ fun BaseEventScope<BaseEvent>.CommonToolbar(
 
                     TooltipIconArea(
                         text = Strings.menu,
-                        drawableResName = Drawable.drawable_ic_sidebar,
+                        drawableResName = Res.drawable.ic_sidebar,
                         modifier = Modifier.padding(start = 10.dp),
                         iconSize = 18.dp,
                         pointerInnerPadding = 4.dp,
@@ -85,7 +90,7 @@ fun BaseEventScope<BaseEvent>.CommonToolbar(
 
             TooltipIconArea(
                 text = Strings.close,
-                drawableResName = Drawable.drawable_ic_close,
+                drawableResName = Res.drawable.ic_close,
                 modifier = Modifier.padding(start = 10.dp, end = 16.dp),
                 iconSize = 18.dp,
                 pointerInnerPadding = 4.dp,

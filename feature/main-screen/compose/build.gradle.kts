@@ -16,6 +16,7 @@ kotlin {
                 implementation(project(":common:ui"))
                 implementation(project(":common:resources:drawable"))
                 implementation(project(":common:resources:strings"))
+                implementation(project(":common:resources"))
                 implementation(project(":feature:main-screen:api"))
                 implementation(project(":feature:main-screen:presentation"))
                 implementation(project(":feature:search:compose"))

@@ -3,7 +3,6 @@ package navigation_drawer.contents
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import Drawable
 import Strings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -30,6 +29,10 @@ import main_models.BooksInfoHeader
 import main_models.TooltipPosition
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_authors
+import yourlibrary.common.resources.generated.resources.ic_book
+import yourlibrary.common.resources.generated.resources.ic_book_shelves
 
 @Composable
 fun BaseEventScope<BaseEvent>.LeftDrawerBooksContent(
@@ -56,7 +59,7 @@ fun BaseEventScope<BaseEvent>.LeftDrawerBooksContent(
                 text = Strings.all_books,
                 iconTint = if (booksButtonIsSelected) ApplicationTheme.colors.selectedIconColor
                 else ApplicationTheme.colors.mainIconsColor,
-                drawableResName = Drawable.drawable_ic_book,
+                drawableResName = Res.drawable.ic_book,
                 tooltipCallback = {
                     this@LeftDrawerBooksContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.BOTTOM
@@ -74,7 +77,7 @@ fun BaseEventScope<BaseEvent>.LeftDrawerBooksContent(
                 text = Strings.authors,
                 iconTint = if (authorButtonIsSelected) ApplicationTheme.colors.selectedIconColor
                 else ApplicationTheme.colors.mainIconsColor,
-                drawableResName = Drawable.drawable_ic_authors,
+                drawableResName = Res.drawable.ic_authors,
                 tooltipCallback = {
                     this@LeftDrawerBooksContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.BOTTOM
@@ -92,7 +95,7 @@ fun BaseEventScope<BaseEvent>.LeftDrawerBooksContent(
                 text = Strings.shelves,
                 iconTint = if (bookShelvesButtonIsSelected) ApplicationTheme.colors.selectedIconColor
                 else ApplicationTheme.colors.mainIconsColor,
-                drawableResName = Drawable.drawable_ic_book_shelves,
+                drawableResName = Res.drawable.ic_book_shelves,
                 tooltipCallback = {
                     this@LeftDrawerBooksContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.BOTTOM

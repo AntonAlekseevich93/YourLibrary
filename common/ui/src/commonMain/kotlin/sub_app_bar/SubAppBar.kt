@@ -2,8 +2,6 @@ package sub_app_bar
 
 import ApplicationTheme
 import BaseEvent
-import Drawable
-import DrawerScope
 import BaseEventScope
 import Strings
 import androidx.compose.animation.AnimatedVisibility
@@ -40,10 +38,16 @@ import main_models.TooltipPosition
 import main_models.ViewsType
 import navigation_drawer.contents.models.DrawerEvents
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_calendar
+import yourlibrary.common.resources.generated.resources.ic_home
+import yourlibrary.common.resources.generated.resources.ic_kanban
+import yourlibrary.common.resources.generated.resources.ic_list
+import yourlibrary.common.resources.generated.resources.ic_plus
+import yourlibrary.common.resources.generated.resources.ic_sidebar
 
 @Composable
 fun BaseEventScope<BaseEvent>.SubAppBar(
@@ -63,7 +67,7 @@ fun BaseEventScope<BaseEvent>.SubAppBar(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TooltipIconArea(
                     text = Strings.to_main,
-                    drawableResName = Drawable.drawable_ic_home,
+                    drawableResName = Res.drawable.ic_home,
                     modifier = Modifier.padding(end = 6.dp),
                     pointerEventBackgroundDisable = ApplicationTheme.colors.mainBackgroundColor,
                     tooltipCallback = {
@@ -75,7 +79,7 @@ fun BaseEventScope<BaseEvent>.SubAppBar(
                 )
                 TooltipIconArea(
                     text = Strings.menu,
-                    drawableResName = Drawable.drawable_ic_sidebar,
+                    drawableResName = Res.drawable.ic_sidebar,
                     modifier = Modifier.padding(end = 12.dp),
                     pointerEventBackgroundDisable = ApplicationTheme.colors.mainBackgroundColor,
                     imageModifier = Modifier.rotate(180f),
@@ -131,7 +135,7 @@ fun BaseEventScope<BaseEvent>.ViewTypesBlock(
             AnimatedVisibility(visible = selectedViewsTypes.contains(ViewsType.LIST)) {
                 TooltipIconArea(
                     text = Strings.list,
-                    drawableResName = Drawable.drawable_ic_list,
+                    drawableResName = Res.drawable.ic_list,
                     isSelected = selectedType.value == ViewsType.LIST,
                     iconSize = 16.dp,
                     onClick = {
@@ -148,7 +152,7 @@ fun BaseEventScope<BaseEvent>.ViewTypesBlock(
             AnimatedVisibility(visible = selectedViewsTypes.contains(ViewsType.KANBAN)) {
                 TooltipIconArea(
                     text = Strings.kanban,
-                    drawableResName = Drawable.drawable_ic_kanban,
+                    drawableResName = Res.drawable.ic_kanban,
                     isSelected = selectedType.value == ViewsType.KANBAN,
                     iconSize = 16.dp,
                     onClick = {
@@ -165,7 +169,7 @@ fun BaseEventScope<BaseEvent>.ViewTypesBlock(
             AnimatedVisibility(visible = selectedViewsTypes.contains(ViewsType.CALENDAR)) {
                 TooltipIconArea(
                     text = Strings.calendar,
-                    drawableResName = Drawable.drawable_ic_calendar,
+                    drawableResName = Res.drawable.ic_calendar,
                     isSelected = selectedType.value == ViewsType.CALENDAR,
                     iconSize = 16.dp,
                     onClick = {
@@ -186,7 +190,7 @@ fun BaseEventScope<BaseEvent>.ViewTypesBlock(
                 ) {
                     TooltipIconArea(
                         text = Strings.change,
-                        drawableResName = Drawable.drawable_ic_plus,
+                        drawableResName = Res.drawable.ic_plus,
                         iconSize = 8.dp,
                         onClick = {
                             isExpandedDropDownViewsMenu.value = true
@@ -232,7 +236,7 @@ internal fun DropDownMenuViews(
         ) {
             DropDownItemView(
                 text = Strings.list,
-                iconResName = Drawable.drawable_ic_list,
+                iconResName = Res.drawable.ic_list,
                 isChecked = isCheckedTypes.contains(ViewsType.LIST),
                 switchChangedListener = { isChecked ->
                     if (!isChecked && isCheckedTypes.size == 1) {
@@ -244,7 +248,7 @@ internal fun DropDownMenuViews(
             )
             DropDownItemView(
                 text = Strings.kanban,
-                iconResName = Drawable.drawable_ic_kanban,
+                iconResName = Res.drawable.ic_kanban,
                 isChecked = isCheckedTypes.contains(ViewsType.KANBAN),
                 switchChangedListener = { isChecked ->
                     if (!isChecked && isCheckedTypes.size == 1) {
@@ -256,7 +260,7 @@ internal fun DropDownMenuViews(
             )
             DropDownItemView(
                 text = Strings.calendar,
-                iconResName = Drawable.drawable_ic_calendar,
+                iconResName = Res.drawable.ic_calendar,
                 isChecked = isCheckedTypes.contains(ViewsType.CALENDAR),
                 switchChangedListener = { isChecked ->
                     if (!isChecked && isCheckedTypes.size == 1) {
@@ -270,17 +274,16 @@ internal fun DropDownMenuViews(
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 internal fun DropDownItemView(
     text: String,
-    iconResName: String,
+    iconResName: DrawableResource,
     isChecked: Boolean,
     switchChangedListener: (isChecked: Boolean) -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Image(
-            painter = painterResource(DrawableResource(iconResName)),
+            painter = painterResource(iconResName),
             contentDescription = null,
             colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
             modifier = Modifier

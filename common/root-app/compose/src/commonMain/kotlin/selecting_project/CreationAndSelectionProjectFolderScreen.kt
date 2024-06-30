@@ -44,8 +44,9 @@ import models.ProjectFoldersEvents
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.app_logo
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun BaseEventScope<BaseEvent>.CreationAndSelectionProjectFolderScreen(
     pathInfoList: List<PathInfoVo>,
@@ -90,7 +91,7 @@ fun BaseEventScope<BaseEvent>.CreationAndSelectionProjectFolderScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painter = painterResource(DrawableResource(Drawable.drawable_app_logo)),
+                    painter = painterResource(Res.drawable.app_logo),
                     contentDescription = null,
                     modifier = Modifier.padding(top = 64.dp, bottom = 10.dp)
                 )

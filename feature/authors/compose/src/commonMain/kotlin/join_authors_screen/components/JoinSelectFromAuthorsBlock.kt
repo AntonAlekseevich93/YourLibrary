@@ -38,6 +38,8 @@ import models.AuthorsEvents
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_search_glass
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -79,7 +81,7 @@ fun BaseEventScope<BaseEvent>.JoinAllAuthors(
             shape = RoundedCornerShape(12.dp),
             leadingIcon = {
                 Image(
-                    painter = painterResource(DrawableResource(Drawable.drawable_ic_search_glass)),
+                    painter = painterResource(Res.drawable.ic_search_glass),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.searchIconColor),
                     modifier = Modifier.size(20.dp)

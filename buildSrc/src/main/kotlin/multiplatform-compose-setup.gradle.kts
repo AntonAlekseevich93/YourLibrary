@@ -15,12 +15,11 @@ kotlin {
                 implementation(compose.foundation)
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
+                api(compose.components.resources)
                 implementation(compose.materialIconsExtended)
                 implementation(compose.material3)
                 implementation(compose.ui)
                 implementation(compose.uiTooling)
-                implementation(compose.components.resources)
                 implementation("com.mikepenz:multiplatform-markdown-renderer:0.8.0") //todo delete
             }
         }
@@ -31,4 +30,8 @@ kotlin {
             }
         }
     }
+}
+compose.resources {
+    publicResClass = true
+    generateResClass = auto
 }

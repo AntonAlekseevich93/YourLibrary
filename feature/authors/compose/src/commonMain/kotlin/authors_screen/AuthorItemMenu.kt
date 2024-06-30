@@ -3,7 +3,6 @@ package authors_screen
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import Drawable
 import Strings
 import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.foundation.layout.Row
@@ -18,6 +17,12 @@ import main_models.TooltipPosition
 import models.AuthorsEvents
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_book
+import yourlibrary.common.resources.generated.resources.ic_join
+import yourlibrary.common.resources.generated.resources.ic_quote
+import yourlibrary.common.resources.generated.resources.ic_rename
+import yourlibrary.common.resources.generated.resources.ic_trash_bin
 
 @Composable
 fun BaseEventScope<BaseEvent>.AuthorItemMenu(authorVo: AuthorVo) {
@@ -30,7 +35,7 @@ fun BaseEventScope<BaseEvent>.AuthorItemMenu(authorVo: AuthorVo) {
             text = Strings.all_books,
             iconSize = 16.dp,
             iconTint = ApplicationTheme.colors.mainIconsColor,
-            drawableResName = Drawable.drawable_ic_book,
+            drawableResName = Res.drawable.ic_book,
             tooltipCallback = {
                 this@AuthorItemMenu.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.BOTTOM
@@ -46,7 +51,7 @@ fun BaseEventScope<BaseEvent>.AuthorItemMenu(authorVo: AuthorVo) {
             text = Strings.quotes,
             iconSize = 16.dp,
             iconTint = ApplicationTheme.colors.mainIconsColor,
-            drawableResName = Drawable.drawable_ic_quotes,
+            drawableResName = Res.drawable.ic_quote,
             tooltipCallback = {
                 this@AuthorItemMenu.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.BOTTOM
@@ -63,7 +68,7 @@ fun BaseEventScope<BaseEvent>.AuthorItemMenu(authorVo: AuthorVo) {
             iconSize = 16.dp,
             imageModifier = Modifier.rotate(90f),
             iconTint = ApplicationTheme.colors.mainIconsColor,
-            drawableResName = Drawable.drawable_ic_join,
+            drawableResName = Res.drawable.ic_join,
             tooltipCallback = {
                 this@AuthorItemMenu.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.BOTTOM
@@ -79,7 +84,7 @@ fun BaseEventScope<BaseEvent>.AuthorItemMenu(authorVo: AuthorVo) {
             text = Strings.rename,
             iconSize = 16.dp,
             iconTint = ApplicationTheme.colors.mainIconsColor,
-            drawableResName = Drawable.drawable_ic_rename,
+            drawableResName = Res.drawable.ic_rename,
             tooltipCallback = {
                 this@AuthorItemMenu.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.BOTTOM
@@ -105,7 +110,7 @@ fun BaseEventScope<BaseEvent>.AuthorItemMenu(authorVo: AuthorVo) {
             text = Strings.delete,
             iconSize = 16.dp,
             iconTint = ApplicationTheme.colors.mainIconsColor,
-            drawableResName = Drawable.drawable_ic_trash,
+            drawableResName = Res.drawable.ic_trash_bin,
             tooltipCallback = {
                 this@AuthorItemMenu.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.BOTTOM

@@ -25,6 +25,17 @@ import platform.Platform
 import toolbar.ToolbarEvents
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_close
+import yourlibrary.common.resources.generated.resources.ic_collapse
+import yourlibrary.common.resources.generated.resources.ic_edit
+import yourlibrary.common.resources.generated.resources.ic_expand
+import yourlibrary.common.resources.generated.resources.ic_home
+import yourlibrary.common.resources.generated.resources.ic_note_sidebar
+import yourlibrary.common.resources.generated.resources.ic_save
+import yourlibrary.common.resources.generated.resources.ic_sidebar
+import yourlibrary.common.resources.generated.resources.ic_subtask
+import yourlibrary.common.resources.generated.resources.ic_tag
 
 @Composable
 fun BaseEventScope<BaseEvent>.FullBookBar(
@@ -84,7 +95,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
             Row {
                 TooltipIconArea(
                     text = Strings.to_main,
-                    drawableResName = Drawable.drawable_ic_home,
+                    drawableResName = Res.drawable.ic_home,
                     modifier = Modifier.padding(start = 10.dp),
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,
@@ -100,7 +111,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
 
                 TooltipIconArea(
                     text = Strings.menu,
-                    drawableResName = Drawable.drawable_ic_sidebar,
+                    drawableResName = Res.drawable.ic_sidebar,
                     modifier = Modifier.padding(start = 10.dp),
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,
@@ -119,7 +130,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
         AnimatedVisibility(visible = !hideSaveButton.value) {
             TooltipIconArea(
                 text = if (isEditMode.value) Strings.save else Strings.edit,
-                drawableResName = if (isEditMode.value) Drawable.drawable_ic_save else Drawable.drawable_ic_edit,
+                drawableResName = if (isEditMode.value) Res.drawable.ic_save else Res.drawable.ic_edit,
                 modifier = Modifier.padding(start = 10.dp),
                 iconSize = 18.dp,
                 iconTint = if (isEditMode.value) ApplicationTheme.colors.successColor else ApplicationTheme.colors.mainIconsColor,
@@ -141,7 +152,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
 
         TooltipIconArea(
             text = Strings.tags,
-            drawableResName = Drawable.drawable_ic_tag,
+            drawableResName = Res.drawable.ic_tag,
             modifier = Modifier.padding(start = 10.dp),
             iconSize = 18.dp,
             pointerInnerPadding = 4.dp,
@@ -155,7 +166,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
         }
         TooltipIconArea(
             text = Strings.add_subtask,
-            drawableResName = Drawable.drawable_ic_subtask,
+            drawableResName = Res.drawable.ic_subtask,
             modifier = Modifier.padding(start = 10.dp),
             iconSize = 18.dp,
             pointerInnerPadding = 4.dp,
@@ -200,7 +211,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
             Row {
                 TooltipIconArea(
                     text = Strings.sidebar,
-                    drawableResName = Drawable.drawable_ic_note_sidebar,
+                    drawableResName = Res.drawable.ic_note_sidebar,
                     modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,
@@ -220,7 +231,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
                 if (!showLeftDrawer.value && isFullscreen.value) {
                     TooltipIconArea(
                         text = Strings.collapse,
-                        drawableResName = Drawable.drawable_ic_collapse,
+                        drawableResName = Res.drawable.ic_collapse,
                         modifier = Modifier.padding(start = 10.dp),
                         iconSize = 18.dp,
                         pointerInnerPadding = 4.dp,
@@ -234,7 +245,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
                 } else if (!showLeftDrawer.value) {
                     TooltipIconArea(
                         text = Strings.expand,
-                        drawableResName = Drawable.drawable_ic_expand,
+                        drawableResName = Res.drawable.ic_expand,
                         modifier = Modifier.padding(start = 10.dp),
                         iconSize = 18.dp,
                         pointerInnerPadding = 4.dp,
@@ -248,7 +259,7 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
                 }
                 TooltipIconArea(
                     text = Strings.close,
-                    drawableResName = Drawable.drawable_ic_close,
+                    drawableResName = Res.drawable.ic_close,
                     modifier = Modifier.padding(start = 10.dp, end = 16.dp),
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,

@@ -1,6 +1,6 @@
 [versions]
-androidxRoom = "2.7.0-alpha02"
-sqlite = "2.5.0-alpha01"
+androidxRoom = "2.7.0-alpha04"
+sqlite = "2.5.0-alpha04"
 ksp = "2.0.0-1.0.22"
 kotlin = "2.0.0"
 compose-version = "1.6.11"

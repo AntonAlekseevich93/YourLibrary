@@ -1,7 +1,6 @@
 package items
 
 import ApplicationTheme
-import Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,12 +15,11 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import models.SearchTaskItemUiState
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import selected_pointer_event_card.SelectedPointerEventCard
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_task
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 internal fun SearchedTask(
     task: SearchTaskItemUiState,
@@ -40,7 +38,7 @@ internal fun SearchedTask(
             modifier = innerModifier
         ) {
             Image(
-                painter = painterResource(DrawableResource(Drawable.drawable_ic_task)),
+                painter = painterResource(Res.drawable.ic_task),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(ApplicationTheme.colors.searchIconColor),
                 modifier = Modifier.size(24.dp)

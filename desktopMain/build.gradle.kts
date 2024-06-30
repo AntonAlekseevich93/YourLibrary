@@ -14,7 +14,7 @@ kotlin {
                 implementation(compose.uiTooling)
                 implementation(compose.material3)
                 implementation(compose.desktop.currentOs)
-                api(project(":common:root-app:compose"))
+                implementation(project(":common:root-app:compose"))
                 api(project(":common:root-app:di"))
                 api(project(":common:ui"))
                 api(project(":common:scopes"))

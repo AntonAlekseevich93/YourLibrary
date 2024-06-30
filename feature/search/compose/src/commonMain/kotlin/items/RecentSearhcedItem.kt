@@ -1,5 +1,6 @@
 package items
 
+import ApplicationTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,14 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 import selected_pointer_event_card.SelectedPointerEventCard
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_search_glass
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 internal fun RecentSearchedItem(
     text: String,
@@ -38,7 +38,7 @@ internal fun RecentSearchedItem(
             modifier = innerModifier
         ) {
             Image(
-                painter = painterResource(DrawableResource(Drawable.drawable_ic_search_glass)),
+                painter = painterResource(Res.drawable.ic_search_glass),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(ApplicationTheme.colors.searchIconColor),
                 modifier = Modifier.size(14.dp)

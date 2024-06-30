@@ -1,6 +1,6 @@
 package text_fields
 
-import Drawable
+import ApplicationTheme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.hoverable
@@ -16,8 +16,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,16 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import utils.debounceClick
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SearchTextField(
     modifier: Modifier = Modifier,
@@ -49,7 +44,7 @@ fun SearchTextField(
     onTextChanged: ((TextFieldValue) -> Unit)? = null,
     hintText: String = "",
     onClickSearch: () -> Unit,
-    iconResName: String? = null
+    iconResName: DrawableResource? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered = interactionSource.collectIsHoveredAsState()
@@ -73,7 +68,7 @@ fun SearchTextField(
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             iconResName?.let {
                 Image(
-                    painter = painterResource(DrawableResource(it)),
+                    painter = painterResource(it),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp).size(18.dp)

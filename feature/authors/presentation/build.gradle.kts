@@ -14,6 +14,7 @@ kotlin {
                 implementation(project(":common:scopes"))
                 implementation(project(":common:ui"))
                 implementation(project(":common:resources:strings"))
+                implementation(project(":common:resources"))
                 implementation(project(":feature:authors:api"))
                 implementation(project(":feature:authors:domain"))
             }

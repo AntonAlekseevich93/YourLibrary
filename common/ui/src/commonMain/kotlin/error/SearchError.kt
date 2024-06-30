@@ -1,7 +1,6 @@
 package error
 
 import ApplicationTheme
-import Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,11 +14,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_empty_search
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 internal fun SearchError(
     title: String?,
@@ -30,7 +28,7 @@ internal fun SearchError(
         modifier = Modifier.fillMaxWidth()
     ) {
         Image(
-            painter = painterResource(DrawableResource(Drawable.drawable_ic_empty_search)),
+            painter = painterResource(Res.drawable.ic_empty_search),
             contentDescription = null,
             colorFilter = ColorFilter.tint(ApplicationTheme.colors.searchIconColor),
             modifier = Modifier

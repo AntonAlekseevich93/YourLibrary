@@ -64,6 +64,9 @@ import reading_status.getStatusColor
 import tags.CustomTag
 import text_fields.SearchTextField
 import text_fields.TextFieldWithTitleAndSuggestion
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_authors
+import yourlibrary.common.resources.generated.resources.ic_book
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -232,7 +235,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                     sendEvent(BookEditorEvents.OnBookNameChanged(newSearch))
                                 }
                             },
-                            iconResName = Drawable.drawable_ic_book
+                            iconResName = Res.drawable.ic_book
                         )
 
                         SearchTextField(
@@ -253,7 +256,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                 keyboardController?.hide()
                                 sendEvent(BookEditorEvents.OnSearchAuthorClick(bookValues.authorName.value.text))
                             },
-                            iconResName = Drawable.drawable_ic_authors
+                            iconResName = Res.drawable.ic_authors
                         )
                     }
                 }

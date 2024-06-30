@@ -3,7 +3,7 @@ package auth
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import Drawable
+import Strings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,12 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import info.InfoBlock
 import models.UserEvents
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import tags.CustomTag
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.app_logo
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun BaseEventScope<BaseEvent>.VerifiedScreen() {
     Column(
@@ -29,7 +28,7 @@ fun BaseEventScope<BaseEvent>.VerifiedScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(DrawableResource(Drawable.drawable_app_logo)),
+            painter = painterResource(Res.drawable.app_logo),
             contentDescription = null,
             modifier = Modifier.padding(bottom = 24.dp)
         )

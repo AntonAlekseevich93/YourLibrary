@@ -25,6 +25,18 @@ import androidx.compose.ui.unit.dp
 import main_models.TooltipPosition
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_activity
+import yourlibrary.common.resources.generated.resources.ic_add
+import yourlibrary.common.resources.generated.resources.ic_authors
+import yourlibrary.common.resources.generated.resources.ic_folder
+import yourlibrary.common.resources.generated.resources.ic_quote
+import yourlibrary.common.resources.generated.resources.ic_random
+import yourlibrary.common.resources.generated.resources.ic_search
+import yourlibrary.common.resources.generated.resources.ic_server
+import yourlibrary.common.resources.generated.resources.ic_settings
+import yourlibrary.common.resources.generated.resources.ic_tag
+import yourlibrary.common.resources.generated.resources.ic_user
 
 @Composable
 fun BaseEventScope<BaseEvent>.LeftMenuBar(
@@ -37,7 +49,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
         ) {
             TooltipIconArea(
                 text = Strings.search,
-                drawableResName = Drawable.drawable_ic_search,
+                drawableResName = Res.drawable.ic_search,
                 modifier = Modifier.padding(top = 10.dp),
                 tooltipCallback = {
                     this@LeftMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
@@ -51,7 +63,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
 
             TooltipIconArea(
                 text = Strings.add_book,
-                drawableResName = Drawable.drawable_ic_add,
+                drawableResName = Res.drawable.ic_add,
                 tooltipCallback = {
                     this@LeftMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.RIGHT
@@ -65,7 +77,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
 
             TooltipIconArea(
                 text = Strings.quotes,
-                drawableResName = Drawable.drawable_ic_quotes,
+                drawableResName = Res.drawable.ic_quote,
                 modifier = Modifier.padding(top = 10.dp),
                 iconSize = 18.dp,
                 tooltipCallback = {
@@ -80,7 +92,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
 
             TooltipIconArea(
                 text = Strings.authors,
-                drawableResName = Drawable.drawable_ic_authors,
+                drawableResName = Res.drawable.ic_authors,
                 modifier = Modifier.padding(top = 10.dp),
                 iconSize = 18.dp,
                 tooltipCallback = {
@@ -96,7 +108,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
 
             TooltipIconArea(
                 text = Strings.tags,
-                drawableResName = Drawable.drawable_ic_tag,
+                drawableResName = Res.drawable.ic_tag,
                 tooltipCallback = {
                     this@LeftMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.RIGHT
@@ -109,7 +121,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
 
             TooltipIconArea(
                 text = "Активность",//todo
-                drawableResName = Drawable.drawable_ic_activity,
+                drawableResName = Res.drawable.ic_activity,
                 tooltipCallback = {
                     this@LeftMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.RIGHT
@@ -122,7 +134,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
 
             TooltipIconArea(
                 text = "Открыть случайную цитату",//todo
-                drawableResName = Drawable.drawable_ic_random,
+                drawableResName = Res.drawable.ic_random,
                 tooltipCallback = {
                     this@LeftMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.RIGHT
@@ -137,7 +149,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
 
             TooltipIconArea(
                 text = Strings.admin_panel,
-                drawableResName = Drawable.drawable_ic_server,
+                drawableResName = Res.drawable.ic_server,
                 tooltipCallback = {
                     this@LeftMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.RIGHT
@@ -151,7 +163,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
 
             TooltipIconArea(
                 text = Strings.profile,
-                drawableResName = Drawable.drawable_ic_user,
+                drawableResName = Res.drawable.ic_user,
                 tooltipCallback = {
                     this@LeftMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.RIGHT
@@ -165,7 +177,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
 
             TooltipIconArea(
                 text = Strings.another_storage,
-                drawableResName = Drawable.drawable_ic_folder,
+                drawableResName = Res.drawable.ic_folder,
                 tooltipCallback = {
                     this@LeftMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.RIGHT
@@ -178,7 +190,7 @@ fun BaseEventScope<BaseEvent>.LeftMenuBar(
             )
             TooltipIconArea(
                 text = Strings.settings,
-                drawableResName = Drawable.drawable_ic_settings,
+                drawableResName = Res.drawable.ic_settings,
                 tooltipCallback = {
                     this@LeftMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                         position = TooltipPosition.RIGHT
@@ -213,7 +225,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
     ) {
         TooltipIconArea(
             text = Strings.search,
-            drawableResName = Drawable.drawable_ic_search,
+            drawableResName = Res.drawable.ic_search,
             modifier = Modifier.padding(start = 10.dp),
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
@@ -227,7 +239,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
 
         TooltipIconArea(
             text = Strings.add_book,
-            drawableResName = Drawable.drawable_ic_add,
+            drawableResName = Res.drawable.ic_add,
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.RIGHT
@@ -241,7 +253,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
 
         TooltipIconArea(
             text = Strings.quotes,
-            drawableResName = Drawable.drawable_ic_quotes,
+            drawableResName = Res.drawable.ic_quote,
             modifier = Modifier.padding(end = 10.dp),
             iconSize = 18.dp,
             tooltipCallback = {
@@ -256,7 +268,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
 
         TooltipIconArea(
             text = Strings.authors,
-            drawableResName = Drawable.drawable_ic_authors,
+            drawableResName = Res.drawable.ic_authors,
             modifier = Modifier.padding(end = 10.dp),
             iconSize = 18.dp,
             tooltipCallback = {
@@ -272,7 +284,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
 
         TooltipIconArea(
             text = Strings.tags,
-            drawableResName = Drawable.drawable_ic_tag,
+            drawableResName = Res.drawable.ic_tag,
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.RIGHT
@@ -285,7 +297,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
 
         TooltipIconArea(
             text = "Активность",//todo
-            drawableResName = Drawable.drawable_ic_activity,
+            drawableResName = Res.drawable.ic_activity,
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.RIGHT
@@ -298,7 +310,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
 
         TooltipIconArea(
             text = "Открыть случайную цитату",//todo
-            drawableResName = Drawable.drawable_ic_random,
+            drawableResName = Res.drawable.ic_random,
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.RIGHT
@@ -313,7 +325,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
 
         TooltipIconArea(
             text = Strings.admin_panel,
-            drawableResName = Drawable.drawable_ic_server,
+            drawableResName = Res.drawable.ic_server,
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.RIGHT
@@ -327,7 +339,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
 
         TooltipIconArea(
             text = Strings.profile,
-            drawableResName = Drawable.drawable_ic_user,
+            drawableResName = Res.drawable.ic_user,
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.RIGHT
@@ -341,7 +353,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
 
         TooltipIconArea(
             text = Strings.another_storage,
-            drawableResName = Drawable.drawable_ic_folder,
+            drawableResName = Res.drawable.ic_folder,
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.RIGHT
@@ -354,7 +366,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
         )
         TooltipIconArea(
             text = Strings.settings,
-            drawableResName = Drawable.drawable_ic_settings,
+            drawableResName = Res.drawable.ic_settings,
             tooltipCallback = {
                 this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                     position = TooltipPosition.RIGHT

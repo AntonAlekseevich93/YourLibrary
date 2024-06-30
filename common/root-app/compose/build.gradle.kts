@@ -18,6 +18,7 @@ kotlin {
                 implementation(project(":common:scopes"))
                 implementation(project(":common:ui"))
                 implementation(project(":common:resources:drawable"))
+                implementation(project(":common:resources"))
                 implementation(project(":common:resources:strings"))
                 implementation(project(":feature:main-screen:compose"))
                 implementation(project(":feature:shelf:compose"))

@@ -56,7 +56,7 @@ object Dependencies {
 
     //imageLoader
     object Kamel {
-        private const val version = "0.9.0"
+        private const val version = "0.9.5"
         const val imageLoader = "media.kamel:kamel-image:$version"
     }
 
@@ -72,7 +72,7 @@ object Dependencies {
 
     //navigation
     object PreCompose {
-        private const val version = "1.5.10"
+        private const val version = "1.6.1"
         const val preComposeWithNavigation = "moe.tlaster:precompose:$version"
     }
 

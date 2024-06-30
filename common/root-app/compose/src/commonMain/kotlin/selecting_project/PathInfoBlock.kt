@@ -1,6 +1,7 @@
 package selecting_project
 
 import ApplicationTheme
+import Strings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,15 +36,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import main_models.path.PathInfoVo
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import text_fields.CommonTextField
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_more_button
 import java.awt.Desktop
 import java.io.File
 
-
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 internal fun PathInfoBlock(
     pathInfo: PathInfoVo,
@@ -138,7 +137,7 @@ internal fun PathInfoBlock(
                 Column {
                     if (!renameMode) {
                         Image(
-                            painter = painterResource(DrawableResource(Drawable.drawable_ic_menu_button)),
+                            painter = painterResource(Res.drawable.ic_more_button),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(iconBackground),
                             modifier = Modifier.size(20.dp).padding(start = 8.dp)

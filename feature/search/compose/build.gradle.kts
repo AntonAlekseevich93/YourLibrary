@@ -13,6 +13,7 @@ kotlin {
                 implementation(project(":common:ui"))
                 implementation(project(":common:resources:drawable"))
                 implementation(project(":common:resources:strings"))
+                implementation(project(":common:resources"))
                 implementation(project(":feature:search:api"))
                 implementation(project(":feature:search:presentation"))
             }

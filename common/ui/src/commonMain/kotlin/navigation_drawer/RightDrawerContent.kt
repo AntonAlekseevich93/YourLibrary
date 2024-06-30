@@ -3,7 +3,6 @@ package navigation_drawer
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import Drawable
 import Strings
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +25,12 @@ import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_close
+import yourlibrary.common.resources.generated.resources.ic_collapse
+import yourlibrary.common.resources.generated.resources.ic_expand
+import yourlibrary.common.resources.generated.resources.ic_note_sidebar
+import yourlibrary.common.resources.generated.resources.ic_structure
 
 
 @Composable
@@ -85,7 +90,7 @@ fun BaseEventScope<BaseEvent>.RightDrawerContent(
             ) {
                 TooltipIconArea(
                     text = Strings.structure,
-                    drawableResName = Drawable.drawable_ic_structure,
+                    drawableResName = Res.drawable.ic_structure,
                     modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,
@@ -109,7 +114,7 @@ fun BaseEventScope<BaseEvent>.RightDrawerContent(
 
                 TooltipIconArea(
                     text = Strings.sidebar,
-                    drawableResName = Drawable.drawable_ic_note_sidebar,
+                    drawableResName = Res.drawable.ic_note_sidebar,
                     modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                     iconSize = 18.dp,
                     pointerInnerPadding = 4.dp,
@@ -130,7 +135,7 @@ fun BaseEventScope<BaseEvent>.RightDrawerContent(
                     if (isFullscreen.value) {
                         TooltipIconArea(
                             text = Strings.collapse,
-                            drawableResName = Drawable.drawable_ic_collapse,
+                            drawableResName = Res.drawable.ic_collapse,
                             modifier = Modifier.padding(start = 10.dp),
                             iconSize = 18.dp,
                             pointerInnerPadding = 4.dp,
@@ -144,7 +149,7 @@ fun BaseEventScope<BaseEvent>.RightDrawerContent(
                     } else {
                         TooltipIconArea(
                             text = Strings.expand,
-                            drawableResName = Drawable.drawable_ic_expand,
+                            drawableResName = Res.drawable.ic_expand,
                             modifier = Modifier.padding(start = 10.dp),
                             iconSize = 18.dp,
                             pointerInnerPadding = 4.dp,
@@ -158,7 +163,7 @@ fun BaseEventScope<BaseEvent>.RightDrawerContent(
                     }
                     TooltipIconArea(
                         text = Strings.close,
-                        drawableResName = Drawable.drawable_ic_close,
+                        drawableResName = Res.drawable.ic_close,
                         modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                         iconSize = 18.dp,
                         pointerInnerPadding = 4.dp,

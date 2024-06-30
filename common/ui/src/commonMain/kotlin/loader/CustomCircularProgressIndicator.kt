@@ -1,7 +1,6 @@
 package loader
 
 import ApplicationTheme
-import Drawable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
@@ -26,11 +25,11 @@ import containters.CenterBoxContainer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import main_models.rest.LoadingStatus
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_check
+import yourlibrary.common.resources.generated.resources.ic_close_128
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LoadingStatusIndicator(
     loadingStatus: LoadingStatus,
@@ -99,7 +98,7 @@ fun LoadingStatusIndicator(
             ) {
                 if (loadingStatus == LoadingStatus.SUCCESS) {
                     Image(
-                        painter = painterResource(DrawableResource(Drawable.drawable_ic_check)),
+                        painter = painterResource(Res.drawable.ic_check),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(ApplicationTheme.colors.successColor),
                         modifier = Modifier
@@ -107,7 +106,7 @@ fun LoadingStatusIndicator(
                 }
                 if (loadingStatus == LoadingStatus.ERROR) {
                     Image(
-                        painter = painterResource(DrawableResource(Drawable.drawable_ic_close_128px)),
+                        painter = painterResource(Res.drawable.ic_close_128),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(ApplicationTheme.colors.errorColor),
                         modifier = Modifier

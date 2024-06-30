@@ -5,7 +5,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import main_models.ReadingStatus
 import models.ShelfEvents
 import models.ShelfUiState
@@ -45,10 +44,12 @@ class ShelfViewModel(
                 uiState.value.bottomSheetExpandEvent.value.invoke()
             }
 
-            is DrawerEvents.OpenBook -> applicationScope.openBook(
-                event.painterSelectedBookInCache,
-                event.bookId
-            )
+            is DrawerEvents.OpenBook ->{
+                applicationScope.openBook(
+                    event.painterSelectedBookInCache,
+                    event.bookId
+                )
+            }
         }
     }
 

@@ -30,6 +30,9 @@ import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_home
+import yourlibrary.common.resources.generated.resources.ic_sidebar
 
 @Composable
 fun BaseEventScope<BaseEvent>.PlatformLeftDrawerContent(
@@ -87,7 +90,7 @@ fun BaseEventScope<BaseEvent>.LeftDrawerContent(
                 ) {
                     TooltipIconArea(
                         text = Strings.to_main,
-                        drawableResName = Drawable.drawable_ic_home,
+                        drawableResName = Res.drawable.ic_home,
                         tooltipCallback = {
                             this@LeftDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                                 position = TooltipPosition.BOTTOM
@@ -101,7 +104,7 @@ fun BaseEventScope<BaseEvent>.LeftDrawerContent(
                 }
                 TooltipIconArea(
                     text = Strings.menu,
-                    drawableResName = Drawable.drawable_ic_sidebar,
+                    drawableResName = Res.drawable.ic_sidebar,
                     tooltipCallback = {
                         this@LeftDrawerContent.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
                             position = TooltipPosition.BOTTOM

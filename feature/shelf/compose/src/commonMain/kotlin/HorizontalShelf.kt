@@ -9,14 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -25,11 +23,10 @@ import androidx.compose.ui.unit.dp
 import main_models.ShelfVo
 import models.BookItemCardConfig
 import models.ShelfEvents
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_expand_shape
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
     shelfVo: ShelfVo,
@@ -61,7 +58,7 @@ fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
                 color = ApplicationTheme.colors.mainTextColor,
             )
             Image(
-                painter = painterResource(DrawableResource(Drawable.drawable_ic_expand_shape)),
+                painter = painterResource(Res.drawable.ic_expand_shape),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                 modifier = Modifier.padding(start = 16.dp, top = 4.dp).size(16.dp)

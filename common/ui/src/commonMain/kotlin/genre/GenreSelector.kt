@@ -1,7 +1,6 @@
 package genre
 
 import ApplicationTheme
-import Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,9 +22,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import main_models.genre.Genre
 import main_models.genre.GenreUtils
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_arrow_down
+import yourlibrary.common.resources.generated.resources.ic_arrow_right
 
 private val genres = GenreUtils
 
@@ -44,7 +44,6 @@ fun GenreSelector(modifier: Modifier = Modifier, selectedItemCallback: (item: Ge
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun GenreItem(
     genre: Genre,
@@ -74,8 +73,8 @@ fun GenreItem(
             )
             if (hasInnerGenre) {
                 Image(
-                    painter = if (isOpen.value) painterResource(DrawableResource(Drawable.drawable_ic_arrow_down))
-                    else painterResource(DrawableResource(Drawable.drawable_ic_arrow_right)),
+                    painter = if (isOpen.value) painterResource(Res.drawable.ic_arrow_down)
+                    else painterResource(Res.drawable.ic_arrow_right),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.screenColor.iconColor),
                     modifier = Modifier.padding(start = 8.dp).size(18.dp)

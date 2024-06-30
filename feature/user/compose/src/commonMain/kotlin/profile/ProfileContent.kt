@@ -3,7 +3,6 @@ package profile
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import Drawable
 import Strings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -23,12 +22,12 @@ import androidx.compose.ui.unit.dp
 import common.HoveredTextWithIcon
 import main_models.user.UserVo
 import models.UserEvents
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import profile.elements.Title
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_email
+import yourlibrary.common.resources.generated.resources.ic_exit
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun BaseEventScope<BaseEvent>.ProfileContent(userInfo: State<UserVo>) {
     Column(
@@ -51,7 +50,7 @@ fun BaseEventScope<BaseEvent>.ProfileContent(userInfo: State<UserVo>) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
-                painter = painterResource(DrawableResource(Drawable.drawable_ic_email)),
+                painter = painterResource(Res.drawable.ic_email),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                 modifier = Modifier.size(54.dp).padding(end = 6.dp, start = 24.dp)
@@ -69,7 +68,7 @@ fun BaseEventScope<BaseEvent>.ProfileContent(userInfo: State<UserVo>) {
         Title(text = Strings.account, modifier = Modifier.padding(start = 24.dp))
 
         HoveredTextWithIcon(
-            iconRes = Drawable.drawable_ic_exit,
+            iconRes = Res.drawable.ic_exit,
             title = Strings.logout_from_account,
             onClick = {
                 this@ProfileContent.sendEvent(UserEvents.OnSignOut)

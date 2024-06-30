@@ -12,7 +12,7 @@ kotlin {
                 implementation(Dependencies.SqlDelight.coroutinesExtension)
                 implementation(Dependencies.Kamel.imageLoader)
                 api(project(":common:core"))
-                api(project(":common:root-app:presentation"))
+                implementation(project(":common:root-app:presentation"))
                 api(project(":common:root-app:domain"))
                 api(project(":common:root-app:api"))
                 api(project(":common:root-app:data"))
@@ -20,6 +20,7 @@ kotlin {
                 implementation(project(":common:theme"))
                 implementation(project(":common:resources:drawable")) //todo возможно потом удалить
                 implementation(project(":common:resources:strings"))
+                implementation(project(":common:resources"))
                 implementation(project(":common:http-client"))
                 implementation(project(":common:ui"))
                 implementation(project(":common:scopes"))
@@ -44,6 +45,7 @@ kotlin {
                 implementation(project(":feature:admin:domain"))
                 implementation(project(":feature:user:data"))
                 implementation(project(":feature:user:domain"))
+                implementation(deps.compose.runtime)
             }
         }
     }

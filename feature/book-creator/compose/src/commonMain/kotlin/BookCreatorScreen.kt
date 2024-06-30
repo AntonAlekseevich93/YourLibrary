@@ -40,7 +40,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -58,15 +57,16 @@ import di.Inject
 import genre.GenreSelector
 import main_models.DatePickerType
 import models.BookCreatorEvents
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import platform.Platform
 import platform.isDesktop
 import platform.isMobile
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_main_close
+import yourlibrary.common.resources.generated.resources.ic_main_search
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookCreatorScreen(
     platform: Platform,
@@ -154,7 +154,7 @@ fun BookCreatorScreen(
                         navigationIcon = {
                             if (uiState.isCreateBookManually || uiState.shortBookItem != null) {
                                 Image(
-                                    painter = painterResource(DrawableResource(Drawable.drawable_ic_main_search)),
+                                    painter = painterResource(Res.drawable.ic_main_search),
                                     contentDescription = null,
                                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.screenColor.iconColor),
                                     modifier = Modifier.padding(start = 24.dp).size(22.dp)
@@ -181,7 +181,7 @@ fun BookCreatorScreen(
                         },
                         actions = {
                             Image(
-                                painter = painterResource(DrawableResource(Drawable.drawable_ic_main_close)),
+                                painter = painterResource(Res.drawable.ic_main_close),
                                 contentDescription = null,
                                 colorFilter = ColorFilter.tint(ApplicationTheme.colors.screenColor.iconColor),
                                 modifier = Modifier.padding(end = 24.dp).size(22.dp).clickable(
