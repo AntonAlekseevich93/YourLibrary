@@ -9,6 +9,7 @@ data class BookShortVo(
     val bookId: String,
     val originalAuthorId: String,
     val bookName: String,
+    val originalBookName: String,
     val originalAuthorName: String,
     val description: String,
     val imageName: String?,

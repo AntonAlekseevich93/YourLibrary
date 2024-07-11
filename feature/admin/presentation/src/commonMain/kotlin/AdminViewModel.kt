@@ -34,20 +34,24 @@ class AdminViewModel(
     override fun sendEvent(event: BaseEvent) {
         when (event) {
             is AdminEvents.GetBooksForModerating -> getBooksForModeration()
+            is AdminEvents.GetBooksForModeratingWithoutUploadingImages -> getBooksForModerationWithoutUploadingImages()
             is AdminEvents.ApprovedBook -> setBookAsApprove()
             is AdminEvents.DiscardBook -> setBookAsDiscarded()
             is AdminEvents.SelectBook -> selectBook(event.selectedBook)
             is AdminEvents.UploadBookCover -> uploadBookImage()
+            is AdminEvents.SetBookAsApprovedWithoutUploadImage -> setBookAsApprovedWithoutUploadImage()
             is AdminEvents.ChangeSkipImageLongLoadingSettings -> {
                 appConfig.changeSkipLongImageLoading(!uiStateValue.skipLongImageLoading)
                 updateUIState(uiStateValue.copy(skipLongImageLoading = appConfig.skipLongImageLoading))
             }
+
             is AdminEvents.CustomUrlChanged -> {
                 appConfig.changeCustomUrl(event.url.text)
                 updateUIState(
                     uiStateValue.copy(customUrl = event.url)
                 )
             }
+
             is AdminEvents.ChangeNeedUseCustomUrl -> {
                 appConfig.changeUseCustomHost(event.needUse)
                 updateUIState(uiStateValue.copy(useCustomHost = appConfig.useCustomHost))
@@ -67,6 +71,27 @@ class AdminViewModel(
                         moderationBookState = ModerationBookState(
                             booksForModeration = newList,
                             selectedItem = if (newList.isNotEmpty()) newList[selectedPosition] else null,
+                        ),
+                        isLoading = false
+                    )
+                )
+            }
+        }
+    }
+
+    private fun getBooksForModerationWithoutUploadingImages() {
+        scope.launch {
+            updateUIState(uiStateValue.copy(isLoading = true))
+            interactor.getBooksForModeration().data?.books?.let {
+                val newList = SnapshotStateList<BookShortVo>()
+                newList.addAll(it)
+                val selectedPosition = 0
+                updateUIState(
+                    uiStateValue.copy(
+                        moderationBookState = ModerationBookState(
+                            booksForModeration = newList,
+                            selectedItem = if (newList.isNotEmpty()) newList[selectedPosition] else null,
+                            canSetBookAsApprovedWithoutUploadImage = true
                         ),
                         isLoading = false
                     )
@@ -147,6 +172,37 @@ class AdminViewModel(
 
             scope.launch(Dispatchers.IO) {
                 val bookResponse = interactor.uploadBookImage(book)
+                withContext(Dispatchers.Main) {
+                    updateUIState(
+                        uiStateValue.copy(
+                            moderationBookState = uiStateValue.moderationBookState.copy(
+                                isUploadingBookImage = false,
+                                selectedItem = bookResponse ?: book
+                            )
+                        )
+                    )
+                    if (bookResponse != null) {
+                        uiStateValue.moderationBookState.booksForModeration.replaceAll { if (it.id == bookResponse.id) bookResponse else it }
+                    } else if (appConfig.skipLongImageLoading) {
+                        selectNextBook()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setBookAsApprovedWithoutUploadImage() {
+        uiStateValue.moderationBookState.selectedItem?.let { book ->
+            updateUIState(
+                uiStateValue.copy(
+                    moderationBookState = uiStateValue.moderationBookState.copy(
+                        isUploadingBookImage = true
+                    )
+                )
+            )
+
+            scope.launch(Dispatchers.IO) {
+                val bookResponse = interactor.setBookAsApprovedWithoutUploadImage(book)
                 withContext(Dispatchers.Main) {
                     updateUIState(
                         uiStateValue.copy(

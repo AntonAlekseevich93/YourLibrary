@@ -8,4 +8,5 @@ interface AdminRepository {
     suspend fun setBookAsApproved(book: BookShortVo)
     suspend fun setBookAsDiscarded(book: BookShortVo)
     suspend fun uploadBookImage(book: BookShortVo): BookShortVo?
+    suspend fun setBookAsApprovedWithoutUploadImage(book: BookShortVo): BookShortVo?
 }

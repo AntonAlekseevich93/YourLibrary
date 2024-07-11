@@ -59,4 +59,17 @@ class AdminRepositoryImpl(
         } else null
     }
 
+    override suspend fun setBookAsApprovedWithoutUploadImage(book: BookShortVo): BookShortVo? {
+        val bookResult =
+            remoteAdminDataSource.setBookAsApprovedWithoutUploadImage(book = book.toDto())?.result?.books?.firstOrNull()
+        return if (bookResult?.imageName != null) {
+            val imageUrl = remoteConfig.getImageUrl(
+                bookResult.imageName,
+                imageFolderId = bookResult.imageFolderId,
+                bookServerId = book.id
+            )
+            bookResult.toVo(imageUrl = imageUrl)
+        } else null
+    }
+
 }

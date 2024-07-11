@@ -63,6 +63,15 @@ fun AdminPanelScreen(
                             viewModel.sendEvent(AdminEvents.GetBooksForModerating)
                         }
                     )
+
+                    Text(
+                        text = "Получить книги для модерации без необходимости загружать изображения",
+                        style = ApplicationTheme.typography.bodyBold,
+                        color = ApplicationTheme.colors.mainTextColor,
+                        modifier = Modifier.padding(start = 24.dp, top = 12.dp).clickable {
+                            viewModel.sendEvent(AdminEvents.GetBooksForModeratingWithoutUploadingImages)
+                        }
+                    )
                 }
             }
 
@@ -78,7 +87,7 @@ fun AdminPanelScreen(
                 modifier = Modifier.padding(start = 10.dp, bottom = 44.dp)
                     .align(Alignment.BottomStart)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically,) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = uiState.skipLongImageLoading,
                         onCheckedChange = {
@@ -93,7 +102,10 @@ fun AdminPanelScreen(
                     )
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 12.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 12.dp)
+                ) {
                     Checkbox(
                         checked = uiState.useCustomHost,
                         onCheckedChange = {

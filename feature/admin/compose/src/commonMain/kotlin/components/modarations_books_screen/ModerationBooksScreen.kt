@@ -323,6 +323,17 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
 
                             }
                         )
+                    } else if (state.canSetBookAsApprovedWithoutUploadImage) {
+                        CustomTag(
+                            text = "Одобрено без загрузки",
+                            color = ApplicationTheme.colors.adminPanelButtons.uploadColor,
+                            modifier = Modifier.padding(end = 16.dp, top = 12.dp),
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                HapticFeedbackType.LongPress
+                                sendEvent(AdminEvents.SetBookAsApprovedWithoutUploadImage)
+                            }
+                        )
                     } else {
                         CustomTag(
                             text = "Сохранить обложку в базу данных",
