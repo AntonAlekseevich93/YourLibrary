@@ -4,7 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,8 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -45,11 +46,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import book_editor.BookEditor
+import book_list_selector.BookListSelector
 import containters.CenterBoxContainer
 import date.CommonDatePicker
 import date.DatePickerEvents
@@ -62,6 +63,7 @@ import platform.Platform
 import platform.isDesktop
 import platform.isMobile
 import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_arrow_back
 import yourlibrary.common.resources.generated.resources.ic_main_close
 import yourlibrary.common.resources.generated.resources.ic_main_search
 
@@ -174,6 +176,20 @@ fun BookCreatorScreen(
                                                         )
                                                     )
                                                 )
+                                            }
+                                        ),
+                                )
+                            } else if (uiState.showFullScreenBookSelector) {
+                                Image(
+                                    painter = painterResource(Res.drawable.ic_arrow_back),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(ApplicationTheme.colors.screenColor.iconColor),
+                                    modifier = Modifier.padding(start = 24.dp).size(22.dp)
+                                        .clickable(
+                                            interactionSource = MutableInteractionSource(),
+                                            indication = null,
+                                            onClick = {
+                                                viewModel.sendEvent(BookCreatorEvents.HideFullScreenBookSelector)
                                             }
                                         ),
                                 )
@@ -298,27 +314,22 @@ fun BookCreatorScreen(
                         }
                     }
                 }
+
+                AnimatedVisibility(
+                    uiState.showFullScreenBookSelector,
+                    enter = slideInVertically(
+                        initialOffsetY = { fullHeight -> fullHeight }
+                    ) + fadeIn(initialAlpha = 0.3f),
+                    exit = slideOutVertically(
+                        targetOffsetY = { fullHeight -> fullHeight }
+                    ) + fadeOut(targetAlpha = 0.3f),
+                    modifier = Modifier.padding(it)
+                ) {
+                    BookListSelector(uiState.similarBooks, platform = platform) { selectedBook ->
+                        viewModel.sendEvent(BookCreatorEvents.OnBookSelected(selectedBook))
+                    }
+                }
             }
         }
-    }
-}
-
-@Composable
-internal fun CreateBookButton(
-    title: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Button(
-        modifier = modifier,
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(backgroundColor = ApplicationTheme.colors.cardBackgroundLight)
-    ) {
-        Text(
-            text = title,
-            style = ApplicationTheme.typography.footnoteRegular,
-            color = ApplicationTheme.colors.mainTextColor,
-            textAlign = TextAlign.Center
-        )
     }
 }

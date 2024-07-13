@@ -4,8 +4,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import androidx.compose.ui.graphics.painter.Painter
-import io.kamel.core.Resource
 import main_models.BookVo
 import main_models.BooksInfoHeader
 import main_models.ReadingStatus
@@ -19,7 +17,6 @@ class ApplicationUiState(
     val openRightDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
     val closeLeftDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
     val closeRightDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
-    val painterSelectedBookInCache: MutableState<Resource<Painter>?> = mutableStateOf(null),
     val selectedBookId: MutableState<String> = mutableStateOf(""),
 ) {
     val pathInfoList: SnapshotStateList<PathInfoVo> =

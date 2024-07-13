@@ -23,14 +23,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.AsyncImage
+import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.resize.Scale
 import containters.CenterBoxContainer
-import io.kamel.core.Resource
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 import main_models.BookVo
 import main_models.ReadingStatus
 import models.BookScreenEvents
@@ -39,15 +40,15 @@ import platform.isDesktop
 import platform.isMobile
 import reading_status.getStatusColor
 import tags.CustomTag
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
 
 @Composable
 fun BaseEventScope<BaseEvent>.BookContent(
     platform: Platform,
     bookItem: BookVo,
-    painterInCache: Resource<Painter>? = null,
 ) {
     val url = bookItem.userCoverUrl.orEmpty() //todo fix this
-    val painter = painterInCache ?: asyncPainterResource(data = url)
     val hasDescriptionTextOverflow = remember { mutableStateOf(false) }
     val showFullDescription = remember { mutableStateOf(false) }
     val maxLines = remember { if (platform.isDesktop()) 8 else 5 }
@@ -71,7 +72,7 @@ fun BaseEventScope<BaseEvent>.BookContent(
                 BookCoverWithInfo(
                     platform = platform,
                     bookItem = bookItem,
-                    painter = painter
+                    url = url
                 )
             }
 
@@ -86,7 +87,7 @@ fun BaseEventScope<BaseEvent>.BookContent(
                         BookCoverWithInfo(
                             platform = platform,
                             bookItem = bookItem,
-                            painter = painter
+                            url = url
                         )
                     }
                 }
@@ -187,23 +188,28 @@ fun BaseEventScope<BaseEvent>.BookContent(
 private fun BookCoverWithInfo(
     platform: Platform,
     bookItem: BookVo,
-    painter: Resource<Painter>,
+    url: String,
 ) {
+    val imageModifier = Modifier.sizeIn(
+        minHeight = 260.dp,
+        minWidth = 160.dp,
+        maxHeight = 260.dp,
+        maxWidth = 160.dp
+    )
     Column {
         Card(
-            modifier = Modifier
-                .sizeIn(
-                    minHeight = 260.dp,
-                    minWidth = 160.dp,
-                    maxHeight = 260.dp,
-                    maxWidth = 160.dp
-                ),
+            modifier = imageModifier,
             shape = RoundedCornerShape(12.dp)
         ) {
-            KamelImage(
-                resource = painter,
+            AsyncImage(
+                modifier = imageModifier,
+                request = ComposableImageRequest(url) {
+                    scale(Scale.FILL)
+                    placeholder(Res.drawable.ic_default_book_cover_7)
+                    error(Res.drawable.ic_default_book_cover_7)
+                },
+                contentScale = ContentScale.FillBounds,
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds
             )
         }
 

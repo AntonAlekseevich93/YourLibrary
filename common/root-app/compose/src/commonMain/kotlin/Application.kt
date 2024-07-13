@@ -132,7 +132,6 @@ fun Application(
                                 showRightDrawer = uiState.showRightDrawerState,
                                 showSearch = showSearch,
                                 fullScreenBookInfo = uiState.fullScreenBookInfo,
-                                painterInCache = uiState.painterSelectedBookInCache.value,
                                 isKeyboardShown = isKeyboardShown,
                             )
                         }

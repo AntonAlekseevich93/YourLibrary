@@ -45,10 +45,7 @@ class ShelfViewModel(
             }
 
             is DrawerEvents.OpenBook ->{
-                applicationScope.openBook(
-                    event.painterSelectedBookInCache,
-                    event.bookId
-                )
+                applicationScope.openBook(event.bookId)
             }
         }
     }

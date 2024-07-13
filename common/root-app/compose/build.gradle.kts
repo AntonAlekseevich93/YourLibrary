@@ -10,7 +10,7 @@ kotlin {
             dependencies {
                 implementation(Dependencies.FilePicker.filePicker)
                 implementation(Dependencies.PreCompose.preComposeWithNavigation)
-                implementation(Dependencies.Kamel.imageLoader)
+                implementation(deps.bundles.sketchImageLoader)
                 implementation(project(":common:core"))
                 implementation(project(":common:root-app:presentation"))
                 implementation(project(":common:theme"))

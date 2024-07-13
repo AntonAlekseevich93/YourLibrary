@@ -65,7 +65,7 @@ fun BookCoverFailureImage(modifier: Modifier = Modifier, randomCover: Boolean = 
     )
 }
 
-private fun getRandomCoverRes(): DrawableResource {
+fun getRandomCoverRes(): DrawableResource {
     return when (Random.nextInt(1, 17)) {
         1 -> Res.drawable.ic_default_book_cover
         2 -> Res.drawable.ic_default_book_cover_2

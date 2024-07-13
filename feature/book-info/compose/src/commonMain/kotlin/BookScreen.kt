@@ -14,9 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import di.Inject
-import io.kamel.core.Resource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import platform.Platform
@@ -31,7 +29,6 @@ fun BookScreen(
     showLeftDrawer: MutableState<Boolean>,
     showRightDrawer: MutableState<Boolean>,
     isKeyboardShown: State<Boolean>,
-    painterInCache: Resource<Painter>? = null,
 ) {
     val viewModel = remember { Inject.instance<BookInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
@@ -89,7 +86,6 @@ fun BookScreen(
             if (uiState.bookItem.value != null) {
                 viewModel.BookScreenContent(
                     platform = platform,
-                    painterInCache = painterInCache,
                     bookItem = uiState.bookItem.value!!,
                     bookValues = bookValues,
                     fullScreenBookInfo = fullScreenBookInfo,

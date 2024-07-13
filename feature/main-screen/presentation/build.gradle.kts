@@ -8,7 +8,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(Dependencies.Kamel.imageLoader)
+                implementation(deps.bundles.sketchImageLoader)
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
                 implementation(project(":common:scopes"))

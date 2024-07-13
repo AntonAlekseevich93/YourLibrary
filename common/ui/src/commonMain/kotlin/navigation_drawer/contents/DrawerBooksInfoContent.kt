@@ -102,10 +102,7 @@ fun BaseEventScope<BaseEvent>.DrawerBooksInfoContent(
                                 .fillMaxWidth()
                                 .clickable(interactionSource, null) {
                                     this@DrawerBooksInfoContent.sendEvent(
-                                        DrawerEvents.OpenBook(
-                                            painterSelectedBookInCache = null,
-                                            book.bookId
-                                        )
+                                        DrawerEvents.OpenBook(book.bookId)
                                     )
                                 }
                                 .hoverable(

@@ -54,12 +54,6 @@ object Dependencies {
         const val coroutinesExtension = "app.cash.sqldelight:coroutines-extensions:$version"
     }
 
-    //imageLoader
-    object Kamel {
-        private const val version = "0.9.5"
-        const val imageLoader = "media.kamel:kamel-image:$version"
-    }
-
     //parsing html
     object Ksoup {
         private const val version = "0.1.0"

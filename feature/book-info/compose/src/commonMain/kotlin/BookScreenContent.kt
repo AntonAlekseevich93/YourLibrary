@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -30,14 +29,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import book_editor.BookEditor
 import date.CommonDatePicker
 import date.DatePickerEvents
-import io.kamel.core.Resource
 import main_models.AuthorVo
 import main_models.BookValues
 import main_models.BookVo
@@ -58,7 +54,6 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
     similarAuthorList: SnapshotStateList<AuthorVo>,
     selectedAuthor: State<AuthorVo?>,
     fullScreenBookInfo: MutableState<Boolean>,
-    painterInCache: Resource<Painter>? = null,
     showLeftDrawer: State<Boolean>,
     showRightDrawer: MutableState<Boolean>,
     isEditMode: State<Boolean>,
@@ -67,7 +62,6 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
     datePickerType: State<DatePickerType>,
     showDatePicker: State<Boolean>,
 ) {
-
     val targetVerticalPadding =
         if (fullScreenBookInfo.value || showLeftDrawer.value) 0.dp else 65.dp
     val targetHorizontalPadding =
@@ -176,8 +170,8 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
                         color = ApplicationTheme.colors.divider
                     )
 
-                    Column(modifier = Modifier.verticalScroll(scrollableState)) {
-                        AnimatedVisibility(isEditMode.value) {
+//                    Column(modifier = Modifier.verticalScroll(scrollableState)) {
+//                        AnimatedVisibility(isEditMode.value) {
 //                            BookEditor(
 //                                platform = platform,
 //                                bookValues = bookValues.value,
@@ -194,14 +188,13 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
 //                                linkToAuthor = linkToAuthor,
 //                                isKeyboardShown = isKeyboardShown,
 //                            )
-                        }
-                    }
+//                        }
+//                    }
 
                     AnimatedVisibility(!isEditMode.value) {
                         BookContent(
                             platform = platform,
                             bookItem = bookItem,
-                            painterInCache = painterInCache,
                         )
                     }
                 }

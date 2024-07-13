@@ -3,7 +3,6 @@ package book_editor
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import Drawable
 import Strings
 import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.animation.AnimatedVisibility
@@ -45,13 +44,13 @@ import book_editor.elements.AuthorIsNotSelectedInfo
 import book_editor.elements.NewAuthorButton
 import book_editor.elements.authors_selector.AuthorsListSelector
 import book_editor.elements.book_selector.BookSearchSelector
+import com.github.panpf.sketch.AsyncImage
+import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.resize.Scale
 import containters.CenterBoxContainer
 import date.DatePickerEvents
-import images.BookCoverFailureImage
-import images.BookCoverLoadingProcessImage
-import io.kamel.core.Resource
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 import main_models.AuthorVo
 import main_models.BookValues
 import main_models.DatePickerType
@@ -67,6 +66,7 @@ import text_fields.TextFieldWithTitleAndSuggestion
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_authors
 import yourlibrary.common.resources.generated.resources.ic_book
+import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,11 +93,6 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     onClickSave: (() -> Unit)? = null,
     genreSelectorListener: () -> Unit,
 ) {
-    val painter = asyncPainterResource(
-        data = bookValues.coverUrl.value.text,
-        key = bookValues.coverUrl.value.text
-    )
-
     val authorIsSelected by remember(key1 = selectedAuthor) { mutableStateOf(selectedAuthor != null) }
     var lastSearchBookName by remember { mutableStateOf("") }
     val genre = remember(key1 = bookValues.genre.value, key2 = shortBook) {
@@ -153,32 +148,16 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                 ) {
                     Box {
-                        KamelImage(
-                            resource = painter,
-                            contentDescription = null,
+                        AsyncImage(
+                            modifier = imageModifier,
+                            request = ComposableImageRequest(bookValues.coverUrl.value.text) {
+                                scale(Scale.FILL)
+                                placeholder(Res.drawable.ic_default_book_cover_7)
+                                error(Res.drawable.ic_default_book_cover_7)
+                            },
                             contentScale = ContentScale.FillBounds,
-                            onFailure = {
-                                //todo
-                            },
-                            onLoading = {
-                                //todo
-                            },
+                            contentDescription = null,
                         )
-                        when (painter) {
-                            is Resource.Loading -> {
-                                BookCoverLoadingProcessImage(
-                                    modifier = imageModifier,
-                                    randomCover = false
-                                )
-                            }
-
-                            is Resource.Success -> {
-                            }
-
-                            is Resource.Failure -> {
-                                BookCoverFailureImage(modifier = imageModifier)
-                            }
-                        }
                     }
                 }
 
@@ -277,6 +256,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         modifier = Modifier.padding(top = 24.dp, bottom = 16.dp, start = 8.dp),
                         showError = showSearchBookError,
                         bookValues = bookValues,
+                        platform = platform,
                         onClick = {
                             sendEvent(BookEditorEvents.OnBookSelected(it))
                         },
@@ -285,6 +265,9 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         },
                         bookHaveReadingStatusEvent = {
                             sendEvent(BookEditorEvents.BookHaveReadingStatusEvent(Strings.bookExistInLibrary))
+                        },
+                        showAllBooksListener = {
+                            sendEvent(BookEditorEvents.ShowFullScreenBookSelector)
                         }
                     )
                 }

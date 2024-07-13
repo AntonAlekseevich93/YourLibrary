@@ -5,10 +5,10 @@ plugins {
 }
 
 kotlin {
-    sourceSets{
+    sourceSets {
         commonMain {
             dependencies {
-                implementation(Dependencies.Kamel.imageLoader)
+                implementation(deps.bundles.sketchImageLoader)
                 api(project(":common:core"))
                 implementation(project(":common:utils:date"))
                 implementation(project(":common:models"))

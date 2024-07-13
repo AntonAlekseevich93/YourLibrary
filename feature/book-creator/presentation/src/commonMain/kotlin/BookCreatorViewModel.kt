@@ -98,6 +98,10 @@ class BookCreatorViewModel(
                 hideSearchError()
             }
 
+            is BookEditorEvents.ShowFullScreenBookSelector -> {
+                updateUIState(uiStateValue.copy(showFullScreenBookSelector = true))
+            }
+
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
             is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.ClearUrlEvent -> clearUrl()
@@ -168,6 +172,15 @@ class BookCreatorViewModel(
 
             is BookCreatorEvents.SetSelectedGenre -> {
                 uiStateValue.bookValues.genre.value = event.genre
+            }
+
+            is BookCreatorEvents.HideFullScreenBookSelector -> {
+                updateUIState(uiStateValue.copy(showFullScreenBookSelector = false))
+            }
+
+            is BookCreatorEvents.OnBookSelected -> {
+                updateUIState(uiStateValue.copy(showFullScreenBookSelector = false))
+                setSelectedBook(event.shortBook)
             }
 
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)

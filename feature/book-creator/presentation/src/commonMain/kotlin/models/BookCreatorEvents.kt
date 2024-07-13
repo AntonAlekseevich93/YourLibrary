@@ -2,6 +2,7 @@ package models
 
 import BaseEvent
 import alert_dialog.CommonAlertDialogConfig
+import main_models.books.BookShortVo
 import main_models.genre.Genre
 
 sealed class BookCreatorEvents : BaseEvent {
@@ -18,4 +19,6 @@ sealed class BookCreatorEvents : BaseEvent {
     class SetSelectedGenre(val genre: Genre) : BookCreatorEvents()
     data object DismissCommonAlertDialog : BookCreatorEvents()
     data object SetBookCoverManually : BookCreatorEvents()
+    data object HideFullScreenBookSelector : BookCreatorEvents()
+    class OnBookSelected(val shortBook: BookShortVo) : BookCreatorEvents()
 }

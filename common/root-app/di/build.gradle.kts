@@ -10,7 +10,7 @@ kotlin {
             dependencies {
                 implementation(project(":common:models"))
                 implementation(Dependencies.SqlDelight.coroutinesExtension)
-                implementation(Dependencies.Kamel.imageLoader)
+                implementation(deps.bundles.sketchImageLoader)
                 api(project(":common:core"))
                 implementation(project(":common:root-app:presentation"))
                 api(project(":common:root-app:domain"))

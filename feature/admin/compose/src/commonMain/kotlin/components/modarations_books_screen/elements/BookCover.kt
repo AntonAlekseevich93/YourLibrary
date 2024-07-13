@@ -10,11 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import images.BookCoverFailureImage
-import images.BookCoverLoadingProcessImage
-import io.kamel.core.Resource
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
+import com.github.panpf.sketch.AsyncImage
+import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.resize.Scale
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
 
 @Composable
 internal fun BookCover(
@@ -22,11 +24,6 @@ internal fun BookCover(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
-    val painter = asyncPainterResource(
-        data = coverUrl,
-        key = coverUrl
-    )
-
     Card(
         modifier = modifier.clickable {
             onClick?.invoke()
@@ -36,30 +33,16 @@ internal fun BookCover(
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Box {
-            KamelImage(
-                resource = painter,
-                contentDescription = null,
+            AsyncImage(
+                modifier = modifier,
+                request = ComposableImageRequest(coverUrl) {
+                    scale(Scale.FILL)
+                    placeholder(Res.drawable.ic_default_book_cover_7)
+                    error(Res.drawable.ic_default_book_cover_7)
+                },
                 contentScale = ContentScale.FillBounds,
-                onFailure = {
-                    //todo
-                },
-                onLoading = {
-                    //todo
-                },
+                contentDescription = null,
             )
-            when (painter) {
-                is Resource.Loading -> {
-                    BookCoverLoadingProcessImage(modifier = modifier, randomCover = false)
-                }
-
-                is Resource.Success -> {
-
-                }
-
-                is Resource.Failure -> {
-                    BookCoverFailureImage(modifier = modifier)
-                }
-            }
         }
     }
 }

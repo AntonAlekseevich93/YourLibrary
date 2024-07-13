@@ -4,7 +4,7 @@ sqlite = "2.5.0-alpha04"
 ksp = "2.0.0-1.0.22"
 kotlin = "2.0.0"
 compose-version = "1.6.11"
-
+sketchImageLoader = "4.0.0-alpha03"
 
 [libraries]
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
@@ -12,6 +12,10 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "compose-version" }
+sketchCompose = {group = "io.github.panpf.sketch4", name = "sketch-compose", version.ref = "sketchImageLoader"}
+sketchComposeResources = {group = "io.github.panpf.sketch4", name = "sketch-compose-resources", version.ref = "sketchImageLoader"}
+sketchExtensionsResources = {group = "io.github.panpf.sketch4", name = "sketch-extensions-compose-resources", version.ref = "sketchImageLoader"}
+sketchExtensionsCompose = {group = "io.github.panpf.sketch4", name = "sketch-extensions-compose", version.ref = "sketchImageLoader"}
 
 [plugins]
 room = { id = "androidx.room", version.ref = "androidxRoom" }
@@ -20,3 +24,8 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-version" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+[bundles]
+sketchImageLoader = [ "sketchCompose", "sketchComposeResources", "sketchExtensionsResources", "sketchExtensionsCompose"]
+
+

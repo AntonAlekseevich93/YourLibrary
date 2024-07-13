@@ -16,14 +16,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import images.BookCoverFailureImage
-import images.BookCoverLoadingProcessImage
-import io.kamel.core.Resource
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
+import com.github.panpf.sketch.AsyncImage
+import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.resize.Scale
 import main_models.books.BookShortVo
 import reading_status.getStatusColor
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
 
 private val MAX_ITEM_WITH = 130.dp
 
@@ -31,14 +34,11 @@ private val MAX_ITEM_WITH = 130.dp
 fun BookSelectorItem(
     bookItem: BookShortVo,
     modifier: Modifier = Modifier,
+    maxLinesBookName: Int = Int.MAX_VALUE,
+    maxLinesAuthorName: Int = Int.MAX_VALUE,
     onClick: (book: BookShortVo) -> Unit,
     bookHaveReadingStatusEvent: () -> Unit,
 ) {
-    val painter = asyncPainterResource(
-        data = bookItem.imageResultUrl,
-        key = bookItem.imageResultUrl
-    )
-
     Column(
         modifier = modifier
             .clickable(interactionSource = MutableInteractionSource(), null) {
@@ -64,29 +64,17 @@ fun BookSelectorItem(
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Box {
-                KamelImage(
-                    resource = painter,
-                    contentDescription = null,
+                AsyncImage(
+                    modifier = imageModifier,
+                    request = ComposableImageRequest(bookItem.imageResultUrl) {
+                        scale(Scale.FILL)
+                        placeholder(Res.drawable.ic_default_book_cover_7)
+                        error(Res.drawable.ic_default_book_cover_7)
+                    },
                     contentScale = ContentScale.FillBounds,
-                    onFailure = {
-                        //todo
-                    },
-                    onLoading = {
-                        //todo
-                    },
+                    contentDescription = null,
                 )
-                when (painter) {
-                    is Resource.Loading -> {
-                        BookCoverLoadingProcessImage(modifier = imageModifier, randomCover = false)
-                    }
 
-                    is Resource.Success -> {
-                    }
-
-                    is Resource.Failure -> {
-                        BookCoverFailureImage(modifier = imageModifier)
-                    }
-                }
                 bookItem.readingStatus?.let { readingStatus ->
                     Column(Modifier.align(Alignment.TopStart)) {
                         Card(
@@ -115,7 +103,9 @@ fun BookSelectorItem(
             style = ApplicationTheme.typography.footnoteBold,
             color = ApplicationTheme.colors.mainTextColor,
             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            maxLines = maxLinesBookName,
+            overflow = TextOverflow.Ellipsis
         )
 
         Text(
@@ -123,7 +113,9 @@ fun BookSelectorItem(
             style = ApplicationTheme.typography.footnoteRegular,
             color = ApplicationTheme.colors.mainTextColor,
             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            maxLines = maxLinesAuthorName,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

@@ -1,5 +1,3 @@
-import androidx.compose.ui.graphics.painter.Painter
-import io.kamel.core.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -79,10 +77,7 @@ class ApplicationViewModel(
             is LeftMenuBarEvents.OnSettingsClickEvent -> navigationHandler.navigateToSettingsScreen()
             is LeftMenuBarEvents.OnProfileClickEvent -> navigationHandler.navigateToProfile()
             is LeftMenuBarEvents.OnAdminPanelClickEvent -> navigationHandler.navigateToAdminPanel()
-            is DrawerEvents.OpenBook -> openBook(
-                event.painterSelectedBookInCache,
-                event.bookId
-            )
+            is DrawerEvents.OpenBook -> openBook(event.bookId)
 
             is DrawerEvents.OpenLeftDrawerOrCloseEvent -> {
                 openLeftDrawerOrClose()
@@ -93,9 +88,8 @@ class ApplicationViewModel(
         }
     }
 
-    override fun openBook(painter: Resource<Painter>?, bookId: String) {
+    override fun openBook(bookId: String) {
         _uiState.value.apply {
-            painterSelectedBookInCache.value = painter
             selectedBookId.value = bookId
             navigationHandler.navigateToBookInfo()
         }

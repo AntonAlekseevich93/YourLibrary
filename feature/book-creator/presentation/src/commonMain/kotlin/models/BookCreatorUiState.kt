@@ -37,5 +37,6 @@ data class BookCreatorUiState(
     val alertDialogConfig: CommonAlertDialogConfig? = null,
     val showSearchBookError: Boolean = false,
     val showSearchAuthorError: Boolean = false,
+    val showFullScreenBookSelector: Boolean = false,
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
 ) : BaseUIState

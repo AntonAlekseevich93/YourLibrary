@@ -12,11 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
+import com.github.panpf.sketch.AsyncImage
+import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.resize.Scale
 import main_models.BookVo
 import models.BookItemCardConfig
 import navigation_drawer.contents.models.DrawerEvents
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
 
 @Composable
 fun BaseEventScope<BaseEvent>.BookItemShelfCard(
@@ -24,8 +29,6 @@ fun BaseEventScope<BaseEvent>.BookItemShelfCard(
     bookItem: BookVo,
 ) {
     val url = bookItem.userCoverUrl.orEmpty() //todo fix this
-    val painter =
-        asyncPainterResource(data = url)
 
     Column(
         modifier = Modifier
@@ -36,15 +39,20 @@ fun BaseEventScope<BaseEvent>.BookItemShelfCard(
             modifier = Modifier
                 .size(width = config.width.dp, height = config.height.dp)
                 .clickable {
-                    this@BookItemShelfCard.sendEvent(DrawerEvents.OpenBook(painter, bookItem.bookId))
+                    this@BookItemShelfCard.sendEvent(DrawerEvents.OpenBook(bookItem.bookId))
                 },
             shape = RoundedCornerShape(8.dp),
         ) {
             Box {
-                KamelImage(
-                    resource = painter,
+                AsyncImage(
+                    modifier = Modifier.size(width = config.width.dp, height = config.height.dp),
+                    request = ComposableImageRequest(url) {
+                        scale(Scale.FILL)
+                        placeholder(Res.drawable.ic_default_book_cover_7)
+                        error(Res.drawable.ic_default_book_cover_7)
+                    },
+                    contentScale = ContentScale.FillBounds,
                     contentDescription = null,
-                    contentScale = ContentScale.FillBounds
                 )
             }
         }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -64,9 +65,9 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                     modifier = Modifier
                         .sizeIn(
                             minHeight = 250.dp,
-                            minWidth = 180.dp,
-                            maxHeight = 280.dp,
-                            maxWidth = 180.dp
+                            minWidth = 160.dp,
+                            maxHeight = 250.dp,
+                            maxWidth = 160.dp
                         )
                 )
 
@@ -101,19 +102,21 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 LazyRow(modifier = Modifier.sizeIn(maxHeight = 400.dp).padding(start = 4.dp)) {
                     itemsIndexed(state.booksForModeration) { index, item ->
                         if (item.id != book.id) {
+                            Spacer(Modifier.padding(3.dp))
                             BookCover(coverUrl = item.rawCoverUrl.orEmpty(), modifier = Modifier
                                 .sizeIn(
-                                    minHeight = 165.dp,
-                                    minWidth = 130.dp,
-                                    maxHeight = 165.dp,
-                                    maxWidth = 130.dp
-                                ).padding(horizontal = 12.dp),
+                                    minHeight = 170.dp,
+                                    minWidth = 110.dp,
+                                    maxHeight = 170.dp,
+                                    maxWidth = 110.dp
+                                ),
                                 onClick = {
                                     if (!state.isUploadingBookImage) {
                                         sendEvent(AdminEvents.SelectBook(item))
                                     }
                                 }
                             )
+                            Spacer(Modifier.padding(3.dp))
                         }
                     }
                 }
