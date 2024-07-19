@@ -12,10 +12,13 @@ class LocalBookCreatorDataSource(
     private val booksDao = roomDb.booksDao
     private val bookTimestampDao = roomDb.bookTimestampDao
 
-    suspend fun getBookTimestamp(userId: Long) = bookTimestampDao.getTimestamp(userId).firstOrNull()
+    suspend fun getBookTimestamp(userId: Long): BookTimestampEntity {
+        val timestamp = bookTimestampDao.getTimestamp(userId).firstOrNull()
+        return timestamp ?: createEmptyTimestamp(userId)
+    }
 
     suspend fun updateBookTimestamp(bookTimestamp: BookTimestampEntity) {
-        bookTimestampDao.updateTimestamp(bookTimestamp)
+        bookTimestampDao.insertOrUpdateTimestamp(bookTimestamp)
     }
 
     suspend fun createBook(book: BookEntity): BookEntity {
@@ -35,4 +38,14 @@ class LocalBookCreatorDataSource(
 
     suspend fun getBookStatusByBookId(bookId: String): String? =
         booksDao.getBookStatusByBookId(bookId).firstOrNull()?.readingStatus
+
+    private suspend fun createEmptyTimestamp(userId: Long): BookTimestampEntity {
+        val timestamp = BookTimestampEntity(
+            userId = userId,
+            otherDevicesTimestamp = 0,
+            thisDeviceTimestamp = 0
+        )
+        bookTimestampDao.insertOrUpdateTimestamp(timestamp)
+        return timestamp
+    }
 }

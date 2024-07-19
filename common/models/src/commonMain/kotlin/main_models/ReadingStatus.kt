@@ -10,6 +10,7 @@ data class ReadingStatusVo(
             ShelfVo(
                 id = status.id,
                 name = status.nameValue,
+                booksList = emptyList<BookVo>().toMutableList()
             )
         }
     }
@@ -28,6 +29,10 @@ object ReadingStatusUtils {
         ReadingStatus.READING.nameValue -> ReadingStatus.READING
         ReadingStatus.DONE.nameValue -> ReadingStatus.DONE
         ReadingStatus.DEFERRED.nameValue -> ReadingStatus.DEFERRED
+        ReadingStatus.PLANNED.id -> ReadingStatus.PLANNED
+        ReadingStatus.READING.id -> ReadingStatus.READING
+        ReadingStatus.DONE.id -> ReadingStatus.DONE
+        ReadingStatus.DEFERRED.id -> ReadingStatus.DEFERRED
         else -> {
             ReadingStatus.PLANNED
         }

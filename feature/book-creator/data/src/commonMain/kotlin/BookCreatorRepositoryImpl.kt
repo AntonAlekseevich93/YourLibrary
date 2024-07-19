@@ -19,7 +19,8 @@ class BookCreatorRepositoryImpl(
 
     override suspend fun createBook(book: BookVo) {
         val bookVo =
-            localBookCreatorDataSource.createBook(book.toLocalDto(userId = appConfig.userId)).toVo()
+            localBookCreatorDataSource.createBook(book.toLocalDto(userId = appConfig.userId))
+                .toVo(null)
         val response = remoteBookCreatorDataSource.addNewUserBook(
             userBook = bookVo.toRemoteDto()
         )?.result
@@ -33,8 +34,11 @@ class BookCreatorRepositoryImpl(
         }
 
         authorResponseVo?.let {
-            authorsRepository.updateLocalAuthor(it)
-            authorsRepository.updateAuthorsTimestamp(it.timestampOfUpdating)
+            authorsRepository.updateAuthorInLocalDb(it)
+            authorsRepository.updateThisDeviceAuthorsTimestamp(
+                thisDeviceTimestamp = it.timestampOfUpdating,
+                otherDeviceTimestamp = null
+            )
         }
     }
 
@@ -47,11 +51,7 @@ class BookCreatorRepositoryImpl(
 
     private suspend fun updateBooksTimestamp(timestamp: Long) {
         val lastTimestamp = localBookCreatorDataSource.getBookTimestamp(appConfig.userId)
-        val finalTimestamp: BookTimestampEntity = lastTimestamp?.copy(
-            thisDeviceTimestamp = timestamp
-        ) ?: BookTimestampEntity(
-            userId = appConfig.userId,
-            otherDevicesTimestamp = 0,
+        val finalTimestamp: BookTimestampEntity = lastTimestamp.copy(
             thisDeviceTimestamp = timestamp
         )
         localBookCreatorDataSource.updateBookTimestamp(finalTimestamp)

@@ -185,9 +185,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
-                AnimatedVisibility(
-                    visible = !isCreateBookManually && shortBook == null,
-                ) {
+                if (!isCreateBookManually && shortBook == null) {
                     Column {
                         SearchTextField(
                             hintText = if (selectedAuthor != null)
@@ -267,6 +265,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                             sendEvent(BookEditorEvents.BookHaveReadingStatusEvent(Strings.bookExistInLibrary))
                         },
                         showAllBooksListener = {
+                            keyboardController?.hide()
                             sendEvent(BookEditorEvents.ShowFullScreenBookSelector)
                         }
                     )

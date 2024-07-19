@@ -48,7 +48,7 @@ fun BaseEventScope<BaseEvent>.BookContent(
     platform: Platform,
     bookItem: BookVo,
 ) {
-    val url = bookItem.userCoverUrl.orEmpty() //todo fix this
+    val url = bookItem.userCoverUrl ?: bookItem.remoteImageLink
     val hasDescriptionTextOverflow = remember { mutableStateOf(false) }
     val showFullDescription = remember { mutableStateOf(false) }
     val maxLines = remember { if (platform.isDesktop()) 8 else 5 }
@@ -188,7 +188,7 @@ fun BaseEventScope<BaseEvent>.BookContent(
 private fun BookCoverWithInfo(
     platform: Platform,
     bookItem: BookVo,
-    url: String,
+    url: String?,
 ) {
     val imageModifier = Modifier.sizeIn(
         minHeight = 260.dp,

@@ -25,4 +25,6 @@ data class BookVo(
     val bookIsCreatedManually: Boolean,
     val isLoadedToServer: Boolean,
     val imageFolderId: Int?,
-)
+) {
+    var remoteImageLink: String? = null
+}

@@ -22,6 +22,7 @@ kotlin {
                 implementation(project(":common:resources:strings"))
                 implementation(project(":feature:main-screen:compose"))
                 implementation(project(":feature:shelf:compose"))
+                implementation(project(":feature:shelf:presentation"))
                 implementation(project(":feature:search:compose"))
                 implementation(project(":feature:book-info:compose"))
                 implementation(project(":feature:book-creator:compose"))

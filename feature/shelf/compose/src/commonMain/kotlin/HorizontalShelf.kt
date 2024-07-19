@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -33,12 +35,11 @@ fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
     config: BookItemCardConfig,
     index: Int,
 ) {
-    //todo
-//    val firstElements =
-//        remember(shelfVo.booksList) { shelfVo.booksList.take(config.maxItemsInHorizontalShelf) }
+    val firstElements =
+        remember(shelfVo.booksList) { shelfVo.booksList.take(config.maxItemsInHorizontalShelf) }
     val state = rememberLazyListState()
 
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
         Row(
             modifier = Modifier
                 .padding(start = 16.dp, bottom = 10.dp)
@@ -71,13 +72,12 @@ fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
             )
         ) {
             LazyRow(modifier = Modifier, state = state) {
-                //todo
-//                items(firstElements) { bookItem ->
-//                    BookItemShelfCard(
-//                        config = config,
-//                        bookItem = bookItem,
-//                    )
-//                }
+                items(firstElements) { bookItem ->
+                    BookItemShelfCard(
+                        config = config,
+                        bookItem = bookItem,
+                    )
+                }
                 item {
                     Card(
                         modifier = Modifier.size(

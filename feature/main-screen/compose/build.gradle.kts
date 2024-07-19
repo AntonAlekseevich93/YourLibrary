@@ -21,6 +21,7 @@ kotlin {
                 implementation(project(":feature:main-screen:presentation"))
                 implementation(project(":feature:search:compose"))
                 implementation(project(":feature:shelf:compose"))
+                implementation(project(":feature:shelf:presentation"))
             }
         }
     }

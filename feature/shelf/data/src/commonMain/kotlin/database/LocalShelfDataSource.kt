@@ -1,11 +1,19 @@
 package database
 
+import database.room.RoomMainDataSource
+import database.room.entities.BookEntity
 import kotlinx.coroutines.flow.Flow
+import platform.PlatformInfoData
 
 class LocalShelfDataSource(
-    private val db: SqlDelightDataSource
+    private val platformInfo: PlatformInfoData,
+    roomDb: RoomMainDataSource,
 ) {
+    private val booksDao = roomDb.booksDao
+    private val bookTimestampDao = roomDb.bookTimestampDao
 
-//    suspend fun getBooksByStatusId(statusId: String): Flow<List<String>> = emptyList<>()
+    suspend fun getAllBooks(readingStatus: String): Flow<List<BookEntity>> =
+        booksDao.getAllBooksFlow(readingStatus)
+
 
 }

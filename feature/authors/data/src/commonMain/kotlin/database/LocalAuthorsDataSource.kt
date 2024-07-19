@@ -19,11 +19,23 @@ class LocalAuthorsDataSource(
         }
     }
 
-    suspend fun getAuthorsTimestamp(userId: Long) =
-        authorsTimestampDao.getTimestamp(userId).firstOrNull()
+    suspend fun getAuthorsTimestamp(userId: Long): AuthorsTimestampEntity {
+        val timestamp = authorsTimestampDao.getTimestamp(userId).firstOrNull()
+        return timestamp ?: createEmptyTimestamp(userId)
+    }
 
     suspend fun updateAuthorsTimestamp(authorsTimestamp: AuthorsTimestampEntity) {
-        authorsTimestampDao.updateTimestamp(authorsTimestamp)
+        authorsTimestampDao.insertOrUpdateTimestamp(authorsTimestamp)
+    }
+
+    private suspend fun createEmptyTimestamp(userId: Long): AuthorsTimestampEntity {
+        val timestamp = AuthorsTimestampEntity(
+            userId = userId,
+            otherDevicesTimestamp = 0,
+            thisDeviceTimestamp = 0
+        )
+        authorsTimestampDao.insertOrUpdateTimestamp(timestamp)
+        return timestamp
     }
 
 }

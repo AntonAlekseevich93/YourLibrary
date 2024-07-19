@@ -27,14 +27,16 @@ class ApplicationViewModel(
 
     init {
         scope.launch {
+            launch(Dispatchers.IO) {
+                interactor.synchronizeBooksWithAuthors()
+            }
+
             launch {
                 interactor.getAllPathInfo().collect { pathInfo ->
                     if (pathInfo != null) {
                         withContext(Dispatchers.Main) {
                             _uiState.value.addPathInfo(pathInfo)
                         }
-
-                        getAllBooks()
                     }
                 }
             }
@@ -185,15 +187,5 @@ class ApplicationViewModel(
             )
             navigationHandler.navigateToMain()
         }
-    }
-
-    private suspend fun getAllBooks() {
-//        interactor.getAllBooks().collect { books ->
-//            val unique = books.subtract(booksMap.values)
-//            unique.forEach { book ->
-//                _uiState.value.addBookToBooksInfo(book)
-//                booksMap[book.id] = book
-//            }
-//        }
     }
 }

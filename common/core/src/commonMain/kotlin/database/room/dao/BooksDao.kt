@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import database.room.entities.BookEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BooksDao {
@@ -23,6 +24,9 @@ interface BooksDao {
 
     @Query("SELECT * FROM BookEntity")
     suspend fun getAllBooks(): List<BookEntity>
+
+    @Query("SELECT * FROM BookEntity WHERE readingStatus = :status")
+    fun getAllBooksFlow(status: String): Flow<List<BookEntity>>
 
     @Query("SELECT * FROM BookEntity WHERE bookId = :bookId")
     suspend fun getBookByRoomId(bookId: String): List<BookEntity>

@@ -52,6 +52,7 @@ fun Application(
     desktopTooltip: MutableState<TooltipItem>? = null,
 ) {
     val viewModel = remember { Inject.instance<ApplicationViewModel>() }
+    val shelfViewModel = remember { Inject.instance<ShelfViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
     val leftDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val rightDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -121,6 +122,7 @@ fun Application(
                                 showLeftDrawer = uiState.showLeftDrawerState,
                                 showSearch = showSearch,
                                 leftDrawerState = leftDrawerState,
+                                shelfViewModel = shelfViewModel
                             )
                         }
 

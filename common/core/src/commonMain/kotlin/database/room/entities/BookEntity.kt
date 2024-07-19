@@ -64,8 +64,8 @@ fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
     imageFolderId = imageFolderId
 )
 
-fun BookEntity.toVo(): BookVo =
-    BookVo(
+fun BookEntity.toVo(remoteImageLink: String?): BookVo {
+    val book = BookVo(
         bookId = bookId,
         serverId = serverId,
         originalAuthorId = originalAuthorId,
@@ -91,3 +91,6 @@ fun BookEntity.toVo(): BookVo =
         bookIsCreatedManually = bookIsCreatedManually,
         imageFolderId = imageFolderId
     )
+    book.remoteImageLink = remoteImageLink
+    return book
+}

@@ -1,11 +1,12 @@
-import androidx.compose.runtime.mutableStateOf
+import base.BaseMVIViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import main_models.BookVo
 import main_models.ReadingStatus
+import models.ShelfBoardsEvents
 import models.ShelfEvents
 import models.ShelfUiState
 import navigation_drawer.contents.models.DrawerEvents
@@ -15,24 +16,20 @@ class ShelfViewModel(
     private val platform: Platform,
     private val repository: ShelfRepository,
     private val applicationScope: ApplicationScope,
-) : BaseEventScope<BaseEvent> {
+) : BaseMVIViewModel<ShelfUiState, BaseEvent>(ShelfUiState(platform = platform)) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
-    private val _uiState = MutableStateFlow(
-        ShelfUiState(
-            platform = platform,
-            shelvesList = mutableStateOf(mutableListOf())
-        )
-    )
-    val uiState = _uiState.asStateFlow()
-
+    private val lock = Any()
     init {
         ReadingStatus.entries.forEach { status ->
-            scope.launch {
-//                repository.getBooksByStatusId(status.id).collect {
-//                    withContext(Dispatchers.Main) {
-//                        _uiState.value.addBooksToShelf(shelfId = status.id, books = it)
-//                    }
-//                }
+            scope.launch(Dispatchers.IO) {
+                repository.getAllBooksByReadingStatus(status.id).collect { books ->
+                    synchronized(lock) {
+                        addBooksToShelf(
+                            shelfId = status.id,
+                            books = books.sortedByDescending { book -> book.timestampOfCreating }
+                        )
+                    }
+                }
             }
         }
     }
@@ -41,17 +38,44 @@ class ShelfViewModel(
         when (event) {
             is ShelfEvents.ExpandShelfEvent -> {
                 uiState.value.showFullShelf(shelfIndex = event.index)
-                uiState.value.bottomSheetExpandEvent.value.invoke()
+                uiState.value.bottomSheetExpandEvent.invoke()
             }
 
-            is DrawerEvents.OpenBook ->{
+            is DrawerEvents.OpenBook -> {
                 applicationScope.openBook(event.bookId)
+            }
+
+            is ShelfBoardsEvents.SetBottomSheetExpandListener -> {
+                updateUIState(uiStateValue.copy(bottomSheetExpandEvent = event.listener))
+            }
+
+            is ShelfBoardsEvents.OnDataRefresh -> {
+                updateUIState(uiStateValue.copy(isRefreshingState = true))
+                scope.launch(Dispatchers.IO) {
+                    repository.synchronizeBooksWithAuthors()
+                    withContext(Dispatchers.Main) {
+                        updateUIState(uiStateValue.copy(isRefreshingState = false))
+                    }
+                }
+
             }
         }
     }
 
     fun searchInShelf(searchedText: String, shelfIndex: Int) {
-        _uiState.value.searchInFullShelf(searchedText, shelfIndex)
+//        _uiState.value.searchInFullShelf(searchedText, shelfIndex)
+    }
+
+    private  fun addBooksToShelf(shelfId: String, books: List<BookVo>) {
+        val shelvesList = uiStateValue.shelvesList.map { shelfVo ->
+            if (shelfVo.id == shelfId) {
+                shelfVo.copy(booksList = books)
+            } else {
+                shelfVo
+            }
+        }
+        updateUIState(uiStateValue.copy(shelvesList = shelvesList))
+
     }
 
 }

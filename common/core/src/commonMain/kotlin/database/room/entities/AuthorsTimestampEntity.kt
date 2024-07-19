@@ -2,6 +2,7 @@ package database.room.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import main_models.authors.AuthorTimestampVo
 
 @Entity
 data class AuthorsTimestampEntity(
@@ -9,4 +10,10 @@ data class AuthorsTimestampEntity(
     val userId: Long,
     val otherDevicesTimestamp: Long,
     val thisDeviceTimestamp: Long,
+)
+
+fun AuthorsTimestampEntity.toVo() = AuthorTimestampVo(
+    userId = userId,
+    otherDevicesTimestamp = otherDevicesTimestamp,
+    thisDeviceTimestamp = thisDeviceTimestamp
 )

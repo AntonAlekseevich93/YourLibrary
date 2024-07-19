@@ -8,6 +8,7 @@ import java.nio.file.StandardCopyOption
 
 class ApplicationInteractor(
     private val repository: ApplicationRepository,
+    private val bookInfoRepository: BookInfoRepository
 ) {
 
     suspend fun getAllPathInfo(): Flow<PathInfoVo?> = repository.getAllPathInfo()
@@ -66,6 +67,10 @@ class ApplicationInteractor(
         selectedPathResult + name + osDivider
     } catch (_: Exception) {
         null
+    }
+
+    suspend fun synchronizeBooksWithAuthors() {
+        bookInfoRepository.getAllRemoteBooksWithAuthorsByTimestamps()
     }
 
 }

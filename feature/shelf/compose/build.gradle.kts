@@ -9,6 +9,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(deps.bundles.sketchImageLoader)
+                api(project(":common:arch"))
                 api(project(":common:core"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:ui"))

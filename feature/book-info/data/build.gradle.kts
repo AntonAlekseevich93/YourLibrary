@@ -9,8 +9,12 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":feature:book-info:api"))
+                api(project(":feature:authors:api"))
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
+                implementation(project(":common:constants"))
+                implementation(project(":common:app-config"))
+                implementation(project(":common:http-client"))
             }
         }
     }

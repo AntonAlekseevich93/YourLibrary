@@ -9,7 +9,7 @@ import database.room.entities.AuthorsTimestampEntity
 @Dao
 interface AuthorsTimestampDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateTimestamp(timestampDto: AuthorsTimestampEntity)
+    suspend fun insertOrUpdateTimestamp(timestampDto: AuthorsTimestampEntity)
 
     @Query("SELECT * FROM AUTHORSTIMESTAMPENTITY WHERE userId = :userId")
     suspend fun getTimestamp(userId: Long): List<AuthorsTimestampEntity>

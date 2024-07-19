@@ -24,6 +24,7 @@ fun MainScreen(
     showLeftDrawer: MutableState<Boolean>,
     showSearch: MutableState<Boolean>,
     leftDrawerState: DrawerState,
+    shelfViewModel: ShelfViewModel,
 ) {
     val viewModel = remember { Inject.instance<MainScreenViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
@@ -54,7 +55,7 @@ fun MainScreen(
                     closeViewsTypeDropdown = viewModel::changeViewsTypes,
                     homeButtonListener = {}
                 )
-                ShelfBoardScreen(platform = platform)
+                ShelfBoardScreen(platform = platform, viewModel = shelfViewModel)
             }
 
             CustomDockedSearchBar(
