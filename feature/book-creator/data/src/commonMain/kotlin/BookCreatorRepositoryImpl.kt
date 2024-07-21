@@ -3,6 +3,7 @@ import database.room.entities.BookTimestampEntity
 import database.room.entities.toLocalDto
 import database.room.entities.toVo
 import ktor.RemoteBookCreatorDataSource
+import main_models.AuthorVo
 import main_models.BookVo
 import main_models.ReadingStatus
 import main_models.ReadingStatusUtils
@@ -17,25 +18,28 @@ class BookCreatorRepositoryImpl(
     private val authorsRepository: AuthorsRepository,
 ) : BookCreatorRepository {
 
-    override suspend fun createBook(book: BookVo) {
-        val bookVo =
-            localBookCreatorDataSource.createBook(book.toLocalDto(userId = appConfig.userId))
-                .toVo(null)
+    override suspend fun createBook(book: BookVo, author: AuthorVo) {
+        val userId = appConfig.userId
+        val bookVo = localBookCreatorDataSource.createBook(
+            book = book.toLocalDto(userId = userId),
+            userId = userId
+        ).toVo(null)
+        authorsRepository.createAuthorIfNotExist(author)
         val response = remoteBookCreatorDataSource.addNewUserBook(
             userBook = bookVo.toRemoteDto()
         )?.result
 
         val bookResponseVo = response?.book?.toVo()
-        val authorResponseVo = response?.author?.toAuthorVo()
+        val authorResponseVo: AuthorVo? = response?.author?.toAuthorVo()
 
         bookResponseVo?.let {
-            localBookCreatorDataSource.updateBook(it.toLocalDto(appConfig.userId))
+            localBookCreatorDataSource.updateBook(it.toLocalDto(userId), userId = userId)
             updateBooksTimestamp(it.timestampOfUpdating)
         }
 
         authorResponseVo?.let {
             authorsRepository.updateAuthorInLocalDb(it)
-            authorsRepository.updateThisDeviceAuthorsTimestamp(
+            authorsRepository.updateAuthorsTimestamp(
                 thisDeviceTimestamp = it.timestampOfUpdating,
                 otherDeviceTimestamp = null
             )
@@ -43,7 +47,7 @@ class BookCreatorRepositoryImpl(
     }
 
     override suspend fun getBookStatusByBookId(bookId: String): ReadingStatus? {
-        localBookCreatorDataSource.getBookStatusByBookId(bookId)?.let {
+        localBookCreatorDataSource.getBookStatusByBookId(bookId, userId = appConfig.userId)?.let {
             return ReadingStatusUtils.textToReadingStatus(it)
         }
         return null

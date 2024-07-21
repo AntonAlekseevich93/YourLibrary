@@ -19,10 +19,20 @@ class LocalBookInfoDataSource(
         bookTimestampDao.insertOrUpdateTimestamp(bookTimestamp)
     }
 
-    suspend fun addBooks(books: List<BookEntity>) {
-        books.forEach {
-            booksDao.insertBook(it)
+    suspend fun addOrUpdateBooks(books: List<BookEntity>, userId: Long) {
+        books.forEach { book ->
+            val existedBook = booksDao.getBookByBookId(book.bookId, userId = userId).firstOrNull()
+            if (existedBook == null) {
+                booksDao.insertBook(book)
+            } else {
+                booksDao.updateBook(book.copy(localId = existedBook.localId))
+            }
         }
+    }
+
+    suspend fun getNotSynchronizedBooks(userId: Long): List<BookEntity> {
+        val timestamp = getBookTimestamp(userId)
+        return booksDao.getNotSynchronizedBooks(timestamp.thisDeviceTimestamp, userId = userId)
     }
 
     private suspend fun createEmptyTimestamp(userId: Long): BookTimestampEntity {

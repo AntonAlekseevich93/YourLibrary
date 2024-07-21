@@ -10,11 +10,15 @@ import HttpConstants.UPLOAD_BOOK_IMAGE
 import main_models.rest.books.BookShortRemoteDto
 import main_models.rest.books.BookShortResponse
 
-class RemoteAdminDataSource(private val httpClient: HttpAppClient, private val appConfig: AppConfig) {
-    suspend fun getBooksForModeration() = httpClient.get(
+class RemoteAdminDataSource(
+    private val httpClient: HttpAppClient,
+    private val appConfig: AppConfig
+) {
+    suspend fun getBooksForModeration(params: Map<String, String>) = httpClient.get(
         url = GET_ALL_NON_MODERATING_BOOKS,
         resultClass = BookShortResponse::class,
-        errorClass = String::class
+        errorClass = String::class,
+        params = params,
     )
 
     suspend fun setBookAsApproved(book: BookShortRemoteDto) {
@@ -41,7 +45,7 @@ class RemoteAdminDataSource(private val httpClient: HttpAppClient, private val a
             resultClass = BookShortResponse::class,
             bodyRequest = book,
             errorClass = String::class,
-            requestTimeout = if(appConfig.skipLongImageLoading) 2500 else null
+            requestTimeout = if (appConfig.skipLongImageLoading) 2500 else null
         )
 
     suspend fun setBookAsApprovedWithoutUploadImage(book: BookShortRemoteDto) =
@@ -50,7 +54,7 @@ class RemoteAdminDataSource(private val httpClient: HttpAppClient, private val a
             resultClass = BookShortResponse::class,
             bodyRequest = book,
             errorClass = String::class,
-            requestTimeout = if(appConfig.skipLongImageLoading) 2500 else null
+            requestTimeout = if (appConfig.skipLongImageLoading) 2500 else null
         )
 
 }

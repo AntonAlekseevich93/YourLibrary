@@ -21,23 +21,39 @@ class LocalBookCreatorDataSource(
         bookTimestampDao.insertOrUpdateTimestamp(bookTimestamp)
     }
 
-    suspend fun createBook(book: BookEntity): BookEntity {
+    suspend fun createBook(book: BookEntity, userId: Long): BookEntity {
         val time = platformInfo.getCurrentTime().timeInMillis
-        booksDao.insertBook(
-            book.copy(
-                timestampOfCreating = time,
-                timestampOfUpdating = time,
+        val existedBook = booksDao.getBookByBookId(book.bookId, userId = userId).firstOrNull()
+        if (existedBook == null) {
+            booksDao.insertBook(
+                book.copy(
+                    timestampOfCreating = time,
+                    timestampOfUpdating = time,
+                )
             )
-        )
-        return booksDao.getBookByRoomId(book.bookId).first()
+        } else {
+            booksDao.updateBook(
+                book.copy(
+                    localId = existedBook.localId,
+                    timestampOfCreating = time,
+                    timestampOfUpdating = time,
+                )
+            )
+        }
+        return booksDao.getBookByBookId(book.bookId, userId = userId).first()
     }
 
-    suspend fun updateBook(book: BookEntity) {
-        booksDao.updateBook(book)
+    suspend fun updateBook(book: BookEntity, userId: Long) {
+        val localId = booksDao.getBookByBookId(book.bookId, userId = userId).firstOrNull()?.localId
+        if (localId != null) {
+            booksDao.updateBook(book.copy(localId = localId))
+        } else {
+            booksDao.insertBook(book)
+        }
     }
 
-    suspend fun getBookStatusByBookId(bookId: String): String? =
-        booksDao.getBookStatusByBookId(bookId).firstOrNull()?.readingStatus
+    suspend fun getBookStatusByBookId(bookId: String, userId: Long): String? =
+        booksDao.getBookStatusByBookId(bookId, userId = userId).firstOrNull()?.readingStatus
 
     private suspend fun createEmptyTimestamp(userId: Long): BookTimestampEntity {
         val timestamp = BookTimestampEntity(

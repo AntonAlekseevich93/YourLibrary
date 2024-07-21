@@ -24,6 +24,7 @@ data class AuthorResponse(
 fun AuthorResponse.toAuthorVo(): AuthorVo? {
     return AuthorVo(
         id = id ?: return null,
+        localId = null,
         serverId = serverId ?: return null,
         name = name ?: return null,
         uppercaseName = name.uppercase(),

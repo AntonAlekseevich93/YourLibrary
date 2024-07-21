@@ -11,31 +11,40 @@ class AuthorsRepositoryImpl(
 ) : AuthorsRepository {
 
     override suspend fun updateAuthorInLocalDb(author: AuthorVo) {
-        val authorDto = author.toLocalDto(appConfig.userId)
-        localAuthorsDataSource.insertOrUpdateAuthor(authorDto)
+        val userId = appConfig.userId
+        val authorDto = author.toLocalDto(userId)
+        localAuthorsDataSource.insertOrUpdateAuthor(authorDto, userId = userId)
     }
 
-    override suspend fun updateThisDeviceAuthorsTimestamp(
+    override suspend fun updateAuthorsTimestamp(
         thisDeviceTimestamp: Long?,
         otherDeviceTimestamp: Long?
     ) {
         val lastTimestamp = localAuthorsDataSource.getAuthorsTimestamp(appConfig.userId)
-        lastTimestamp?.copy(
+        lastTimestamp.copy(
             thisDeviceTimestamp = thisDeviceTimestamp ?: lastTimestamp.thisDeviceTimestamp,
             otherDevicesTimestamp = otherDeviceTimestamp ?: lastTimestamp.otherDevicesTimestamp
-        )?.let { finalTimestamp ->
+        ).let { finalTimestamp ->
             localAuthorsDataSource.updateAuthorsTimestamp(finalTimestamp)
         }
     }
 
-    override suspend fun addAuthorsToLocalDb(authors: List<AuthorVo>) {
+    override suspend fun insertOrUpdateAuthorsInLocalDb(authors: List<AuthorVo>) {
         val userId = appConfig.userId
         authors.forEach { author ->
-            localAuthorsDataSource.insertOrUpdateAuthor(author.toLocalDto(userId))
+            localAuthorsDataSource.insertOrUpdateAuthor(author.toLocalDto(userId), userId = userId)
         }
     }
 
     override suspend fun getAuthorsTimestamp(userId: Long) =
         localAuthorsDataSource.getAuthorsTimestamp(userId).toVo()
+
+    override suspend fun getNotSynchronizedAuthors(): List<AuthorVo> =
+        localAuthorsDataSource.getNotSynchronizedAuthors(appConfig.userId).map { it.toVo() }
+
+    override suspend fun createAuthorIfNotExist(author: AuthorVo) {
+        val userId = appConfig.userId
+        localAuthorsDataSource.createAuthorIfNotExist(author.toLocalDto(userId), userId = userId)
+    }
 
 }

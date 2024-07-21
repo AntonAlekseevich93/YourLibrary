@@ -10,7 +10,10 @@ data class AdminUiState(
     val moderationBookState: ModerationBookState = ModerationBookState(),
     val skipLongImageLoading: Boolean = false,
     val useCustomHost: Boolean = false,
-    val customUrl: TextFieldValue = TextFieldValue("")
+    val useNonModerationRange: Boolean = false,
+    val customUrl: TextFieldValue = TextFieldValue(""),
+    val rangeStart: TextFieldValue = TextFieldValue(""),
+    val rangeEnd: TextFieldValue = TextFieldValue(""),
 ) : BaseUIState
 
 data class ModerationBookState(

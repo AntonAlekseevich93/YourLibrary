@@ -208,7 +208,33 @@ class BookCreatorViewModel(
             } else {
                 createManuallyUserBook()
             }
-            interactor.createBook(newBook)
+            val author: AuthorVo = if (uiStateValue.selectedAuthor != null) {
+                uiStateValue.selectedAuthor!!
+            } else if (uiStateValue.shortBookItem != null) {
+                val shortBook = uiStateValue.shortBookItem!!
+                AuthorVo(
+                    localId = null,
+                    serverId = null,
+                    id = shortBook.originalAuthorId,
+                    name = shortBook.originalAuthorName,
+                    uppercaseName = shortBook.originalAuthorName.uppercase(),
+                    timestampOfCreating = 0,
+                    timestampOfUpdating = 0,
+                    isCreatedByUser = false,
+                )
+            } else {
+                AuthorVo(
+                    serverId = null,
+                    localId = null,
+                    id = newBook.originalAuthorId,
+                    name = newBook.originalAuthorName,
+                    uppercaseName = newBook.originalAuthorName.uppercase(),
+                    timestampOfCreating = 0,
+                    timestampOfUpdating = 0,
+                    isCreatedByUser = true
+                )
+            }
+            interactor.createBook(newBook, author = author)
             clearAllBookInfo()
             navigationHandler.goBack()
         }
@@ -466,6 +492,7 @@ class BookCreatorViewModel(
         BookVo(
             bookId = shortBook.bookId,
             serverId = shortBook.id,
+            localId = null,
             originalAuthorId = shortBook.originalAuthorId,
             bookName = shortBook.bookName,
             originalAuthorName = shortBook.originalAuthorName,
@@ -497,6 +524,7 @@ class BookCreatorViewModel(
             return BookVo(
                 bookId = UUID.randomUUID().toString(),
                 serverId = null,
+                localId = null,
                 originalAuthorId = author?.id ?: UUID.randomUUID().toString(),
                 bookName = bookName.value.text,
                 originalAuthorName = author?.name ?: authorName.value.text,

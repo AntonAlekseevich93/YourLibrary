@@ -2,9 +2,9 @@ package main_models
 
 import java.util.UUID
 
-//todo we can`t use var values in data classes
 data class AuthorVo(
     val serverId: Int?,
+    val localId: Long?,
     val id: String,
     val name: String,
     val uppercaseName: String,
@@ -15,6 +15,7 @@ data class AuthorVo(
     companion object {
         fun generateId() = UUID.randomUUID().toString() //todo подумать над другой реализацией id
         fun getEmptyAuthor() = AuthorVo( //todo need delete this?
+            null,
             null,
             "",
             "",

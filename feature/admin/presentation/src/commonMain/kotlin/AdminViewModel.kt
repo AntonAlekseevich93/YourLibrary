@@ -52,9 +52,24 @@ class AdminViewModel(
                 )
             }
 
+            is AdminEvents.ChangeNonModerationStartRange -> {
+                appConfig.changeNonModerationStartRange(event.startRange.text)
+                updateUIState(uiStateValue.copy(rangeStart = event.startRange))
+            }
+
+            is AdminEvents.ChangeNonModerationEndRange -> {
+                appConfig.changeNonModerationEndRange(event.endRange.text)
+                updateUIState(uiStateValue.copy(rangeEnd = event.endRange))
+            }
+
             is AdminEvents.ChangeNeedUseCustomUrl -> {
                 appConfig.changeUseCustomHost(event.needUse)
                 updateUIState(uiStateValue.copy(useCustomHost = appConfig.useCustomHost))
+            }
+
+            is AdminEvents.ChangeNeedUseNonModerationRange -> {
+                appConfig.changeUseNonModerationRange(event.needUse)
+                updateUIState(uiStateValue.copy(useNonModerationRange = appConfig.useNonModerationRange))
             }
         }
     }

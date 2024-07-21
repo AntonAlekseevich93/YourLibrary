@@ -17,7 +17,7 @@ import database.room.entities.BookTimestampEntity
         BookTimestampEntity::class,
         AuthorEntity::class,
         AuthorsTimestampEntity::class,
-    ], version = 3
+    ], version = 4
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getBooksDao(): BooksDao

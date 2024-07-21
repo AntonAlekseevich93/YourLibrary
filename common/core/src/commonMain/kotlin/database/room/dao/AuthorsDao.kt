@@ -14,6 +14,9 @@ interface AuthorsDao {
     @Update
     suspend fun updateAuthor(author: AuthorEntity)
 
-    @Query("SELECT * FROM AuthorEntity WHERE id = :authorId")
-    suspend fun getAuthorByAuthorId(authorId: String): List<AuthorEntity>
+    @Query("SELECT * FROM AuthorEntity WHERE id = :authorId AND userId = :userId")
+    suspend fun getAuthorByAuthorId(authorId: String, userId: Long): List<AuthorEntity>
+
+    @Query("SELECT * FROM AuthorEntity WHERE timestampOfUpdating > :timestamp AND userId = :userId")
+    suspend fun getNotSynchronizedAuthors(timestamp: Long, userId: Long): List<AuthorEntity>
 }

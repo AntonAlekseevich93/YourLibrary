@@ -14,6 +14,9 @@ sealed class AdminEvents : BaseEvent {
     data object SetBookAsApprovedWithoutUploadImage : AdminEvents()
     data class SelectBook(val selectedBook: BookShortVo) : AdminEvents()
     class CustomUrlChanged(val url: TextFieldValue) : AdminEvents()
+    class ChangeNonModerationStartRange(val startRange: TextFieldValue) : AdminEvents()
+    class ChangeNonModerationEndRange(val endRange: TextFieldValue) : AdminEvents()
     class ChangeNeedUseCustomUrl(val needUse: Boolean) : AdminEvents()
+    class ChangeNeedUseNonModerationRange(val needUse: Boolean) : AdminEvents()
     data object ChangeSkipImageLongLoadingSettings : AdminEvents()
 }

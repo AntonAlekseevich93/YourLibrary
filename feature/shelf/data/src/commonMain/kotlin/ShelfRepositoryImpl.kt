@@ -9,11 +9,12 @@ class ShelfRepositoryImpl(
     private val remoteShelfDataSource: RemoteShelfDataSource,
     private val localShelfDataSource: LocalShelfDataSource,
     private val remoteConfig: RemoteConfig,
-    private val bookInfoRepository: BookInfoRepository
+    private val bookInfoRepository: BookInfoRepository,
+    private val appConfig: AppConfig,
 ) : ShelfRepository {
 
     override suspend fun getAllBooksByReadingStatus(readingStatus: String): Flow<List<BookVo>> =
-        localShelfDataSource.getAllBooks(readingStatus)
+        localShelfDataSource.getAllBooks(readingStatus, userId = appConfig.userId)
             .map { list ->
                 list.map { book ->
                     book.toVo(
@@ -27,7 +28,7 @@ class ShelfRepositoryImpl(
             }
 
     override suspend fun synchronizeBooksWithAuthors() =
-        bookInfoRepository.getAllRemoteBooksWithAuthorsByTimestamps()
+        bookInfoRepository.synchronizeBooksWithAuthors()
 
 
 }

@@ -14,6 +14,9 @@ class AppConfig() {
     val authToken
         get() = settings.getString(key = AUTH_TOKEN_KEY, defaultValue = DEFAULT_LOCAL_TOKEN)
 
+    val isAuth
+        get() = authToken != DEFAULT_LOCAL_TOKEN
+
     val userId
         get() = settings.getLong(key = currentUserEmail, defaultValue = -1)
 
@@ -22,6 +25,9 @@ class AppConfig() {
 
     val useCustomHost
         get() = settings.getBoolean(key = NEED_USE_CUSTOM_HOST, defaultValue = false)
+
+    val useNonModerationRange
+        get() = settings.getBoolean(key = NEED_USE_NON_MODERATION_RANGE, defaultValue = false)
 
     private val currentUserEmail
         get() = settings.getString(key = CURRENT_USER_EMAIL_KEY, defaultValue = DEFAULT_LOCAL_EMAIL)
@@ -58,8 +64,26 @@ class AppConfig() {
         settings.putBoolean(key = NEED_USE_CUSTOM_HOST, value = isCustom)
     }
 
+    fun changeUseNonModerationRange(use: Boolean) {
+        settings.putBoolean(key = NEED_USE_NON_MODERATION_RANGE, value = use)
+    }
+
     fun changeCustomUrl(url: String) {
         settings.putString(key = CUSTOM_URL, value = url)
+    }
+
+    fun changeNonModerationStartRange(startRange: String) {
+        settings.putString(key = NON_MODERATION_START_RANGE, value = startRange)
+    }
+
+    fun changeNonModerationEndRange(endRange: String) {
+        settings.putString(key = NON_MODERATION_END_RANGE, value = endRange)
+    }
+
+    fun getNonModerationRangeOrNull(): IntRange? {
+        val start = settings.getString(NON_MODERATION_START_RANGE, "").toIntOrNull() ?: return null
+        val end = settings.getString(NON_MODERATION_END_RANGE, "").toIntOrNull() ?: return null
+        return IntRange(start, end)
     }
 
     companion object {
@@ -70,6 +94,9 @@ class AppConfig() {
         private const val DEFAULT_LOCAL_EMAIL = "default_local_email"
         private const val SKIP_LONG_IMAGE_LOADING = "skip_long_image_loading"
         private const val CUSTOM_URL = "CUSTOM_URL"
+        private const val NON_MODERATION_START_RANGE = "NON_MODERATION_START_RANGE"
+        private const val NON_MODERATION_END_RANGE = "NON_MODERATION_END_RANGE"
         private const val NEED_USE_CUSTOM_HOST = "NEED_USE_CUSTOM_HOST"
+        private const val NEED_USE_NON_MODERATION_RANGE = "NEED_USE_NON_MODERATION_RANGE"
     }
 }

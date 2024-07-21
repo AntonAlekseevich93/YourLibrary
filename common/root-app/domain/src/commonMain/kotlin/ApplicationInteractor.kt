@@ -70,7 +70,7 @@ class ApplicationInteractor(
     }
 
     suspend fun synchronizeBooksWithAuthors() {
-        bookInfoRepository.getAllRemoteBooksWithAuthorsByTimestamps()
+        bookInfoRepository.synchronizeBooksWithAuthors()
     }
 
 }

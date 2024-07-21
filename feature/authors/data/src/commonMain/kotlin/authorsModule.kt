@@ -12,7 +12,7 @@ val authorsModule = DI.Module("authorsModule") {
     }
 
     bind<LocalAuthorsDataSource>() with provider {
-        LocalAuthorsDataSource(instance())
+        LocalAuthorsDataSource(instance(), instance())
     }
 
     bind<RemoteAuthorsDataSource>() with provider {

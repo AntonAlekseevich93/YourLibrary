@@ -1,3 +1,3 @@
 interface BookInfoRepository {
-    suspend fun getAllRemoteBooksWithAuthorsByTimestamps(): Boolean
+    suspend fun synchronizeBooksWithAuthors(): Boolean
 }

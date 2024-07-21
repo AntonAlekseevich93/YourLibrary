@@ -3,6 +3,7 @@ package main_models
 data class BookVo(
     val bookId: String,
     val serverId: Int?,
+    val localId: Long?,
     val originalAuthorId: String,
     val bookName: String,
     val originalAuthorName: String,

@@ -1,3 +1,5 @@
+import HttpParams.RANGE_END
+import HttpParams.RANGE_START
 import database.LocalAdminDataSource
 import ktor.RemoteAdminDataSource
 import main_models.books.BookShortVo
@@ -11,10 +13,18 @@ class AdminRepositoryImpl(
     private val remoteAdminDataSource: RemoteAdminDataSource,
     private val localAdminDataSource: LocalAdminDataSource,
     private val remoteConfig: RemoteConfig,
+    private val appConfig: AppConfig,
 ) : AdminRepository {
 
     override suspend fun getBooksForModeration(): Response<NonModerationBooksResponse?> {
-        val response = remoteAdminDataSource.getBooksForModeration()
+        val params = mutableMapOf<String, String>()
+        if (appConfig.useNonModerationRange) {
+            appConfig.getNonModerationRangeOrNull()?.let {
+                params[RANGE_START] = it.first.toString()
+                params[RANGE_END] = it.last.toString()
+            }
+        }
+        val response = remoteAdminDataSource.getBooksForModeration(params)
         return if (response?.result?.books != null) {
             Response.Success(
                 NonModerationBooksResponse(

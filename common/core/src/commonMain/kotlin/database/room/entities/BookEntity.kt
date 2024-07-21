@@ -8,7 +8,7 @@ import main_models.ReadingStatusUtils
 
 @Entity
 data class BookEntity(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true) @SerialName("localId") val localId: Long? = null,
     @SerialName("bookId") val bookId: String,
     @SerialName("serverId") val serverId: Int?,
     @SerialName("originalAuthorId") val originalAuthorId: String,
@@ -39,6 +39,7 @@ data class BookEntity(
 fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
     bookId = bookId,
     serverId = serverId,
+    localId = localId,
     originalAuthorId = originalAuthorId,
     bookName = bookName,
     originalAuthorName = originalAuthorName,
@@ -68,6 +69,7 @@ fun BookEntity.toVo(remoteImageLink: String?): BookVo {
     val book = BookVo(
         bookId = bookId,
         serverId = serverId,
+        localId = localId,
         originalAuthorId = originalAuthorId,
         bookName = bookName,
         originalAuthorName = originalAuthorName,

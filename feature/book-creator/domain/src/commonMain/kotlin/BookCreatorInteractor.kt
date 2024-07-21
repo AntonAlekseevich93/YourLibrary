@@ -14,8 +14,8 @@ class BookCreatorInteractor(
         return response
     }
 
-    suspend fun createBook(book: BookVo) {
-        repository.createBook(book)
+    suspend fun createBook(book: BookVo, author: AuthorVo) {
+        repository.createBook(book, author = author)
     }
 
     suspend fun searchInBooks(uppercaseBookName: String): List<BookShortVo> =

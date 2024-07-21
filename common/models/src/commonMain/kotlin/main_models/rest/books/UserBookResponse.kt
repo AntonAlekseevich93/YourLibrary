@@ -70,6 +70,7 @@ fun UserBookRemoteDto.toVo(): BookVo? {
     return BookVo(
         serverId = id,
         bookId = bookId ?: return null,
+        localId = null,
         originalAuthorId = originalAuthorId ?: return null,
         originalAuthorName = originalAuthorName ?: return null,
         bookName = bookName ?: return null,

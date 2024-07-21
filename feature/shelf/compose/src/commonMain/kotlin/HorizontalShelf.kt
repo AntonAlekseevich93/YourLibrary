@@ -1,5 +1,6 @@
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,9 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
 import main_models.ShelfVo
 import models.BookItemCardConfig
 import models.ShelfEvents
@@ -37,8 +37,7 @@ fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
 ) {
     val firstElements =
         remember(shelfVo.booksList) { shelfVo.booksList.take(config.maxItemsInHorizontalShelf) }
-    val state = rememberLazyListState()
-
+    val scrollState = rememberScrollState()
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
         Row(
             modifier = Modifier
@@ -71,39 +70,37 @@ fun BaseEventScope<BaseEvent>.HorizontalShelfScreen(
                 containerColor = ApplicationTheme.colors.mainBackgroundWindowDarkColor
             )
         ) {
-            LazyRow(modifier = Modifier, state = state) {
-                items(firstElements) { bookItem ->
+            Row(Modifier.horizontalScroll(scrollState)) {
+                firstElements.take(10).fastForEach { bookItem ->
                     BookItemShelfCard(
                         config = config,
                         bookItem = bookItem,
                     )
                 }
-                item {
-                    Card(
-                        modifier = Modifier.size(
-                            width = config.width.dp,
-                            height = config.height.dp + 24.dp
-                        ).padding(
-                            vertical = 12.dp,
-                            horizontal = 12.dp
-                        ).clickable {
-                            this@HorizontalShelfScreen.sendEvent(ShelfEvents.ExpandShelfEvent(index))
-                        },
-                        shape = RoundedCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(containerColor = ApplicationTheme.colors.mainBackgroundColor)
+                Card(
+                    modifier = Modifier.size(
+                        width = config.width.dp,
+                        height = config.height.dp + 24.dp
+                    ).padding(
+                        vertical = 12.dp,
+                        horizontal = 12.dp
+                    ).clickable {
+                        this@HorizontalShelfScreen.sendEvent(ShelfEvents.ExpandShelfEvent(index))
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = ApplicationTheme.colors.mainBackgroundColor)
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = Strings.show_all,
-                                style = ApplicationTheme.typography.footnoteBold,
-                                color = ApplicationTheme.colors.mainTextColor,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
+                        Text(
+                            text = Strings.show_all,
+                            style = ApplicationTheme.typography.footnoteBold,
+                            color = ApplicationTheme.colors.mainTextColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
             }

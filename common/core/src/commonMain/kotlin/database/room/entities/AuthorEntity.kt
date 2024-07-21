@@ -7,7 +7,7 @@ import main_models.AuthorVo
 
 @Entity
 data class AuthorEntity(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true) @SerialName("localId") val localId: Long? = null,
     @SerialName("id") val id: String,
     @SerialName("serverId") val serverId: Int?,
     @SerialName("name") val name: String,
@@ -19,6 +19,7 @@ data class AuthorEntity(
 )
 
 fun AuthorVo.toLocalDto(userId: Long) = AuthorEntity(
+    localId = localId,
     id = id,
     serverId = serverId,
     name = name,
@@ -28,3 +29,15 @@ fun AuthorVo.toLocalDto(userId: Long) = AuthorEntity(
     isCreatedByUser = isCreatedByUser,
     userId = userId,
 )
+
+fun AuthorEntity.toVo(): AuthorVo =
+    AuthorVo(
+        serverId = serverId,
+        localId = localId,
+        id = id,
+        name = name,
+        uppercaseName = uppercaseName,
+        timestampOfCreating = timestampOfCreating,
+        timestampOfUpdating = timestampOfUpdating,
+        isCreatedByUser = isCreatedByUser,
+    )

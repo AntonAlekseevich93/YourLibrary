@@ -8,7 +8,7 @@ import org.kodein.di.singleton
 
 val adminModule = DI.Module("adminModule") {
     bind<AdminRepository>() with singleton {
-        AdminRepositoryImpl(instance(), instance(), instance())
+        AdminRepositoryImpl(instance(), instance(), instance(), instance())
     }
 
     bind<LocalAdminDataSource>() with provider {
