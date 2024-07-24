@@ -11,6 +11,7 @@ kotlin {
                 implementation(Dependencies.FilePicker.filePicker)
                 implementation(Dependencies.PreCompose.preComposeWithNavigation)
                 implementation(deps.bundles.sketchImageLoader)
+                implementation(deps.hazeBlur)
                 implementation(project(":common:core"))
                 implementation(project(":common:root-app:presentation"))
                 implementation(project(":common:theme"))

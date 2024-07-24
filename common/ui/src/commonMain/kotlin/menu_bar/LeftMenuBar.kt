@@ -3,24 +3,21 @@ package menu_bar
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import Drawable
 import Strings
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import main_models.TooltipPosition
 import tooltip_area.TooltipEvents
@@ -216,26 +213,10 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
     open: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
-    val scrollState = rememberScrollState()
     Row(
-        modifier = modifier.background(ApplicationTheme.colors.mainLeftBarColor)
-            .heightIn(max = 42.dp, min = 42.dp).fillMaxWidth().horizontalScroll(scrollState),
+        modifier = modifier.fillMaxWidth().fillMaxHeight().background(Color.Transparent),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TooltipIconArea(
-            text = Strings.search,
-            drawableResName = Res.drawable.ic_search,
-            modifier = Modifier.padding(start = 10.dp),
-            tooltipCallback = {
-                this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                    position = TooltipPosition.RIGHT
-                }))
-            },
-            onClick = {
-                this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnSearchClickEvent)
-            }
-        )
 
         TooltipIconArea(
             text = Strings.add_book,
@@ -245,83 +226,12 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(end = 10.dp),
+            modifier = Modifier,
             onClick = {
                 this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnCreateBookClickEvent)
             }
         )
-
-        TooltipIconArea(
-            text = Strings.quotes,
-            drawableResName = Res.drawable.ic_quote,
-            modifier = Modifier.padding(end = 10.dp),
-            iconSize = 18.dp,
-            tooltipCallback = {
-                this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                    position = TooltipPosition.RIGHT
-                }))
-            },
-            pointerInnerPadding = 4.dp
-        ) {
-            println("открыли меню")
-        }
-
-        TooltipIconArea(
-            text = Strings.authors,
-            drawableResName = Res.drawable.ic_authors,
-            modifier = Modifier.padding(end = 10.dp),
-            iconSize = 18.dp,
-            tooltipCallback = {
-                this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                    position = TooltipPosition.RIGHT
-                }))
-            },
-            pointerInnerPadding = 4.dp,
-            onClick = {
-                this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnAuthorsClickEvent)
-            }
-        )
-
-        TooltipIconArea(
-            text = Strings.tags,
-            drawableResName = Res.drawable.ic_tag,
-            tooltipCallback = {
-                this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                    position = TooltipPosition.RIGHT
-                }))
-            },
-            modifier = Modifier.padding(end = 10.dp),
-        ) {
-            open.invoke()
-        }
-
-        TooltipIconArea(
-            text = "Активность",//todo
-            drawableResName = Res.drawable.ic_activity,
-            tooltipCallback = {
-                this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                    position = TooltipPosition.RIGHT
-                }))
-            },
-            modifier = Modifier.padding(end = 10.dp),
-        ) {
-            println("открыли меню")
-        }
-
-        TooltipIconArea(
-            text = "Открыть случайную цитату",//todo
-            drawableResName = Res.drawable.ic_random,
-            tooltipCallback = {
-                this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                    position = TooltipPosition.RIGHT
-                }))
-            },
-            modifier = Modifier.padding(end = 10.dp),
-        ) {
-            println("открыли меню")
-        }
-
-        Spacer(modifier = Modifier.weight(1f, fill = true))
+        Spacer(Modifier.weight(1f))
 
         TooltipIconArea(
             text = Strings.admin_panel,
@@ -331,39 +241,12 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(end = 4.dp),
+            modifier = Modifier,
             onClick = {
                 this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnAdminPanelClickEvent)
             },
         )
-
-        TooltipIconArea(
-            text = Strings.profile,
-            drawableResName = Res.drawable.ic_user,
-            tooltipCallback = {
-                this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                    position = TooltipPosition.RIGHT
-                }))
-            },
-            modifier = Modifier.padding(end = 4.dp),
-            onClick = {
-                this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnProfileClickEvent)
-            },
-        )
-
-        TooltipIconArea(
-            text = Strings.another_storage,
-            drawableResName = Res.drawable.ic_folder,
-            tooltipCallback = {
-                this@BottomMenuBar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {
-                    position = TooltipPosition.RIGHT
-                }))
-            },
-            modifier = Modifier.padding(end = 4.dp),
-            onClick = {
-                this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnSelectAnotherVaultEvent)
-            },
-        )
+        Spacer(Modifier.weight(1f))
         TooltipIconArea(
             text = Strings.settings,
             drawableResName = Res.drawable.ic_settings,
@@ -372,7 +255,7 @@ fun BaseEventScope<BaseEvent>.BottomMenuBar(
                     position = TooltipPosition.RIGHT
                 }))
             },
-            modifier = Modifier.padding(end = 10.dp),
+            modifier = Modifier,
             onClick = {
                 this@BottomMenuBar.sendEvent(LeftMenuBarEvents.OnSettingsClickEvent)
             }

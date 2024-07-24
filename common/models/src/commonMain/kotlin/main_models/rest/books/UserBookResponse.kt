@@ -74,6 +74,7 @@ fun UserBookRemoteDto.toVo(): BookVo? {
         originalAuthorId = originalAuthorId ?: return null,
         originalAuthorName = originalAuthorName ?: return null,
         bookName = bookName ?: return null,
+        bookNameUppercase = bookName.uppercase(),
         description = description ?: return null,
         userCoverUrl = userCoverUrl,
         pageCount = pageCount ?: return null,

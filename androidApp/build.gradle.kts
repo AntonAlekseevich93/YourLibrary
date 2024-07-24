@@ -18,6 +18,10 @@ android {
         getByName("release") {
             isMinifyEnabled = false
         }
+        debug {
+            isMinifyEnabled = false
+            isDebuggable = true
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

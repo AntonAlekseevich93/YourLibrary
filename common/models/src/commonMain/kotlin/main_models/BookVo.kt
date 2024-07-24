@@ -6,6 +6,7 @@ data class BookVo(
     val localId: Long?,
     val originalAuthorId: String,
     val bookName: String,
+    val bookNameUppercase: String,
     val originalAuthorName: String,
     val userCoverUrl: String?,
     val pageCount: Int,

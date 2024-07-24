@@ -495,6 +495,7 @@ class BookCreatorViewModel(
             localId = null,
             originalAuthorId = shortBook.originalAuthorId,
             bookName = shortBook.bookName,
+            bookNameUppercase = shortBook.bookName.uppercase(),
             originalAuthorName = shortBook.originalAuthorName,
             description = shortBook.description,
             /**we don`t save covers link. Only image imageName**/
@@ -527,6 +528,7 @@ class BookCreatorViewModel(
                 localId = null,
                 originalAuthorId = author?.id ?: UUID.randomUUID().toString(),
                 bookName = bookName.value.text,
+                bookNameUppercase = bookName.value.text.uppercase(),
                 originalAuthorName = author?.name ?: authorName.value.text,
                 description = description.value.text,
                 userCoverUrl = coverUrl.value.text,

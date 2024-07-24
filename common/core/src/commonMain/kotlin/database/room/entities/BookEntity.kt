@@ -13,6 +13,7 @@ data class BookEntity(
     @SerialName("serverId") val serverId: Int?,
     @SerialName("originalAuthorId") val originalAuthorId: String,
     @SerialName("bookName") val bookName: String,
+    @SerialName("bookNameUppercase") val bookNameUppercase: String,
     @SerialName("originalAuthorName") val originalAuthorName: String,
     @SerialName("userCoverUrl") val userCoverUrl: String?,
     @SerialName("pageCount") val pageCount: Int,
@@ -42,6 +43,7 @@ fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
     localId = localId,
     originalAuthorId = originalAuthorId,
     bookName = bookName,
+    bookNameUppercase = bookNameUppercase,
     originalAuthorName = originalAuthorName,
     description = description,
     userCoverUrl = userCoverUrl,
@@ -62,7 +64,7 @@ fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
     authorIsCreatedManually = authorIsCreatedManually,
     isLoadedToServer = isLoadedToServer,
     bookIsCreatedManually = bookIsCreatedManually,
-    imageFolderId = imageFolderId
+    imageFolderId = imageFolderId,
 )
 
 fun BookEntity.toVo(remoteImageLink: String?): BookVo {
@@ -72,6 +74,7 @@ fun BookEntity.toVo(remoteImageLink: String?): BookVo {
         localId = localId,
         originalAuthorId = originalAuthorId,
         bookName = bookName,
+        bookNameUppercase = bookNameUppercase,
         originalAuthorName = originalAuthorName,
         description = description,
         userCoverUrl = userCoverUrl,
@@ -91,7 +94,7 @@ fun BookEntity.toVo(remoteImageLink: String?): BookVo {
         authorIsCreatedManually = authorIsCreatedManually,
         isLoadedToServer = isLoadedToServer,
         bookIsCreatedManually = bookIsCreatedManually,
-        imageFolderId = imageFolderId
+        imageFolderId = imageFolderId,
     )
     book.remoteImageLink = remoteImageLink
     return book

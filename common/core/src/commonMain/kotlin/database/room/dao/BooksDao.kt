@@ -32,4 +32,7 @@ interface BooksDao {
 
     @Query("SELECT * FROM BookEntity WHERE timestampOfUpdating > :timestamp AND userId = :userId")
     suspend fun getNotSynchronizedBooks(timestamp: Long, userId: Long): List<BookEntity>
+
+    @Query("SELECT * FROM BookEntity WHERE bookNameUppercase LIKE '%' || :name || '%'")
+    suspend fun searchBookByName(name: String): List<BookEntity>
 }

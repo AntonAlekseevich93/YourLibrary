@@ -10,4 +10,5 @@ sealed class LeftMenuBarEvents : BaseEvent {
     data object OnSettingsClickEvent : LeftMenuBarEvents()
     data object OnProfileClickEvent: LeftMenuBarEvents()
     data object OnAdminPanelClickEvent: LeftMenuBarEvents()
+    data object OnHomeClickEvent: LeftMenuBarEvents()
 }

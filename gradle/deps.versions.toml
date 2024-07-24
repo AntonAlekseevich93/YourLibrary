@@ -5,6 +5,7 @@ ksp = "2.0.0-1.0.22"
 kotlin = "2.0.0"
 compose-version = "1.6.11"
 sketchImageLoader = "4.0.0-alpha03"
+hazeBlurVersion = "0.7.3"
 
 [libraries]
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
@@ -16,6 +17,7 @@ sketchCompose = {group = "io.github.panpf.sketch4", name = "sketch-compose", ver
 sketchComposeResources = {group = "io.github.panpf.sketch4", name = "sketch-compose-resources", version.ref = "sketchImageLoader"}
 sketchExtensionsResources = {group = "io.github.panpf.sketch4", name = "sketch-extensions-compose-resources", version.ref = "sketchImageLoader"}
 sketchExtensionsCompose = {group = "io.github.panpf.sketch4", name = "sketch-extensions-compose", version.ref = "sketchImageLoader"}
+hazeBlur = {group = "dev.chrisbanes.haze", name = "haze", version.ref = "hazeBlurVersion"}
 
 [plugins]
 room = { id = "androidx.room", version.ref = "androidxRoom" }

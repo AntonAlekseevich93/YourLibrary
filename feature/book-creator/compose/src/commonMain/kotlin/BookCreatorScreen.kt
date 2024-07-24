@@ -75,6 +75,7 @@ fun BookCreatorScreen(
     fullScreenBookCreator: MutableState<Boolean>,
     showRightDrawer: MutableState<Boolean>,
     isKeyboardShown: State<Boolean>,
+    modifier: Modifier = Modifier,
 ) {
     val viewModel = remember { Inject.instance<BookCreatorViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
@@ -107,7 +108,7 @@ fun BookCreatorScreen(
     var selectionGenreState by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(ApplicationTheme.colors.mainBackgroundColor.copy(alpha = 0.8f))
             .pointerInput(Unit) {

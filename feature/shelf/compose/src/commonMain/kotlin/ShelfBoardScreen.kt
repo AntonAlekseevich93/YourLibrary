@@ -1,6 +1,7 @@
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import kotlinx.coroutines.launch
+import main_app_bar.AppBarGradientBox
 import models.ShelfBoardsEvents
 import platform.Platform
 import platform.isDesktop
@@ -35,7 +37,8 @@ import platform.isDesktop
 @Composable
 fun ShelfBoardScreen(
     platform: Platform,
-    viewModel: ShelfViewModel
+    viewModel: ShelfViewModel,
+    parentPaddingValues: PaddingValues,
 ) {
     val uiState = viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
@@ -90,33 +93,32 @@ fun ShelfBoardScreen(
             },
             backgroundColor = ApplicationTheme.colors.mainBackgroundColor,
         ) {
-            Box(
-                modifier = Modifier.padding(
-                    vertical = verticalPadding.dp,
-                    horizontal = horizontalPadding.dp
-                )
+            Column(
+                modifier = Modifier
+                    .verticalScroll(verticalScrollState)
+                    .padding(bottom = parentPaddingValues.calculateBottomPadding())
             ) {
-                Column(modifier = Modifier.verticalScroll(verticalScrollState)) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        PullRefreshIndicator(
-                            uiState.value.isRefreshingState,
-                            pullRefreshState,
-                            backgroundColor = ApplicationTheme.colors.mainIconsColor.copy(alpha = 0.8f)
-                        )
-                        AnimatedVisibility(uiState.value.isRefreshingState) {
-                            Spacer(modifier = Modifier.padding(bottom = 24.dp))
-                        }
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AppBarGradientBox()
+                    Spacer(Modifier.padding(20.dp))
+                    PullRefreshIndicator(
+                        uiState.value.isRefreshingState,
+                        pullRefreshState,
+                        backgroundColor = ApplicationTheme.colors.mainIconsColor.copy(alpha = 0.8f)
+                    )
+                    AnimatedVisibility(uiState.value.isRefreshingState) {
+                        Spacer(modifier = Modifier.padding(bottom = 24.dp))
                     }
-                    uiState.value.shelvesList.fastForEachIndexed { index, shelfVo ->
-                        viewModel.HorizontalShelfScreen(
-                            shelfVo = shelfVo,
-                            config = uiState.value.config,
-                            index = index,
-                        )
-                    }
+                }
+                uiState.value.shelvesList.fastForEachIndexed { index, shelfVo ->
+                    viewModel.HorizontalShelfScreen(
+                        shelfVo = shelfVo,
+                        config = uiState.value.config,
+                        index = index,
+                    )
                 }
             }
         }

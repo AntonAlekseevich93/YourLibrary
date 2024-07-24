@@ -1,4 +1,5 @@
 import kotlinx.coroutines.flow.Flow
+import main_models.BookVo
 import main_models.path.PathInfoVo
 import platform.Platform
 import java.io.File
@@ -8,7 +9,8 @@ import java.nio.file.StandardCopyOption
 
 class ApplicationInteractor(
     private val repository: ApplicationRepository,
-    private val bookInfoRepository: BookInfoRepository
+    private val bookInfoRepository: BookInfoRepository,
+    private val searchRepository: SearchRepository,
 ) {
 
     suspend fun getAllPathInfo(): Flow<PathInfoVo?> = repository.getAllPathInfo()
@@ -72,5 +74,8 @@ class ApplicationInteractor(
     suspend fun synchronizeBooksWithAuthors() {
         bookInfoRepository.synchronizeBooksWithAuthors()
     }
+
+    suspend fun searchInLocalBooks(text: String): List<BookVo> =
+        searchRepository.searchInLocalBooks(text)
 
 }

@@ -9,6 +9,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(deps.bundles.sketchImageLoader)
+                implementation(deps.hazeBlur)
                 api(project(":common:core"))
                 implementation(project(":common:utils:date"))
                 implementation(project(":common:models"))

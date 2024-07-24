@@ -1,15 +1,18 @@
+package models
+
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
+import base.BaseUIState
 import main_models.BookVo
 import main_models.BooksInfoHeader
 import main_models.ReadingStatus
 import main_models.path.PathInfoVo
 
-class ApplicationUiState(
+data class ApplicationUiState(
     val fullScreenBookInfo: MutableState<Boolean> = mutableStateOf(false),
     val showLeftDrawerState: MutableState<Boolean> = mutableStateOf(false),
     val showRightDrawerState: MutableState<Boolean> = mutableStateOf(false),
@@ -18,7 +21,8 @@ class ApplicationUiState(
     val closeLeftDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
     val closeRightDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
     val selectedBookId: MutableState<String> = mutableStateOf(""),
-) {
+    val searchedBooks: List<BookVo> = emptyList(),
+) : BaseUIState {
     val pathInfoList: SnapshotStateList<PathInfoVo> =
         mutableStateListOf()
     val selectedPathInfo: MutableState<PathInfoVo> = mutableStateOf(PathInfoVo())

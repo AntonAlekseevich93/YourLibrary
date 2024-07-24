@@ -1,13 +1,15 @@
+import base.BaseMVIViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import main_app_bar.MainAppBarEvents
 import main_models.TooltipItem
 import main_models.path.PathInfoVo
 import menu_bar.LeftMenuBarEvents
+import models.ApplicationUiState
 import models.ProjectFoldersEvents
 import models.SettingsDataProvider
 import navigation_drawer.contents.models.DrawerEvents
@@ -20,10 +22,11 @@ class ApplicationViewModel(
     private val tooltipHandler: TooltipHandler,
     private val settingsDataProvider: SettingsDataProvider,
     private val userInteractor: UserInteractor
-) : BaseEventScope<BaseEvent>, ApplicationScope, DrawerScope {
+) : BaseMVIViewModel<ApplicationUiState, BaseEvent>(ApplicationUiState()),
+    ApplicationScope, DrawerScope {
+
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
-    private val _uiState = MutableStateFlow(ApplicationUiState())
-    val uiState: StateFlow<ApplicationUiState> = _uiState
+    private var searchJob: Job? = null
 
     init {
         scope.launch {
@@ -35,7 +38,7 @@ class ApplicationViewModel(
                 interactor.getAllPathInfo().collect { pathInfo ->
                     if (pathInfo != null) {
                         withContext(Dispatchers.Main) {
-                            _uiState.value.addPathInfo(pathInfo)
+                            uiStateValue.addPathInfo(pathInfo)
                         }
                     }
                 }
@@ -79,6 +82,11 @@ class ApplicationViewModel(
             is LeftMenuBarEvents.OnSettingsClickEvent -> navigationHandler.navigateToSettingsScreen()
             is LeftMenuBarEvents.OnProfileClickEvent -> navigationHandler.navigateToProfile()
             is LeftMenuBarEvents.OnAdminPanelClickEvent -> navigationHandler.navigateToAdminPanel()
+            is LeftMenuBarEvents.OnHomeClickEvent -> navigationHandler.navigateToMain()
+            is MainAppBarEvents.OnSearch -> {
+                searchInLocalBooks(event.text)
+            }
+
             is DrawerEvents.OpenBook -> openBook(event.bookId)
 
             is DrawerEvents.OpenLeftDrawerOrCloseEvent -> {
@@ -91,21 +99,21 @@ class ApplicationViewModel(
     }
 
     override fun openBook(bookId: String) {
-        _uiState.value.apply {
+        uiStateValue.apply {
             selectedBookId.value = bookId
             navigationHandler.navigateToBookInfo()
         }
     }
 
     override fun closeBookScreen() {
-        _uiState.value.apply {
+        uiStateValue.apply {
             fullScreenBookInfo.value = false
             navigationHandler.goBack()
         }
     }
 
     override fun openLeftDrawerOrClose() {
-        _uiState.value.apply {
+        uiStateValue.apply {
             if (!showLeftDrawerState.value) {
                 showLeftDrawerState.value = true
                 openLeftDrawerEvent.value.invoke()
@@ -117,7 +125,7 @@ class ApplicationViewModel(
     }
 
     override fun openRightDrawerOrClose() {
-        _uiState.value.apply {
+        uiStateValue.apply {
             if (!showRightDrawerState.value) {
                 showRightDrawerState.value = true
                 openRightDrawerEvent.value.invoke()
@@ -133,7 +141,7 @@ class ApplicationViewModel(
     }
 
     override fun changedReadingStatus(oldStatusId: String, bookId: String) {
-        _uiState.value.removeBookBooksInfoUiState(id = oldStatusId, bookId = bookId)
+        uiStateValue.removeBookBooksInfoUiState(id = oldStatusId, bookId = bookId)
     }
 
     fun isDbPathIsExist(platform: Platform): Boolean {
@@ -142,6 +150,22 @@ class ApplicationViewModel(
             interactor.initializeAppDatabase()
         }
         return isExist
+    }
+
+    private fun searchInLocalBooks(searchedText: String) {
+        searchJob?.cancel()
+        searchJob = scope.launch(Dispatchers.IO) {
+            if (searchedText.length >= 2) {
+                val books = interactor.searchInLocalBooks(searchedText)
+                withContext(Dispatchers.Main) {
+                    updateUIState(uiStateValue.copy(searchedBooks = books))
+                }
+            } else if (uiStateValue.searchedBooks.isNotEmpty()) {
+                withContext(Dispatchers.Main) {
+                    updateUIState(uiStateValue.copy(searchedBooks = emptyList()))
+                }
+            }
+        }
     }
 
     private fun selectPathInfo(pathInfo: PathInfoVo) {

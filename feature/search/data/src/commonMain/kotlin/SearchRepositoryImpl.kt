@@ -1,6 +1,8 @@
 import database.LocalSearchDataSource
+import database.room.entities.toVo
 import ktor.RemoteSearchDataSource
 import main_models.AuthorVo
+import main_models.BookVo
 import main_models.books.BookShortVo
 import main_models.rest.authors.toAuthorVo
 import main_models.rest.books.toVo
@@ -55,5 +57,16 @@ class SearchRepositoryImpl(
             }
         }
     }
+
+    override suspend fun searchInLocalBooks(searchText: String): List<BookVo> =
+        localSearchDataSource.searchInBooks(searchText).map { book ->
+            book.toVo(
+                remoteImageLink = remoteConfig.getImageUrl(
+                    imageName = book.imageName,
+                    imageFolderId = book.imageFolderId,
+                    bookServerId = book.serverId
+                )
+            )
+        }
 
 }

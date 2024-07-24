@@ -20,7 +20,7 @@ fun AppTheme(
 
     CompositionLocalProvider(
         LocalAppColors provides colors,
-        LocalAppTypography provides mainTypography,
+        LocalAppTypography provides MainTypography(),
         content = content
     )
 }
