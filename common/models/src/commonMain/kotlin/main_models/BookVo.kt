@@ -1,5 +1,7 @@
 package main_models
 
+import java.util.concurrent.TimeUnit
+
 data class BookVo(
     val bookId: String,
     val serverId: Int?,
@@ -27,6 +29,18 @@ data class BookVo(
     val bookIsCreatedManually: Boolean,
     val isLoadedToServer: Boolean,
     val imageFolderId: Int?,
+    val ratingValue: Double,
+    val ratingCount: Int,
+    val reviewCount: Int,
+    val ratingSum: Int,
+    val bookForAllUsers: Boolean,
 ) {
     var remoteImageLink: String? = null
+
+    fun getReadingDays(): Int? {
+        return if (startDateInMillis != null && endDateInMillis != null && startDateInMillis > 0 && endDateInMillis > 0) {
+            val durationInMillis: Long = endDateInMillis - startDateInMillis
+            TimeUnit.MILLISECONDS.toDays(durationInMillis).toInt()
+        } else null
+    }
 }

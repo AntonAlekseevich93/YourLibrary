@@ -35,6 +35,11 @@ data class BookEntity(
     @SerialName("isLoadedToServer") val isLoadedToServer: Boolean,
     @SerialName("bookIsCreatedManually") val bookIsCreatedManually: Boolean,
     @SerialName("imageFolderId") val imageFolderId: Int?,
+    @SerialName("ratingValue") val ratingValue: Double,
+    @SerialName("ratingCount") val ratingCount: Int,
+    @SerialName("reviewCount") val reviewCount: Int,
+    @SerialName("ratingSum") val ratingSum: Int,
+    @SerialName("bookForAllUsers") val bookForAllUsers: Boolean,
 )
 
 fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
@@ -65,6 +70,11 @@ fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
     isLoadedToServer = isLoadedToServer,
     bookIsCreatedManually = bookIsCreatedManually,
     imageFolderId = imageFolderId,
+    ratingValue = ratingValue,
+    ratingCount = ratingCount,
+    reviewCount = reviewCount,
+    ratingSum = ratingSum,
+    bookForAllUsers = bookForAllUsers,
 )
 
 fun BookEntity.toVo(remoteImageLink: String?): BookVo {
@@ -95,6 +105,11 @@ fun BookEntity.toVo(remoteImageLink: String?): BookVo {
         isLoadedToServer = isLoadedToServer,
         bookIsCreatedManually = bookIsCreatedManually,
         imageFolderId = imageFolderId,
+        ratingValue = ratingValue,
+        ratingCount = ratingCount,
+        reviewCount = reviewCount,
+        ratingSum = ratingSum,
+        bookForAllUsers = bookForAllUsers,
     )
     book.remoteImageLink = remoteImageLink
     return book

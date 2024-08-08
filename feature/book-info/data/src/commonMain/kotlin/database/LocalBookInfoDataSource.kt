@@ -3,6 +3,7 @@ package database
 import database.room.RoomMainDataSource
 import database.room.entities.BookEntity
 import database.room.entities.BookTimestampEntity
+import kotlinx.coroutines.flow.Flow
 import platform.PlatformInfoData
 
 class LocalBookInfoDataSource(
@@ -33,6 +34,39 @@ class LocalBookInfoDataSource(
     suspend fun getNotSynchronizedBooks(userId: Long): List<BookEntity> {
         val timestamp = getBookTimestamp(userId)
         return booksDao.getNotSynchronizedBooks(timestamp.thisDeviceTimestamp, userId = userId)
+    }
+
+    suspend fun getLocalBookById(bookLocalId: Long, userId: Long): Flow<List<BookEntity>> =
+        booksDao.getLocalBookById(bookLocalId = bookLocalId, userId = userId)
+
+    suspend fun updateBookAndTime(book: BookEntity, userId: Long): BookEntity {
+        val time = platformInfo.getCurrentTime().timeInMillis
+        val existedBook = booksDao.getBookByBookId(book.bookId, userId = userId).firstOrNull()
+        if (existedBook == null) {
+            booksDao.insertBook(
+                book.copy(
+                    timestampOfCreating = time,
+                    timestampOfUpdating = time,
+                )
+            )
+        } else {
+            booksDao.updateBook(
+                book.copy(
+                    localId = existedBook.localId,
+                    timestampOfUpdating = time,
+                )
+            )
+        }
+        return booksDao.getBookByBookId(book.bookId, userId = userId).first()
+    }
+
+    suspend fun updateBookWithoutUpdateTime(book: BookEntity, userId: Long) {
+        val localId = booksDao.getBookByBookId(book.bookId, userId = userId).firstOrNull()?.localId
+        if (localId != null) {
+            booksDao.updateBook(book.copy(localId = localId))
+        } else {
+            booksDao.insertBook(book)
+        }
     }
 
     private suspend fun createEmptyTimestamp(userId: Long): BookTimestampEntity {

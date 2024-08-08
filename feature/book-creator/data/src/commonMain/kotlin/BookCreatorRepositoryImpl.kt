@@ -33,7 +33,10 @@ class BookCreatorRepositoryImpl(
         val authorResponseVo: AuthorVo? = response?.author?.toAuthorVo()
 
         bookResponseVo?.let {
-            localBookCreatorDataSource.updateBook(it.toLocalDto(userId), userId = userId)
+            localBookCreatorDataSource.updateBookWithoutUpdateTime(
+                it.toLocalDto(userId),
+                userId = userId
+            )
             updateBooksTimestamp(it.timestampOfUpdating)
         }
 

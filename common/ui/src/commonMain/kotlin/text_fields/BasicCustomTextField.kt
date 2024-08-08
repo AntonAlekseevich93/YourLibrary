@@ -2,7 +2,10 @@ package text_fields
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,6 +16,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
@@ -51,7 +55,9 @@ fun BasicCustomTextField(
         bottom = 5.dp
     ),
     focusedIndicatorLineThickness: Dp = 1.dp,
-    unfocusedIndicatorLineThickness: Dp = 1.dp
+    unfocusedIndicatorLineThickness: Dp = 1.dp,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    verticalArrangement: Arrangement.Vertical = Arrangement.Center
 ) {
 
     // If color is not provided via the text style, use content color as a default
@@ -86,21 +92,28 @@ fun BasicCustomTextField(
         maxLines = maxLines,
         decorationBox = @Composable { innerTextField ->
             // places leading icon, text field with label and placeholder, trailing icon
-            TextFieldDefaults.TextFieldDecorationBox(
-                value = textFieldValue.text,
-                visualTransformation = visualTransformation,
-                innerTextField = innerTextField,
-                placeholder = placeholder,
-                label = label,
-                leadingIcon = leadingIcon,
-                trailingIcon = trailingIcon,
-                singleLine = singleLine,
-                enabled = enabled,
-                isError = isError,
-                interactionSource = interactionSource,
-                colors = colors,
-                contentPadding = contentPadding
-            )
-        }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = horizontalAlignment,
+                verticalArrangement = verticalArrangement
+            ) {
+                TextFieldDefaults.TextFieldDecorationBox(
+                    value = textFieldValue.text,
+                    visualTransformation = visualTransformation,
+                    innerTextField = innerTextField,
+                    placeholder = placeholder,
+                    label = label,
+                    leadingIcon = leadingIcon,
+                    trailingIcon = trailingIcon,
+                    singleLine = singleLine,
+                    enabled = enabled,
+                    isError = isError,
+                    interactionSource = interactionSource,
+                    colors = colors,
+                    contentPadding = contentPadding
+                )
+            }
+        },
     ))
 }

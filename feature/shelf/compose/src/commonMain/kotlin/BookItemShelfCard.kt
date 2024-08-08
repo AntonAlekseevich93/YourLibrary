@@ -42,7 +42,9 @@ fun BaseEventScope<BaseEvent>.BookItemShelfCard(
             modifier = Modifier
                 .size(width = config.width.dp, height = config.height.dp)
                 .clickable {
-                    this@BookItemShelfCard.sendEvent(DrawerEvents.OpenBook(bookItem.bookId))
+                    bookItem.localId?.let {
+                        this@BookItemShelfCard.sendEvent(DrawerEvents.OpenBook(it))
+                    }
                 },
             shape = RoundedCornerShape(8.dp),
         ) {

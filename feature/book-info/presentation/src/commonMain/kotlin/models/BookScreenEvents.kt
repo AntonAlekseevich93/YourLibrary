@@ -7,6 +7,6 @@ sealed class BookScreenEvents : BaseEvent {
     data object BookScreenCloseEvent : BookScreenEvents()
     data object SaveBookAfterEditing : BookScreenEvents()
     data object SetEditMode : BookScreenEvents()
-    class ChangeReadingStatusEvent(val selectedStatus: ReadingStatus, val oldStatusId: String) :
+    class ChangeReadingStatusEvent(val selectedStatus: ReadingStatus, bookId: String) :
         BookScreenEvents()
 }

@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +30,7 @@ import reading_status.getStatusColor
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
 
-private val MAX_ITEM_WITH = 130.dp
+private val MAX_ITEM_WITH = 85.dp
 
 @Composable
 fun BookSelectorItem(
@@ -39,28 +41,28 @@ fun BookSelectorItem(
     onClick: (book: BookShortVo) -> Unit,
     bookHaveReadingStatusEvent: () -> Unit,
 ) {
-    Column(
+    Row(
         modifier = modifier
+            .padding(start = 8.dp)
             .clickable(interactionSource = MutableInteractionSource(), null) {
                 if (bookItem.readingStatus == null) {
                     onClick(bookItem)
                 } else {
                     bookHaveReadingStatusEvent()
                 }
-            }
-            .sizeIn(maxWidth = MAX_ITEM_WITH),
-        horizontalAlignment = Alignment.CenterHorizontally
+            },
+        verticalAlignment = Alignment.Top
     ) {
         val imageModifier = Modifier.sizeIn(
-            minHeight = 200.dp,
+            minHeight = 140.dp,
             minWidth = MAX_ITEM_WITH,
-            maxHeight = 200.dp,
+            maxHeight = 140.dp,
             maxWidth = MAX_ITEM_WITH
         )
         Card(
             modifier = imageModifier,
             colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(6.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Box {
@@ -98,24 +100,25 @@ fun BookSelectorItem(
             }
         }
 
-        Text(
-            text = bookItem.bookName,
-            style = ApplicationTheme.typography.footnoteBold,
-            color = ApplicationTheme.colors.mainTextColor,
-            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-            textAlign = TextAlign.Center,
-            maxLines = maxLinesBookName,
-            overflow = TextOverflow.Ellipsis
-        )
+        Column(modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 16.dp, top = 2.dp)) {
+            Text(
+                text = bookItem.bookName,
+                style = ApplicationTheme.typography.bodyBold,
+                color = ApplicationTheme.colors.mainTextColor,
+                modifier = Modifier.padding(bottom = 8.dp),
+                textAlign = TextAlign.Start,
+                maxLines = maxLinesBookName,
+                overflow = TextOverflow.Ellipsis
+            )
 
-        Text(
-            text = bookItem.originalAuthorName,
-            style = ApplicationTheme.typography.footnoteRegular,
-            color = ApplicationTheme.colors.mainTextColor,
-            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-            textAlign = TextAlign.Center,
-            maxLines = maxLinesAuthorName,
-            overflow = TextOverflow.Ellipsis
-        )
+            Text(
+                text = bookItem.originalAuthorName,
+                style = ApplicationTheme.typography.bodyRegular,
+                color = ApplicationTheme.colors.mainTextColor,
+                textAlign = TextAlign.Start,
+                maxLines = maxLinesAuthorName,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }

@@ -101,9 +101,11 @@ fun BaseEventScope<BaseEvent>.DrawerBooksInfoContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable(interactionSource, null) {
-                                    this@DrawerBooksInfoContent.sendEvent(
-                                        DrawerEvents.OpenBook(book.bookId)
-                                    )
+                                    book.localId?.let {
+                                        this@DrawerBooksInfoContent.sendEvent(
+                                            DrawerEvents.OpenBook(it)
+                                        )
+                                    }
                                 }
                                 .hoverable(
                                     interactionSource = interactionSource,

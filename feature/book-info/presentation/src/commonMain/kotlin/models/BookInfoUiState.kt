@@ -8,9 +8,10 @@ import main_models.AuthorVo
 import main_models.BookValues
 import main_models.BookVo
 import main_models.DatePickerType
+import main_models.books.BookShortVo
 import main_models.path.PathInfoVo
 
-class BookInfoUiState(
+data class BookInfoUiState(
     val bookItem: MutableState<BookVo?> = mutableStateOf(null),
     val selectedPathInfo: MutableState<PathInfoVo> = mutableStateOf(PathInfoVo()),
     val similarSearchAuthors: SnapshotStateList<AuthorVo> = mutableStateListOf(),
@@ -20,6 +21,7 @@ class BookInfoUiState(
     val needCreateNewAuthor: MutableState<Boolean> = mutableStateOf(false),
     var datePickerType: MutableState<DatePickerType> = mutableStateOf(DatePickerType.StartDate),
     val showDatePicker: MutableState<Boolean> = mutableStateOf(false),
+    val otherBooksByAuthor: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
 ) {
 
     fun setSelectedAuthor(authorVo: AuthorVo) {

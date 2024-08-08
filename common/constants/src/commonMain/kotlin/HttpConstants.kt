@@ -15,4 +15,5 @@ object HttpConstants {
     const val UPLOAD_BOOK_IMAGE = "books/image/upload"
     const val SET_BOOK_AS_APPROVED_WITHOUT_UPLOAD_IMAGE = "books/moderating/approvewithouimage"
     const val ADD_NEW_BOOK_BY_USER = "books/users/add"
+    const val UPDATE_USER_BOOK = "books/users/update"
 }

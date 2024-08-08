@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -78,6 +79,7 @@ fun SearchTextField(
 
             CommonTextField(
                 modifier = Modifier
+                    .sizeIn(minHeight = 50.dp)
                     .fillMaxWidth()
                     .weight(1f)
                     .onFocusChanged { isFocused = it.isFocused },
@@ -98,7 +100,7 @@ fun SearchTextField(
                 placeholder = {
                     Text(
                         text = hintText,
-                        style = ApplicationTheme.typography.footnoteRegular,
+                        style = ApplicationTheme.typography.bodyRegular,
                         color = ApplicationTheme.colors.hintColor
                     )
                 },

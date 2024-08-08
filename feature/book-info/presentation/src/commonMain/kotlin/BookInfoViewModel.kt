@@ -7,6 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import main_models.AuthorVo
 import main_models.DatePickerType
 import models.BookInfoScope
@@ -39,9 +40,17 @@ class BookInfoViewModel(
             is BookScreenEvents.SaveBookAfterEditing -> {
                 //todo
             }
+
             is BookScreenEvents.SetEditMode -> _uiState.value.isEditMode.value = true
             is BookScreenEvents.ChangeReadingStatusEvent -> {
-                //todo
+                scope.launch(Dispatchers.IO) {
+                    uiState.value.bookItem.value?.let {
+                        interactor.changeUserBookReadingStatus(
+                            book = it,
+                            newStatus = event.selectedStatus
+                        )
+                    }
+                }
             }
 
             is BookEditorEvents.OnAuthorTextChanged -> {
@@ -59,18 +68,30 @@ class BookInfoViewModel(
         }
     }
 
+    fun getBook(localBookId: Long) {
+        scope.launch(Dispatchers.IO) {
+            interactor.getLocalBookById(localBookId).collect { response ->
+                response?.let { book ->
+                    _uiState.value.bookItem.value = book
+                    getAllBooksByAuthor(book.originalAuthorId)
+                }
+            }
+        }
+    }
+
+    private fun getAllBooksByAuthor(authorId: String) {
+        scope.launch(Dispatchers.IO) {
+            val booksByAuthor = interactor.getAllBooksByAuthor(authorId)
+            if (booksByAuthor.isNotEmpty()) {
+                _uiState.value.otherBooksByAuthor.value = booksByAuthor
+            }
+        }
+    }
 
 
     private fun clearSearchAuthor() {
         _uiState.value.clearSimilarAuthorList()
     }
-
-
-
-
-
-
-
 
 
     private fun setSelectedDate(millis: Long, text: String) {

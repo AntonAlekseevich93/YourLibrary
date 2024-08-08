@@ -517,6 +517,11 @@ class BookCreatorViewModel(
             isLoadedToServer = false,
             bookIsCreatedManually = false,
             imageFolderId = shortBook.imageFolderId,
+            ratingValue = shortBook.ratingValue,
+            ratingCount = shortBook.ratingCount,
+            reviewCount = shortBook.reviewCount,
+            ratingSum = shortBook.ratingSum,
+            bookForAllUsers = true,
         )
 
     private fun createManuallyUserBook(): BookVo {
@@ -550,6 +555,11 @@ class BookCreatorViewModel(
                 isLoadedToServer = false,
                 bookIsCreatedManually = true,
                 imageFolderId = null,
+                ratingValue = 0.0,
+                ratingCount = 0,
+                reviewCount = 0,
+                ratingSum = 0,
+                bookForAllUsers = false
             )
         }
     }

@@ -1,7 +1,6 @@
 package main_app_bar
 
 import ApplicationTheme
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -59,18 +58,16 @@ private fun SearchAppBarInfoItem(book: BookVo) {
             shape = RoundedCornerShape(6.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
-            Box {
-                AsyncImage(
-                    modifier = imageModifier,
-                    request = ComposableImageRequest(book.remoteImageLink) {
-                        scale(Scale.FILL)
-                        placeholder(Res.drawable.ic_default_book_cover_7)
-                        error(Res.drawable.ic_default_book_cover_7)
-                    },
-                    contentScale = ContentScale.FillBounds,
-                    contentDescription = null,
-                )
-            }
+            AsyncImage(
+                modifier = imageModifier,
+                request = ComposableImageRequest(book.remoteImageLink) {
+                    scale(Scale.FILL)
+                    placeholder(Res.drawable.ic_default_book_cover_7)
+                    error(Res.drawable.ic_default_book_cover_7)
+                },
+                contentScale = ContentScale.FillBounds,
+                contentDescription = null,
+            )
         }
         Column(Modifier.padding(start = 16.dp, end = 16.dp)) {
             Text(

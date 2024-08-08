@@ -35,4 +35,7 @@ interface BooksDao {
 
     @Query("SELECT * FROM BookEntity WHERE bookNameUppercase LIKE '%' || :name || '%'")
     suspend fun searchBookByName(name: String): List<BookEntity>
+
+    @Query("SELECT * FROM BookEntity WHERE localId = :bookLocalId and userId = :userId")
+    fun getLocalBookById(bookLocalId: Long, userId: Long): Flow<List<BookEntity>>
 }

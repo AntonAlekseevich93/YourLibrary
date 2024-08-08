@@ -26,6 +26,10 @@ data class BookShortRemoteDto(
     @SerialName("ageRestrictions") val ageRestrictions: String? = null,
     @SerialName("isRussian") val isRussian: Boolean? = null,
     @SerialName("imageFolderId") val imageFolderId: Int? = null,
+    @SerialName("ratingValue") val ratingValue: Double,
+    @SerialName("ratingCount") val ratingCount: Int,
+    @SerialName("reviewCount") val reviewCount: Int,
+    @SerialName("ratingSum") val ratingSum: Int,
 )
 
 fun BookShortRemoteDto.toVo(
@@ -48,6 +52,10 @@ fun BookShortRemoteDto.toVo(
         isRussian = isRussian,
         rawCoverUrl = rawCoverUrl,
         imageFolderId = imageFolderId,
+        ratingValue = ratingValue,
+        ratingCount = ratingCount,
+        reviewCount = reviewCount,
+        ratingSum = ratingSum,
     )
 }
 
@@ -68,5 +76,9 @@ fun BookShortVo.toDto(): BookShortRemoteDto {
         isRussian = isRussian,
         rawCoverUrl = rawCoverUrl,
         imageFolderId = imageFolderId,
+        ratingValue = ratingValue,
+        ratingCount = ratingCount,
+        reviewCount = reviewCount,
+        ratingSum = ratingSum,
     )
 }

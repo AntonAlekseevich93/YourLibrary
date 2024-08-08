@@ -43,7 +43,7 @@ class LocalBookCreatorDataSource(
         return booksDao.getBookByBookId(book.bookId, userId = userId).first()
     }
 
-    suspend fun updateBook(book: BookEntity, userId: Long) {
+    suspend fun updateBookWithoutUpdateTime(book: BookEntity, userId: Long) {
         val localId = booksDao.getBookByBookId(book.bookId, userId = userId).firstOrNull()?.localId
         if (localId != null) {
             booksDao.updateBook(book.copy(localId = localId))

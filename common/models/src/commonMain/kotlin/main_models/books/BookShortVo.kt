@@ -21,6 +21,10 @@ data class BookShortVo(
     val ageRestrictions: String?,
     val isRussian: Boolean?,
     val imageFolderId: Int?,
+    val ratingValue: Double,
+    val ratingCount: Int,
+    val reviewCount: Int,
+    val ratingSum: Int,
 ) {
     var readingStatus: ReadingStatus? = null
 }

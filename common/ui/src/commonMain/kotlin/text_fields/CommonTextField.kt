@@ -1,6 +1,7 @@
 package text_fields
 
 import ApplicationTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -9,6 +10,7 @@ import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
@@ -37,18 +39,18 @@ fun CommonTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions(),
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    verticalArrangement: Arrangement.Vertical = Arrangement.Center,
+    contentPadding: PaddingValues = PaddingValues(
+        start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp
+    )
 ) {
     BasicCustomTextField(
         textFieldValue = textState,
         onValueChange = { onTextChanged(it) },
         colors = colors,
         modifier = modifier,
-        contentPadding = PaddingValues(
-            start = 10.dp,
-            end = 10.dp,
-            top = 10.dp,
-            bottom = 10.dp
-        ),
+        contentPadding = contentPadding,
         maxLines = maxLines,
         textStyle = textStyle,
         enabled = enabled,
@@ -59,6 +61,8 @@ fun CommonTextField(
         unfocusedIndicatorLineThickness = unfocusedIndicatorLineThickness,
         visualTransformation = visualTransformation,
         keyboardActions = keyboardActions,
-        keyboardOptions = keyboardOptions
+        keyboardOptions = keyboardOptions,
+        horizontalAlignment = horizontalAlignment,
+        verticalArrangement = verticalArrangement,
     )
 }

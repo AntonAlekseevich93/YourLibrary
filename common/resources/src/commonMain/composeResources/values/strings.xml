@@ -118,4 +118,12 @@
     <string name="search_in_author_books">Поиск среди книг автора</string>
     <string name="search_by_book_name">Поиск по названию книги</string>
     <string name="search_app_bar_text_field_hint">Поиск среди ваших книг и авторов</string>
+    <string name="age">Возвраст</string>
+    <string name="about_book">О книге</string>
+    <string name="rating_bar_title">Как вам книга?</string>
+    <string name="has_not_review">ещё нет оценок</string>
+    <string name="set_estimate">Оценить</string>
+    <string name="review_text_field_hint">Ваш отзыв</string>
+    <string name="show_all_books_with_new_line">Смотреть\nвсе книги</string>
+    <string name="add_review_title">Оставить отзыв</string>
 </resources>

@@ -212,7 +212,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                     sendEvent(BookEditorEvents.OnBookNameChanged(newSearch))
                                 }
                             },
-                            iconResName = Res.drawable.ic_book
+                            iconResName = Res.drawable.ic_book,
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                         )
 
                         SearchTextField(
@@ -233,7 +234,8 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                                 keyboardController?.hide()
                                 sendEvent(BookEditorEvents.OnSearchAuthorClick(bookValues.authorName.value.text))
                             },
-                            iconResName = Res.drawable.ic_authors
+                            iconResName = Res.drawable.ic_authors,
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                         )
                     }
                 }

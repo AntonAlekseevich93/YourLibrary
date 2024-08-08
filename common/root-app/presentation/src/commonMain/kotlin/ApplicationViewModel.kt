@@ -98,7 +98,7 @@ class ApplicationViewModel(
         }
     }
 
-    override fun openBook(bookId: String) {
+    override fun openBook(bookId: Long) {
         uiStateValue.apply {
             selectedBookId.value = bookId
             navigationHandler.navigateToBookInfo()

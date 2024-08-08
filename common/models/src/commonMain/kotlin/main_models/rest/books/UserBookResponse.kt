@@ -38,6 +38,11 @@ data class UserBookRemoteDto(
     @SerialName("authorIsCreatedManually") val authorIsCreatedManually: Boolean? = null,
     @SerialName("isCreatedManually") val isCreatedManually: Boolean? = null,
     @SerialName("imageFolderId") val imageFolderId: Int? = null,
+    @SerialName("ratingValue") val ratingValue: Double,
+    @SerialName("ratingCount") val ratingCount: Int,
+    @SerialName("reviewCount") val reviewCount: Int,
+    @SerialName("ratingSum") val ratingSum: Int,
+    @SerialName("bookForAllUsers") val bookForAllUsers: Boolean,
 )
 
 fun BookVo.toRemoteDto(): UserBookRemoteDto = UserBookRemoteDto(
@@ -63,7 +68,12 @@ fun BookVo.toRemoteDto(): UserBookRemoteDto = UserBookRemoteDto(
     timestampOfUpdating = timestampOfUpdating,
     authorIsCreatedManually = authorIsCreatedManually,
     isCreatedManually = bookIsCreatedManually,
-    imageFolderId = imageFolderId
+    imageFolderId = imageFolderId,
+    ratingValue = ratingValue,
+    ratingCount = ratingCount,
+    reviewCount = reviewCount,
+    ratingSum = ratingSum,
+    bookForAllUsers = bookForAllUsers,
 )
 
 fun UserBookRemoteDto.toVo(): BookVo? {
@@ -94,6 +104,11 @@ fun UserBookRemoteDto.toVo(): BookVo? {
         authorIsCreatedManually = authorIsCreatedManually ?: return null,
         isLoadedToServer = true,
         bookIsCreatedManually = isCreatedManually ?: return null,
-        imageFolderId = imageFolderId
+        imageFolderId = imageFolderId,
+        ratingValue = ratingValue,
+        ratingCount = ratingCount,
+        reviewCount = reviewCount,
+        ratingSum = ratingSum,
+        bookForAllUsers = bookForAllUsers,
     )
 }

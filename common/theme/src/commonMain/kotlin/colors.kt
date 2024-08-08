@@ -76,6 +76,7 @@ class ScreenColor(
     val appBarColor: Color,
     val iconColor: Color,
     val textColor: Color,
+    val activeLinkColor: Color,
 )
 
 val lightPaletteTheme = AppColors(
@@ -114,7 +115,7 @@ val lightPaletteTheme = AppColors(
     readingStatusesColor = ReadingStatusesColor(
         plannedStatusColor = Color(0xFFffbe0b),
         readingStatusColor = Color(0xFF3a86ff),
-        doneStatusColor = Color(0xFFccff33),
+        doneStatusColor = Color(0xFF9ef01a),
         deferredStatusColor = Color(0xFFd5b9b2),
     ),
     textFieldColor = Color(0xFF3f3f3f),
@@ -146,7 +147,8 @@ val lightPaletteTheme = AppColors(
         background = Color(0xFF2A2A2A),
         appBarColor = Color(0xFF252525),
         iconColor = Color(0xFFd4d4d4),
-        textColor = Color(0xFFe5e5e5)
+        textColor = Color(0xFFe5e5e5),
+        activeLinkColor = Color(0xFF4361ee),
     ),
 )
 
@@ -218,6 +220,7 @@ val darkPaletteTheme = AppColors(
         background = Color(0xFF2A2A2A),
         appBarColor = Color(0xFF252525),
         iconColor = Color(0xFFd4d4d4),
-        textColor = Color(0xFFe5e5e5)
+        textColor = Color(0xFFe5e5e5),
+        activeLinkColor = Color(0xFF4361ee),
     ),
 )

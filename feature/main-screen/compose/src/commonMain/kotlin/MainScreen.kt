@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import di.Inject
 import platform.Platform
-import platform.isDesktop
 
 @Composable
 fun MainScreen(
@@ -46,18 +45,6 @@ fun MainScreen(
                     .padding(start = if (leftDrawerState.isClosed) 0.dp else 0.dp)
                     .background(ApplicationTheme.colors.mainBackgroundColor),
             ) {
-//                viewModel.SubAppBar(
-//                    modifier = Modifier.padding(start = 16.dp, top = 6.dp),
-//                    projectName = "Книжная полка",
-//                    selectedViewsTypes = uiState.viewsTypes.selectedViewTypes,
-//                    isCheckedTypes = uiState.viewsTypes.checkedViewTypes,
-//                    isOpenedType = uiState.viewsTypes.openedViewType.value,
-//                    openViewType = viewModel::openViewType,
-//                    isOpenedSidebar = showLeftDrawer,
-//                    switchViewTypesListener = viewModel::switchViewTypesListener,
-//                    closeViewsTypeDropdown = viewModel::changeViewsTypes,
-//                    homeButtonListener = {}
-//                )
                 ShelfBoardScreen(
                     platform = platform,
                     viewModel = shelfViewModel,

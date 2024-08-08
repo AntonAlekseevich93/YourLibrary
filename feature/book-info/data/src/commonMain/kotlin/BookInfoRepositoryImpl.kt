@@ -1,15 +1,13 @@
-import HttpParams.AUTHORS_DEVICE_LAST_TIMESTAMP
-import HttpParams.AUTHORS_OTHER_DEVICES_LAST_TIMESTAMP
-import HttpParams.BOOKS_DEVICE_LAST_TIMESTAMP
-import HttpParams.BOOKS_OTHER_DEVICES_LAST_TIMESTAMP
 import database.LocalBookInfoDataSource
 import database.room.entities.BookTimestampEntity
 import database.room.entities.toLocalDto
 import database.room.entities.toVo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import ktor.RemoteBookInfoDataSource
-import main_models.authors.AuthorTimestampVo
+import main_models.BookVo
 import main_models.rest.SynchronizeBooksWithAuthorsRequest
 import main_models.rest.authors.toAuthorVo
 import main_models.rest.books.toRemoteDto
@@ -20,6 +18,7 @@ class BookInfoRepositoryImpl(
     private val remoteBookInfoDataSource: RemoteBookInfoDataSource,
     private val authorsRepository: AuthorsRepository,
     private val appConfig: AppConfig,
+    private val remoteConfig: RemoteConfig,
 ) : BookInfoRepository {
     private val mutex = Mutex()
 
@@ -27,6 +26,41 @@ class BookInfoRepositoryImpl(
         return if (appConfig.isAuth) {
             synchronize()
         } else false
+    }
+
+    override suspend fun getLocalBookById(bookLocalId: Long): Flow<BookVo?> =
+        localBookInfoDataSource.getLocalBookById(bookLocalId, userId = appConfig.userId)
+            .map {
+                it.firstOrNull()?.let { book ->
+                    book.toVo(
+                        remoteImageLink = remoteConfig.getImageUrl(
+                            imageName = book.imageName,
+                            imageFolderId = book.imageFolderId,
+                            bookServerId = book.serverId
+                        )
+                    )
+                }
+            }
+
+    override suspend fun updateUserBook(book: BookVo) {
+        val userId = appConfig.userId
+        val bookVo = localBookInfoDataSource.updateBookAndTime(
+            book = book.toLocalDto(appConfig.userId),
+            userId = userId
+        ).toVo(null)
+        val response = remoteBookInfoDataSource.updateUserBook(
+            userBook = bookVo.toRemoteDto()
+        )?.result
+
+        val bookResponseVo = response?.book?.toVo()
+
+        bookResponseVo?.let {
+            localBookInfoDataSource.updateBookWithoutUpdateTime(
+                it.toLocalDto(userId),
+                userId = userId
+            )
+            updateBooksTimestamp(it.timestampOfUpdating)
+        }
     }
 
     private suspend fun synchronize(): Boolean {
@@ -123,14 +157,12 @@ class BookInfoRepositoryImpl(
         )
     }
 
-    private fun getParamsByTimestamps(
-        booksTimestamp: BookTimestampEntity,
-        authorTimestampVo: AuthorTimestampVo
-    ): Map<String, String> = mapOf<String, String>(
-        BOOKS_DEVICE_LAST_TIMESTAMP to booksTimestamp.thisDeviceTimestamp.toString(),
-        BOOKS_OTHER_DEVICES_LAST_TIMESTAMP to booksTimestamp.otherDevicesTimestamp.toString(),
-        AUTHORS_DEVICE_LAST_TIMESTAMP to authorTimestampVo.thisDeviceTimestamp.toString(),
-        AUTHORS_OTHER_DEVICES_LAST_TIMESTAMP to authorTimestampVo.otherDevicesTimestamp.toString()
-    )
+    private suspend fun updateBooksTimestamp(timestamp: Long) {
+        val lastTimestamp = localBookInfoDataSource.getBookTimestamp(appConfig.userId)
+        val finalTimestamp: BookTimestampEntity = lastTimestamp.copy(
+            thisDeviceTimestamp = timestamp
+        )
+        localBookInfoDataSource.updateBookTimestamp(finalTimestamp)
+    }
 
 }

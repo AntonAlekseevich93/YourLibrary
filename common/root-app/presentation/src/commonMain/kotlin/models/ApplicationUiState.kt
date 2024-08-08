@@ -20,7 +20,7 @@ data class ApplicationUiState(
     val openRightDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
     val closeLeftDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
     val closeRightDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
-    val selectedBookId: MutableState<String> = mutableStateOf(""),
+    val selectedBookId: MutableState<Long> = mutableStateOf(-1),
     val searchedBooks: List<BookVo> = emptyList(),
 ) : BaseUIState {
     val pathInfoList: SnapshotStateList<PathInfoVo> =

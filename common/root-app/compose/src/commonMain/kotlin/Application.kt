@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -30,8 +29,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import authors_screen.AuthorsScreen
+import book_info.BookInfoScreen
 import bottom_app_bar.CustomBottomBar
 import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
 import join_authors_screen.JoinAuthorsScreen
@@ -71,9 +72,11 @@ fun Application(
     val canShowMainButton = remember { mutableStateOf(true) }
     val hazeBlurState = remember { HazeState() }
     val showSearchAppBarTextField = remember { mutableStateOf(false) }
+    val openedRoute = remember { mutableStateOf(Routes.main_route) }
 
     AppTheme {
         navigator.currentEntry.collectAsState(null).value?.route?.route?.let { currentRoute ->
+            openedRoute.value = currentRoute
             if (!uiState.fullScreenBookInfo.value && platform.isMobile() && currentRoute == Routes.main_route) {
                 uiState.fullScreenBookInfo.value = true
             }
@@ -114,16 +117,18 @@ fun Application(
                     Scaffold(
                         containerColor = ApplicationTheme.colors.mainBackgroundColor,
                         topBar = {
-                            viewModel.MainAppBar(
-                                hazeBlurState = hazeBlurState,
-                                searchedBooks = uiState.searchedBooks,
-                                platformDisplayHeight = platformDisplayHeight,
-                                showSearchAppBarTextField = showSearchAppBarTextField,
-                                changeVisibilitySearchAppBarTextField = {
-                                    showSearchAppBarTextField.value =
-                                        !showSearchAppBarTextField.value
-                                }
-                            )
+                            if (openedRoute.value == Routes.main_route) {
+                                viewModel.MainAppBar(
+                                    hazeBlurState = hazeBlurState,
+                                    searchedBooks = uiState.searchedBooks,
+                                    platformDisplayHeight = platformDisplayHeight,
+                                    showSearchAppBarTextField = showSearchAppBarTextField,
+                                    changeVisibilitySearchAppBarTextField = {
+                                        showSearchAppBarTextField.value =
+                                            !showSearchAppBarTextField.value
+                                    }
+                                )
+                            }
                         },
                         bottomBar = {
                             if (platform.isMobile()) {
@@ -159,32 +164,29 @@ fun Application(
                                         }
                                     }.haze(
                                         hazeBlurState,
-                                        backgroundColor = MaterialTheme.colorScheme.background,
-                                        tint = Color.Black.copy(alpha = .2f),
-                                        blurRadius = 30.dp,
+                                        HazeStyle(
+                                            tint = Color.Black.copy(alpha = .2f),
+                                            blurRadius = 30.dp,
+                                        )
                                     ),
                                     parentPaddingValues = paddingValues
                                 )
                             }
 
                             dialog(route = Routes.book_info_route) {
-                                BookScreen(
-                                    platform = platform,
+                                BookInfoScreen(
                                     bookItemId = uiState.selectedBookId.value,
-                                    showLeftDrawer = uiState.showLeftDrawerState,
-                                    showRightDrawer = uiState.showRightDrawerState,
-                                    showSearch = showSearch,
-                                    fullScreenBookInfo = uiState.fullScreenBookInfo,
-                                    isKeyboardShown = isKeyboardShown,
+                                    bookShortVo = null
                                 )
                             }
 
-                            dialog(route = Routes.book_creator_route) {
+                            scene(route = Routes.book_creator_route) {
                                 BookCreatorScreen(
                                     platform = platform,
                                     fullScreenBookCreator = mutableStateOf(false),
                                     isKeyboardShown = isKeyboardShown,
                                     showRightDrawer = uiState.showRightDrawerState,
+                                    hazeState = hazeBlurState
                                 )
                             }
 

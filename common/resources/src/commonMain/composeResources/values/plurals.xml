@@ -1,0 +1,29 @@
+<resources>
+    <plurals name="read_in_days">
+        <item quantity="one">Прочитано за %1$d день</item>
+        <item quantity="few">Прочитано за %1$d дня</item>
+        <item quantity="many">Прочитано за %1$d дней</item>
+        <item quantity="other">Прочитано за %1$d дней</item>
+    </plurals>
+
+    <plurals name="review_amount">
+        <item quantity="one">%1$d оценка</item>
+        <item quantity="few">%1$d оценки</item>
+        <item quantity="many">%1$d оценок</item>
+        <item quantity="other">%1$d оценок</item>
+    </plurals>
+
+    <plurals name="page_count">
+        <item quantity="one">%1$d страница</item>
+        <item quantity="few">%1$d страницы</item>
+        <item quantity="many">%1$d страниц</item>
+        <item quantity="other">%1$d страниц</item>
+    </plurals>
+
+    <plurals name="show_all_reviews">
+        <item quantity="one">Смотреть все\n%1$d отзыв</item>
+        <item quantity="few">Смотреть все\n%1$d отзыва</item>
+        <item quantity="many">Смотреть все\n%1$d отзывов</item>
+        <item quantity="other">Смотреть все\n%1$d отзывов</item>
+    </plurals>
+</resources>

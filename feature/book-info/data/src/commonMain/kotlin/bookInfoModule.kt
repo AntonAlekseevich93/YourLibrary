@@ -8,7 +8,7 @@ import org.kodein.di.singleton
 
 val bookInfoModule = DI.Module("bookInfoModule") {
     bind<BookInfoRepository>() with singleton {
-        BookInfoRepositoryImpl(instance(), instance(), instance(), instance())
+        BookInfoRepositoryImpl(instance(), instance(), instance(), instance(), instance())
     }
 
     bind<LocalBookInfoDataSource>() with provider {
