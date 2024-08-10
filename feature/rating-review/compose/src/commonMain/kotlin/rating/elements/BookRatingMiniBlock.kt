@@ -20,7 +20,7 @@ import yourlibrary.common.resources.generated.resources.review_amount
 import yourlibrary.common.resources.generated.resources.set_estimate
 
 @Composable
-internal fun BookRatingMiniBlock(
+fun BookRatingMiniBlock(
     allUsersRating: Double,
     allRatingAmount: Int,
     currentUserScore: Int?,
