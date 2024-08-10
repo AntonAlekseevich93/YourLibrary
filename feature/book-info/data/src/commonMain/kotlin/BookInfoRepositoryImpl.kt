@@ -8,10 +8,11 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import ktor.RemoteBookInfoDataSource
 import main_models.BookVo
-import main_models.rest.SynchronizeBooksWithAuthorsRequest
 import main_models.rest.authors.toAuthorVo
 import main_models.rest.books.toRemoteDto
 import main_models.rest.books.toVo
+import main_models.rest.sync.SynchronizeBooksWithAuthorsRequest
+import main_models.rest.sync.SynchronizeUserDataRequest
 
 class BookInfoRepositoryImpl(
     private val localBookInfoDataSource: LocalBookInfoDataSource,
@@ -70,7 +71,7 @@ class BookInfoRepositoryImpl(
                 body = getSynchronizeBody(userId)
             )
             var success = false
-            response?.result?.missingBooksAndAuthorsFromServer?.let { result ->
+            response?.result?.booksWithAuthorsContent?.missingBooksAndAuthorsFromServer?.let { result ->
                 result.booksOtherDevices?.let { otherDevicesBooks ->
                     val booksTimestamp = localBookInfoDataSource.getBookTimestamp(userId = userId)
                     val lastTimestamp = otherDevicesBooks.takeIf { it.isNotEmpty() }
@@ -117,7 +118,7 @@ class BookInfoRepositoryImpl(
                 success = true
             }
 
-            response?.result?.currentDeviceBooksAndAuthorsAddedToServer?.let { result ->
+            response?.result?.booksWithAuthorsContent?.currentDeviceBooksAndAuthorsAddedToServer?.let { result ->
                 val resultBooks =
                     result.books?.mapNotNull { it.toVo()?.toLocalDto(userId) } ?: emptyList()
                 val resultAuthors = result.authors?.mapNotNull { it.toAuthorVo() } ?: emptyList()
@@ -126,14 +127,14 @@ class BookInfoRepositoryImpl(
                 success = true
             }
 
-            response?.result?.currentDeviceBookLastTimestamp?.let {
+            response?.result?.booksWithAuthorsContent?.currentDeviceBookLastTimestamp?.let {
                 val booksTimestamp = localBookInfoDataSource.getBookTimestamp(userId = userId)
                 localBookInfoDataSource.updateBookTimestamp(
                     booksTimestamp.copy(thisDeviceTimestamp = it)
                 )
             }
 
-            response?.result?.currentDeviceAuthorLastTimestamp?.let {
+            response?.result?.booksWithAuthorsContent?.currentDeviceAuthorLastTimestamp?.let {
                 authorsRepository.updateAuthorsTimestamp(
                     thisDeviceTimestamp = it,
                     otherDeviceTimestamp = null
@@ -143,17 +144,20 @@ class BookInfoRepositoryImpl(
         }
     }
 
-    private suspend fun getSynchronizeBody(userId: Long): SynchronizeBooksWithAuthorsRequest {
+    private suspend fun getSynchronizeBody(userId: Long): SynchronizeUserDataRequest {
         val booksTimestamp = localBookInfoDataSource.getBookTimestamp(userId = userId)
         val authorTimestampVo = authorsRepository.getAuthorsTimestamp(userId)
         val books = localBookInfoDataSource.getNotSynchronizedBooks(userId)
             .map { it.toVo(null).toRemoteDto() }
-        return SynchronizeBooksWithAuthorsRequest(
-            booksThisDeviceTimestamp = booksTimestamp.thisDeviceTimestamp,
-            booksOtherDevicesTimestamp = booksTimestamp.otherDevicesTimestamp,
-            authorsThisDeviceTimestamp = authorTimestampVo.thisDeviceTimestamp,
-            authorsOtherDevicesTimestamp = authorTimestampVo.otherDevicesTimestamp,
-            books = books
+        return SynchronizeUserDataRequest(
+            booksWithAuthors = SynchronizeBooksWithAuthorsRequest(
+                booksThisDeviceTimestamp = booksTimestamp.thisDeviceTimestamp,
+                booksOtherDevicesTimestamp = booksTimestamp.otherDevicesTimestamp,
+                authorsThisDeviceTimestamp = authorTimestampVo.thisDeviceTimestamp,
+                authorsOtherDevicesTimestamp = authorTimestampVo.otherDevicesTimestamp,
+                books = books
+            ),
+            reviewsAndRatings = null
         )
     }
 

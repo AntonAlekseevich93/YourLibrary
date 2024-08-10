@@ -1,4 +1,4 @@
-package main_models.rest
+package main_models.rest.sync
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

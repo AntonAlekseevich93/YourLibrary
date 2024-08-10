@@ -241,12 +241,13 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                     endDate = book.endDateInString,
                     readingDayAmount = book.getReadingDays(),
                     ageRestrictions = book.ageRestrictions,
-                    currentUserScore = 4,
+                    currentUserScore = 0,//todo
+                    allUsersRating = book.ratingValue,
+                    allRatingAmount = book.ratingCount,
                     userReview = "Отличная книга. Прочитал с полным удовольствием.",
                     otherBooksByAuthor = uiState.otherBooksByAuthor,
                     onWriteReviewListener = {
                         showWriteReviewBottomSheet = true
-
                     },
                 )
             }

@@ -3,7 +3,6 @@ object HttpConstants {
     const val USER_SIGN_IN_REQUEST = "user/signin"
     const val USER_SIGN_UP_REQUEST = "user/signup"
     const val USER_INFO_REQUEST = "user/info"
-    const val GET_ALL_USER_BOOKS = "user/books/all"
 
     const val AUTHORS_SEARCH_REQUEST = "authors/search"
 
@@ -16,4 +15,6 @@ object HttpConstants {
     const val SET_BOOK_AS_APPROVED_WITHOUT_UPLOAD_IMAGE = "books/moderating/approvewithouimage"
     const val ADD_NEW_BOOK_BY_USER = "books/users/add"
     const val UPDATE_USER_BOOK = "books/users/update"
+
+    const val SYNCHRONIZE_USER_DATA = "sync/user/data"
 }

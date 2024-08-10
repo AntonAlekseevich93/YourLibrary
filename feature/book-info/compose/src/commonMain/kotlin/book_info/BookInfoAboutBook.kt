@@ -43,6 +43,8 @@ fun BookInfoAboutBook(
     startDate: String?,
     endDate: String?,
     readingDayAmount: Int?,
+    allUsersRating: Double,
+    allRatingAmount: Int,
     currentUserScore: Int?,
     userReview: String?, //todo fix to object
     otherBooksByAuthor: State<List<BookShortVo>>,
@@ -54,9 +56,9 @@ fun BookInfoAboutBook(
             horizontalArrangement = Arrangement.Center
         ) {
             BookRatingMiniBlock(
-                allUsersRating = 4.3,
-                allRatingAmount = 13,
-                currentUserScore = 4
+                allUsersRating = allUsersRating,
+                allRatingAmount = allRatingAmount,
+                currentUserScore = currentUserScore
             )
 
             Spacer(Modifier.padding(16.dp))
