@@ -11,6 +11,7 @@ class ApplicationInteractor(
     private val repository: ApplicationRepository,
     private val bookInfoRepository: BookInfoRepository,
     private val searchRepository: SearchRepository,
+    private val synchronizationRepository: SynchronizationRepository,
 ) {
 
     suspend fun getAllPathInfo(): Flow<PathInfoVo?> = repository.getAllPathInfo()
@@ -72,7 +73,7 @@ class ApplicationInteractor(
     }
 
     suspend fun synchronizeBooksWithAuthors() {
-        bookInfoRepository.synchronizeBooksWithAuthors()
+        synchronizationRepository.synchronizeUserData()
     }
 
     suspend fun searchInLocalBooks(text: String): List<BookVo> =

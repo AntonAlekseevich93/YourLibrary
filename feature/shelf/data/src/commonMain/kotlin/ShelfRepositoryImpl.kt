@@ -11,6 +11,7 @@ class ShelfRepositoryImpl(
     private val remoteConfig: RemoteConfig,
     private val bookInfoRepository: BookInfoRepository,
     private val appConfig: AppConfig,
+    private val synchronizationRepository: SynchronizationRepository,
 ) : ShelfRepository {
 
     override suspend fun getAllBooksByReadingStatus(readingStatus: String): Flow<List<BookVo>> =
@@ -28,7 +29,7 @@ class ShelfRepositoryImpl(
             }
 
     override suspend fun synchronizeBooksWithAuthors() =
-        bookInfoRepository.synchronizeBooksWithAuthors()
+        synchronizationRepository.synchronizeUserData()
 
 
 }

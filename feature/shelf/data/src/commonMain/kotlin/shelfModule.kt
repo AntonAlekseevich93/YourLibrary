@@ -8,7 +8,7 @@ import org.kodein.di.singleton
 
 val shelfModule = DI.Module("shelfModule") {
     bind<ShelfRepository>() with singleton {
-        ShelfRepositoryImpl(instance(), instance(), instance(), instance(), instance())
+        ShelfRepositoryImpl(instance(), instance(), instance(), instance(), instance(), instance())
     }
 
     bind<LocalShelfDataSource>() with provider {

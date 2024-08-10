@@ -8,20 +8,19 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":feature:shelf:api"))
+                api(project(":feature:synchronization:api"))
                 api(project(":feature:book-info:api"))
-                implementation(project(":feature:synchronization:api"))
-                implementation(project(":common:app-config"))
+                api(project(":feature:authors:api"))
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
+                implementation(project(":common:constants"))
+                implementation(project(":common:app-config"))
+                implementation(project(":common:http-client"))
             }
         }
     }
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.shelf.data"
-}
-dependencies {
-    implementation(project(mapOf("path" to ":common:ui")))
+    namespace = "ru.yourlibrary.yourlibrary.synchronization.data"
 }

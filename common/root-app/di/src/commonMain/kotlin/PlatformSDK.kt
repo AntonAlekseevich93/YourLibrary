@@ -62,6 +62,7 @@ object PlatformSDK {
                     domainModule,
                     viewModelsModule,
                     reviewAndRatingModule,
+                    synchronizationModule,
                 )
             }.direct
         )
