@@ -61,6 +61,7 @@ object PlatformSDK {
                     userModule,
                     domainModule,
                     viewModelsModule,
+                    reviewAndRatingModule,
                 )
             }.direct
         )

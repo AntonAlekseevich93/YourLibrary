@@ -2,7 +2,7 @@ package main_models.rest.sync
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import main_models.rest.rating_review.ReviewAndRatingDto
+import main_models.rest.rating_review.ReviewAndRatingRemoteDto
 
 @Serializable
 data class SynchronizeReviewAndRatingRequest(
@@ -10,7 +10,7 @@ data class SynchronizeReviewAndRatingRequest(
     @SerialName("review_other_devices_last_timestamp") val reviewOtherDevicesTimestamp: Long,
     @SerialName("rating_device_last_timestamp") val ratingThisDeviceTimestamp: Long,
     @SerialName("rating_other_devices_last_timestamp") val ratingOtherDevicesTimestamp: Long,
-    @SerialName("reviews_and_ratings") val reviewAndRatings: List<ReviewAndRatingDto>,
+    @SerialName("reviews_and_ratings") val reviewAndRatings: List<ReviewAndRatingRemoteDto>,
 )
 
 @Serializable
@@ -23,11 +23,11 @@ data class SynchronizeReviewAndRatingContent(
 
 @Serializable
 data class MissingReviewsAndRatingsFromServer(
-    @SerialName("reviewsAndRatingCurrentDevice") val reviewsAndRatingCurrentDevice: List<ReviewAndRatingDto>,
-    @SerialName("reviewsAndRatingOtherDevices") val reviewsAndRatingOtherDevices: List<ReviewAndRatingDto>,
+    @SerialName("reviewsAndRatingCurrentDevice") val reviewsAndRatingCurrentDevice: List<ReviewAndRatingRemoteDto>,
+    @SerialName("reviewsAndRatingOtherDevices") val reviewsAndRatingOtherDevices: List<ReviewAndRatingRemoteDto>,
 )
 
 @Serializable
 data class CurrentDeviceReviewsAndRatingsAddedToServer(
-    @SerialName("reviewsAndRating") val reviewsAndRating: List<ReviewAndRatingDto>,
+    @SerialName("reviewsAndRating") val reviewsAndRating: List<ReviewAndRatingRemoteDto>,
 )

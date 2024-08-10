@@ -1,7 +1,8 @@
 package main_models.rating_review
 
 class ReviewAndRatingVo(
-    val id: Int,
+    val localId: Int?,
+    val id: Int?,
     val ratingScore: Int,
     val reviewText: String?,
     val bookId: String,

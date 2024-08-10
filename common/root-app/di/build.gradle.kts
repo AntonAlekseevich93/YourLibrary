@@ -45,6 +45,7 @@ kotlin {
                 implementation(project(":feature:admin:domain"))
                 implementation(project(":feature:user:data"))
                 implementation(project(":feature:user:domain"))
+                implementation(project(":feature:rating-review:data"))
                 implementation(deps.compose.runtime)
             }
         }
