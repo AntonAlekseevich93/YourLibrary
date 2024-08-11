@@ -3,6 +3,7 @@ package database
 import database.room.RoomMainDataSource
 import database.room.entities.ReviewAndRatingEntity
 import database.room.entities.ReviewAndRatingTimestampEntity
+import kotlinx.coroutines.flow.Flow
 import platform.PlatformInfoData
 
 class LocalReviewAndRatingDataSource(
@@ -29,6 +30,10 @@ class LocalReviewAndRatingDataSource(
             userId = userId
         )
     }
+
+    fun getCurrentUserReviewAndRatingByBook(bookId: String, userId: Long): Flow<List<ReviewAndRatingEntity>> =
+        reviewAndRatingDao.getCurrentUserReviewAndRatingByBook(bookId, userId)
+
 
     private suspend fun createEmptyTimestamp(userId: Long): ReviewAndRatingTimestampEntity {
         val timestamp = ReviewAndRatingTimestampEntity(

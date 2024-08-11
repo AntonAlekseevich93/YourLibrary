@@ -2,9 +2,12 @@ import database.LocalReviewAndRatingDataSource
 import database.room.entities.toEntity
 import database.room.entities.toLocalDto
 import database.room.entities.toVo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import ktor.RemoteReviewAndRatingDataSource
 import main_models.rating_review.ReviewAndRatingTimestampVo
 import main_models.rating_review.ReviewAndRatingVo
+import main_models.rest.rating_review.toVo
 
 class ReviewAndRatingRepositoryImpl(
     private val localReviewAndRatingDataSource: LocalReviewAndRatingDataSource,
@@ -35,4 +38,18 @@ class ReviewAndRatingRepositoryImpl(
     override suspend fun updateReviewAndRatingTimestamp(timestamp: ReviewAndRatingTimestampVo) {
         localReviewAndRatingDataSource.updateReviewAndRatingTimestamp(timestamp.toEntity())
     }
+
+    override suspend fun getCurrentUserLocalReviewAndRatingByBook(bookId: String): Flow<ReviewAndRatingVo?> =
+        localReviewAndRatingDataSource.getCurrentUserReviewAndRatingByBook(
+            bookId = bookId,
+            userId = appConfig.userId
+        ).map { list ->
+            list.firstOrNull()?.toVo()
+        }
+
+    override suspend fun getAllRemoteReviewsAndRatingsByBookId(bookId: String): List<ReviewAndRatingVo> =
+        remoteReviewAndRatingDataSource.getAllRemoteReviewsAndRatingsByBookId(bookId)?.result?.reviewsAndRatings?.mapNotNull { it.toVo() }
+            ?: emptyList()
+
+
 }

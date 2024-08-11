@@ -10,6 +10,7 @@ import main_models.BookVo
 import main_models.DatePickerType
 import main_models.books.BookShortVo
 import main_models.path.PathInfoVo
+import main_models.rating_review.ReviewAndRatingVo
 
 data class BookInfoUiState(
     val bookItem: MutableState<BookVo?> = mutableStateOf(null),
@@ -22,6 +23,9 @@ data class BookInfoUiState(
     var datePickerType: MutableState<DatePickerType> = mutableStateOf(DatePickerType.StartDate),
     val showDatePicker: MutableState<Boolean> = mutableStateOf(false),
     val otherBooksByAuthor: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
+    val currentBookUserReviewAndRating: MutableState<ReviewAndRatingVo?> = mutableStateOf(null),
+    val reviewsAndRatings: MutableState<List<ReviewAndRatingVo>> = mutableStateOf(emptyList()),
+    val reviewsCount: MutableState<Int> = mutableStateOf(0)
 ) {
 
     fun setSelectedAuthor(authorVo: AuthorVo) {

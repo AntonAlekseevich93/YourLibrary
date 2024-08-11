@@ -67,6 +67,8 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
     uiState: BookInfoUiState,
     bookShortVo: BookShortVo?,
     bookName: State<String>,
+    reviewButtonPosition: (position: Int) -> Unit,
+    scrollToReviewButtonListener: () -> Unit,
 ) {
     val hazeState = remember { HazeState() }
     val height = remember { 520.dp }
@@ -244,8 +246,12 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                     currentUserScore = 0,//todo
                     allUsersRating = book.ratingValue,
                     allRatingAmount = book.ratingCount,
-                    userReview = "Отличная книга. Прочитал с полным удовольствием.",
+                    userReview = uiState.currentBookUserReviewAndRating,
                     otherBooksByAuthor = uiState.otherBooksByAuthor,
+                    reviewsAndRatings = uiState.reviewsAndRatings,
+                    reviewsCount = uiState.reviewsCount,
+                    reviewButtonPosition = reviewButtonPosition,
+                    scrollToReviewButtonListener = scrollToReviewButtonListener,
                     onWriteReviewListener = {
                         showWriteReviewBottomSheet = true
                     },

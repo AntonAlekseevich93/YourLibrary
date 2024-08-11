@@ -1,6 +1,7 @@
 package rating.elements
 
 import ApplicationTheme
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ fun BookRatingMiniBlock(
     allUsersRating: Double,
     allRatingAmount: Int,
     currentUserScore: Int?,
+    scrollToReviewButtonListener: () -> Unit,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Row(
@@ -32,7 +34,7 @@ fun BookRatingMiniBlock(
             modifier = Modifier.padding(bottom = 4.dp)
         ) {
             Text(
-                text = allUsersRating.toString(),
+                text = allUsersRating.takeIf { it > 0 }?.toString() ?: "0",
                 style = ApplicationTheme.typography.headlineBold.copy(fontSize = 18.sp),
                 color = ApplicationTheme.colors.mainTextColor,
             )
@@ -56,6 +58,7 @@ fun BookRatingMiniBlock(
                 text = stringResource(Res.string.set_estimate),
                 style = ApplicationTheme.typography.footnoteRegular,
                 color = Color(0xFFa2d2ff),
+                modifier = Modifier.clickable { scrollToReviewButtonListener() }
             )
         }
     }

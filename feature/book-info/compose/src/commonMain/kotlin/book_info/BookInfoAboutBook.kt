@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import book_info.elements.AboutRating
 import book_info.elements.BookInfoCommonItem
 import main_models.books.BookShortVo
-import main_models.review.ReviewVo
+import main_models.rating_review.ReviewAndRatingVo
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import rating.elements.BookRatingMiniBlock
@@ -46,9 +46,13 @@ fun BookInfoAboutBook(
     allUsersRating: Double,
     allRatingAmount: Int,
     currentUserScore: Int?,
-    userReview: String?, //todo fix to object
+    userReview: State<ReviewAndRatingVo?>,
+    reviewsAndRatings: State<List<ReviewAndRatingVo>>,
+    reviewsCount: State<Int>,
     otherBooksByAuthor: State<List<BookShortVo>>,
+    reviewButtonPosition: (position: Int) -> Unit,
     onWriteReviewListener: () -> Unit,
+    scrollToReviewButtonListener: () -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
         Row(
@@ -58,7 +62,8 @@ fun BookInfoAboutBook(
             BookRatingMiniBlock(
                 allUsersRating = allUsersRating,
                 allRatingAmount = allRatingAmount,
-                currentUserScore = currentUserScore
+                currentUserScore = currentUserScore,
+                scrollToReviewButtonListener = scrollToReviewButtonListener,
             )
 
             Spacer(Modifier.padding(16.dp))
@@ -134,58 +139,43 @@ fun BookInfoAboutBook(
         )
 
         ReviewAmountInfoElement(
-            reviewCount = 5,
-            averageRating = 4.2,
+            reviewCount = allRatingAmount,
+            averageRating = allUsersRating,
             modifier = Modifier.padding(top = 36.dp, bottom = 12.dp)
         )
 
         AboutRating(
-            showReviewButton = true, //todo,
-            onClickReviewButton = onWriteReviewListener
+            showReviewButton = userReview.value?.reviewText == null,
+            onClickReviewButton = onWriteReviewListener,
+            reviewButtonPosition = reviewButtonPosition
         )
 
-        Row(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 36.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Отзывы",
-                style = ApplicationTheme.typography.title2Bold,
-                color = ApplicationTheme.colors.mainTextColor,
+        if (reviewsCount.value > 0) {
+            Row(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 36.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Отзывы",
+                    style = ApplicationTheme.typography.title2Bold,
+                    color = ApplicationTheme.colors.mainTextColor,
 
+                    )
+                Spacer(Modifier.weight(1f))
+                Text(
+                    text = "Все ${reviewsCount.value}",
+                    style = ApplicationTheme.typography.headlineBold,
+                    color = ApplicationTheme.colors.screenColor.activeLinkColor,
                 )
-            Spacer(Modifier.weight(1f))
-            Text(
-                text = "Все 10",
-                style = ApplicationTheme.typography.headlineBold,
-                color = ApplicationTheme.colors.screenColor.activeLinkColor,
+            }
+
+            ReviewHorizontalList(
+                reviews = reviewsAndRatings,
+                modifier = Modifier.padding(top = 16.dp),
+                allReviewCount = 10,
+                showAllReviewListener = {}
             )
         }
-
-        ReviewHorizontalList(
-            reviews = listOf(
-                ReviewVo(
-                    reviewText = "Своеобразная книга. Хотелось бы сказать что нибудь в целом идеально, но книга показалась нудной. И временами мне хотелось просто ее закрыть и больше не открывать. Но я пересилила себя. Взяла в руки и в целом я довольна но не рекомендую",
-                    userName = "Александрийская Анна Александровна",
-                    date = "27 апреля 2024",
-                    rating = 3,
-                    likeCount = 2,
-                    dislikeCount = 0,
-                ),
-
-                ReviewVo(
-                    reviewText = "Ну что я могу сказать. Не плохо. Довольно даже не плохо И временами мне хотелось просто ее закрыть и больше не открывать",
-                    userName = "Иван",
-                    date = "1 января 2022",
-                    rating = 4,
-                    likeCount = 0,
-                    dislikeCount = 0,
-                )
-            ),
-            modifier = Modifier.padding(top = 16.dp),
-            allReviewCount = 10,
-            showAllReviewListener = {}
-        )
 
         if (otherBooksByAuthor.value.isNotEmpty()) {
             Row(

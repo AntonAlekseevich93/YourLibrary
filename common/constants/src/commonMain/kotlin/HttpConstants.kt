@@ -17,4 +17,7 @@ object HttpConstants {
     const val UPDATE_USER_BOOK = "books/users/update"
 
     const val SYNCHRONIZE_USER_DATA = "sync/user/data"
+
+    const val GET_ALL_REVIEWS_AND_RATING_BY_BOOK_ID = "books/reviewandrating/get"
+
 }

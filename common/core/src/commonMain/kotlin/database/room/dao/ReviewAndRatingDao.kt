@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import database.room.entities.ReviewAndRatingEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReviewAndRatingDao {
@@ -23,4 +24,10 @@ interface ReviewAndRatingDao {
         bookId: String,
         userId: Long
     ): List<ReviewAndRatingEntity>
+
+    @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and bookId = :bookId")
+    fun getCurrentUserReviewAndRatingByBook(
+        bookId: String,
+        userId: Long
+    ): Flow<List<ReviewAndRatingEntity>>
 }

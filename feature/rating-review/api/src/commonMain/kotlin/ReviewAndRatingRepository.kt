@@ -1,3 +1,4 @@
+import kotlinx.coroutines.flow.Flow
 import main_models.rating_review.ReviewAndRatingTimestampVo
 import main_models.rating_review.ReviewAndRatingVo
 
@@ -11,4 +12,8 @@ interface ReviewAndRatingRepository {
     )
 
     suspend fun updateReviewAndRatingTimestamp(timestamp: ReviewAndRatingTimestampVo)
+
+    suspend fun getCurrentUserLocalReviewAndRatingByBook(bookId: String): Flow<ReviewAndRatingVo?>
+
+    suspend fun getAllRemoteReviewsAndRatingsByBookId(bookId: String): List<ReviewAndRatingVo>
 }

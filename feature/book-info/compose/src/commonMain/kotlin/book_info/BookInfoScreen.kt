@@ -17,6 +17,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +27,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
+import kotlinx.coroutines.launch
 import main_models.books.BookShortVo
 
 @Composable
@@ -34,11 +37,12 @@ fun BookInfoScreen(
 ) {
     val viewModel = remember { Inject.instance<BookInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
-
+    val scope = rememberCoroutineScope()
     val appBarHazeState = remember { HazeState() }
     val scrollState = rememberScrollState()
 
     val isTransparentAppbar = remember { mutableStateOf(true) }
+    var reviewButtonPosition by remember { mutableStateOf(0) }
 
     val bookName = remember(
         key1 = uiState.bookItem.value,
@@ -91,6 +95,14 @@ fun BookInfoScreen(
                     uiState = uiState,
                     bookShortVo = bookShortVo,
                     bookName = bookName,
+                    reviewButtonPosition = {
+                        reviewButtonPosition = it
+                    },
+                    scrollToReviewButtonListener = {
+                        scope.launch {
+                            scrollState.animateScrollTo(reviewButtonPosition)
+                        }
+                    }
                 )
             }
         }

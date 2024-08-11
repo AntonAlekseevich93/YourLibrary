@@ -28,6 +28,8 @@ class BookInfoViewModel(
 ) : BookInfoScope<BaseEvent> {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
+    private var bookJob: Job? = null
+    private var reviewAndRatingJob: Job? = null
     private val _uiState: MutableStateFlow<BookInfoUiState> = MutableStateFlow(BookInfoUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -69,12 +71,36 @@ class BookInfoViewModel(
     }
 
     fun getBook(localBookId: Long) {
-        scope.launch(Dispatchers.IO) {
+        bookJob?.cancel()
+        reviewAndRatingJob?.cancel()
+        bookJob = scope.launch(Dispatchers.IO) {
             interactor.getLocalBookById(localBookId).collect { response ->
                 response?.let { book ->
                     _uiState.value.bookItem.value = book
+                    getCurrentUserReviewAndRatingByBook(book.bookId)
+                    getAllReviewsAndRatingsByBookId(book.bookId)
                     getAllBooksByAuthor(book.originalAuthorId)
                 }
+            }
+        }
+    }
+
+    private suspend fun getCurrentUserReviewAndRatingByBook(bookId: String) {
+        scope.launch(Dispatchers.IO) {
+            interactor.getCurrentUserReviewAndRatingByBook(bookId).collect { reviewAndRating ->
+                reviewAndRating?.let {
+                    _uiState.value.currentBookUserReviewAndRating.value = it
+                }
+            }
+        }
+    }
+
+    private suspend fun getAllReviewsAndRatingsByBookId(bookId: String) {
+        reviewAndRatingJob = scope.launch(Dispatchers.IO) {
+            val response = interactor.getAllRemoteReviewsAndRatingsByBookId(bookId)
+            if (response.isNotEmpty()) {
+                _uiState.value.reviewsAndRatings.value = response
+                _uiState.value.reviewsCount.value = response.count { it.reviewText != null }
             }
         }
     }

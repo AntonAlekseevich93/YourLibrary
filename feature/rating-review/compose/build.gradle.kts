@@ -12,6 +12,7 @@ kotlin {
                 implementation(deps.bundles.sketchImageLoader)
                 implementation(deps.hazeBlur)
                 implementation(project(":common:core"))
+                implementation(project(":common:utils:date"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:models"))
                 implementation(project(":common:scopes"))

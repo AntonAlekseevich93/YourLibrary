@@ -1,6 +1,7 @@
 package review
 
 import ApplicationTheme
+import DateUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -16,13 +17,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
-import main_models.review.ReviewVo
+import main_models.rating_review.ReviewAndRatingVo
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 import rating.elements.RatingBarElement
@@ -31,10 +33,11 @@ import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_dislike
 import yourlibrary.common.resources.generated.resources.ic_like
 import yourlibrary.common.resources.generated.resources.show_all_reviews
+import java.util.Locale
 
 @Composable
 fun ReviewHorizontalList(
-    reviews: List<ReviewVo>,
+    reviews: State<List<ReviewAndRatingVo>>,
     allReviewCount: Int,
     modifier: Modifier = Modifier,
     maxReviews: Int = 3,
@@ -45,11 +48,13 @@ fun ReviewHorizontalList(
         modifier = modifier.horizontalScroll(scrollState).padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        reviews.fastForEachIndexed { index, review ->
+        reviews.value.fastForEachIndexed { index, review ->
             if (index + 1 > maxReviews) {
                 return@fastForEachIndexed
             }
-            ReviewHorizontalListItem(review, modifier = Modifier.padding(end = 16.dp))
+            if (review.reviewText != null) {
+                ReviewHorizontalListItem(review, modifier = Modifier.padding(end = 16.dp))
+            }
         }
         if (allReviewCount > maxReviews) {
             Text(
@@ -71,7 +76,7 @@ fun ReviewHorizontalList(
 
 @Composable
 internal fun ReviewHorizontalListItem(
-    review: ReviewVo,
+    review: ReviewAndRatingVo,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -84,16 +89,20 @@ internal fun ReviewHorizontalListItem(
                 modifier = Modifier.padding(bottom = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val dateInString = DateUtils.getDateInStringFromMillis(
+                    review.timestampOfCreatingReview,
+                    locale = Locale.ROOT
+                )
                 ReviewUserWithDateInfo(
                     userName = review.userName,
-                    date = review.date,
+                    date = dateInString,
                     modifier = Modifier.weight(1f).padding(end = 16.dp)
                 )
                 RatingBarElement(iconSize = 20.dp, rating = 3)
             }
 
             ExpandableText(
-                text = review.reviewText,
+                text = review.reviewText!!,
                 disableOnClick = true,
                 collapsedMaxLine = 4,
             )
@@ -109,7 +118,7 @@ internal fun ReviewHorizontalListItem(
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                 )
                 Text(
-                    text = review.likeCount.toString(),
+                    text = review.likesCount.toString(),
                     style = ApplicationTheme.typography.bodyRegular,
                     color = ApplicationTheme.colors.hintColor,
                     modifier = Modifier.padding(end = 22.dp)
@@ -123,7 +132,7 @@ internal fun ReviewHorizontalListItem(
                 )
 
                 Text(
-                    text = review.dislikeCount.toString(),
+                    text = review.dislikesCount.toString(),
                     style = ApplicationTheme.typography.bodyRegular,
                     color = ApplicationTheme.colors.hintColor,
                 )
