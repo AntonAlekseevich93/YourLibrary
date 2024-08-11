@@ -19,6 +19,8 @@ data class SynchronizeReviewAndRatingContent(
     val missingReviewsAndRatingsFromServer: MissingReviewsAndRatingsFromServer? = null,
     @SerialName("currentDeviceReviewsAndRatingsAddedToServer")
     val currentDeviceReviewsAndRatingsAddedToServer: CurrentDeviceReviewsAndRatingsAddedToServer? = null,
+    @SerialName("currentDeviceReviewLastTimestamp") val currentDeviceReviewLastTimestamp: Long?,
+    @SerialName("currentDeviceRatingLastTimestamp") val currentDeviceRatingLastTimestamp: Long?,
 )
 
 @Serializable

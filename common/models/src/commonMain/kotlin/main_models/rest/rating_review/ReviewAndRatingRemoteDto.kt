@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import main_models.rating_review.ReviewAndRatingVo
 
 @Serializable
-class ReviewAndRatingRemoteDto(
+data class ReviewAndRatingRemoteDto(
     @SerialName("id") val id: Int?,
     @SerialName("ratingScore") val ratingScore: Int,
     @SerialName("reviewText") val reviewText: String?,
@@ -62,6 +62,31 @@ fun ReviewAndRatingRemoteDto.toVo(): ReviewAndRatingVo? {
         bookId = bookId,
         bookAuthorId = bookAuthorId,
         userId = userId ?: return null,
+        userName = userName,
+        likesCount = likesCount,
+        dislikesCount = dislikesCount,
+        answersCount = answersCount,
+        isApprovedReview = isApprovedReview,
+        isDisapprovedReview = isDisapprovedReview,
+        timestampOfCreatingScore = timestampOfCreatingScore,
+        timestampOfUpdatingScore = timestampOfUpdatingScore,
+        timestampOfCreatingReview = timestampOfCreatingReview,
+        timestampOfUpdatingReview = timestampOfUpdatingReview,
+        updatedByDeviceId = updatedByDeviceId,
+        bookGenreId = bookGenreId,
+        isCreatedManuallyBook = isCreatedManuallyBook,
+        bookForAllUsers = bookForAllUsers,
+    )
+}
+
+fun ReviewAndRatingVo.toRemoteDto(): ReviewAndRatingRemoteDto? {
+    return ReviewAndRatingRemoteDto(
+        id = id,
+        ratingScore = ratingScore,
+        reviewText = reviewText,
+        bookId = bookId,
+        bookAuthorId = bookAuthorId,
+        userId = userId,
         userName = userName,
         likesCount = likesCount,
         dislikesCount = dislikesCount,

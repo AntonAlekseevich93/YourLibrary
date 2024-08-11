@@ -21,3 +21,11 @@ fun ReviewAndRatingTimestampEntity.toVo() = ReviewAndRatingTimestampVo(
     otherDevicesTimestampReview = otherDevicesTimestampReview,
     thisDeviceTimestampReview = thisDeviceTimestampReview,
 )
+
+fun ReviewAndRatingTimestampVo.toEntity() = ReviewAndRatingTimestampEntity(
+    userId = userId,
+    otherDevicesTimestampRating = otherDevicesTimestampRating,
+    thisDeviceTimestampRating = thisDeviceTimestampRating,
+    otherDevicesTimestampReview = otherDevicesTimestampReview,
+    thisDeviceTimestampReview = thisDeviceTimestampReview,
+)

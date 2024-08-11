@@ -11,6 +11,7 @@ kotlin {
                 api(project(":feature:synchronization:api"))
                 api(project(":feature:book-info:api"))
                 api(project(":feature:authors:api"))
+                api(project(":feature:rating-review:api"))
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
                 implementation(project(":common:constants"))

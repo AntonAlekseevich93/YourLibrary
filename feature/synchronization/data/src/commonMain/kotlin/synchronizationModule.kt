@@ -7,7 +7,14 @@ import org.kodein.di.singleton
 
 val synchronizationModule = DI.Module("synchronizationModule") {
     bind<SynchronizationRepository>() with singleton {
-        SynchronizationRepositoryImpl(instance(), instance(), instance(), instance(), instance())
+        SynchronizationRepositoryImpl(
+            instance(),
+            instance(),
+            instance(),
+            instance(),
+            instance(),
+            instance()
+        )
     }
 
     bind<RemoteSynchronizationDataSource>() with provider {
