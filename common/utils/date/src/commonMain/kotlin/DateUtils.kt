@@ -4,7 +4,7 @@ import java.util.Locale
 
 class DateUtils {
     companion object {
-        const val DATE_FORMAT = "dd-MM-yyyy"
+        const val DATE_FORMAT = "dd.MM.yyyy"
 
         fun getDateInStringFromMillis(millis: Long, locale: Locale): String {
             try {

@@ -1,5 +1,6 @@
 import androidx.compose.ui.text.TextRange
 import book_editor.BookEditorEvents
+import common_events.ReviewAndRatingEvents
 import date.DatePickerEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,7 @@ class BookInfoViewModel(
     private val tooltipHandler: TooltipHandler,
     private val applicationScope: ApplicationScope,
     private val drawerScope: DrawerScope,
+    private val appConfig: AppConfig,
 ) : BookInfoScope<BaseEvent> {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
@@ -53,6 +55,14 @@ class BookInfoViewModel(
                         )
                     }
                 }
+            }
+
+            is ReviewAndRatingEvents.ChangeBookRating -> {
+                updateRating(event.newRating)
+            }
+
+            is ReviewAndRatingEvents.AddReview -> {
+                addReview(event.reviewText)
             }
 
             is BookEditorEvents.OnAuthorTextChanged -> {
@@ -90,6 +100,13 @@ class BookInfoViewModel(
             interactor.getCurrentUserReviewAndRatingByBook(bookId).collect { reviewAndRating ->
                 reviewAndRating?.let {
                     _uiState.value.currentBookUserReviewAndRating.value = it
+                    if (!it.reviewText.isNullOrEmpty()) {
+                        val list = _uiState.value.reviewsAndRatings.value.toMutableList()
+                        list.removeAll { it.userId == appConfig.userId.toInt() }
+                        list.add(0, it)
+                        _uiState.value.reviewsAndRatings.value = list
+                        _uiState.value.reviewsCount.value = _uiState.value.reviewsCount.value + 1
+                    }
                 }
             }
         }
@@ -99,8 +116,10 @@ class BookInfoViewModel(
         reviewAndRatingJob = scope.launch(Dispatchers.IO) {
             val response = interactor.getAllRemoteReviewsAndRatingsByBookId(bookId)
             if (response.isNotEmpty()) {
-                _uiState.value.reviewsAndRatings.value = response
-                _uiState.value.reviewsCount.value = response.count { it.reviewText != null }
+                val resultList = response.toMutableList()
+                resultList.removeAll { it.userId == appConfig.userId.toInt() }
+                _uiState.value.reviewsAndRatings.value = resultList
+                _uiState.value.reviewsCount.value = resultList.count { it.reviewText != null }
             }
         }
     }
@@ -151,6 +170,32 @@ class BookInfoViewModel(
                 selection = TextRange(author.name.length)
             )
             clearSearchAuthor()
+        }
+    }
+
+    private fun updateRating(newRating: Int) {
+        scope.launch(Dispatchers.IO) {
+            _uiState.value.bookItem.value?.let { //todo fix здесь может быть не только юзер бук
+                interactor.updateOrCreateRating(
+                    newRating = newRating,
+                    bookId = it.bookId,
+                    bookAuthorId = it.originalAuthorId,
+                    bookGenreId = it.bookGenreId,
+                    isCreatedManuallyBook = it.bookIsCreatedManually,
+                    bookForAllUsers = it.bookForAllUsers,
+                )
+            }
+        }
+    }
+
+    private fun addReview(reviewText: String) {
+        scope.launch(Dispatchers.IO) {
+            _uiState.value.bookItem.value?.let {
+                interactor.addReview(
+                    reviewText = reviewText,
+                    bookId = it.bookId
+                )
+            }
         }
     }
 }

@@ -14,10 +14,10 @@
     </plurals>
 
     <plurals name="page_count">
-        <item quantity="one">%1$d страница</item>
-        <item quantity="few">%1$d страницы</item>
-        <item quantity="many">%1$d страниц</item>
-        <item quantity="other">%1$d страниц</item>
+        <item quantity="one">страница</item>
+        <item quantity="few">страницы</item>
+        <item quantity="many">страниц</item>
+        <item quantity="other">страниц</item>
     </plurals>
 
     <plurals name="show_all_reviews">

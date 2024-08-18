@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ReviewAndRatingDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdateReviewAndRating(reviewAndRating: ReviewAndRatingEntity)
+    suspend fun insertOrUpdateReviewAndRating(reviewAndRating: ReviewAndRatingEntity): Long
 
     @Query("SELECT * FROM ReviewAndRatingEntity WHERE (timestampOfUpdatingScore > :ratingTimestamp OR timestampOfUpdatingReview > :reviewTimestamp) AND userId = :userId")
     suspend fun getNotSynchronizedReviewAndRating(
@@ -26,8 +26,14 @@ interface ReviewAndRatingDao {
     ): List<ReviewAndRatingEntity>
 
     @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and bookId = :bookId")
-    fun getCurrentUserReviewAndRatingByBook(
+    fun getCurrentUserReviewAndRatingByBookFlow(
         bookId: String,
         userId: Long
     ): Flow<List<ReviewAndRatingEntity>>
+
+    @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and bookId = :bookId")
+    suspend fun getCurrentUserReviewAndRatingByBook(
+        bookId: String,
+        userId: Long
+    ): List<ReviewAndRatingEntity>
 }

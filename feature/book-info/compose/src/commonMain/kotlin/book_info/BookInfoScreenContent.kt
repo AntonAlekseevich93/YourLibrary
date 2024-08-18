@@ -243,10 +243,9 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                     endDate = book.endDateInString,
                     readingDayAmount = book.getReadingDays(),
                     ageRestrictions = book.ageRestrictions,
-                    currentUserScore = 0,//todo
                     allUsersRating = book.ratingValue,
                     allRatingAmount = book.ratingCount,
-                    userReview = uiState.currentBookUserReviewAndRating,
+                    userReviewAndRating = uiState.currentBookUserReviewAndRating,
                     otherBooksByAuthor = uiState.otherBooksByAuthor,
                     reviewsAndRatings = uiState.reviewsAndRatings,
                     reviewsCount = uiState.reviewsCount,
@@ -287,7 +286,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
             ) {
                 WriteReviewScreen(
                     bookName = bookName.value,
-                    userRating = 0,//todo
+                    userRating = uiState.currentBookUserReviewAndRating.value?.ratingScore,
                     modifier = Modifier
                 )
             }

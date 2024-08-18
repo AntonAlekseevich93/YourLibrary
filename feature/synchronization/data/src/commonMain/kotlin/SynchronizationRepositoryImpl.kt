@@ -109,6 +109,14 @@ class SynchronizationRepositoryImpl(
         result.booksCurrentDevice?.let { currentDevicesBooks ->
             if (currentDevicesBooks.isNotEmpty()) {
                 bookRepository.addOrUpdateLocalBooks(currentDevicesBooks, userId = userId)
+                runCatching { currentDevicesBooks.maxBy { it.timestampOfUpdating!! } }.getOrNull()?.timestampOfUpdating?.let {
+                    val booksTimestamp = bookRepository.getBookTimestamp(userId = userId)
+                    bookRepository.updateBookTimestamp(
+                        booksTimestamp.copy(
+                            thisDeviceTimestamp = it
+                        )
+                    )
+                }
             }
         }
 
@@ -128,7 +136,7 @@ class SynchronizationRepositoryImpl(
         response.missingReviewsAndRatingsFromServer?.let {
             it.reviewsAndRatingCurrentDevice.let { currentDeviceReviewAndRating ->
                 if (currentDeviceReviewAndRating.isNotEmpty()) {
-                    reviewAndRatingRepository.addOrUpdateLocalReviewAndRating(
+                    reviewAndRatingRepository.addOrUpdateLocalReviewAndRatingWhenSync(
                         currentDeviceReviewAndRating.mapNotNull { it.toVo() },
                         userId = userId
                     )
@@ -143,7 +151,7 @@ class SynchronizationRepositoryImpl(
                 val lastTimestampRating = othersDeviceReviewAndRating.takeIf { it.isNotEmpty() }
                     ?.maxBy { it.timestampOfUpdatingReview }?.timestampOfUpdatingReview
                 if (othersDeviceReviewAndRating.isNotEmpty()) {
-                    reviewAndRatingRepository.addOrUpdateLocalReviewAndRating(
+                    reviewAndRatingRepository.addOrUpdateLocalReviewAndRatingWhenSync(
                         othersDeviceReviewAndRating.mapNotNull { it.toVo() },
                         userId = userId
                     )
@@ -163,7 +171,7 @@ class SynchronizationRepositoryImpl(
 
         response.currentDeviceReviewsAndRatingsAddedToServer?.let { result ->
             val resultReviewsAndRating = result.reviewsAndRating.mapNotNull { it.toVo() }
-            reviewAndRatingRepository.addOrUpdateLocalReviewAndRating(
+            reviewAndRatingRepository.addOrUpdateLocalReviewAndRatingWhenSync(
                 resultReviewsAndRating,
                 userId = userId
             )

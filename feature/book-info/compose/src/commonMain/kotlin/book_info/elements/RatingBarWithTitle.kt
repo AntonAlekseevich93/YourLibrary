@@ -1,6 +1,8 @@
 package book_info.elements
 
 import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.dp
+import common_events.ReviewAndRatingEvents
 import org.jetbrains.compose.resources.stringResource
 import rating.elements.RatingBarElement
 import review.elements.AddNewReviewButton
@@ -18,8 +21,9 @@ import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.rating_bar_title
 
 @Composable
-internal fun AboutRating(
+internal fun BaseEventScope<BaseEvent>.AboutRating(
     showReviewButton: Boolean,
+    userRating: Int,
     reviewButtonPosition: (position: Int) -> Unit,
     onClickReviewButton: () -> Unit,
 ) {
@@ -33,8 +37,12 @@ internal fun AboutRating(
             color = ApplicationTheme.colors.mainTextColor,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        RatingBarElement() {
-        }
+        RatingBarElement(
+            rating = userRating,
+            selectedRatingListener = {
+                sendEvent(ReviewAndRatingEvents.ChangeBookRating(newRating = it))
+            }
+        )
     }
 
     if (showReviewButton) {

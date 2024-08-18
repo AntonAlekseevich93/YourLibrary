@@ -31,9 +31,17 @@ class LocalReviewAndRatingDataSource(
         )
     }
 
-    fun getCurrentUserReviewAndRatingByBook(bookId: String, userId: Long): Flow<List<ReviewAndRatingEntity>> =
-        reviewAndRatingDao.getCurrentUserReviewAndRatingByBook(bookId, userId)
+    suspend fun getCurrentUserReviewAndRatingByBookFlow(
+        bookId: String,
+        userId: Long
+    ): Flow<List<ReviewAndRatingEntity>> =
+        reviewAndRatingDao.getCurrentUserReviewAndRatingByBookFlow(bookId, userId)
 
+    suspend fun getCurrentUserReviewAndRatingByBook(
+        bookId: String,
+        userId: Long
+    ): List<ReviewAndRatingEntity> =
+        reviewAndRatingDao.getCurrentUserReviewAndRatingByBook(bookId, userId)
 
     private suspend fun createEmptyTimestamp(userId: Long): ReviewAndRatingTimestampEntity {
         val timestamp = ReviewAndRatingTimestampEntity(
@@ -47,7 +55,8 @@ class LocalReviewAndRatingDataSource(
         return timestamp
     }
 
-    suspend fun addOrUpdateReviewAndRating(
+    /**do not use this function except for synchronization**/
+    suspend fun addOrUpdateLocalReviewAndRatingWhenSync(
         reviewAndRating: List<ReviewAndRatingEntity>,
         userId: Long
     ) {
@@ -64,4 +73,60 @@ class LocalReviewAndRatingDataSource(
         }
     }
 
+    suspend fun addOrUpdateJustRating(
+        reviewAndRating: ReviewAndRatingEntity,
+        userId: Long,
+    ): Long {
+        val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(
+            reviewAndRating.bookId,
+            userId = userId
+        ).firstOrNull()
+        return if (existedReviewAndRating == null) {
+            reviewAndRatingDao.insertOrUpdateReviewAndRating(reviewAndRating)
+        } else {
+            reviewAndRatingDao.insertOrUpdateReviewAndRating(
+                existedReviewAndRating.copy(
+                    ratingScore = reviewAndRating.ratingScore,
+                    timestampOfUpdatingScore = reviewAndRating.timestampOfUpdatingScore
+                )
+            )
+        }
+    }
+
+    suspend fun addJustReview(
+        reviewAndRating: ReviewAndRatingEntity,
+        userId: Long,
+    ): Long? {
+        if (reviewAndRating.reviewText.isNullOrEmpty()) return null
+        val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(
+            reviewAndRating.bookId,
+            userId = userId
+        ).firstOrNull()
+
+        existedReviewAndRating?.copy(
+            reviewText = reviewAndRating.reviewText,
+            timestampOfCreatingReview = reviewAndRating.timestampOfCreatingReview,
+        )?.let {
+            return reviewAndRatingDao.insertOrUpdateReviewAndRating(it)
+        }
+        return null
+    }
+
+    suspend fun updateJustReview(
+        reviewAndRating: ReviewAndRatingEntity,
+        userId: Long,
+    ): Long? {
+        if (reviewAndRating.reviewText.isNullOrEmpty()) return null
+        val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(
+            reviewAndRating.bookId,
+            userId = userId
+        ).firstOrNull()
+        existedReviewAndRating?.copy(
+            reviewText = reviewAndRating.reviewText,
+            timestampOfUpdatingReview = reviewAndRating.timestampOfUpdatingReview,
+        )?.let {
+            return reviewAndRatingDao.insertOrUpdateReviewAndRating(it)
+        }
+        return null
+    }
 }

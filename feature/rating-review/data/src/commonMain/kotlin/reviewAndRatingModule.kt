@@ -8,7 +8,7 @@ import org.kodein.di.singleton
 
 val reviewAndRatingModule = DI.Module("reviewAndRatingModule") {
     bind<ReviewAndRatingRepository>() with singleton {
-        ReviewAndRatingRepositoryImpl(instance(), instance(), instance(), instance())
+        ReviewAndRatingRepositoryImpl(instance(), instance(), instance(), instance(), instance())
     }
 
     bind<LocalReviewAndRatingDataSource>() with provider {

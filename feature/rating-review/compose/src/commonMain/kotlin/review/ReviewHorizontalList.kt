@@ -8,8 +8,10 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -98,7 +100,7 @@ internal fun ReviewHorizontalListItem(
                     date = dateInString,
                     modifier = Modifier.weight(1f).padding(end = 16.dp)
                 )
-                RatingBarElement(iconSize = 20.dp, rating = 3)
+                RatingBarElement(iconSize = 20.dp, rating = review.ratingScore)
             }
 
             ExpandableText(
@@ -114,7 +116,7 @@ internal fun ReviewHorizontalListItem(
                 Image(
                     painter = painterResource(Res.drawable.ic_like),
                     contentDescription = null,
-                    modifier = Modifier.padding(end = 10.dp),
+                    modifier = Modifier.padding(end = 10.dp).size(24.dp),
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                 )
                 Text(
@@ -127,7 +129,7 @@ internal fun ReviewHorizontalListItem(
                 Image(
                     painter = painterResource(Res.drawable.ic_dislike),
                     contentDescription = null,
-                    modifier = Modifier.padding(end = 10.dp),
+                    modifier = Modifier.padding(end = 10.dp).size(24.dp),
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                 )
 
@@ -136,6 +138,14 @@ internal fun ReviewHorizontalListItem(
                     style = ApplicationTheme.typography.bodyRegular,
                     color = ApplicationTheme.colors.hintColor,
                 )
+                Spacer(Modifier.weight(1f))
+                if(!review.isApprovedReview) {
+                    Text(
+                        text = "На модерации",
+                        style = ApplicationTheme.typography.bodyRegular,
+                        color = ApplicationTheme.colors.screenColor.activeLinkColor,
+                    )
+                }
             }
         }
     }

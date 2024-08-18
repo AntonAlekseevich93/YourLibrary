@@ -22,4 +22,77 @@ class ReviewAndRatingVo(
     val bookGenreId: Int,
     val isCreatedManuallyBook: Boolean,
     val bookForAllUsers: Boolean,
-)
+) {
+
+    companion object {
+        fun createEmptyRating(
+            rating: Int,
+            bookId: String,
+            bookAuthorId: String,
+            bookGenreId: Int,
+            isCreatedManuallyBook: Boolean,
+            bookForAllUsers: Boolean,
+            userId: Int,
+            userName: String,
+            deviceId: String,
+            timestamp: Long
+        ): ReviewAndRatingVo = ReviewAndRatingVo(
+            id = null,
+            localId = null,
+            ratingScore = rating,
+            reviewText = null,
+            bookId = bookId,
+            bookAuthorId = bookAuthorId,
+            userId = userId,
+            userName = userName,
+            likesCount = 0,
+            dislikesCount = 0,
+            answersCount = 0,
+            isApprovedReview = false,
+            isDisapprovedReview = false,
+            timestampOfCreatingScore = timestamp,
+            timestampOfUpdatingScore = timestamp,
+            timestampOfCreatingReview = 0,
+            timestampOfUpdatingReview = 0,
+            updatedByDeviceId = deviceId,
+            bookGenreId = bookGenreId,
+            isCreatedManuallyBook = isCreatedManuallyBook,
+            bookForAllUsers = bookForAllUsers,
+        )
+
+        fun createEmptyReview(
+            rating: Int,
+            bookId: String,
+            bookAuthorId: String,
+            bookGenreId: Int,
+            isCreatedManuallyBook: Boolean,
+            bookForAllUsers: Boolean,
+            userId: Int,
+            userName: String,
+            deviceId: String,
+            timestamp: Long
+        ): ReviewAndRatingVo = ReviewAndRatingVo(
+            id = null,
+            localId = null,
+            ratingScore = rating,
+            reviewText = null,
+            bookId = bookId,
+            bookAuthorId = bookAuthorId,
+            userId = userId,
+            userName = userName,
+            likesCount = 0,
+            dislikesCount = 0,
+            answersCount = 0,
+            isApprovedReview = false,
+            isDisapprovedReview = false,
+            timestampOfCreatingScore = timestamp,
+            timestampOfUpdatingScore = timestamp,
+            timestampOfCreatingReview = 0,
+            timestampOfUpdatingReview = 0,
+            updatedByDeviceId = deviceId,
+            bookGenreId = bookGenreId,
+            isCreatedManuallyBook = isCreatedManuallyBook,
+            bookForAllUsers = bookForAllUsers,
+        )
+    }
+}

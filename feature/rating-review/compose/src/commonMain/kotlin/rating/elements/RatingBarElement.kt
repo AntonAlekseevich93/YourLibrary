@@ -31,7 +31,7 @@ fun RatingBarElement(
                         .size(iconSize)
                         .clip(CircleShape)
                         .clickable(enabled = selectedRatingListener != null) {
-                            selectedRatingListener?.invoke(rating.toInt())
+                            selectedRatingListener?.invoke(index+1)
                         }
                 )
             } else {
@@ -43,7 +43,7 @@ fun RatingBarElement(
                         .size(iconSize)
                         .clip(CircleShape)
                         .clickable(enabled = selectedRatingListener != null) {
-                            selectedRatingListener?.invoke(rating.toInt())
+                            selectedRatingListener?.invoke(index+1)
                         }
                 )
             }

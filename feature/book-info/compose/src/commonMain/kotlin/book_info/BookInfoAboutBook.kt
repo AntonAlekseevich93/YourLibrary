@@ -1,6 +1,8 @@
 package book_info
 
 import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,7 +37,7 @@ import yourlibrary.common.resources.generated.resources.read_in_days
 
 
 @Composable
-fun BookInfoAboutBook(
+fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
     description: String,
     genre: String,
     ageRestrictions: String?,
@@ -45,8 +47,7 @@ fun BookInfoAboutBook(
     readingDayAmount: Int?,
     allUsersRating: Double,
     allRatingAmount: Int,
-    currentUserScore: Int?,
-    userReview: State<ReviewAndRatingVo?>,
+    userReviewAndRating: State<ReviewAndRatingVo?>,
     reviewsAndRatings: State<List<ReviewAndRatingVo>>,
     reviewsCount: State<Int>,
     otherBooksByAuthor: State<List<BookShortVo>>,
@@ -62,7 +63,7 @@ fun BookInfoAboutBook(
             BookRatingMiniBlock(
                 allUsersRating = allUsersRating,
                 allRatingAmount = allRatingAmount,
-                currentUserScore = currentUserScore,
+                currentUserScore = userReviewAndRating.value?.ratingScore,
                 scrollToReviewButtonListener = scrollToReviewButtonListener,
             )
 
@@ -71,7 +72,7 @@ fun BookInfoAboutBook(
             if (pageCount > 0) {
                 BookInfoCommonItem(
                     title = pageCount.toString(),
-                    description = pluralStringResource(Res.plurals.page_count, pageCount, pageCount)
+                    description = pluralStringResource(Res.plurals.page_count, pageCount)
                 )
                 Spacer(Modifier.padding(16.dp))
             }
@@ -145,9 +146,10 @@ fun BookInfoAboutBook(
         )
 
         AboutRating(
-            showReviewButton = userReview.value?.reviewText == null,
+            showReviewButton = userReviewAndRating.value?.reviewText == null,
+            reviewButtonPosition = reviewButtonPosition,
+            userRating = userReviewAndRating.value?.ratingScore ?: 0,
             onClickReviewButton = onWriteReviewListener,
-            reviewButtonPosition = reviewButtonPosition
         )
 
         if (reviewsCount.value > 0) {
@@ -161,19 +163,23 @@ fun BookInfoAboutBook(
                     color = ApplicationTheme.colors.mainTextColor,
 
                     )
-                Spacer(Modifier.weight(1f))
-                Text(
-                    text = "Все ${reviewsCount.value}",
-                    style = ApplicationTheme.typography.headlineBold,
-                    color = ApplicationTheme.colors.screenColor.activeLinkColor,
-                )
+                if (reviewsAndRatings.value.size > 1) {
+                    Spacer(Modifier.weight(1f))
+                    Text(
+                        text = "Все ${reviewsCount.value}",
+                        style = ApplicationTheme.typography.headlineBold,
+                        color = ApplicationTheme.colors.screenColor.activeLinkColor,
+                    )
+                }
             }
 
             ReviewHorizontalList(
                 reviews = reviewsAndRatings,
                 modifier = Modifier.padding(top = 16.dp),
-                allReviewCount = 10,
-                showAllReviewListener = {}
+                allReviewCount = reviewsAndRatings.value.size,
+                showAllReviewListener = {
+
+                }
             )
         }
 

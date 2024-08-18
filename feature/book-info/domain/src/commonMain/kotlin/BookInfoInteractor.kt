@@ -28,4 +28,29 @@ class BookInfoInteractor(
     suspend fun getAllRemoteReviewsAndRatingsByBookId(bookId: String) =
         reviewAndRatingRepository.getAllRemoteReviewsAndRatingsByBookId(bookId)
 
+    suspend fun updateOrCreateRating(
+        newRating: Int,
+        bookId: String,
+        bookAuthorId: String,
+        bookGenreId: Int,
+        isCreatedManuallyBook: Boolean,
+        bookForAllUsers: Boolean,
+    ) {
+        reviewAndRatingRepository.addOrUpdateRatingByBookId(
+            newRating = newRating,
+            bookId = bookId,
+            bookAuthorId = bookAuthorId,
+            bookGenreId = bookGenreId,
+            isCreatedManuallyBook = isCreatedManuallyBook,
+            bookForAllUsers = bookForAllUsers,
+        )
+    }
+
+    suspend fun addReview(reviewText: String, bookId: String) {
+        reviewAndRatingRepository.addReviewByBookId(
+            reviewText = reviewText,
+            bookId = bookId
+        )
+    }
+
 }

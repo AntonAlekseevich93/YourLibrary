@@ -1,6 +1,8 @@
 package review
 
 import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import common_events.ReviewAndRatingEvents
 import org.jetbrains.compose.resources.stringResource
 import rating.elements.RatingBarElement
 import text_fields.CommonTextField
@@ -35,7 +38,7 @@ import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.review_text_field_hint
 
 @Composable
-fun WriteReviewScreen(
+fun BaseEventScope<BaseEvent>.WriteReviewScreen(
     bookName: String,
     userRating: Int?,
     modifier: Modifier = Modifier,
@@ -43,7 +46,7 @@ fun WriteReviewScreen(
     val scrollState = rememberScrollState()
     var textState by remember { mutableStateOf(TextFieldValue()) }
     val charCount = remember { mutableStateOf(textState.text.length) }
-    val minTextLength = remember { 1 }
+    val minTextLength = remember { 70 }
     val charCountText = remember { mutableStateOf("${charCount.value}/$minTextLength") }
     var isActiveButton by remember { mutableStateOf(charCount.value >= minTextLength) }
 
@@ -67,9 +70,13 @@ fun WriteReviewScreen(
                 color = ApplicationTheme.colors.mainTextColor,
                 modifier = Modifier.padding(bottom = 8.dp, top = 10.dp)
             )
-            RatingBarElement(modifier = Modifier.padding(), iconSize = 26.dp) {
-
-            }
+            RatingBarElement(
+                modifier = Modifier.padding(), iconSize = 26.dp,
+                rating = userRating ?: 0,
+                selectedRatingListener = {
+                    sendEvent(ReviewAndRatingEvents.ChangeBookRating(newRating = it))
+                }
+            )
         }
 
         CommonTextField(
@@ -120,7 +127,13 @@ fun WriteReviewScreen(
         }
 
         Button(
-            onClick = {},
+            onClick = {
+                sendEvent(
+                    ReviewAndRatingEvents.AddReview(
+                        reviewText = textState.text
+                    )
+                )
+            },
             enabled = isActiveButton,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = ApplicationTheme.colors.screenColor.activeLinkColor,
