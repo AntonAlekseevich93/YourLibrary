@@ -31,10 +31,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import common_events.ReviewAndRatingEvents
+import containters.CenterBoxContainer
 import org.jetbrains.compose.resources.stringResource
 import rating.elements.RatingBarElement
 import text_fields.CommonTextField
 import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.add_review_title
+import yourlibrary.common.resources.generated.resources.do_you_like_book_question
+import yourlibrary.common.resources.generated.resources.min_review_length
+import yourlibrary.common.resources.generated.resources.review_error_when_user_rating_not_exist
 import yourlibrary.common.resources.generated.resources.review_text_field_hint
 
 @Composable
@@ -46,9 +51,12 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
     val scrollState = rememberScrollState()
     var textState by remember { mutableStateOf(TextFieldValue()) }
     val charCount = remember { mutableStateOf(textState.text.length) }
-    val minTextLength = remember { 70 }
+    val minTextLength = remember { 1 }
     val charCountText = remember { mutableStateOf("${charCount.value}/$minTextLength") }
-    var isActiveButton by remember { mutableStateOf(charCount.value >= minTextLength) }
+    val isActiveButton by remember(key1 = charCount.value) { mutableStateOf(charCount.value >= minTextLength) }
+    val userRatingExist by remember(key1 = userRating) {
+        mutableStateOf(userRating != null && userRating > 0)
+    }
 
     Column(
         modifier = modifier.fillMaxSize().background(ApplicationTheme.colors.cardBackgroundLight)
@@ -65,7 +73,7 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
                 modifier = Modifier.padding(top = 10.dp, bottom = 16.dp)
             )
             Text(
-                text = "Вам понравилась книга?",
+                text = stringResource(Res.string.do_you_like_book_question),
                 style = ApplicationTheme.typography.footnoteRegular,
                 color = ApplicationTheme.colors.mainTextColor,
                 modifier = Modifier.padding(bottom = 8.dp, top = 10.dp)
@@ -91,7 +99,6 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
                 val length = trimText.length
                 charCount.value = length
                 charCountText.value = "$length/$minTextLength"
-                isActiveButton = length >= minTextLength
             },
             colors = TextFieldDefaults.textFieldColors(
                 textColor = ApplicationTheme.colors.mainTextColor,
@@ -114,7 +121,7 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
 
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
             Text(
-                text = "Минимальная длина отзыва",
+                text = stringResource(Res.string.min_review_length),
                 style = ApplicationTheme.typography.footnoteRegular,
                 color = ApplicationTheme.colors.hintColor,
             )
@@ -126,6 +133,17 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
             )
         }
 
+        if (isActiveButton && !userRatingExist) {
+            CenterBoxContainer(modifier = Modifier.padding(horizontal = 24.dp)) {
+                Text(
+                    text = stringResource(Res.string.review_error_when_user_rating_not_exist),
+                    style = ApplicationTheme.typography.bodyRegular,
+                    color = ApplicationTheme.colors.errorColor,
+                    modifier = Modifier.padding(top = 24.dp)
+                )
+            }
+        }
+
         Button(
             onClick = {
                 sendEvent(
@@ -134,12 +152,12 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
                     )
                 )
             },
-            enabled = isActiveButton,
+            enabled = isActiveButton && userRatingExist,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = ApplicationTheme.colors.screenColor.activeLinkColor,
                 disabledBackgroundColor = ApplicationTheme.colors.pointerIsActiveCardColor
             ),
-            modifier = modifier.fillMaxWidth().padding(32.dp),
+            modifier = modifier.fillMaxWidth().padding(start = 32.dp, end = 32.dp, top = 24.dp),
             shape = RoundedCornerShape(12.dp)
         ) {
             Row(
@@ -147,7 +165,7 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Оставить отзыв",
+                    text = stringResource(Res.string.add_review_title),
                     style = ApplicationTheme.typography.headlineBold,
                     color = ApplicationTheme.colors.mainTextColor,
                 )

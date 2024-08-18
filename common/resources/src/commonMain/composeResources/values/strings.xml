@@ -126,4 +126,7 @@
     <string name="review_text_field_hint">Ваш отзыв</string>
     <string name="show_all_books_with_new_line">Смотреть\nвсе книги</string>
     <string name="add_review_title">Оставить отзыв</string>
+    <string name="min_review_length">Минимальная длина отзыва</string>
+    <string name="do_you_like_book_question">Вам понравилась книга?</string>
+    <string name="review_error_when_user_rating_not_exist">Чтобы оставить отзыв, поставьте оценку книге</string>
 </resources>
