@@ -10,6 +10,7 @@ import base.BaseUIState
 import main_models.BookVo
 import main_models.BooksInfoHeader
 import main_models.ReadingStatus
+import main_models.books.BookShortVo
 import main_models.path.PathInfoVo
 
 data class ApplicationUiState(
@@ -20,7 +21,8 @@ data class ApplicationUiState(
     val openRightDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
     val closeLeftDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
     val closeRightDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
-    val selectedBookId: MutableState<Long> = mutableStateOf(-1),
+    val selectedBookId: MutableState<Long?> = mutableStateOf(null),
+    val selectedShortBook: MutableState<BookShortVo?> = mutableStateOf(null),
     val searchedBooks: List<BookVo> = emptyList(),
 ) : BaseUIState {
     val pathInfoList: SnapshotStateList<PathInfoVo> =

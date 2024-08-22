@@ -14,6 +14,7 @@ import main_models.rating_review.ReviewAndRatingVo
 
 data class BookInfoUiState(
     val bookItem: MutableState<BookVo?> = mutableStateOf(null),
+    val shortBookItem: MutableState<BookShortVo?> = mutableStateOf(null),
     val selectedPathInfo: MutableState<PathInfoVo> = mutableStateOf(PathInfoVo()),
     val similarSearchAuthors: SnapshotStateList<AuthorVo> = mutableStateListOf(),
     val selectedAuthor: MutableState<AuthorVo?> = mutableStateOf<AuthorVo?>(null),

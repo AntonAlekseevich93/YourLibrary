@@ -10,8 +10,11 @@ class BookInfoInteractor(
     private val reviewAndRatingRepository: ReviewAndRatingRepository,
 ) {
 
-    suspend fun getLocalBookById(localBookId: Long): Flow<BookVo?> =
-        repository.getLocalBookById(localBookId)
+    suspend fun getLocalBookByLocalId(localBookId: Long): Flow<BookVo?> =
+        repository.getLocalBookByLocalId(localBookId)
+
+    suspend fun getLocalBookById(bookId: String): Flow<BookVo?> =
+        repository.getLocalBookById(bookId)
 
     suspend fun changeUserBookReadingStatus(book: BookVo, newStatus: ReadingStatus) {
         repository.updateUserBook(

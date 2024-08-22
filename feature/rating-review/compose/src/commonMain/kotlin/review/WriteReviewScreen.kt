@@ -51,7 +51,7 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
     val scrollState = rememberScrollState()
     var textState by remember { mutableStateOf(TextFieldValue()) }
     val charCount = remember { mutableStateOf(textState.text.length) }
-    val minTextLength = remember { 1 }
+    val minTextLength = remember { 120 }
     val charCountText = remember { mutableStateOf("${charCount.value}/$minTextLength") }
     val isActiveButton by remember(key1 = charCount.value) { mutableStateOf(charCount.value >= minTextLength) }
     val userRatingExist by remember(key1 = userRating) {

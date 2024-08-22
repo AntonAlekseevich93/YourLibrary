@@ -87,6 +87,7 @@ fun createNavigationHandler(
     currentRoute: State<String>,
     restart: () -> Unit
 ): NavigationHandler {
+    var lastScreenRouteBeforeBookInfo: String = Routes.main_route
     val handler = object : NavigationHandler {
         override fun navigateToSearch() {
 
@@ -136,11 +137,15 @@ fun createNavigationHandler(
 
         override fun navigateToBookInfo() {
             if (currentRoute.value != Routes.book_info_route) {
+                lastScreenRouteBeforeBookInfo = currentRoute.value
                 navigator.value?.navigate(
                     route = Routes.book_info_route,
-                    options = NavOptions(popUpTo = PopUpTo.Prev),
                 )
             }
+        }
+
+        override fun closeBookInfoScreen() {
+            navigator.value?.goBack(PopUpTo(route = lastScreenRouteBeforeBookInfo))
         }
 
         override fun navigateToAuthorsScreen() {

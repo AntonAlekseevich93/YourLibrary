@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_app_bar.MainAppBarEvents
 import main_models.TooltipItem
+import main_models.books.BookShortVo
 import main_models.path.PathInfoVo
 import menu_bar.LeftMenuBarEvents
 import models.ApplicationUiState
@@ -87,7 +88,7 @@ class ApplicationViewModel(
                 searchInLocalBooks(event.text)
             }
 
-            is DrawerEvents.OpenBook -> openBook(event.bookId)
+            is DrawerEvents.OpenBook -> openBook(event.bookId, null)
 
             is DrawerEvents.OpenLeftDrawerOrCloseEvent -> {
                 openLeftDrawerOrClose()
@@ -98,9 +99,10 @@ class ApplicationViewModel(
         }
     }
 
-    override fun openBook(bookId: Long) {
+    override fun openBook(bookId: Long?, shortBook: BookShortVo?) {
         uiStateValue.apply {
             selectedBookId.value = bookId
+            selectedShortBook.value = shortBook
             navigationHandler.navigateToBookInfo()
         }
     }

@@ -4,7 +4,8 @@ import main_models.books.BookTimestampVo
 import main_models.rest.books.UserBookRemoteDto
 
 interface BookInfoRepository {
-    suspend fun getLocalBookById(bookLocalId: Long): Flow<BookVo?>
+    suspend fun getLocalBookByLocalId(bookLocalId: Long): Flow<BookVo?>
+    suspend fun getLocalBookById(bookId: String): Flow<BookVo?>
     suspend fun updateUserBook(book: BookVo)
     suspend fun getBookTimestamp(userId: Long): BookTimestampVo
     suspend fun addOrUpdateLocalBooks(

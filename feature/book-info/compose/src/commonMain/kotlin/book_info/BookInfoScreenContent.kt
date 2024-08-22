@@ -55,10 +55,12 @@ import main_models.books.BookShortVo
 import main_models.genre.GenreUtils
 import models.BookInfoUiState
 import models.BookScreenEvents
+import org.jetbrains.compose.resources.stringResource
 import rating.ReadingStatusSelectorDialog
 import reading_status.getStatusColor
 import review.WriteReviewScreen
 import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.add_book
 import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -205,15 +207,15 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
         }
     }
 
-    readingStatus?.let { status ->
-        Column(
-            modifier = Modifier
-                .background(Color.Transparent)
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(Modifier.padding(height3))
+    Column(
+        modifier = Modifier
+            .background(Color.Transparent)
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.padding(height3))
+        readingStatus?.let { status ->
             Card(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
@@ -234,29 +236,55 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
-            uiState.bookItem.value?.let { book ->
-                BookInfoAboutBook(
-                    description = book.description,
-                    genre = GenreUtils.getGenreById(book.bookGenreId).name,
-                    pageCount = book.pageCount,
-                    startDate = book.startDateInString,
-                    endDate = book.endDateInString,
-                    readingDayAmount = book.getReadingDays(),
-                    ageRestrictions = book.ageRestrictions,
-                    allUsersRating = book.ratingValue,
-                    allRatingAmount = book.ratingCount,
-                    userReviewAndRating = uiState.currentBookUserReviewAndRating,
-                    otherBooksByAuthor = uiState.otherBooksByAuthor,
-                    reviewsAndRatings = uiState.reviewsAndRatings,
-                    reviewsCount = uiState.reviewsCount,
-                    reviewButtonPosition = reviewButtonPosition,
-                    scrollToReviewButtonListener = scrollToReviewButtonListener,
-                    onWriteReviewListener = {
-                        showWriteReviewBottomSheet = true
-                    },
+        }
+
+        if (readingStatus == null) {
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFF8338ec)
+                ),
+                modifier = Modifier.clip(RoundedCornerShape(16.dp)).clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = rememberRipple()
+                ) {
+                    showDialog = true
+                }
+            ) {
+                Text(
+                    text = stringResource(Res.string.add_book),
+                    style = ApplicationTheme.typography.headlineMedium,
+                    color = ApplicationTheme.colors.mainBackgroundColor,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
+        }
 
+        if (uiState.bookItem.value != null || bookShortVo != null) {
+            val bookItem = uiState.bookItem.value
+            BookInfoAboutBook(
+                description = bookItem?.description ?: bookShortVo?.description!!,
+                genre = GenreUtils.getGenreById(
+                    bookItem?.bookGenreId ?: bookShortVo?.bookGenreId!!
+                ).name,
+                pageCount = bookItem?.pageCount ?: bookShortVo?.numbersOfPages!!,
+                startDate = bookItem?.startDateInString,
+                endDate = bookItem?.endDateInString,
+                readingDayAmount = bookItem?.getReadingDays(),
+                ageRestrictions = bookItem?.ageRestrictions ?: bookShortVo?.ageRestrictions,
+                allUsersRating = bookItem?.ratingValue ?: bookShortVo?.ratingValue ?: 0.0,
+                allRatingAmount = bookItem?.ratingCount ?: bookShortVo?.ratingCount ?: 0,
+                userReviewAndRating = uiState.currentBookUserReviewAndRating,
+                otherBooksByAuthor = uiState.otherBooksByAuthor,
+                reviewsAndRatings = uiState.reviewsAndRatings,
+                reviewsCount = uiState.reviewsCount,
+                reviewButtonPosition = reviewButtonPosition,
+                scrollToReviewButtonListener = scrollToReviewButtonListener,
+                onWriteReviewListener = {
+                    showWriteReviewBottomSheet = true
+                },
+            )
         }
     }
 
@@ -295,7 +323,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
 
     if (showDialog && readingStatus != null) {
         ReadingStatusSelectorDialog(
-            currentStatus = readingStatus!!,
+            currentStatus = readingStatus,
             selectStatusListener = {
                 showDialog = false
                 sendEvent(
@@ -305,6 +333,17 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                             ?: uiState.bookItem.value?.bookId.orEmpty()
                     )
                 )
+            },
+            dismiss = { showDialog = false }
+        )
+    }
+
+    if (showDialog && readingStatus == null) {
+        ReadingStatusSelectorDialog(
+            currentStatus = null,
+            useDivider = true,
+            selectStatusListener = {
+                showDialog = false
             },
             dismiss = { showDialog = false }
         )

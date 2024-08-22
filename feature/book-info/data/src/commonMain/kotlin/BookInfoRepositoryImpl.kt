@@ -20,8 +20,22 @@ class BookInfoRepositoryImpl(
     private val remoteConfig: RemoteConfig,
 ) : BookInfoRepository {
 
-    override suspend fun getLocalBookById(bookLocalId: Long): Flow<BookVo?> =
-        localBookInfoDataSource.getLocalBookById(bookLocalId, userId = appConfig.userId)
+    override suspend fun getLocalBookByLocalId(bookLocalId: Long): Flow<BookVo?> =
+        localBookInfoDataSource.getLocalBookByLocalId(bookLocalId, userId = appConfig.userId)
+            .map {
+                it.firstOrNull()?.let { book ->
+                    book.toVo(
+                        remoteImageLink = remoteConfig.getImageUrl(
+                            imageName = book.imageName,
+                            imageFolderId = book.imageFolderId,
+                            bookServerId = book.serverId
+                        )
+                    )
+                }
+            }
+
+    override suspend fun getLocalBookById(bookId: String): Flow<BookVo?> =
+        localBookInfoDataSource.getLocalBookById(bookId, userId = appConfig.userId)
             .map {
                 it.firstOrNull()?.let { book ->
                     book.toVo(

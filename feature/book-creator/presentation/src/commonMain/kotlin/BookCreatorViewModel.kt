@@ -27,6 +27,7 @@ class BookCreatorViewModel(
     private val platformInfo: PlatformInfoData,
     private val interactor: BookCreatorInteractor,
     private val navigationHandler: NavigationHandler,
+    private val applicationScope: ApplicationScope,
 ) : BaseMVIViewModel<BookCreatorUiState, BaseEvent>(BookCreatorUiState()) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
@@ -44,7 +45,10 @@ class BookCreatorViewModel(
             }
 
             is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
-            is BookEditorEvents.OnBookSelected -> setSelectedBook(event.shortBook)
+            is BookEditorEvents.OnBookSelected -> {
+                applicationScope.openBook(bookId = null, shortBook = event.shortBook)
+            }
+
             is BookEditorEvents.OnChangeNeedCreateNewAuthor -> {
                 updateUIState(uiStateValue.copy(needCreateNewAuthor = event.needCreate))
             }
@@ -475,6 +479,7 @@ class BookCreatorViewModel(
         }
     }
 
+    //todo старая логика открытия книги, где можно изменять параметры
     private fun setSelectedBook(shortBook: BookShortVo) {
         uiStateValue.bookValues.setShortBook(shortBook)
         updateUIState(

@@ -12,4 +12,5 @@ interface NavigationHandler {
     fun navigateToSettingsScreen()
     fun navigateToProfile()
     fun navigateToAdminPanel()
+    fun closeBookInfoScreen()
 }

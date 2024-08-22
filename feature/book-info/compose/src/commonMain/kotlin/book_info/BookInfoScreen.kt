@@ -29,6 +29,7 @@ import dev.chrisbanes.haze.haze
 import di.Inject
 import kotlinx.coroutines.launch
 import main_models.books.BookShortVo
+import models.BookScreenEvents
 
 @Composable
 fun BookInfoScreen(
@@ -63,9 +64,12 @@ fun BookInfoScreen(
         }
     }
 
-    LaunchedEffect(key1 = bookItemId) {
+    LaunchedEffect(key1 = bookItemId, key2 = bookShortVo) {
         bookItemId?.let {
-            viewModel.getBook(bookItemId)
+            viewModel.getBookByLocalId(bookItemId)
+        }
+        bookShortVo?.let {
+            viewModel.setShortBook(it)
         }
     }
 
@@ -74,7 +78,10 @@ fun BookInfoScreen(
             BookCreatorAppBar(
                 transparentAppbar = isTransparentAppbar,
                 title = "",
-            ) {}
+                onClose = {
+                    viewModel.sendEvent(BookScreenEvents.CloseBookInfoScreen)
+                }
+            )
         },
         containerColor = ApplicationTheme.colors.cardBackgroundDark,
     ) {

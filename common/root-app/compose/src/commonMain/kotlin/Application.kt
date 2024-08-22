@@ -131,7 +131,7 @@ fun Application(
                             }
                         },
                         bottomBar = {
-                            if (platform.isMobile()) {
+                            if (platform.isMobile() && openedRoute.value != Routes.book_info_route) {
                                 viewModel.CustomBottomBar(hazeState = hazeBlurState)
                             }
                         },
@@ -173,10 +173,16 @@ fun Application(
                                 )
                             }
 
-                            dialog(route = Routes.book_info_route) {
+                            scene(
+                                route = Routes.book_info_route,
+                                navTransition = NavTransition(
+                                    createTransition = fadeIn(),
+                                    destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
+                                )
+                            ) {
                                 BookInfoScreen(
                                     bookItemId = uiState.selectedBookId.value,
-                                    bookShortVo = null
+                                    bookShortVo = uiState.selectedShortBook.value
                                 )
                             }
 

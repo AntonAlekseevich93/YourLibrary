@@ -47,7 +47,6 @@ import di.Inject
 import genre.GenreSelector
 import kotlinx.coroutines.launch
 import main_models.DatePickerType
-import main_models.books.BookShortVo
 import models.BookCreatorEvents
 import platform.Platform
 
@@ -71,8 +70,6 @@ fun BookCreatorScreen(
     val dataPickerState = rememberDatePickerState()
     val scope = rememberCoroutineScope()
     var selectionGenreState by remember { mutableStateOf(false) }
-
-    var book: BookShortVo? by remember { mutableStateOf(null) }
 
     Scaffold(
         topBar = {

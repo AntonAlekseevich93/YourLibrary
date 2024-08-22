@@ -36,8 +36,11 @@ class LocalBookInfoDataSource(
         return booksDao.getNotSynchronizedBooks(timestamp.thisDeviceTimestamp, userId = userId)
     }
 
-    suspend fun getLocalBookById(bookLocalId: Long, userId: Long): Flow<List<BookEntity>> =
-        booksDao.getLocalBookById(bookLocalId = bookLocalId, userId = userId)
+    suspend fun getLocalBookByLocalId(bookLocalId: Long, userId: Long): Flow<List<BookEntity>> =
+        booksDao.getLocalBookByLocalId(bookLocalId = bookLocalId, userId = userId)
+
+    suspend fun getLocalBookById(bookId: String, userId: Long): Flow<List<BookEntity>> =
+        booksDao.getLocalBookById(bookId = bookId, userId = userId)
 
     suspend fun updateBookAndTime(book: BookEntity, userId: Long): BookEntity {
         val time = platformInfo.getCurrentTime().timeInMillis

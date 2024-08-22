@@ -42,7 +42,7 @@ class ShelfViewModel(
             }
 
             is DrawerEvents.OpenBook -> {
-                applicationScope.openBook(event.bookId)
+                applicationScope.openBook(bookId = event.bookId, shortBook = null)
             }
 
             is ShelfBoardsEvents.SetBottomSheetExpandListener -> {
@@ -66,7 +66,7 @@ class ShelfViewModel(
 //        _uiState.value.searchInFullShelf(searchedText, shelfIndex)
     }
 
-    private  fun addBooksToShelf(shelfId: String, books: List<BookVo>) {
+    private fun addBooksToShelf(shelfId: String, books: List<BookVo>) {
         val shelvesList = uiStateValue.shelvesList.map { shelfVo ->
             if (shelfVo.id == shelfId) {
                 shelfVo.copy(booksList = books)

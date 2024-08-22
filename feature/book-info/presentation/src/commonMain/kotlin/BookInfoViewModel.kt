@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import main_models.AuthorVo
 import main_models.DatePickerType
+import main_models.books.BookShortVo
 import models.BookInfoScope
 import models.BookInfoUiState
 import models.BookScreenEvents
@@ -31,6 +32,7 @@ class BookInfoViewModel(
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
     private var bookJob: Job? = null
+    private var shortBookJob: Job? = null
     private var reviewAndRatingJob: Job? = null
     private val _uiState: MutableStateFlow<BookInfoUiState> = MutableStateFlow(BookInfoUiState())
     val uiState = _uiState.asStateFlow()
@@ -40,7 +42,10 @@ class BookInfoViewModel(
             is TooltipEvents.SetTooltipEvent -> tooltipHandler.setTooltip(event.tooltip)
             is DrawerEvents.OpenLeftDrawerOrCloseEvent -> drawerScope.openLeftDrawerOrClose()
             is DrawerEvents.OpenRightDrawerOrCloseEvent -> drawerScope.openRightDrawerOrClose()
-            is BookScreenEvents.BookScreenCloseEvent -> applicationScope.closeBookScreen()
+            is BookScreenEvents.BookScreenCloseEvent -> {
+                applicationScope.closeBookScreen()
+            }
+
             is BookScreenEvents.SaveBookAfterEditing -> {
                 //todo
             }
@@ -55,6 +60,10 @@ class BookInfoViewModel(
                         )
                     }
                 }
+            }
+
+            is BookScreenEvents.CloseBookInfoScreen -> {
+                navigationHandler.closeBookInfoScreen()
             }
 
             is ReviewAndRatingEvents.ChangeBookRating -> {
@@ -80,12 +89,43 @@ class BookInfoViewModel(
         }
     }
 
-    fun getBook(localBookId: Long) {
+    fun getBookByLocalId(localBookId: Long) {
+        _uiState.value = BookInfoUiState()
         bookJob?.cancel()
         reviewAndRatingJob?.cancel()
         bookJob = scope.launch(Dispatchers.IO) {
-            interactor.getLocalBookById(localBookId).collect { response ->
+            interactor.getLocalBookByLocalId(localBookId).collect { response ->
                 response?.let { book ->
+                    _uiState.value.bookItem.value = book
+                    getCurrentUserReviewAndRatingByBook(book.bookId)
+                    getAllReviewsAndRatingsByBookId(book.bookId)
+                    getAllBooksByAuthor(book.originalAuthorId)
+                }
+            }
+        }
+    }
+
+    fun setShortBook(shortBook: BookShortVo) {
+        _uiState.value = BookInfoUiState()
+        shortBookJob?.cancel()
+        reviewAndRatingJob?.cancel()
+        _uiState.value.shortBookItem.value = shortBook
+        shortBookJob = scope.launch(Dispatchers.Main) {
+            replaceShortBookByLocalBookIfExist(shortBook.bookId)
+            getCurrentUserReviewAndRatingByBook(shortBook.bookId)
+            getAllReviewsAndRatingsByBookId(shortBook.bookId)
+            getAllBooksByAuthor(shortBook.originalAuthorId)
+        }
+    }
+
+    private fun replaceShortBookByLocalBookIfExist(bookId: String) {
+        bookJob?.cancel()
+        reviewAndRatingJob?.cancel()
+        bookJob = scope.launch(Dispatchers.IO) {
+            interactor.getLocalBookById(bookId).collect { response ->
+                response?.let { book ->
+                    shortBookJob?.cancel()
+                    _uiState.value.shortBookItem.value = null
                     _uiState.value.bookItem.value = book
                     getCurrentUserReviewAndRatingByBook(book.bookId)
                     getAllReviewsAndRatingsByBookId(book.bookId)
@@ -125,8 +165,11 @@ class BookInfoViewModel(
     }
 
     private fun getAllBooksByAuthor(authorId: String) {
+        val selectedBookId = uiState.value.bookItem.value?.bookId
+            ?: uiState.value.shortBookItem.value?.bookId.orEmpty()
         scope.launch(Dispatchers.IO) {
-            val booksByAuthor = interactor.getAllBooksByAuthor(authorId)
+            val booksByAuthor =
+                interactor.getAllBooksByAuthor(authorId).filter { it.bookId != selectedBookId }
             if (booksByAuthor.isNotEmpty()) {
                 _uiState.value.otherBooksByAuthor.value = booksByAuthor
             }
@@ -175,27 +218,40 @@ class BookInfoViewModel(
 
     private fun updateRating(newRating: Int) {
         scope.launch(Dispatchers.IO) {
-            _uiState.value.bookItem.value?.let { //todo fix здесь может быть не только юзер бук
-                interactor.updateOrCreateRating(
-                    newRating = newRating,
-                    bookId = it.bookId,
-                    bookAuthorId = it.originalAuthorId,
-                    bookGenreId = it.bookGenreId,
-                    isCreatedManuallyBook = it.bookIsCreatedManually,
-                    bookForAllUsers = it.bookForAllUsers,
-                )
-            }
+            val bookId: String =
+                _uiState.value.bookItem.value?.bookId ?: _uiState.value.shortBookItem.value?.bookId
+                ?: return@launch
+            val bookAuthorId = _uiState.value.bookItem.value?.originalAuthorId
+                ?: _uiState.value.shortBookItem.value?.originalAuthorId
+                ?: return@launch
+            val bookGenreId = _uiState.value.bookItem.value?.bookGenreId
+                ?: _uiState.value.shortBookItem.value?.bookGenreId
+                ?: return@launch
+            val bookIsCreatedManually = _uiState.value.bookItem.value?.bookIsCreatedManually
+                ?: false
+            val bookForAllUsers = _uiState.value.bookItem.value?.bookIsCreatedManually
+                ?: true
+
+            interactor.updateOrCreateRating(
+                newRating = newRating,
+                bookId = bookId,
+                bookAuthorId = bookAuthorId,
+                bookGenreId = bookGenreId,
+                isCreatedManuallyBook = bookIsCreatedManually,
+                bookForAllUsers = bookForAllUsers,
+            )
         }
     }
 
     private fun addReview(reviewText: String) {
         scope.launch(Dispatchers.IO) {
-            _uiState.value.bookItem.value?.let {
-                interactor.addReview(
-                    reviewText = reviewText,
-                    bookId = it.bookId
-                )
-            }
+            val bookId: String =
+                _uiState.value.bookItem.value?.bookId ?: _uiState.value.shortBookItem.value?.bookId
+                ?: return@launch
+            interactor.addReview(
+                reviewText = reviewText,
+                bookId = bookId
+            )
         }
     }
 }

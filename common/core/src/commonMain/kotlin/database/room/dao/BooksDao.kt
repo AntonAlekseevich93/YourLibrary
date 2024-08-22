@@ -37,5 +37,8 @@ interface BooksDao {
     suspend fun searchBookByName(name: String): List<BookEntity>
 
     @Query("SELECT * FROM BookEntity WHERE localId = :bookLocalId and userId = :userId")
-    fun getLocalBookById(bookLocalId: Long, userId: Long): Flow<List<BookEntity>>
+    fun getLocalBookByLocalId(bookLocalId: Long, userId: Long): Flow<List<BookEntity>>
+
+    @Query("SELECT * FROM BookEntity WHERE bookId = :bookId and userId = :userId")
+    fun getLocalBookById(bookId: String, userId: Long): Flow<List<BookEntity>>
 }
