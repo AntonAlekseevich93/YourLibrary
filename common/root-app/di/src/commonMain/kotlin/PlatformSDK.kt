@@ -63,6 +63,7 @@ object PlatformSDK {
                     viewModelsModule,
                     reviewAndRatingModule,
                     synchronizationModule,
+                    booksListInfoModule,
                 )
             }.direct
         )

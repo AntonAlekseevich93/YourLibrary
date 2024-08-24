@@ -33,6 +33,8 @@ kotlin {
                 implementation(project(":feature:search:data"))
                 implementation(project(":feature:book-info:data"))
                 implementation(project(":feature:book-info:domain"))
+                implementation(project(":feature:books-list-info:data"))
+                implementation(project(":feature:books-list-info:domain"))
                 implementation(project(":feature:book-creator:data"))
                 implementation(project(":feature:book-creator:domain"))
                 implementation(project(":common:utils:url-parser:data"))

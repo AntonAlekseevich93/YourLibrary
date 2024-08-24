@@ -12,6 +12,10 @@ val domainModule = DI.Module("domainModule") {
         BookInfoInteractor(instance(), instance(), instance(), instance())
     }
 
+    bind<BooksListInfoInteractor>() with provider {
+        BooksListInfoInteractor(instance(), instance(), instance(), instance())
+    }
+
     bind<AuthorsInteractor>() with provider {
         AuthorsInteractor(instance(), instance())
     }
