@@ -56,7 +56,7 @@ import main_models.genre.GenreUtils
 import models.BookInfoUiState
 import models.BookScreenEvents
 import org.jetbrains.compose.resources.stringResource
-import rating.ReadingStatusSelectorDialog
+import reading_status.ReadingStatusSelectorDialog
 import reading_status.getStatusColor
 import review.WriteReviewScreen
 import yourlibrary.common.resources.generated.resources.Res
@@ -341,7 +341,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
     if (showDialog && readingStatus == null) {
         ReadingStatusSelectorDialog(
             currentStatus = null,
-            useDivider = true,
+            useDivider = false,
             selectStatusListener = {
                 showDialog = false
             },

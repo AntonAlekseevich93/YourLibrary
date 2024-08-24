@@ -1,10 +1,7 @@
 import alert_dialog.CommonAlertDialog
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,19 +33,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import elements.BookEditor
-import elements.BookListSelector
 import date.CommonDatePicker
 import date.DatePickerEvents
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
+import elements.BookEditor
 import genre.GenreSelector
 import kotlinx.coroutines.launch
 import main_models.DatePickerType
 import models.BookCreatorEvents
 import platform.Platform
+import reading_status.ReadingStatusSelectorDialog
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,6 +67,7 @@ fun BookCreatorScreen(
     val dataPickerState = rememberDatePickerState()
     val scope = rememberCoroutineScope()
     var selectionGenreState by remember { mutableStateOf(false) }
+    val selectReadingStatusForBookId = remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
@@ -147,6 +145,9 @@ fun BookCreatorScreen(
                 onClickSave = {
                     viewModel.sendEvent(BookCreatorEvents.CreateBookEvent)
                 },
+                changeBookReadingStatus = {
+                    selectReadingStatusForBookId.value = it
+                }
             )
         }
 
@@ -172,6 +173,17 @@ fun BookCreatorScreen(
                 }, onClick = {
                     viewModel.sendEvent(BookCreatorEvents.ClearUrlEvent)
                 }
+            )
+        }
+
+        if (selectReadingStatusForBookId.value != null) {
+            ReadingStatusSelectorDialog(
+                currentStatus = null,
+                useDivider = false,
+                selectStatusListener = {
+                    selectReadingStatusForBookId.value = null
+                },
+                dismiss = { selectReadingStatusForBookId.value = null }
             )
         }
 
@@ -202,21 +214,6 @@ fun BookCreatorScreen(
                         viewModel.sendEvent(BookCreatorEvents.SetSelectedGenre(genre = genre))
                         selectionGenreState = false
                     }
-                }
-            }
-
-            AnimatedVisibility(
-                uiState.showFullScreenBookSelector,
-                enter = slideInVertically(
-                    initialOffsetY = { fullHeight -> fullHeight }
-                ) + fadeIn(initialAlpha = 0.3f),
-                exit = slideOutVertically(
-                    targetOffsetY = { fullHeight -> fullHeight }
-                ) + fadeOut(targetAlpha = 0.3f),
-                modifier = Modifier.padding(it)
-            ) {
-                BookListSelector(uiState.similarBooks, platform = platform) { selectedBook ->
-                    viewModel.sendEvent(BookCreatorEvents.OnBookSelected(selectedBook))
                 }
             }
         }

@@ -26,5 +26,4 @@ sealed class BookEditorEvents : BaseEvent {
     data object ClearBookSearch : BookEditorEvents()
     data class BookHaveReadingStatusEvent(val message: String) : BookEditorEvents()
     data object HideSearchError : BookEditorEvents()
-    data object ShowFullScreenBookSelector : BookEditorEvents()
 }

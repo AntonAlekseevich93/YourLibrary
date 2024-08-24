@@ -1,4 +1,4 @@
-package rating
+package reading_status
 
 import ApplicationTheme
 import androidx.compose.foundation.background
@@ -38,7 +38,7 @@ fun ReadingStatusSelectorDialog(
         onDismissRequest = dismiss,
         modifier = Modifier.clip(
             RoundedCornerShape(12.dp)
-        ).background(ApplicationTheme.colors.mainBackgroundColor)
+        ).background(ApplicationTheme.colors.mainBackgroundWindowDarkColor)
     ) {
         Column {
             statuses.fastForEachIndexed { index, status ->

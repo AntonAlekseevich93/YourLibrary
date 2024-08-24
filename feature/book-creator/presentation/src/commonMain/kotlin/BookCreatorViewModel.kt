@@ -100,10 +100,6 @@ class BookCreatorViewModel(
                 hideSearchError()
             }
 
-            is BookEditorEvents.ShowFullScreenBookSelector -> {
-                updateUIState(uiStateValue.copy(showFullScreenBookSelector = true))
-            }
-
             is BookCreatorEvents.GoBack -> navigationHandler.goBack()
             is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.ClearUrlEvent -> clearUrl()

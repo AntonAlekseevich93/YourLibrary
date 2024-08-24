@@ -94,6 +94,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     similarBooks: List<BookShortVo> = listOf(),
     onClickSave: (() -> Unit)? = null,
     genreSelectorListener: () -> Unit,
+    changeBookReadingStatus: (bookId: String) -> Unit,
 ) {
     val authorIsSelected by remember(key1 = selectedAuthor) { mutableStateOf(selectedAuthor != null) }
     var lastSearchBookName by remember { mutableStateOf("") }
@@ -264,10 +265,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         onClickManually = {
                             sendEvent(BookEditorEvents.OnCreateBookManually(bookWasNotFound = true))
                         },
-                        showAllBooksListener = {
-                            keyboardController?.hide()
-                            sendEvent(BookEditorEvents.ShowFullScreenBookSelector)
-                        }
+                        changeBookReadingStatus = changeBookReadingStatus
                     )
                 }
 

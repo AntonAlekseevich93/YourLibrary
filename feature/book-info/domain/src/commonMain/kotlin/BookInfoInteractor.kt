@@ -26,7 +26,7 @@ class BookInfoInteractor(
         searchRepository.getAllBooksByAuthor(authorId)
 
     suspend fun getCurrentUserReviewAndRatingByBook(bookId: String): Flow<ReviewAndRatingVo?> =
-        reviewAndRatingRepository.getCurrentUserLocalReviewAndRatingByBook(bookId)
+        reviewAndRatingRepository.getCurrentUserLocalReviewAndRatingByBookFlow(bookId)
 
     suspend fun getAllRemoteReviewsAndRatingsByBookId(bookId: String) =
         reviewAndRatingRepository.getAllRemoteReviewsAndRatingsByBookId(bookId)

@@ -38,7 +38,7 @@ fun BookSearchSelector(
     platform: Platform,
     booksListInfoViewModel: BooksListInfoViewModel,
     onClickManually: () -> Unit,
-    showAllBooksListener: () -> Unit,
+    changeBookReadingStatus: (bookId: String) -> Unit,
 ) {
     val state = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -76,7 +76,8 @@ fun BookSearchSelector(
 
             BooksListInfoContent(
                 bookList = similarBooks,
-                viewModel = booksListInfoViewModel
+                viewModel = booksListInfoViewModel,
+                changeBookReadingStatus = changeBookReadingStatus,
             )
 
         } else if (showError) {

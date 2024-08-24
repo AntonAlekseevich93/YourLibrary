@@ -2,6 +2,7 @@ package main_models.books
 
 import kotlinx.serialization.Serializable
 import main_models.ReadingStatus
+import main_models.rating_review.ReviewAndRatingVo
 
 @Serializable
 data class BookShortVo(
@@ -27,4 +28,5 @@ data class BookShortVo(
     val ratingSum: Int,
 ) {
     var readingStatus: ReadingStatus? = null
+    var currentUserRating: ReviewAndRatingVo? = null
 }

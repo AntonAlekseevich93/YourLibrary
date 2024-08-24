@@ -15,7 +15,7 @@ class BooksListInfoInteractor(
     suspend fun getLocalBookById(bookId: String): Flow<BookVo?> =
         repository.getLocalBookById(bookId)
 
-    suspend fun getCurrentUserReviewAndRatingByBook(bookId: String): Flow<ReviewAndRatingVo?> =
+    suspend fun getCurrentUserReviewAndRatingByBook(bookId: String): ReviewAndRatingVo? =
         reviewAndRatingRepository.getCurrentUserLocalReviewAndRatingByBook(bookId)
 
 

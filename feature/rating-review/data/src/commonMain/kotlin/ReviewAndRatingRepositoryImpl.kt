@@ -146,13 +146,19 @@ class ReviewAndRatingRepositoryImpl(
         localReviewAndRatingDataSource.updateReviewAndRatingTimestamp(timestamp.toEntity())
     }
 
-    override suspend fun getCurrentUserLocalReviewAndRatingByBook(bookId: String): Flow<ReviewAndRatingVo?> =
+    override suspend fun getCurrentUserLocalReviewAndRatingByBookFlow(bookId: String): Flow<ReviewAndRatingVo?> =
         localReviewAndRatingDataSource.getCurrentUserReviewAndRatingByBookFlow(
             bookId = bookId,
             userId = appConfig.userId
         ).map { list ->
             list.firstOrNull()?.toVo()
         }
+
+    override suspend fun getCurrentUserLocalReviewAndRatingByBook(bookId: String): ReviewAndRatingVo? =
+        localReviewAndRatingDataSource.getCurrentUserReviewAndRatingByBook(
+            bookId = bookId,
+            userId = appConfig.userId
+        ).firstOrNull()?.toVo()
 
     override suspend fun getAllRemoteReviewsAndRatingsByBookId(bookId: String): List<ReviewAndRatingVo> =
         remoteReviewAndRatingDataSource.getAllRemoteReviewsAndRatingsByBookId(bookId)?.result?.reviewsAndRatings?.mapNotNull { it.toVo() }

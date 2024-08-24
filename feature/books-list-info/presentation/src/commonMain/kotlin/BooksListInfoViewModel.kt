@@ -52,25 +52,26 @@ class BooksListInfoViewModel(
     }
 
 
-    private suspend fun getCurrentUserReviewAndRatingByBook(bookId: String) {
-        scope.launch(Dispatchers.IO) {
-            interactor.getCurrentUserReviewAndRatingByBook(bookId).collect { reviewAndRating ->
-                reviewAndRating?.let {
-//                    _uiState.value.currentBookUserReviewAndRating.value = it
-//                    if (!it.reviewText.isNullOrEmpty()) {
-//                        val list = _uiState.value.reviewsAndRatings.value.toMutableList()
-//                        list.removeAll { it.userId == appConfig.userId.toInt() }
-//                        list.add(0, it)
-//                        _uiState.value.reviewsAndRatings.value = list
-//                        _uiState.value.reviewsCount.value = _uiState.value.reviewsCount.value + 1
-//                    }
-                }
+    private suspend fun getCurrentUserReviewAndRatingByBook(bookListIndex: Int, bookId: String) {
+        interactor.getCurrentUserReviewAndRatingByBook(bookId)?.let { reviewAndRating ->
+            val bookItem = _uiState.value.bookList.get(bookListIndex)
+            if (bookItem.bookId == bookId) {
+                _uiState.value.bookList[bookListIndex] =
+                    bookItem.apply {
+                        currentUserRating = reviewAndRating
+                    }
             }
         }
     }
 
     fun setBookList(bookList: List<BookShortVo>) {
-        _uiState.value.bookList.value = bookList
+        _uiState.value.bookList.clear()
+        _uiState.value.bookList.addAll(bookList)
+        scope.launch(Dispatchers.IO) {
+            _uiState.value.bookList.forEachIndexed { index, item ->
+                getCurrentUserReviewAndRatingByBook(index, item.bookId)
+            }
+        }
     }
 
 

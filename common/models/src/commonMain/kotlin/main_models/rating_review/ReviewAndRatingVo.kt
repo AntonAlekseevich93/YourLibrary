@@ -1,5 +1,8 @@
 package main_models.rating_review
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class ReviewAndRatingVo(
     val localId: Int?,
     val id: Int?,
