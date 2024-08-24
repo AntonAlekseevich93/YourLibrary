@@ -1,4 +1,5 @@
 import base.BaseMVIViewModel
+import di.ViewModelStackStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -88,7 +89,7 @@ class ApplicationViewModel(
                 searchInLocalBooks(event.text)
             }
 
-            is DrawerEvents.OpenBook -> openBook(event.bookId, null)
+            is DrawerEvents.OpenBook -> openBookInfoScreen(event.bookId, null)
 
             is DrawerEvents.OpenLeftDrawerOrCloseEvent -> {
                 openLeftDrawerOrClose()
@@ -99,19 +100,29 @@ class ApplicationViewModel(
         }
     }
 
-    override fun openBook(bookId: Long?, shortBook: BookShortVo?) {
+    override fun openBookInfoScreen(bookId: Long?, shortBook: BookShortVo?) {
         uiStateValue.apply {
+            previousBookInfoViewModel.value = null
             selectedBookId.value = bookId
             selectedShortBook.value = shortBook
             navigationHandler.navigateToBookInfo()
         }
     }
 
-    override fun closeBookScreen() {
+    override fun closeBookInfoScreen() {
         uiStateValue.apply {
+            previousBookInfoViewModel.value = null
+            ViewModelStackStore.clearViewModelStack()
             fullScreenBookInfo.value = false
             navigationHandler.goBack()
         }
+    }
+
+    override fun onBackFromBookScreen() {
+        ViewModelStackStore.getPreviousViewModelOrNull<BookInfoViewModel>()?.let {
+            uiStateValue.previousBookInfoViewModel.value = it
+        }
+        navigationHandler.goBack()
     }
 
     override fun openLeftDrawerOrClose() {

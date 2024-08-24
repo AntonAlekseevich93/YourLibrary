@@ -138,10 +138,10 @@ fun createNavigationHandler(
         override fun navigateToBookInfo() {
             if (currentRoute.value != Routes.book_info_route) {
                 lastScreenRouteBeforeBookInfo = currentRoute.value
-                navigator.value?.navigate(
-                    route = Routes.book_info_route,
-                )
             }
+            navigator.value?.navigate(
+                route = Routes.book_info_route,
+            )
         }
 
         override fun closeBookInfoScreen() {

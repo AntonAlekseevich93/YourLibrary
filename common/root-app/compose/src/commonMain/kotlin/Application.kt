@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 import main_app_bar.MainAppBar
 import main_models.TooltipItem
 import menu_bar.LeftMenuBar
+import moe.tlaster.precompose.navigation.BackHandler
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.transition.NavTransition
@@ -73,10 +74,18 @@ fun Application(
     val hazeBlurState = remember { HazeState() }
     val showSearchAppBarTextField = remember { mutableStateOf(false) }
     val openedRoute = remember { mutableStateOf(Routes.main_route) }
+    val previousRoute = remember { mutableStateOf(Routes.main_route) }
+    val showBookInfoBackButton = remember { mutableStateOf(false) }
 
     AppTheme {
         navigator.currentEntry.collectAsState(null).value?.route?.route?.let { currentRoute ->
+            previousRoute.value = openedRoute.value
             openedRoute.value = currentRoute
+            if (previousRoute.value == currentRoute && currentRoute == Routes.book_info_route) {
+                showBookInfoBackButton.value = true
+            } else if (showBookInfoBackButton.value) {
+                showBookInfoBackButton.value = false
+            }
             if (!uiState.fullScreenBookInfo.value && platform.isMobile() && currentRoute == Routes.main_route) {
                 uiState.fullScreenBookInfo.value = true
             }
@@ -180,9 +189,14 @@ fun Application(
                                     destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
                                 )
                             ) {
+                                BackHandler {
+                                    viewModel.onBackFromBookScreen()
+                                }
                                 BookInfoScreen(
                                     bookItemId = uiState.selectedBookId.value,
-                                    bookShortVo = uiState.selectedShortBook.value
+                                    bookShortVo = uiState.selectedShortBook.value,
+                                    showBackButton = showBookInfoBackButton,
+                                    previousViewModel = uiState.previousBookInfoViewModel.value,
                                 )
                             }
 

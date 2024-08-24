@@ -1,7 +1,8 @@
 import main_models.books.BookShortVo
 
 interface ApplicationScope {
-    fun closeBookScreen()
-    fun openBook(bookId: Long?, shortBook: BookShortVo?)
+    fun closeBookInfoScreen()
+    fun openBookInfoScreen(bookId: Long?, shortBook: BookShortVo?)
+    fun onBackFromBookScreen()
     fun changedReadingStatus(oldStatusId: String, bookId: String)
 }

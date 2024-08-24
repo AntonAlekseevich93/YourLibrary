@@ -2,6 +2,7 @@ package models
 
 import BaseEvent
 import main_models.ReadingStatus
+import main_models.books.BookShortVo
 
 sealed class BookScreenEvents : BaseEvent {
     data object BookScreenCloseEvent : BookScreenEvents()
@@ -11,4 +12,6 @@ sealed class BookScreenEvents : BaseEvent {
         BookScreenEvents()
 
     data object CloseBookInfoScreen : BookScreenEvents()
+    data object OnBack : BookScreenEvents()
+    class OpenShortBook(val shortBook: BookShortVo) : BookScreenEvents()
 }

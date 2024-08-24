@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,7 +32,9 @@ import androidx.compose.ui.unit.dp
 fun BookCreatorAppBar(
     title: String,
     transparentAppbar: State<Boolean>,
+    showBackButton: State<Boolean>,
     onClose: () -> Unit,
+    onBack: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -42,7 +45,9 @@ fun BookCreatorAppBar(
         AppBarComponent(
             title = title,
             transparentAppbar = transparentAppbar,
-            onClose = onClose
+            showBackButton = showBackButton,
+            onClose = onClose,
+            onBack = onBack
         )
     }
 }
@@ -52,7 +57,9 @@ fun BookCreatorAppBar(
 internal fun AppBarComponent(
     title: String,
     transparentAppbar: State<Boolean>,
+    showBackButton: State<Boolean>,
     onClose: () -> Unit,
+    onBack: () -> Unit,
 ) {
     CompositionLocalProvider(
         LocalContentColor provides Color.White
@@ -79,7 +86,31 @@ internal fun AppBarComponent(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
-                    Spacer(Modifier.padding(start = 32.dp))
+                    if (showBackButton.value) {
+                        Card(
+                            modifier = Modifier.size(44.dp),
+                            shape = CircleShape,
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (transparentAppbar.value)
+                                    Color.Transparent
+                                else ApplicationTheme.colors.mainBackgroundColor.copy(alpha = 0.5f)
+                            )
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    onBack.invoke()
+                                },
+                                modifier = Modifier
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.ArrowBackIosNew,
+                                    contentDescription = null,
+                                )
+                            }
+                        }
+                    } else {
+                        Spacer(Modifier.padding(start = 32.dp))
+                    }
                 },
                 actions = {
                     Card(

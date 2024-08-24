@@ -46,7 +46,7 @@ class BookCreatorViewModel(
 
             is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
             is BookEditorEvents.OnBookSelected -> {
-                applicationScope.openBook(bookId = null, shortBook = event.shortBook)
+                applicationScope.openBookInfoScreen(bookId = null, shortBook = event.shortBook)
             }
 
             is BookEditorEvents.OnChangeNeedCreateNewAuthor -> {

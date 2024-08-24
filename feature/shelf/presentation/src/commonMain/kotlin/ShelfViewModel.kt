@@ -42,7 +42,7 @@ class ShelfViewModel(
             }
 
             is DrawerEvents.OpenBook -> {
-                applicationScope.openBook(bookId = event.bookId, shortBook = null)
+                applicationScope.openBookInfoScreen(bookId = event.bookId, shortBook = null)
             }
 
             is ShelfBoardsEvents.SetBottomSheetExpandListener -> {

@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
-import di.Inject
+import di.ViewModelStackStore
 import kotlinx.coroutines.launch
 import main_models.books.BookShortVo
 import models.BookScreenEvents
@@ -35,19 +36,22 @@ import models.BookScreenEvents
 fun BookInfoScreen(
     bookItemId: Long?,
     bookShortVo: BookShortVo?,
+    showBackButton: State<Boolean>,
+    previousViewModel: BookInfoViewModel?,
 ) {
-    val viewModel = remember { Inject.instance<BookInfoViewModel>() }
+    val viewModel = remember {
+        previousViewModel ?: ViewModelStackStore.createViewModel<BookInfoViewModel>()
+    }
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val appBarHazeState = remember { HazeState() }
     val scrollState = rememberScrollState()
-
     val isTransparentAppbar = remember { mutableStateOf(true) }
     var reviewButtonPosition by remember { mutableStateOf(0) }
 
     val bookName = remember(
         key1 = uiState.bookItem.value,
-        key2 = bookShortVo
+        key2 = previousViewModel ?: bookShortVo
     ) {
         mutableStateOf(
             bookShortVo?.bookName ?: uiState.bookItem.value?.bookName.orEmpty()
@@ -65,11 +69,15 @@ fun BookInfoScreen(
     }
 
     LaunchedEffect(key1 = bookItemId, key2 = bookShortVo) {
-        bookItemId?.let {
-            viewModel.getBookByLocalId(bookItemId)
-        }
-        bookShortVo?.let {
-            viewModel.setShortBook(it)
+        if (previousViewModel == null) {
+            bookItemId?.let {
+                viewModel.getBookByLocalId(bookItemId)
+            }
+            bookShortVo?.let {
+                if (viewModel.uiState.value.shortBookItem.value == null) {
+                    viewModel.setShortBook(it)
+                }
+            }
         }
     }
 
@@ -78,8 +86,12 @@ fun BookInfoScreen(
             BookCreatorAppBar(
                 transparentAppbar = isTransparentAppbar,
                 title = "",
+                showBackButton = showBackButton,
                 onClose = {
                     viewModel.sendEvent(BookScreenEvents.CloseBookInfoScreen)
+                },
+                onBack = {
+                    viewModel.sendEvent(BookScreenEvents.OnBack)
                 }
             )
         },
@@ -100,7 +112,7 @@ fun BookInfoScreen(
             ) {
                 viewModel.BookInfoScreenContent(
                     uiState = uiState,
-                    bookShortVo = bookShortVo,
+                    bookShortVo = viewModel.uiState.value.shortBookItem.value ?: bookShortVo,
                     bookName = bookName,
                     reviewButtonPosition = {
                         reviewButtonPosition = it

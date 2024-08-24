@@ -1,6 +1,8 @@
 package book_info
 
 import ApplicationTheme
+import BaseEvent
+import BaseEventScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,13 +33,14 @@ import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.resize.Scale
 import main_models.books.BookShortVo
+import models.BookScreenEvents
 import org.jetbrains.compose.resources.stringResource
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
 import yourlibrary.common.resources.generated.resources.show_all_books_with_new_line
 
 @Composable
-fun BooksHorizontalSlider(
+fun BaseEventScope<BaseEvent>.BooksHorizontalSlider(
     books: State<List<BookShortVo>>,
     allBooksCount: Int,
     modifier: Modifier = Modifier,
@@ -66,7 +69,10 @@ fun BooksHorizontalSlider(
                 book,
                 modifier = modifier.padding(end = 20.dp),
                 imageModifier = imageModifier,
-                with = with
+                with = with,
+                onClick = {
+                    sendEvent(BookScreenEvents.OpenShortBook(book))
+                }
             )
         }
         if (allBooksCount > maxBooks) {
@@ -93,10 +99,12 @@ fun HorizontalSliderBookItem(
     book: BookShortVo,
     imageModifier: Modifier,
     with: Dp,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier.sizeIn(maxWidth = with),
+        modifier = modifier.sizeIn(maxWidth = with)
+            .clickable(interactionSource = MutableInteractionSource(), null) { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Card(

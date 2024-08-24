@@ -1,5 +1,6 @@
 package models
 
+import BookInfoViewModel
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -24,6 +25,7 @@ data class ApplicationUiState(
     val selectedBookId: MutableState<Long?> = mutableStateOf(null),
     val selectedShortBook: MutableState<BookShortVo?> = mutableStateOf(null),
     val searchedBooks: List<BookVo> = emptyList(),
+    val previousBookInfoViewModel: MutableState<BookInfoViewModel?> = mutableStateOf(null),
 ) : BaseUIState {
     val pathInfoList: SnapshotStateList<PathInfoVo> =
         mutableStateListOf()

@@ -43,7 +43,7 @@ class BookInfoViewModel(
             is DrawerEvents.OpenLeftDrawerOrCloseEvent -> drawerScope.openLeftDrawerOrClose()
             is DrawerEvents.OpenRightDrawerOrCloseEvent -> drawerScope.openRightDrawerOrClose()
             is BookScreenEvents.BookScreenCloseEvent -> {
-                applicationScope.closeBookScreen()
+                applicationScope.closeBookInfoScreen()
             }
 
             is BookScreenEvents.SaveBookAfterEditing -> {
@@ -64,6 +64,14 @@ class BookInfoViewModel(
 
             is BookScreenEvents.CloseBookInfoScreen -> {
                 navigationHandler.closeBookInfoScreen()
+            }
+
+            is BookScreenEvents.OnBack -> {
+                applicationScope.onBackFromBookScreen()
+            }
+
+            is BookScreenEvents.OpenShortBook -> {
+                applicationScope.openBookInfoScreen(bookId = null, shortBook = event.shortBook)
             }
 
             is ReviewAndRatingEvents.ChangeBookRating -> {
@@ -90,7 +98,6 @@ class BookInfoViewModel(
     }
 
     fun getBookByLocalId(localBookId: Long) {
-        _uiState.value = BookInfoUiState()
         bookJob?.cancel()
         reviewAndRatingJob?.cancel()
         bookJob = scope.launch(Dispatchers.IO) {
@@ -106,7 +113,6 @@ class BookInfoViewModel(
     }
 
     fun setShortBook(shortBook: BookShortVo) {
-        _uiState.value = BookInfoUiState()
         shortBookJob?.cancel()
         reviewAndRatingJob?.cancel()
         _uiState.value.shortBookItem.value = shortBook

@@ -1,5 +1,6 @@
 import org.kodein.di.DI
 import org.kodein.di.bind
+import org.kodein.di.factory
 import org.kodein.di.instance
 import org.kodein.di.singleton
 
@@ -13,7 +14,7 @@ val viewModelsModule = DI.Module("viewModelsModule") {
     bind<SearchViewModel>() with singleton {
         SearchViewModel(instance())
     }
-    bind<BookInfoViewModel>() with singleton {
+    bind<BookInfoViewModel>() with factory {
         BookInfoViewModel(
             instance(),
             instance(),
