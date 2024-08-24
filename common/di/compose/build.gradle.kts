@@ -15,6 +15,8 @@ kotlin {
                 implementation(project(":feature:search:data"))
                 implementation(project(":feature:book-info:presentation"))
                 implementation(project(":feature:book-info:domain"))
+                implementation(project(":feature:books-list-info:presentation"))
+                implementation(project(":feature:books-list-info:domain"))
                 implementation(project(":feature:book-creator:presentation"))
                 implementation(project(":feature:book-creator:domain"))
                 implementation(project(":feature:shelf:presentation"))

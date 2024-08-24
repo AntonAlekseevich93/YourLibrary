@@ -1,8 +1,9 @@
-package book_editor
+package elements
 
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
+import BooksListInfoViewModel
 import Strings
 import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.animation.AnimatedVisibility
@@ -41,9 +42,9 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import book_editor.elements.AuthorIsNotSelectedInfo
+import book_editor.elements.BookEditorEvents
 import book_editor.elements.NewAuthorButton
 import book_editor.elements.authors_selector.AuthorsListSelector
-import book_editor.elements.book_selector.BookSearchSelector
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.error
@@ -51,6 +52,7 @@ import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.resize.Scale
 import containters.CenterBoxContainer
 import date.DatePickerEvents
+import di.Inject
 import main_models.AuthorVo
 import main_models.BookValues
 import main_models.DatePickerType
@@ -109,6 +111,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     val authorFieldIsFocused = remember { mutableStateOf(false) }
     var oldAuthorName by remember { mutableStateOf("") }
     val needSearchAuthor = remember { mutableStateOf(false) }
+    val booksListInfoViewModel = remember { Inject.instance<BooksListInfoViewModel>() }
 
     if (needSearchAuthor.value && !authorFieldIsFocused.value) {
         val authorTextField = bookValues.authorName.value
@@ -257,14 +260,9 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                         showError = showSearchBookError,
                         bookValues = bookValues,
                         platform = platform,
-                        onClick = {
-                            sendEvent(BookEditorEvents.OnBookSelected(it))
-                        },
+                        booksListInfoViewModel = booksListInfoViewModel,
                         onClickManually = {
                             sendEvent(BookEditorEvents.OnCreateBookManually(bookWasNotFound = true))
-                        },
-                        bookHaveReadingStatusEvent = {
-                            sendEvent(BookEditorEvents.BookHaveReadingStatusEvent(Strings.bookExistInLibrary))
                         },
                         showAllBooksListener = {
                             keyboardController?.hide()

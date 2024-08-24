@@ -36,8 +36,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import book_editor.BookEditor
-import book_list_selector.BookListSelector
+import elements.BookEditor
+import elements.BookListSelector
 import date.CommonDatePicker
 import date.DatePickerEvents
 import dev.chrisbanes.haze.HazeState

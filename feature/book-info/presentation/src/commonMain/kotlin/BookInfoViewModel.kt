@@ -1,5 +1,5 @@
 import androidx.compose.ui.text.TextRange
-import book_editor.BookEditorEvents
+import book_editor.elements.BookEditorEvents
 import common_events.ReviewAndRatingEvents
 import date.DatePickerEvents
 import kotlinx.coroutines.CoroutineScope

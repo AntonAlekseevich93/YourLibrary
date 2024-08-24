@@ -5,7 +5,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import main_models.books.BookShortVo
 import models.BooksListInfoScope
+import models.BooksListInfoScreenEvents
 import models.BooksListInfoUiState
 import platform.PlatformInfoData
 
@@ -29,7 +31,9 @@ class BooksListInfoViewModel(
 
     override fun sendEvent(event: BaseEvent) {
         when (event) {
-
+            is BooksListInfoScreenEvents.OnBookSelected -> {
+                applicationScope.openBookInfoScreen(bookId = null, shortBook = event.shortBook)
+            }
         }
     }
 
@@ -63,6 +67,10 @@ class BooksListInfoViewModel(
                 }
             }
         }
+    }
+
+    fun setBookList(bookList: List<BookShortVo>) {
+        _uiState.value.bookList.value = bookList
     }
 
 

@@ -19,7 +19,7 @@ import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_empty_search
 
 @Composable
-internal fun SearchError(
+fun SearchError(
     title: String?,
     titleAnnotationString: AnnotatedString?
 ) {

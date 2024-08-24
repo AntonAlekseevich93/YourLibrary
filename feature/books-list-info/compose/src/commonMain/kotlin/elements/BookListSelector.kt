@@ -1,4 +1,4 @@
-package book_list_selector
+package elements
 
 import ApplicationTheme
 import androidx.compose.foundation.background
@@ -20,10 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
-import book_editor.elements.book_selector.elements.BookSelectorItem
 import main_models.books.BookShortVo
 import platform.Platform
 import platform.isMobile
+
+//todo maybe need delete
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

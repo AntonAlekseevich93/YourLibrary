@@ -21,6 +21,8 @@ kotlin {
                 implementation(project(":common:resources"))
                 implementation(project(":feature:book-creator:api"))
                 implementation(project(":feature:book-creator:presentation"))
+                implementation(project(":feature:books-list-info:compose"))
+                implementation(project(":feature:books-list-info:presentation"))
             }
         }
     }

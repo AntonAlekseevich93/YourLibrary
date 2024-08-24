@@ -1,4 +1,4 @@
-package book_editor.elements.book_selector.elements
+package elements
 
 import ApplicationTheme
 import androidx.compose.foundation.clickable

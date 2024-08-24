@@ -1,10 +1,9 @@
-package book_editor
+package book_editor.elements
 
 import BaseEvent
 import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.ui.text.input.TextFieldValue
 import main_models.AuthorVo
-import main_models.books.BookShortVo
 
 sealed class BookEditorEvents : BaseEvent {
     class OnAuthorTextChanged(
@@ -15,7 +14,6 @@ sealed class BookEditorEvents : BaseEvent {
 
     class OnSuggestionAuthorClickEvent(val author: AuthorVo) : BookEditorEvents()
     class OnBookNameChanged(val bookName: String) : BookEditorEvents()
-    class OnBookSelected(val shortBook: BookShortVo) : BookEditorEvents()
     class OnChangeNeedCreateNewAuthor(val needCreate: Boolean) : BookEditorEvents()
     class OnShowAlertDialogDeleteBookCover(val config: CommonAlertDialogConfig) : BookEditorEvents()
     class OnCreateBookManually(

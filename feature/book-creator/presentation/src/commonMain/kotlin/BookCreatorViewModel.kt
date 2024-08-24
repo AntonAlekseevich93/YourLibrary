@@ -2,7 +2,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.text.input.TextFieldValue
 import base.BaseMVIViewModel
-import book_editor.BookEditorEvents
+import book_editor.elements.BookEditorEvents
 import date.DatePickerEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,9 +45,6 @@ class BookCreatorViewModel(
             }
 
             is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
-            is BookEditorEvents.OnBookSelected -> {
-                applicationScope.openBookInfoScreen(bookId = null, shortBook = event.shortBook)
-            }
 
             is BookEditorEvents.OnChangeNeedCreateNewAuthor -> {
                 updateUIState(uiStateValue.copy(needCreateNewAuthor = event.needCreate))
@@ -92,6 +89,7 @@ class BookCreatorViewModel(
                 updateUIState(uiStateValue.copy(showSearchBookError = false))
             }
 
+            //todo в текущей логики не нужно
             is BookEditorEvents.BookHaveReadingStatusEvent -> {
                 scope.launch {
                     uiStateValue.snackbarHostState.showSnackbar(event.message)

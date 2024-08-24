@@ -1,8 +1,9 @@
 package models
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import main_models.books.BookShortVo
+
 data class BooksListInfoUiState(
-    val empty: String = ""
-) {
-
-
-}
+    val bookList: MutableState<List<BookShortVo>> = mutableStateOf(listOf())
+)

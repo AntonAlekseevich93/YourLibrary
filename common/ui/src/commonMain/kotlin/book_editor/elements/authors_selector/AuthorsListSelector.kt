@@ -20,7 +20,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import book_editor.BookEditorEvents
+import book_editor.elements.BookEditorEvents
 import book_editor.elements.CreateBookButton
 import containters.CenterBoxContainer
 import error.SearchError

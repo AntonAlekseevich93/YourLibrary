@@ -1,26 +1,23 @@
-package book_editor.elements.book_selector
+package elements
 
 import ApplicationTheme
+import BooksListInfoContent
+import BooksListInfoViewModel
 import Strings
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEachIndexed
 import book_editor.elements.CreateBookButton
-import book_editor.elements.book_selector.elements.BookSelectorItem
 import containters.CenterBoxContainer
 import error.SearchError
 import kotlinx.coroutines.launch
@@ -39,9 +36,8 @@ fun BookSearchSelector(
     modifier: Modifier = Modifier,
     bookValues: BookValues,
     platform: Platform,
-    onClick: (book: BookShortVo) -> Unit,
+    booksListInfoViewModel: BooksListInfoViewModel,
     onClickManually: () -> Unit,
-    bookHaveReadingStatusEvent: () -> Unit,
     showAllBooksListener: () -> Unit,
 ) {
     val state = rememberLazyListState()
@@ -77,25 +73,12 @@ fun BookSearchSelector(
                     modifier = Modifier.padding(bottom = 26.dp)
                 )
             }
-            val listSize = remember(similarBooks.size) { similarBooks.size }
-            similarBooks.fastForEachIndexed { index, item ->
-                BookSelectorItem(
-                    bookItem = item,
-                    modifier = Modifier.padding(end = 16.dp),
-                    onClick = onClick,
-                    bookHaveReadingStatusEvent = bookHaveReadingStatusEvent,
-                    maxLinesBookName = 4,
-                    maxLinesAuthorName = 2
-                )
-                if (index + 1 != listSize) {
-                    Divider(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 16.dp),
-                        thickness = 1.dp,
-                        color = Color.White.copy(alpha = 0.1f)
-                    )
-                }
-            }
+
+            BooksListInfoContent(
+                bookList = similarBooks,
+                viewModel = booksListInfoViewModel
+            )
+
         } else if (showError) {
             SearchError(
                 titleAnnotationString = buildAnnotatedString {
