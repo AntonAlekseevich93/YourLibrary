@@ -4,6 +4,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ktor.RemoteBooksListInfoDataSource
 import main_models.BookVo
+import main_models.ReadingStatus
+import main_models.ReadingStatusUtils
 
 class BooksListInfoRepositoryImpl(
     private val localBooksListInfoDataSource: LocalBooksListInfoDataSource,
@@ -40,4 +42,12 @@ class BooksListInfoRepositoryImpl(
                     )
                 }
             }
+
+    override suspend fun getBookReadingStatus(bookId: String): ReadingStatus? {
+        val status = localBooksListInfoDataSource.getBookReadingStatus(bookId, appConfig.userId)
+        return if (status != null) {
+            ReadingStatusUtils.textToReadingStatus(status)
+        } else null
+    }
+
 }

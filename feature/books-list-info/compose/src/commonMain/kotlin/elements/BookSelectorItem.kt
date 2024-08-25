@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.AsyncImage
@@ -53,143 +52,139 @@ fun BookSelectorItem(
     onClick: (book: BookShortVo) -> Unit,
     changeBookReadingStatus: (bookId: String) -> Unit,
 ) {
-    Row(
-        modifier = modifier
-            .padding(start = 8.dp)
-            .clickable(interactionSource = MutableInteractionSource(), null) {
-                onClick(bookItem)
-            },
-        verticalAlignment = Alignment.Top
-    ) {
-        val imageModifier = Modifier.sizeIn(
-            minHeight = 140.dp,
-            minWidth = MAX_ITEM_WITH,
-            maxHeight = 140.dp,
-            maxWidth = MAX_ITEM_WITH
-        )
-        Card(
-            modifier = imageModifier,
-            colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
-            shape = RoundedCornerShape(6.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    Column {
+        bookItem.readingStatus?.let { readingStatus ->
+            Card(
+                colors = CardDefaults.cardColors(containerColor = readingStatus.getStatusColor()),
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
+                Text(
+                    text = readingStatus.nameValue,
+                    style = ApplicationTheme.typography.footnoteRegular,
+                    color = ApplicationTheme.colors.mainBackgroundColor,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                )
+            }
+        }
+
+        Row(
+            modifier = modifier
+                .padding(start = 8.dp)
+                .clickable(interactionSource = MutableInteractionSource(), null) {
+                    onClick(bookItem)
+                },
+            verticalAlignment = Alignment.Top
         ) {
-            Box {
-                AsyncImage(
-                    modifier = imageModifier,
-                    request = ComposableImageRequest(bookItem.imageResultUrl) {
-                        scale(Scale.FILL)
-                        placeholder(Res.drawable.ic_default_book_cover_7)
-                        error(Res.drawable.ic_default_book_cover_7)
-                    },
-                    contentScale = ContentScale.FillBounds,
-                    contentDescription = null,
+            val imageModifier = Modifier.sizeIn(
+                minHeight = 140.dp,
+                minWidth = MAX_ITEM_WITH,
+                maxHeight = 140.dp,
+                maxWidth = MAX_ITEM_WITH
+            )
+            Card(
+                modifier = imageModifier,
+                colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
+                shape = RoundedCornerShape(6.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ) {
+                Box {
+                    AsyncImage(
+                        modifier = imageModifier,
+                        request = ComposableImageRequest(bookItem.imageResultUrl) {
+                            scale(Scale.FILL)
+                            placeholder(Res.drawable.ic_default_book_cover_7)
+                            error(Res.drawable.ic_default_book_cover_7)
+                        },
+                        contentScale = ContentScale.FillBounds,
+                        contentDescription = null,
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 16.dp, top = 2.dp)
+                    .weight(1f)
+            ) {
+                Text(
+                    text = bookItem.bookName,
+                    style = ApplicationTheme.typography.bodyBold,
+                    color = ApplicationTheme.colors.mainTextColor,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    maxLines = maxLinesBookName,
+                    overflow = TextOverflow.Ellipsis
                 )
 
-                bookItem.readingStatus?.let { readingStatus ->
-                    Column(Modifier.align(Alignment.TopStart)) {
-                        Card(
-                            shape = RoundedCornerShape(bottomEnd = 4.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = ApplicationTheme.colors.mainBackgroundColor.copy(
-                                    alpha = 0.7f
-                                )
-                            ),
-                        ) {
-                            Text(
-                                text = readingStatus.nameValue,
-                                style = ApplicationTheme.typography.footnoteBold,
-                                color = readingStatus.getStatusColor(),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+                Text(
+                    text = bookItem.originalAuthorName,
+                    style = ApplicationTheme.typography.bodyRegular,
+                    color = ApplicationTheme.colors.mainTextColor,
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    maxLines = maxLinesAuthorName,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    text = GenreUtils.getGenreById(bookItem.bookGenreId).name,
+                    style = ApplicationTheme.typography.footnoteRegular,
+                    color = ApplicationTheme.colors.hintColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                if (bookItem.ratingValue > 0 && bookItem.ratingCount > 0) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = 6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Star,
+                            contentDescription = null,
+                            tint = Color(0xFFfaa307),
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clip(CircleShape)
+                                .padding(end = 4.dp)
+                        )
+                        Text(
+                            text = bookItem.ratingValue.toString(),
+                            style = ApplicationTheme.typography.footnoteRegular,
+                            color = ApplicationTheme.colors.mainTextColor,
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+
+                        Text(
+                            text = "(${bookItem.ratingCount})",
+                            style = ApplicationTheme.typography.footnoteRegular,
+                            color = ApplicationTheme.colors.hintColor,
+                            modifier = Modifier.padding()
+                        )
+                        bookItem.currentUserRating?.let { userRating ->
+                            CurrentUserRatingLabel(
+                                rating = userRating.ratingScore,
+                                modifier = Modifier.padding(start = 8.dp),
                             )
                         }
                     }
                 }
             }
-        }
 
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 16.dp, top = 2.dp)
-                .weight(1f)
-        ) {
-            Text(
-                text = bookItem.bookName,
-                style = ApplicationTheme.typography.bodyBold,
-                color = ApplicationTheme.colors.mainTextColor,
-                modifier = Modifier.padding(bottom = 8.dp),
-                maxLines = maxLinesBookName,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Text(
-                text = bookItem.originalAuthorName,
-                style = ApplicationTheme.typography.bodyRegular,
-                color = ApplicationTheme.colors.mainTextColor,
-                modifier = Modifier.padding(bottom = 10.dp),
-                maxLines = maxLinesAuthorName,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Text(
-                text = GenreUtils.getGenreById(bookItem.bookGenreId).name,
-                style = ApplicationTheme.typography.footnoteRegular,
-                color = ApplicationTheme.colors.hintColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            if (bookItem.ratingValue > 0 && bookItem.ratingCount > 0) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 6.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Star,
-                        contentDescription = null,
-                        tint = Color(0xFFfaa307),
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clip(CircleShape)
-                            .padding(end = 4.dp)
-                    )
-                    Text(
-                        text = bookItem.ratingValue.toString(),
-                        style = ApplicationTheme.typography.footnoteRegular,
-                        color = ApplicationTheme.colors.mainTextColor,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
-
-                    Text(
-                        text = "(${bookItem.ratingCount})",
-                        style = ApplicationTheme.typography.footnoteRegular,
-                        color = ApplicationTheme.colors.hintColor,
-                        modifier = Modifier.padding()
-                    )
-                    bookItem.currentUserRating?.let { userRating ->
-                        CurrentUserRatingLabel(
-                            rating = userRating.ratingScore,
-                            modifier = Modifier.padding(start = 8.dp),
-                        )
-                    }
-                }
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .height(140.dp)
-                .clickable(interactionSource = MutableInteractionSource(), indication = null) {
-                    changeBookReadingStatus(bookItem.bookId)
-                }
-        ) {
-            Spacer(Modifier.padding(start = 10.dp))
-            Icon(
-                imageVector = Icons.Outlined.MoreVert,
-                contentDescription = null,
-                tint = ApplicationTheme.colors.mainIconsColor,
+            Row(
                 modifier = Modifier
-                    .size(20.dp)
-            )
+                    .height(140.dp)
+                    .clickable(interactionSource = MutableInteractionSource(), indication = null) {
+                        changeBookReadingStatus(bookItem.bookId)
+                    }
+            ) {
+                Spacer(Modifier.padding(start = 10.dp))
+                Icon(
+                    imageVector = Icons.Outlined.MoreVert,
+                    contentDescription = null,
+                    tint = ApplicationTheme.colors.mainIconsColor,
+                    modifier = Modifier
+                        .size(20.dp)
+                )
+            }
         }
     }
 }

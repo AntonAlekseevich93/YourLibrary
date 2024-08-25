@@ -51,6 +51,16 @@ class BooksListInfoViewModel(
         }
     }
 
+    fun setBookList(bookList: List<BookShortVo>) {
+        _uiState.value.bookList.clear()
+        _uiState.value.bookList.addAll(bookList)
+        scope.launch(Dispatchers.IO) {
+            _uiState.value.bookList.forEachIndexed { index, item ->
+                getCurrentUserReviewAndRatingByBook(index, item.bookId)
+                getReadingStatusByBookId(index, item.bookId)
+            }
+        }
+    }
 
     private suspend fun getCurrentUserReviewAndRatingByBook(bookListIndex: Int, bookId: String) {
         interactor.getCurrentUserReviewAndRatingByBook(bookId)?.let { reviewAndRating ->
@@ -64,15 +74,16 @@ class BooksListInfoViewModel(
         }
     }
 
-    fun setBookList(bookList: List<BookShortVo>) {
-        _uiState.value.bookList.clear()
-        _uiState.value.bookList.addAll(bookList)
-        scope.launch(Dispatchers.IO) {
-            _uiState.value.bookList.forEachIndexed { index, item ->
-                getCurrentUserReviewAndRatingByBook(index, item.bookId)
+    private suspend fun getReadingStatusByBookId(bookListIndex: Int, bookId: String) {
+        interactor.getBookReadingStatus(bookId)?.let { status ->
+            val bookItem = _uiState.value.bookList.get(bookListIndex)
+            if (bookItem.bookId == bookId) {
+                _uiState.value.bookList[bookListIndex] =
+                    bookItem.apply {
+                        readingStatus = status
+                    }
             }
         }
     }
-
 
 }

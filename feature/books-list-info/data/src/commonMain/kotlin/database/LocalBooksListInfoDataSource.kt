@@ -26,6 +26,9 @@ class LocalBooksListInfoDataSource(
     suspend fun getLocalBookById(bookId: String, userId: Long): Flow<List<BookEntity>> =
         booksDao.getLocalBookById(bookId = bookId, userId = userId)
 
+    suspend fun getBookReadingStatus(bookId: String, userId: Long): String? =
+        booksDao.getBookStatusByBookId(bookId, userId = userId).firstOrNull()?.readingStatus
+
     private suspend fun createEmptyTimestamp(userId: Long): BookTimestampEntity {
         val timestamp = BookTimestampEntity(
             userId = userId,
@@ -35,6 +38,5 @@ class LocalBooksListInfoDataSource(
         bookTimestampDao.insertOrUpdateTimestamp(timestamp)
         return timestamp
     }
-
 
 }

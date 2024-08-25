@@ -49,15 +49,6 @@ fun BookInfoScreen(
     val isTransparentAppbar = remember { mutableStateOf(true) }
     var reviewButtonPosition by remember { mutableStateOf(0) }
 
-    val bookName = remember(
-        key1 = uiState.bookItem.value,
-        key2 = previousViewModel ?: bookShortVo
-    ) {
-        mutableStateOf(
-            bookShortVo?.bookName ?: uiState.bookItem.value?.bookName.orEmpty()
-        )
-    }
-
     LaunchedEffect(scrollState) {
         snapshotFlow { scrollState.value }.collect { scrollOffset ->
             if (scrollOffset > 220 && isTransparentAppbar.value) {
@@ -69,14 +60,14 @@ fun BookInfoScreen(
     }
 
     LaunchedEffect(key1 = bookItemId, key2 = bookShortVo) {
-        if (previousViewModel == null) {
+        if (previousViewModel == null &&
+            viewModel.uiState.value.shortBookItem.value == null && viewModel.uiState.value.bookItem.value == null
+        ) {
             bookItemId?.let {
                 viewModel.getBookByLocalId(bookItemId)
             }
             bookShortVo?.let {
-                if (viewModel.uiState.value.shortBookItem.value == null) {
-                    viewModel.setShortBook(it)
-                }
+                viewModel.setShortBook(it)
             }
         }
     }
@@ -112,8 +103,6 @@ fun BookInfoScreen(
             ) {
                 viewModel.BookInfoScreenContent(
                     uiState = uiState,
-                    bookShortVo = viewModel.uiState.value.shortBookItem.value ?: bookShortVo,
-                    bookName = bookName,
                     reviewButtonPosition = {
                         reviewButtonPosition = it
                     },

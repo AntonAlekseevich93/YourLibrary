@@ -26,7 +26,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,7 +50,6 @@ import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeChild
 import kotlinx.coroutines.launch
 import main_models.ReadingStatus
-import main_models.books.BookShortVo
 import main_models.genre.GenreUtils
 import models.BookInfoUiState
 import models.BookScreenEvents
@@ -67,8 +65,6 @@ import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
 @Composable
 internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
     uiState: BookInfoUiState,
-    bookShortVo: BookShortVo?,
-    bookName: State<String>,
     reviewButtonPosition: (position: Int) -> Unit,
     scrollToReviewButtonListener: () -> Unit,
 ) {
@@ -80,31 +76,41 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
     var showWriteReviewBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
-    val bookAuthor: String by remember(
-        key1 = uiState.bookItem.value,
-        key2 = bookShortVo
+    val bookName: String by remember(
+        key1 = uiState.bookItem.value?.bookName,
+        key2 = uiState.shortBookItem.value?.bookName
     ) {
         mutableStateOf(
-            bookShortVo?.originalAuthorName
+            uiState.shortBookItem.value?.bookName
+                ?: uiState.bookItem.value?.bookName.orEmpty()
+        )
+    }
+    val bookAuthor: String by remember(
+        key1 = uiState.bookItem.value?.originalAuthorId,
+        key2 = uiState.shortBookItem.value?.originalAuthorId
+    ) {
+        mutableStateOf(
+            uiState.shortBookItem.value?.originalAuthorName
                 ?: uiState.bookItem.value?.originalAuthorName.orEmpty()
         )
     }
 
     val imageUrl: String by remember(
-        key1 = uiState.bookItem.value,
-        key2 = bookShortVo
+        key1 = uiState.bookItem.value?.remoteImageLink,
+        key2 = uiState.shortBookItem.value?.imageResultUrl
     ) {
         mutableStateOf(
-            bookShortVo?.imageResultUrl ?: uiState.bookItem.value?.remoteImageLink.orEmpty()
+            uiState.shortBookItem.value?.imageResultUrl
+                ?: uiState.bookItem.value?.remoteImageLink.orEmpty()
         )
     }
 
     val readingStatus: ReadingStatus? by remember(
-        key1 = uiState.bookItem.value,
-        key2 = bookShortVo
+        key1 = uiState.bookItem.value?.bookId,
+        key2 = uiState.shortBookItem.value?.bookId
     ) {
         mutableStateOf(
-            bookShortVo?.readingStatus
+            uiState.shortBookItem.value?.readingStatus
                 ?: uiState.bookItem.value?.readingStatus
         )
     }
@@ -167,7 +173,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
             }
 
             Text(
-                text = bookName.value,
+                text = bookName,
                 style = ApplicationTheme.typography.bodyBold,
                 color = ApplicationTheme.colors.mainTextColor,
                 modifier = Modifier.padding(
@@ -261,20 +267,23 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
             }
         }
 
-        if (uiState.bookItem.value != null || bookShortVo != null) {
+        if (uiState.bookItem.value != null || uiState.shortBookItem.value != null) {
             val bookItem = uiState.bookItem.value
             BookInfoAboutBook(
-                description = bookItem?.description ?: bookShortVo?.description!!,
+                description = bookItem?.description ?: uiState.shortBookItem.value?.description!!,
                 genre = GenreUtils.getGenreById(
-                    bookItem?.bookGenreId ?: bookShortVo?.bookGenreId!!
+                    bookItem?.bookGenreId ?: uiState.shortBookItem.value?.bookGenreId!!
                 ).name,
-                pageCount = bookItem?.pageCount ?: bookShortVo?.numbersOfPages!!,
+                pageCount = bookItem?.pageCount ?: uiState.shortBookItem.value?.numbersOfPages!!,
                 startDate = bookItem?.startDateInString,
                 endDate = bookItem?.endDateInString,
                 readingDayAmount = bookItem?.getReadingDays(),
-                ageRestrictions = bookItem?.ageRestrictions ?: bookShortVo?.ageRestrictions,
-                allUsersRating = bookItem?.ratingValue ?: bookShortVo?.ratingValue ?: 0.0,
-                allRatingAmount = bookItem?.ratingCount ?: bookShortVo?.ratingCount ?: 0,
+                ageRestrictions = bookItem?.ageRestrictions
+                    ?: uiState.shortBookItem.value?.ageRestrictions,
+                allUsersRating = bookItem?.ratingValue ?: uiState.shortBookItem.value?.ratingValue
+                ?: 0.0,
+                allRatingAmount = bookItem?.ratingCount ?: uiState.shortBookItem.value?.ratingCount
+                ?: 0,
                 userReviewAndRating = uiState.currentBookUserReviewAndRating,
                 otherBooksByAuthor = uiState.otherBooksByAuthor,
                 reviewsAndRatings = uiState.reviewsAndRatings,
@@ -313,7 +322,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                 scrimColor = Color.Transparent
             ) {
                 WriteReviewScreen(
-                    bookName = bookName.value,
+                    bookName = bookName,
                     userRating = uiState.currentBookUserReviewAndRating.value?.ratingScore,
                     modifier = Modifier
                 )
@@ -329,7 +338,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                 sendEvent(
                     BookScreenEvents.ChangeReadingStatusEvent(
                         selectedStatus = it,
-                        bookId = bookShortVo?.bookId
+                        bookId = uiState.shortBookItem.value?.bookId
                             ?: uiState.bookItem.value?.bookId.orEmpty()
                     )
                 )

@@ -101,11 +101,11 @@ class ApplicationViewModel(
     }
 
     override fun openBookInfoScreen(bookId: Long?, shortBook: BookShortVo?) {
+        navigationHandler.navigateToBookInfo()
         uiStateValue.apply {
             previousBookInfoViewModel.value = null
             selectedBookId.value = bookId
             selectedShortBook.value = shortBook
-            navigationHandler.navigateToBookInfo()
         }
     }
 

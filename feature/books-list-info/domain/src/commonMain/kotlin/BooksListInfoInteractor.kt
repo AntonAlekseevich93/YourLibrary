@@ -1,5 +1,6 @@
 import kotlinx.coroutines.flow.Flow
 import main_models.BookVo
+import main_models.ReadingStatus
 import main_models.rating_review.ReviewAndRatingVo
 
 class BooksListInfoInteractor(
@@ -18,5 +19,6 @@ class BooksListInfoInteractor(
     suspend fun getCurrentUserReviewAndRatingByBook(bookId: String): ReviewAndRatingVo? =
         reviewAndRatingRepository.getCurrentUserLocalReviewAndRatingByBook(bookId)
 
-
+    suspend fun getBookReadingStatus(bookId: String): ReadingStatus? =
+        repository.getBookReadingStatus(bookId)
 }
