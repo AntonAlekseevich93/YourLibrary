@@ -511,8 +511,8 @@ class BookCreatorViewModel(
                 if (shortBookIndex != null) {
                     val oldBooksList =
                         uiStateValue.similarBooks.map { if (it.bookId == shortBookWithNewStatus!!.bookId) shortBookWithNewStatus else it }
-//                    uiStateValue.similarBooks.clear()
-//                    uiStateValue.similarBooks.addAll(oldBooksList)
+
+                    updateUIState(uiStateValue.copy(similarBooks = oldBooksList))
 
                     if (selectedBookInfo.bookVo?.readingStatus?.id == null) {
                         val bookVo = createUserBookBasedOnShortBook(
@@ -526,8 +526,6 @@ class BookCreatorViewModel(
                             newStatus = newStatus
                         )
                     }
-
-                    println("итог:${uiStateValue.similarBooks.joinToString { "${it.bookName}-${it.localReadingStatus?.nameValue}" }}")
                 }
             }
         }
