@@ -5,7 +5,7 @@ import org.kodein.di.provider
 
 val domainModule = DI.Module("domainModule") {
     bind<BookCreatorInteractor>() with provider {
-        BookCreatorInteractor(instance(), instance(), instance())
+        BookCreatorInteractor(instance(), instance(), instance(), instance())
     }
 
     bind<BookInfoInteractor>() with provider {

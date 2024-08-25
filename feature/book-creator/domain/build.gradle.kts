@@ -12,6 +12,7 @@ kotlin {
                 implementation(project(":feature:book-creator:api"))
                 implementation(project(":feature:authors:api"))
                 implementation(project(":feature:search:api"))
+                implementation(project(":feature:book-info:api"))
             }
         }
     }

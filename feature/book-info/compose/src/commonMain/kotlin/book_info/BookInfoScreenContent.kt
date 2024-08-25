@@ -110,7 +110,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
         key2 = uiState.shortBookItem.value?.bookId
     ) {
         mutableStateOf(
-            uiState.shortBookItem.value?.readingStatus
+            uiState.shortBookItem.value?.localReadingStatus
                 ?: uiState.bookItem.value?.readingStatus
         )
     }

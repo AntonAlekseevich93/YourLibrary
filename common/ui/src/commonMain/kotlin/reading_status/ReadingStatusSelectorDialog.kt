@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import main_models.ReadingStatus
-import reading_status.getStatusColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,11 +41,14 @@ fun ReadingStatusSelectorDialog(
     ) {
         Column {
             statuses.fastForEachIndexed { index, status ->
-                val color: Color = if (currentStatus == null) Color.Transparent
+                val backgroundColor: Color = if (currentStatus == null) Color.Transparent
                 else if (status.id == currentStatus.id) currentStatus.getStatusColor() else Color.Transparent
+                val textColor: Color =
+                    if (currentStatus == null) ApplicationTheme.colors.mainTextColor
+                    else if (status.id == currentStatus.id) Color.Black else ApplicationTheme.colors.mainTextColor
                 Box(
                     Modifier
-                        .background(color)
+                        .background(backgroundColor)
                         .fillMaxWidth()
                         .clickable(
                             interactionSource = MutableInteractionSource(),
@@ -57,7 +59,7 @@ fun ReadingStatusSelectorDialog(
                     Text(
                         text = status.nameValue,
                         style = ApplicationTheme.typography.headlineMedium,
-                        color = ApplicationTheme.colors.mainTextColor,
+                        color = textColor,
                         textAlign = TextAlign.Start,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
                     )

@@ -14,7 +14,10 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -45,6 +48,7 @@ import platform.PlatformInfoData
 
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val navigator: MutableState<Navigator?> = mutableStateOf(null)
@@ -89,14 +93,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
             AppTheme {
-                PreComposeApp {
-                    navigator.value = rememberNavigator()
-                    Application(
-                        platform = Platform.MOBILE(),
-                        isKeyboardShown = keyboardAsState(),
-                        navigator = navigator.value ?: rememberNavigator(),
-                        platformDisplayHeight = platformDisplayHeight
-                    )
+                CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+                    PreComposeApp {
+                        navigator.value = rememberNavigator()
+                        Application(
+                            platform = Platform.MOBILE(),
+                            isKeyboardShown = keyboardAsState(),
+                            navigator = navigator.value ?: rememberNavigator(),
+                            platformDisplayHeight = platformDisplayHeight
+                        )
+                    }
                 }
             }
         }

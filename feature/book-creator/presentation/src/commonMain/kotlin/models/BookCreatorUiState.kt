@@ -2,9 +2,12 @@ package models
 
 import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import base.BaseUIState
 import main_models.AuthorVo
 import main_models.BookValues
+import main_models.BookVo
 import main_models.DatePickerType
 import main_models.ReadingStatus
 import main_models.books.BookShortVo
@@ -39,4 +42,10 @@ data class BookCreatorUiState(
     val showSearchAuthorError: Boolean = false,
     val showFullScreenBookSelector: Boolean = false,
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
+    val selectedBookByMenuClick: MutableState<SelectedBook?> = mutableStateOf(null)
 ) : BaseUIState
+
+data class SelectedBook(
+    val bookId: String = "",
+    val bookVo: BookVo? = null
+)

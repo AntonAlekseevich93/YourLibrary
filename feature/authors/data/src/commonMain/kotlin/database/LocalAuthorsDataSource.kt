@@ -50,6 +50,9 @@ class LocalAuthorsDataSource(
         }
     }
 
+    suspend fun getAuthorById(authorId: String, userId: Long) =
+        authorsDao.getAuthorByAuthorId(authorId = authorId, userId = userId)
+
     private suspend fun createEmptyTimestamp(userId: Long): AuthorsTimestampEntity {
         val timestamp = AuthorsTimestampEntity(
             userId = userId,

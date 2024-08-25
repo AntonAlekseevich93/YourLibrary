@@ -51,9 +51,10 @@ fun BookSelectorItem(
     maxLinesAuthorName: Int = Int.MAX_VALUE,
     onClick: (book: BookShortVo) -> Unit,
     changeBookReadingStatus: (bookId: String) -> Unit,
+    hazeModifier: Modifier = Modifier,
 ) {
-    Column {
-        bookItem.readingStatus?.let { readingStatus ->
+    Column(hazeModifier) {
+        bookItem.localReadingStatus?.let { readingStatus ->
             Card(
                 colors = CardDefaults.cardColors(containerColor = readingStatus.getStatusColor()),
                 shape = RoundedCornerShape(4.dp),
@@ -159,7 +160,7 @@ fun BookSelectorItem(
                             color = ApplicationTheme.colors.hintColor,
                             modifier = Modifier.padding()
                         )
-                        bookItem.currentUserRating?.let { userRating ->
+                        bookItem.localCurrentUserRating?.let { userRating ->
                             CurrentUserRatingLabel(
                                 rating = userRating.ratingScore,
                                 modifier = Modifier.padding(start = 8.dp),

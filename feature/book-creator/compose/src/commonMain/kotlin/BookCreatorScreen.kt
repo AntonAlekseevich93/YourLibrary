@@ -4,12 +4,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material3.BasicAlertDialog
@@ -33,13 +31,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import book_editor.elements.BookEditorEvents
 import date.CommonDatePicker
 import date.DatePickerEvents
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
-import elements.BookEditor
+import elements.BookSearchSelector
 import genre.GenreSelector
 import kotlinx.coroutines.launch
 import main_models.DatePickerType
@@ -59,15 +58,15 @@ fun BookCreatorScreen(
     hazeState: HazeState,
 ) {
     val viewModel = remember { Inject.instance<BookCreatorViewModel>() }
+    val booksListInfoViewModel = remember { Inject.instance<BooksListInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
-    val scrollableState = rememberScrollState()
+    val lazyListState = rememberLazyListState()
 
     val statusBookTextFieldValue =
         remember { mutableStateOf(TextFieldValue(text = uiState.defaultStatus.nameValue)) }
     val dataPickerState = rememberDatePickerState()
     val scope = rememberCoroutineScope()
     var selectionGenreState by remember { mutableStateOf(false) }
-    val selectReadingStatusForBookId = remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
@@ -82,13 +81,13 @@ fun BookCreatorScreen(
             )
         },
         floatingActionButton = {
-            if (scrollableState.value > 2000) {
+            if (lazyListState.firstVisibleItemIndex > 5) {
                 FloatingActionButton(
                     modifier = Modifier.padding(bottom = 76.dp),
                     containerColor = ApplicationTheme.colors.mainBackgroundColor,
                     onClick = {
                         scope.launch {
-                            scrollableState.scrollTo(0)
+                            lazyListState.scrollToItem(0)
                         }
 
                     }
@@ -111,44 +110,71 @@ fun BookCreatorScreen(
                 .fillMaxWidth()
                 .padding(top = 1.dp) //fixes haze blur bug
                 .background(Color.Transparent)
-                .verticalScroll(scrollableState)
         ) {
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            viewModel.BookEditor(
-                modifier = Modifier
-                    .haze(
-                        state = hazeState,
-                        style = HazeStyle(
-                            tint = Color.Black.copy(alpha = .2f),
-                            blurRadius = 30.dp,
-                        )
-                    )
-                    .padding(top = it.calculateTopPadding()),
-                platform = platform,
-                bookValues = uiState.bookValues,
-                similarSearchAuthors = uiState.similarSearchAuthors,
-                selectedAuthor = uiState.selectedAuthor,
-                createNewAuthor = uiState.needCreateNewAuthor,
-                isKeyboardShown = isKeyboardShown.value,
-                statusBookTextFieldValue = statusBookTextFieldValue,
+            viewModel.BookSearchSelector(
+                lazyListState = lazyListState,
                 similarBooks = uiState.similarBooks,
-                isSearchBookProcess = uiState.isSearchBookProcess,
+                isLoading = uiState.isSearchBookProcess,
+                hazeModifier = Modifier.haze(
+                    state = hazeState,
+                    style = HazeStyle(
+                        tint = Color.Black.copy(alpha = .04f),
+                        blurRadius = 30.dp,
+                    )
+                ),
+                topPadding = it.calculateTopPadding(),
+                bottomPadding = it.calculateBottomPadding(),
+                showError = uiState.showSearchBookError,
+                bookValues = uiState.bookValues,
+                platform = platform,
+                booksListInfoViewModel = booksListInfoViewModel,
+                selectedAuthor = uiState.selectedAuthor,
+                similarSearchAuthors = uiState.similarSearchAuthors,
                 isSearchAuthorProcess = uiState.isSearchAuthorProcess,
-                isCreateBookManually = uiState.isCreateBookManually,
-                shortBook = uiState.shortBookItem,
-                isBookCoverManually = uiState.isBookCoverManually,
-                showSearchBookError = uiState.showSearchBookError,
                 showSearchAuthorError = uiState.showSearchAuthorError,
-                genreSelectorListener = { selectionGenreState = true },
-                bookWasNotFound = uiState.bookWasNotFound,
-                authorWasNotFound = uiState.authorWasNotFound,
-                onClickSave = {
-                    viewModel.sendEvent(BookCreatorEvents.CreateBookEvent)
+                showSearchBookError = uiState.showSearchBookError,
+                onClickManually = {
+                    viewModel.sendEvent(BookEditorEvents.OnCreateBookManually(bookWasNotFound = true))
                 },
                 changeBookReadingStatus = {
-                    selectReadingStatusForBookId.value = it
+                    viewModel.sendEvent(BookCreatorEvents.SetSelectedBookByMenuClick(it))
                 }
             )
+//            viewModel.BookEditor(
+//                modifier = Modifier
+//                    .haze(
+//                        state = hazeState,
+//                        style = HazeStyle(
+//                            tint = Color.Black.copy(alpha = .2f),
+//                            blurRadius = 30.dp,
+//                        )
+//                    )
+//                    .padding(top = it.calculateTopPadding()),
+//                platform = platform,
+//                bookValues = uiState.bookValues,
+//                similarSearchAuthors = uiState.similarSearchAuthors,
+//                selectedAuthor = uiState.selectedAuthor,
+//                createNewAuthor = uiState.needCreateNewAuthor,
+//                isKeyboardShown = isKeyboardShown.value,
+//                statusBookTextFieldValue = statusBookTextFieldValue,
+//                similarBooks = uiState.similarBooks,
+//                isSearchBookProcess = uiState.isSearchBookProcess,
+//                isSearchAuthorProcess = uiState.isSearchAuthorProcess,
+//                isCreateBookManually = uiState.isCreateBookManually,
+//                shortBook = uiState.shortBookItem,
+//                isBookCoverManually = uiState.isBookCoverManually,
+//                showSearchBookError = uiState.showSearchBookError,
+//                showSearchAuthorError = uiState.showSearchAuthorError,
+//                genreSelectorListener = { selectionGenreState = true },
+//                bookWasNotFound = uiState.bookWasNotFound,
+//                authorWasNotFound = uiState.authorWasNotFound,
+//                onClickSave = {
+//                    viewModel.sendEvent(BookCreatorEvents.CreateBookEvent)
+//                },
+//                changeBookReadingStatus = {
+//                    viewModel.sendEvent(BookCreatorEvents.SetSelectedBookByMenuClick(it))
+//                }
+//            )
         }
 
         AnimatedVisibility(uiState.showDatePicker) {
@@ -176,14 +202,14 @@ fun BookCreatorScreen(
             )
         }
 
-        if (selectReadingStatusForBookId.value != null) {
+        if (uiState.selectedBookByMenuClick.value != null) {
             ReadingStatusSelectorDialog(
-                currentStatus = null,
+                currentStatus = uiState.selectedBookByMenuClick.value?.bookVo?.readingStatus,
                 useDivider = false,
                 selectStatusListener = {
-                    selectReadingStatusForBookId.value = null
+                    viewModel.sendEvent(BookCreatorEvents.ChangeBookReadingStatus(it))
                 },
-                dismiss = { selectReadingStatusForBookId.value = null }
+                dismiss = { viewModel.sendEvent(BookCreatorEvents.ClearSelectedBook) }
             )
         }
 

@@ -12,4 +12,5 @@ interface AuthorsRepository {
     suspend fun getAuthorsTimestamp(userId: Long): AuthorTimestampVo
     suspend fun getNotSynchronizedAuthors(): List<AuthorVo>
     suspend fun createAuthorIfNotExist(author: AuthorVo)
+    suspend fun getLocalAuthorById(authorId: String): AuthorVo?
 }

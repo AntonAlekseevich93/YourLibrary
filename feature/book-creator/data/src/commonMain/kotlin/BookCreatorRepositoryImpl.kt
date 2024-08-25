@@ -16,6 +16,7 @@ class BookCreatorRepositoryImpl(
     private val remoteBookCreatorDataSource: RemoteBookCreatorDataSource,
     private val appConfig: AppConfig,
     private val authorsRepository: AuthorsRepository,
+    private val remoteConfig: RemoteConfig,
 ) : BookCreatorRepository {
 
     override suspend fun createBook(book: BookVo, author: AuthorVo) {
@@ -55,6 +56,21 @@ class BookCreatorRepositoryImpl(
         }
         return null
     }
+
+    override suspend fun getLocalBookById(bookId: String): BookVo? {
+        val book =
+            localBookCreatorDataSource.getLocalBookById(bookId = bookId, userId = appConfig.userId)
+        return book?.toVo(
+            remoteImageLink = remoteConfig.getImageUrl(
+                imageName = book.imageName,
+                imageFolderId = book.imageFolderId,
+                bookServerId = book.serverId
+            )
+        )
+    }
+
+    override suspend fun getLocalAuthorById(authorId: String): AuthorVo? =
+        authorsRepository.getLocalAuthorById(authorId)
 
     private suspend fun updateBooksTimestamp(timestamp: Long) {
         val lastTimestamp = localBookCreatorDataSource.getBookTimestamp(appConfig.userId)

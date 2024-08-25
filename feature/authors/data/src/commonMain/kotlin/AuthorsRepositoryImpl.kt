@@ -47,4 +47,8 @@ class AuthorsRepositoryImpl(
         localAuthorsDataSource.createAuthorIfNotExist(author.toLocalDto(userId), userId = userId)
     }
 
+    override suspend fun getLocalAuthorById(authorId: String): AuthorVo? =
+        localAuthorsDataSource.getAuthorById(authorId = authorId, userId = appConfig.userId)
+            .firstOrNull()?.toVo()
+
 }

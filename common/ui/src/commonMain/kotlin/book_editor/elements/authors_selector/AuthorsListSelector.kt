@@ -7,9 +7,6 @@ import Strings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -18,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
 import book_editor.elements.BookEditorEvents
 import book_editor.elements.CreateBookButton
 import containters.CenterBoxContainer
@@ -35,9 +32,9 @@ fun BaseEventScope<BaseEvent>.AuthorsListSelector(
     isSearchAuthorProcess: Boolean,
     showError: Boolean,
     bookValues: BookValues,
-    maxHeight: Dp = 700.dp
+    hazeModifier: Modifier = Modifier,
 ) {
-    Column {
+    Column(hazeModifier) {
         AnimatedVisibility(isSearchAuthorProcess) {
             LoadingProcessWithTitle(
                 text = "Ищем по всему интернету...",
@@ -87,25 +84,22 @@ fun BaseEventScope<BaseEvent>.AuthorsListSelector(
                 colors = CardDefaults.cardColors(
                     containerColor = ApplicationTheme.colors.dropdownBackground
                 ),
-                modifier = Modifier.sizeIn(maxHeight = maxHeight)
             ) {
-                LazyColumn(modifier = Modifier.padding(vertical = 8.dp)) {
-                    items(similarSearchAuthors) { author ->
-                        DropdownSuggestionItem(
-                            text = author.name,
-                            itemClickListener = {
-                                bookValues.setSelectedAuthorName(
-                                    author.name,
-                                    relatedAuthorsNames = author.name
+                similarSearchAuthors.fastForEach { author ->
+                    DropdownSuggestionItem(
+                        text = author.name,
+                        itemClickListener = {
+                            bookValues.setSelectedAuthorName(
+                                author.name,
+                                relatedAuthorsNames = author.name
+                            )
+                            sendEvent(
+                                BookEditorEvents.OnSuggestionAuthorClickEvent(
+                                    author
                                 )
-                                sendEvent(
-                                    BookEditorEvents.OnSuggestionAuthorClickEvent(
-                                        author
-                                    )
-                                )
-                            },
-                        )
-                    }
+                            )
+                        },
+                    )
                 }
             }
         }

@@ -55,6 +55,9 @@ class LocalBookCreatorDataSource(
     suspend fun getBookStatusByBookId(bookId: String, userId: Long): String? =
         booksDao.getBookStatusByBookId(bookId, userId = userId).firstOrNull()?.readingStatus
 
+    suspend fun getLocalBookById(bookId: String, userId: Long) =
+        booksDao.getBookByBookId(bookId, userId = userId).firstOrNull()
+
     private suspend fun createEmptyTimestamp(userId: Long): BookTimestampEntity {
         val timestamp = BookTimestampEntity(
             userId = userId,

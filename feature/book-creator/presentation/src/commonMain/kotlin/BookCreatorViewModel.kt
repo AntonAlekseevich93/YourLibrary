@@ -19,6 +19,7 @@ import main_models.books.BookShortVo
 import main_models.rest.LoadingStatus
 import models.BookCreatorEvents
 import models.BookCreatorUiState
+import models.SelectedBook
 import platform.PlatformInfoData
 import text_fields.DELAY_FOR_LISTENER_PROCESSING
 import java.util.UUID
@@ -181,6 +182,18 @@ class BookCreatorViewModel(
                 setSelectedBook(event.shortBook)
             }
 
+            is BookCreatorEvents.SetSelectedBookByMenuClick -> {
+                setSelectedBookByMenuClick(event.bookId)
+            }
+
+            is BookCreatorEvents.ClearSelectedBook -> {
+                uiStateValue.selectedBookByMenuClick.value = null
+            }
+
+            is BookCreatorEvents.ChangeBookReadingStatus -> {
+                changeBookReadingStatusIfBookExistOrCreateBookWithNewStatus(event.newStatus)
+            }
+
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
             is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
             is DatePickerEvents.OnHideDatePicker -> {
@@ -206,7 +219,17 @@ class BookCreatorViewModel(
             } else {
                 createManuallyUserBook()
             }
-            val author: AuthorVo = if (uiStateValue.selectedAuthor != null) {
+            val author = getOrCreateAuthor(newBook)
+            interactor.createBook(newBook, author = author)
+            clearAllBookInfo()
+            navigationHandler.goBack()
+        }
+    }
+
+    private suspend fun getOrCreateAuthor(book: BookVo): AuthorVo {
+        val localAuthor = interactor.getLocalAuthorById(book.originalAuthorId)
+        return localAuthor
+            ?: if (uiStateValue.selectedAuthor != null) {
                 uiStateValue.selectedAuthor!!
             } else if (uiStateValue.shortBookItem != null) {
                 val shortBook = uiStateValue.shortBookItem!!
@@ -224,18 +247,14 @@ class BookCreatorViewModel(
                 AuthorVo(
                     serverId = null,
                     localId = null,
-                    id = newBook.originalAuthorId,
-                    name = newBook.originalAuthorName,
-                    uppercaseName = newBook.originalAuthorName.uppercase(),
+                    id = book.originalAuthorId,
+                    name = book.originalAuthorName,
+                    uppercaseName = book.originalAuthorName.uppercase(),
                     timestampOfCreating = 0,
                     timestampOfUpdating = 0,
                     isCreatedByUser = true
                 )
             }
-            interactor.createBook(newBook, author = author)
-            clearAllBookInfo()
-            navigationHandler.goBack()
-        }
     }
 
     private fun clearSearchAuthor(showError: Boolean = false) {
@@ -339,7 +358,7 @@ class BookCreatorViewModel(
                     newList.addAll(response)
                     newList.map {
                         val status: ReadingStatus? = interactor.getBookStatusByBookId(it.bookId)
-                        it.apply { readingStatus = status }
+                        it.copy(localReadingStatus = status)
                     }
 
                     withContext(Dispatchers.Main) {
@@ -388,8 +407,6 @@ class BookCreatorViewModel(
         searchJob = scope.launch(Dispatchers.IO) {
             updateUIState(uiStateValue.copy(isSearchBookProcess = true))
             val response = interactor.getAllBooksByAuthor(author.id)
-
-            uiStateValue.similarBooks
             updateSimilarBooksCache(response)
             val bookName = uiStateValue.bookValues.bookName.value.text
             var showSearchBookError = response.isEmpty()
@@ -487,6 +504,54 @@ class BookCreatorViewModel(
         updateUIState(uiStateValue.copy(showSearchBookError = false))
     }
 
+    private fun changeBookReadingStatusIfBookExistOrCreateBookWithNewStatus(newStatus: ReadingStatus) {
+        scope.launch(Dispatchers.IO) {
+            uiStateValue.selectedBookByMenuClick.value?.let { selectedBookInfo ->
+                uiStateValue.selectedBookByMenuClick.value = null
+                val shortBook =
+                    uiStateValue.similarBooks.find { it.bookId == selectedBookInfo.bookId }
+                val shortBookIndex =
+                    uiStateValue.similarBooks.indexOf(shortBook).takeIf { it >= 0 }
+                val shortBookWithNewStatus = shortBook?.copy(
+                    localReadingStatus = newStatus
+                )
+                if (shortBookIndex != null) {
+                    val oldBooksList =
+                        uiStateValue.similarBooks.map { if (it.bookId == shortBookWithNewStatus!!.bookId) shortBookWithNewStatus else it }
+//                    uiStateValue.similarBooks.clear()
+//                    uiStateValue.similarBooks.addAll(oldBooksList)
+
+                    if (selectedBookInfo.bookVo?.readingStatus?.id == null) {
+                        val bookVo = createUserBookBasedOnShortBook(
+                            shortBookWithNewStatus!!
+                        )
+                        val authorVo = getOrCreateAuthor(bookVo)
+                        interactor.createBook(bookVo, author = authorVo)
+                    } else if (selectedBookInfo.bookVo.readingStatus.id != newStatus.id) {
+                        interactor.changeUserBookReadingStatus(
+                            book = selectedBookInfo.bookVo,
+                            newStatus = newStatus
+                        )
+                    }
+
+                    println("итог:${uiStateValue.similarBooks.joinToString { "${it.bookName}-${it.localReadingStatus?.nameValue}" }}")
+                }
+            }
+        }
+    }
+
+    private fun setSelectedBookByMenuClick(bookId: String) {
+        scope.launch(Dispatchers.IO) {
+            val localBook = interactor.getLocalBookById(bookId)
+            withContext(Dispatchers.Main) {
+                uiStateValue.selectedBookByMenuClick.value = SelectedBook(
+                    bookId = bookId,
+                    bookVo = localBook
+                )
+            }
+        }
+    }
+
     private fun createUserBookBasedOnShortBook(shortBook: BookShortVo): BookVo =
         BookVo(
             bookId = shortBook.bookId,
@@ -501,7 +566,8 @@ class BookCreatorViewModel(
             userCoverUrl = null,
             pageCount = shortBook.numbersOfPages,
             isbn = shortBook.isbn,
-            readingStatus = uiStateValue.bookValues.selectedStatus.value,
+            readingStatus = shortBook.localReadingStatus
+                ?: uiStateValue.bookValues.selectedStatus.value,
             ageRestrictions = shortBook.ageRestrictions,
             bookGenreId = shortBook.bookGenreId,
             startDateInString = uiStateValue.bookValues.startDateInString.value,

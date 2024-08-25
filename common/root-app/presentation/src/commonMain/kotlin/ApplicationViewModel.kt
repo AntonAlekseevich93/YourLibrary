@@ -119,8 +119,15 @@ class ApplicationViewModel(
     }
 
     override fun onBackFromBookScreen() {
-        ViewModelStackStore.getPreviousViewModelOrNull<BookInfoViewModel>()?.let {
-            uiStateValue.previousBookInfoViewModel.value = it
+        val previousViewModel = ViewModelStackStore.getPreviousViewModelOrNull<BookInfoViewModel>()
+        if (previousViewModel != null) {
+            uiStateValue.previousBookInfoViewModel.value = previousViewModel
+        } else {
+            ViewModelStackStore.clearViewModelStack()
+            uiStateValue.apply {
+                previousBookInfoViewModel.value = null
+                fullScreenBookInfo.value = false
+            }
         }
         navigationHandler.goBack()
     }

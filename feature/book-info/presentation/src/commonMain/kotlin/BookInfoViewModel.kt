@@ -134,8 +134,6 @@ class BookInfoViewModel(
                     _uiState.value.shortBookItem.value = null
                     _uiState.value.bookItem.value = book
                     getCurrentUserReviewAndRatingByBook(book.bookId)
-                    getAllReviewsAndRatingsByBookId(book.bookId)
-                    getAllBooksByAuthor(book.originalAuthorId)
                 }
             }
         }

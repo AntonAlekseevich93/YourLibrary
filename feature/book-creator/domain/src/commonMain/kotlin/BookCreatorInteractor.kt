@@ -7,6 +7,7 @@ class BookCreatorInteractor(
     private val repository: BookCreatorRepository,
     private val authorRepository: AuthorsRepository,
     private val searchRepository: SearchRepository,
+    private val bookInfoRepository: BookInfoRepository
 ) {
     suspend fun searchInAuthorsNameWithRelates(authorName: String): List<AuthorVo> {
         val response = searchRepository.searchInAuthorsName(authorName)
@@ -26,5 +27,17 @@ class BookCreatorInteractor(
 
     suspend fun getBookStatusByBookId(bookId: String): ReadingStatus? =
         repository.getBookStatusByBookId(bookId)
+
+    suspend fun changeUserBookReadingStatus(book: BookVo, newStatus: ReadingStatus) {
+        bookInfoRepository.updateUserBook(
+            book = book.copy(readingStatus = newStatus)
+        )
+    }
+
+    suspend fun getLocalBookById(bookId: String) =
+        repository.getLocalBookById(bookId)
+
+    suspend fun getLocalAuthorById(originalAuthorId: String): AuthorVo? =
+        repository.getLocalAuthorById(originalAuthorId)
 
 }

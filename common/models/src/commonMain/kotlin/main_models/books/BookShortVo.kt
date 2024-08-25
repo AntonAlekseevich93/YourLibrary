@@ -26,7 +26,6 @@ data class BookShortVo(
     val ratingCount: Int,
     val reviewCount: Int,
     val ratingSum: Int,
-) {
-    var readingStatus: ReadingStatus? = null
-    var currentUserRating: ReviewAndRatingVo? = null
-}
+    val localReadingStatus: ReadingStatus? = null,
+    val localCurrentUserRating: ReviewAndRatingVo? = null
+)

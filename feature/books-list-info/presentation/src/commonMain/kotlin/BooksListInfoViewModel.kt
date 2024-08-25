@@ -67,9 +67,7 @@ class BooksListInfoViewModel(
             val bookItem = _uiState.value.bookList.get(bookListIndex)
             if (bookItem.bookId == bookId) {
                 _uiState.value.bookList[bookListIndex] =
-                    bookItem.apply {
-                        currentUserRating = reviewAndRating
-                    }
+                    bookItem.copy(localCurrentUserRating = reviewAndRating)
             }
         }
     }
@@ -79,9 +77,7 @@ class BooksListInfoViewModel(
             val bookItem = _uiState.value.bookList.get(bookListIndex)
             if (bookItem.bookId == bookId) {
                 _uiState.value.bookList[bookListIndex] =
-                    bookItem.apply {
-                        readingStatus = status
-                    }
+                    bookItem.copy(localReadingStatus = status)
             }
         }
     }

@@ -3,7 +3,6 @@ package elements
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import BooksListInfoViewModel
 import Strings
 import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.animation.AnimatedVisibility
@@ -52,7 +51,6 @@ import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.resize.Scale
 import containters.CenterBoxContainer
 import date.DatePickerEvents
-import di.Inject
 import main_models.AuthorVo
 import main_models.BookValues
 import main_models.DatePickerType
@@ -91,7 +89,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     isBookCoverManually: Boolean = false,
     bookWasNotFound: Boolean = false,
     authorWasNotFound: Boolean = false,
-    similarBooks: List<BookShortVo> = listOf(),
+    similarBooks: List<BookShortVo>,
     onClickSave: (() -> Unit)? = null,
     genreSelectorListener: () -> Unit,
     changeBookReadingStatus: (bookId: String) -> Unit,
@@ -112,7 +110,7 @@ fun BaseEventScope<BaseEvent>.BookEditor(
     val authorFieldIsFocused = remember { mutableStateOf(false) }
     var oldAuthorName by remember { mutableStateOf("") }
     val needSearchAuthor = remember { mutableStateOf(false) }
-    val booksListInfoViewModel = remember { Inject.instance<BooksListInfoViewModel>() }
+//    val booksListInfoViewModel = remember { Inject.instance<BooksListInfoViewModel>() }
 
     if (needSearchAuthor.value && !authorFieldIsFocused.value) {
         val authorTextField = bookValues.authorName.value
@@ -254,19 +252,19 @@ fun BaseEventScope<BaseEvent>.BookEditor(
                 }
 
                 if (shortBook == null && !isCreateBookManually) {
-                    BookSearchSelector(
-                        similarBooks = similarBooks,
-                        isLoading = isSearchBookProcess,
-                        modifier = Modifier.padding(top = 24.dp, bottom = 16.dp, start = 8.dp),
-                        showError = showSearchBookError,
-                        bookValues = bookValues,
-                        platform = platform,
-                        booksListInfoViewModel = booksListInfoViewModel,
-                        onClickManually = {
-                            sendEvent(BookEditorEvents.OnCreateBookManually(bookWasNotFound = true))
-                        },
-                        changeBookReadingStatus = changeBookReadingStatus
-                    )
+//                    BookSearchSelector(
+//                        similarBooks = similarBooks,
+//                        isLoading = isSearchBookProcess,
+//                        modifier = Modifier.padding(top = 24.dp, bottom = 16.dp, start = 8.dp),
+//                        showError = showSearchBookError,
+//                        bookValues = bookValues,
+//                        platform = platform,
+//                        booksListInfoViewModel = booksListInfoViewModel,
+//                        onClickManually = {
+//                            sendEvent(BookEditorEvents.OnCreateBookManually(bookWasNotFound = true))
+//                        },
+//                        changeBookReadingStatus = changeBookReadingStatus
+//                    )
                 }
 
                 if (isCreateBookManually || shortBook != null) {
