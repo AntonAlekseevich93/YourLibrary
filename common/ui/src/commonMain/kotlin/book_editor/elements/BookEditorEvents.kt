@@ -24,6 +24,5 @@ sealed class BookEditorEvents : BaseEvent {
 
     data class OnSearchAuthorClick(val name: String) : BookEditorEvents()
     data object ClearBookSearch : BookEditorEvents()
-    data class BookHaveReadingStatusEvent(val message: String) : BookEditorEvents()
     data object HideSearchError : BookEditorEvents()
 }

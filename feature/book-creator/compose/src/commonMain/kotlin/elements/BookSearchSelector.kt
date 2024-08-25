@@ -46,7 +46,6 @@ import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_authors
 import yourlibrary.common.resources.generated.resources.ic_book
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BaseEventScope<BaseEvent>.BookSearchSelector(
     similarBooks: List<BookShortVo>,

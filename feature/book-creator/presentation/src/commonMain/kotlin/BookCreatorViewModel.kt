@@ -90,13 +90,6 @@ class BookCreatorViewModel(
                 updateUIState(uiStateValue.copy(showSearchBookError = false))
             }
 
-            //todo в текущей логики не нужно
-            is BookEditorEvents.BookHaveReadingStatusEvent -> {
-                scope.launch {
-                    uiStateValue.snackbarHostState.showSnackbar(event.message)
-                }
-            }
-
             is BookEditorEvents.HideSearchError -> {
                 hideSearchError()
             }
