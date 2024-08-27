@@ -537,7 +537,7 @@ class BookCreatorViewModel(
             withContext(Dispatchers.Main) {
                 uiStateValue.selectedBookByMenuClick.value = SelectedBook(
                     bookId = bookId,
-                    bookVo = localBook
+                    bookVo = localBook,
                 )
             }
         }

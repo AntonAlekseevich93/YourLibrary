@@ -5,7 +5,6 @@ import BaseEvent
 import BaseEventScope
 import BooksListInfoViewModel
 import Strings
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -82,7 +81,6 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
             state.scrollToItem(0)
         }
     }
-
 
     LazyColumn(
         state = lazyListState

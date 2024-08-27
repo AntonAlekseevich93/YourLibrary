@@ -1,6 +1,7 @@
 package models
 
 import BaseEvent
+import main_models.DatePickerType
 import main_models.ReadingStatus
 import main_models.books.BookShortVo
 
@@ -14,4 +15,5 @@ sealed class BookScreenEvents : BaseEvent {
     data object CloseBookInfoScreen : BookScreenEvents()
     data object OnBack : BookScreenEvents()
     class OpenShortBook(val shortBook: BookShortVo) : BookScreenEvents()
+    class ShowDateSelector(val datePickerType: DatePickerType) : BookScreenEvents()
 }

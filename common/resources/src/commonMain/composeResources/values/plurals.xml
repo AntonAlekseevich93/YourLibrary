@@ -6,6 +6,13 @@
         <item quantity="other">Прочитано за %1$d дней</item>
     </plurals>
 
+    <plurals name="read_in_days_from_start">
+        <item quantity="one">%1$d день с начала чтения</item>
+        <item quantity="few">%1$d дня с начала чтения</item>
+        <item quantity="many">%1$d дней с начала чтения</item>
+        <item quantity="other">%1$d дней с начала чтения</item>
+    </plurals>
+
     <plurals name="review_amount">
         <item quantity="one">%1$d оценка</item>
         <item quantity="few">%1$d оценки</item>

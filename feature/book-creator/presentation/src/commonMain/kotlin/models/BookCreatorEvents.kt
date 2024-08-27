@@ -22,7 +22,9 @@ sealed class BookCreatorEvents : BaseEvent {
     data object SetBookCoverManually : BookCreatorEvents()
     data object HideFullScreenBookSelector : BookCreatorEvents()
     data class OnBookSelected(val shortBook: BookShortVo) : BookCreatorEvents()
-    data class SetSelectedBookByMenuClick(val bookId: String) : BookCreatorEvents()
+    data class SetSelectedBookByMenuClick(val bookId: String) :
+        BookCreatorEvents()
+
     data object ClearSelectedBook : BookCreatorEvents()
     data class ChangeBookReadingStatus(val newStatus: ReadingStatus) : BookCreatorEvents()
 }

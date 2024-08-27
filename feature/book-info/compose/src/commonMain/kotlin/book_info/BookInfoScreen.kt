@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -24,14 +26,23 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import date.CommonDatePicker
+import date.DateChangeSelectorDialog
+import date.DatePickerEvents
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.ViewModelStackStore
 import kotlinx.coroutines.launch
+import main_models.DatePickerType
 import main_models.books.BookShortVo
 import models.BookScreenEvents
+import org.jetbrains.compose.resources.stringResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.end_date
+import yourlibrary.common.resources.generated.resources.start_date
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookInfoScreen(
     bookItemId: Long?,
@@ -48,6 +59,7 @@ fun BookInfoScreen(
     val scrollState = rememberScrollState()
     val isTransparentAppbar = remember { mutableStateOf(true) }
     var reviewButtonPosition by remember { mutableStateOf(0) }
+    var showDateSelectorDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(scrollState) {
         snapshotFlow { scrollState.value }.collect { scrollOffset ->
@@ -110,8 +122,46 @@ fun BookInfoScreen(
                         scope.launch {
                             scrollState.animateScrollTo(reviewButtonPosition)
                         }
+                    },
+                    showDateSelectorDialog = {
+                        showDateSelectorDialog = true
                     }
                 )
+
+                if (showDateSelectorDialog) {
+                    DateChangeSelectorDialog(
+                        startDateSelected = uiState.bookItem.value?.startDateInMillis?.takeIf { it > 0 } != null,
+                        endDateSelected = uiState.bookItem.value?.endDateInMillis?.takeIf { it > 0 } != null,
+                        selectDateTypeListener = {
+                            viewModel.sendEvent(BookScreenEvents.ShowDateSelector(it))
+                            showDateSelectorDialog = false
+                        },
+                        onDeleteDateListener = {
+                            viewModel.sendEvent(DatePickerEvents.OnDeleteDate(it))
+                        },
+                        dismiss = {
+                            showDateSelectorDialog = false
+                        }
+                    )
+                }
+
+                if (uiState.showDatePicker.value) {
+                    val timePickerTitle = remember {
+                        if (uiState.datePickerType.value == DatePickerType.StartDate)
+                            Res.string.start_date else Res.string.end_date
+                    }
+                    viewModel.CommonDatePicker(
+                        state = rememberDatePickerState(),
+                        title = stringResource(timePickerTitle),
+                        datePickerType = uiState.datePickerType.value,
+                        minimumDate = if (uiState.datePickerType.value == DatePickerType.EndDate) {
+                            uiState.bookItem.value?.startDateInMillis
+                        } else null,
+                        onDismissRequest = {
+                            viewModel.sendEvent(DatePickerEvents.OnHideDatePicker)
+                        },
+                    )
+                }
             }
         }
     }

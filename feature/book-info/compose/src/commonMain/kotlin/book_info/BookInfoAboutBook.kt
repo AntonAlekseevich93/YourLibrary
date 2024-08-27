@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import book_info.elements.AboutRating
 import book_info.elements.BookInfoCommonItem
+import book_info.elements.BookMenu
 import main_models.books.BookShortVo
 import main_models.rating_review.ReviewAndRatingVo
 import org.jetbrains.compose.resources.pluralStringResource
@@ -34,6 +35,7 @@ import yourlibrary.common.resources.generated.resources.age
 import yourlibrary.common.resources.generated.resources.genre
 import yourlibrary.common.resources.generated.resources.page_count
 import yourlibrary.common.resources.generated.resources.read_in_days
+import yourlibrary.common.resources.generated.resources.read_in_days_from_start
 
 
 @Composable
@@ -54,8 +56,12 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
     reviewButtonPosition: (position: Int) -> Unit,
     onWriteReviewListener: () -> Unit,
     scrollToReviewButtonListener: () -> Unit,
+    showDateSelectorDialog: () -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
+
+        BookMenu(showDateSelectorDialog = showDateSelectorDialog)
+
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
             horizontalArrangement = Arrangement.Center
@@ -83,27 +89,45 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
                 )
             }
         }
-        if (!startDate.isNullOrEmpty() && !endDate.isNullOrEmpty() && readingDayAmount != null) {
+        if (!startDate.isNullOrEmpty()) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
             ) {
-                Text(
-                    text = pluralStringResource(
-                        Res.plurals.read_in_days,
-                        readingDayAmount,
-                        readingDayAmount
-                    ),
-                    style = ApplicationTheme.typography.footnoteRegular,
-                    color = ApplicationTheme.colors.hintColor,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
+                readingDayAmount?.let { readingDayAmount ->
+                    val resultDaysText = if (endDate.isNullOrEmpty()) {
+                        pluralStringResource(
+                            Res.plurals.read_in_days_from_start,
+                            readingDayAmount,
+                            readingDayAmount
+                        )
+                    } else {
+                        pluralStringResource(
+                            Res.plurals.read_in_days,
+                            readingDayAmount,
+                            readingDayAmount
+                        )
+                    }
+
+                    Text(
+                        text = resultDaysText,
+                        style = ApplicationTheme.typography.footnoteRegular,
+                        color = ApplicationTheme.colors.hintColor,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+
+                val resultText = if (endDate.isNullOrEmpty()) {
+                    "($startDate)"
+                } else {
+                    "($startDate — $endDate)"
+                }
+
                 Row(
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    val resText = "($startDate — $endDate)"
                     Text(
-                        text = resText,
+                        text = resultText,
                         style = ApplicationTheme.typography.footnoteRegular,
                         color = ApplicationTheme.colors.hintColor,
                     )

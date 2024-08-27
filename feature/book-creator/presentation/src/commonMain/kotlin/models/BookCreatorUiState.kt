@@ -47,5 +47,5 @@ data class BookCreatorUiState(
 
 data class SelectedBook(
     val bookId: String = "",
-    val bookVo: BookVo? = null
+    val bookVo: BookVo? = null,
 )

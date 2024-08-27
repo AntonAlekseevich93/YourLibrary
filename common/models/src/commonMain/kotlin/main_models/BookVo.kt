@@ -39,8 +39,16 @@ data class BookVo(
 
     fun getReadingDays(): Int? {
         return if (startDateInMillis != null && endDateInMillis != null && startDateInMillis > 0 && endDateInMillis > 0) {
-            val durationInMillis: Long = endDateInMillis - startDateInMillis
-            TimeUnit.MILLISECONDS.toDays(durationInMillis).toInt()
+            val durationInMillis: Long = (endDateInMillis - startDateInMillis)
+            (TimeUnit.MILLISECONDS.toDays(durationInMillis) + 1).toInt()
+        } else null
+    }
+
+    fun getReadingDaysByCurrentDay(currentDay: Long): Int? {
+        return if (startDateInMillis != null && startDateInMillis > 0 && currentDay > 0) {
+            val durationInMillis: Long =
+                (currentDay - startDateInMillis).takeIf { it > 0 } ?: return null
+            (TimeUnit.MILLISECONDS.toDays(durationInMillis) + 1).toInt()
         } else null
     }
 }

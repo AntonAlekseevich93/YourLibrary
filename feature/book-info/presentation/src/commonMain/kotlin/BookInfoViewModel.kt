@@ -37,6 +37,10 @@ class BookInfoViewModel(
     private val _uiState: MutableStateFlow<BookInfoUiState> = MutableStateFlow(BookInfoUiState())
     val uiState = _uiState.asStateFlow()
 
+    init {
+        uiState.value.currentDateInMillis.value = platformInfo.getCurrentTime().timeInMillis
+    }
+
     override fun sendEvent(event: BaseEvent) {
         when (event) {
             is TooltipEvents.SetTooltipEvent -> tooltipHandler.setTooltip(event.tooltip)
@@ -74,6 +78,11 @@ class BookInfoViewModel(
                 applicationScope.openBookInfoScreen(bookId = null, shortBook = event.shortBook)
             }
 
+            is BookScreenEvents.ShowDateSelector -> {
+                uiState.value.datePickerType.value = event.datePickerType
+                uiState.value.showDatePicker.value = true
+            }
+
             is ReviewAndRatingEvents.ChangeBookRating -> {
                 updateRating(event.newRating)
             }
@@ -88,6 +97,7 @@ class BookInfoViewModel(
 
             is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
+            is DatePickerEvents.OnDeleteDate -> deleteDate(event.datePickerType)
             is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
             is DatePickerEvents.OnHideDatePicker -> {
                 _uiState.value.showDatePicker.value = false
@@ -130,7 +140,7 @@ class BookInfoViewModel(
         bookJob = scope.launch(Dispatchers.IO) {
             interactor.getLocalBookById(bookId).collect { response ->
                 response?.let { book ->
-                    shortBookJob?.cancel()
+//                    shortBookJob?.cancel()
                     _uiState.value.shortBookItem.value = null
                     _uiState.value.bookItem.value = book
                     getCurrentUserReviewAndRatingByBook(book.bookId)
@@ -185,18 +195,49 @@ class BookInfoViewModel(
         _uiState.value.clearSimilarAuthorList()
     }
 
-
     private fun setSelectedDate(millis: Long, text: String) {
-        _uiState.value.apply {
-            when (datePickerType.value) {
-                DatePickerType.StartDate -> {
-                    bookValues.value.startDateInMillis.value = millis
-                    bookValues.value.startDateInString.value = text
-                }
+        uiState.value.bookItem.value?.let { book ->
+            scope.launch {
+                _uiState.value.apply {
+                    when (datePickerType.value) {
+                        DatePickerType.StartDate -> {
+                            interactor.updateBookReadingStartDate(
+                                book = book,
+                                startDateInMillis = millis,
+                                startDateInString = text
+                            )
+                        }
 
-                DatePickerType.EndDate -> {
-                    bookValues.value.endDateInMillis.value = millis
-                    bookValues.value.endDateInString.value = text
+                        DatePickerType.EndDate -> {
+                            interactor.updateBookReadingEndDate(
+                                book = book,
+                                endDateInMillis = millis,
+                                endDateInString = text
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteDate(datePickerType: DatePickerType) {
+        uiState.value.bookItem.value?.let { book ->
+            scope.launch {
+                _uiState.value.apply {
+                    when (datePickerType) {
+                        DatePickerType.StartDate -> {
+                            interactor.deleteBookReadingStartAndEndDate(
+                                book = book,
+                            )
+                        }
+
+                        DatePickerType.EndDate -> {
+                            interactor.deleteBookReadingEndDate(
+                                book = book,
+                            )
+                        }
+                    }
                 }
             }
         }

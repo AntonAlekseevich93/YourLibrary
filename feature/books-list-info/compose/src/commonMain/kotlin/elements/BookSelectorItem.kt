@@ -173,18 +173,23 @@ fun BookSelectorItem(
             Row(
                 modifier = Modifier
                     .height(140.dp)
-                    .clickable(interactionSource = MutableInteractionSource(), indication = null) {
-                        changeBookReadingStatus(bookItem.bookId)
-                    }
             ) {
                 Spacer(Modifier.padding(start = 10.dp))
-                Icon(
-                    imageVector = Icons.Outlined.MoreVert,
-                    contentDescription = null,
-                    tint = ApplicationTheme.colors.mainIconsColor,
-                    modifier = Modifier
-                        .size(20.dp)
-                )
+                Column {
+                    Icon(
+                        imageVector = Icons.Outlined.MoreVert,
+                        contentDescription = null,
+                        tint = ApplicationTheme.colors.mainIconsColor,
+                        modifier = Modifier
+                            .clickable(
+                                interactionSource = MutableInteractionSource(),
+                                indication = null
+                            ) {
+                                changeBookReadingStatus(bookItem.bookId)
+                            }
+                            .size(20.dp)
+                    )
+                }
             }
         }
     }

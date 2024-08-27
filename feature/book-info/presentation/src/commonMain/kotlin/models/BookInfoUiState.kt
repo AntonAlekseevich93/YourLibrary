@@ -26,7 +26,8 @@ data class BookInfoUiState(
     val otherBooksByAuthor: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
     val currentBookUserReviewAndRating: MutableState<ReviewAndRatingVo?> = mutableStateOf(null),
     val reviewsAndRatings: MutableState<List<ReviewAndRatingVo>> = mutableStateOf(emptyList()),
-    val reviewsCount: MutableState<Int> = mutableStateOf(0)
+    val reviewsCount: MutableState<Int> = mutableStateOf(0),
+    val currentDateInMillis: MutableState<Long> = mutableStateOf(0)
 ) {
 
     fun setSelectedAuthor(authorVo: AuthorVo) {

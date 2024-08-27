@@ -67,6 +67,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
     uiState: BookInfoUiState,
     reviewButtonPosition: (position: Int) -> Unit,
     scrollToReviewButtonListener: () -> Unit,
+    showDateSelectorDialog: () -> Unit,
 ) {
     val hazeState = remember { HazeState() }
     val height = remember { 520.dp }
@@ -213,6 +214,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
         }
     }
 
+    /**MAIN CONTENT**/
     Column(
         modifier = Modifier
             .background(Color.Transparent)
@@ -227,12 +229,14 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                 colors = CardDefaults.cardColors(
                     containerColor = status.getStatusColor()
                 ),
-                modifier = Modifier.clip(RoundedCornerShape(16.dp)).clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = rememberRipple()
-                ) {
-                    showDialog = true
-                }
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = rememberRipple()
+                    ) {
+                        showDialog = true
+                    }
             ) {
                 Text(
                     text = status.nameValue,
@@ -277,7 +281,8 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                 pageCount = bookItem?.pageCount ?: uiState.shortBookItem.value?.numbersOfPages!!,
                 startDate = bookItem?.startDateInString,
                 endDate = bookItem?.endDateInString,
-                readingDayAmount = bookItem?.getReadingDays(),
+                readingDayAmount = bookItem?.getReadingDays()
+                    ?: bookItem?.getReadingDaysByCurrentDay(uiState.currentDateInMillis.value),
                 ageRestrictions = bookItem?.ageRestrictions
                     ?: uiState.shortBookItem.value?.ageRestrictions,
                 allUsersRating = bookItem?.ratingValue ?: uiState.shortBookItem.value?.ratingValue
@@ -293,6 +298,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                 onWriteReviewListener = {
                     showWriteReviewBottomSheet = true
                 },
+                showDateSelectorDialog = showDateSelectorDialog
             )
         }
     }

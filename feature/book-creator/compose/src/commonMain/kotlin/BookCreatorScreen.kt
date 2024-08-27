@@ -61,10 +61,9 @@ fun BookCreatorScreen(
     val booksListInfoViewModel = remember { Inject.instance<BooksListInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
     val lazyListState = rememberLazyListState()
-
+    val dataPickerState = rememberDatePickerState()
     val statusBookTextFieldValue =
         remember { mutableStateOf(TextFieldValue(text = uiState.defaultStatus.nameValue)) }
-    val dataPickerState = rememberDatePickerState()
     val scope = rememberCoroutineScope()
     var selectionGenreState by remember { mutableStateOf(false) }
 
@@ -137,8 +136,12 @@ fun BookCreatorScreen(
                     viewModel.sendEvent(BookEditorEvents.OnCreateBookManually(bookWasNotFound = true))
                 },
                 changeBookReadingStatus = {
-                    viewModel.sendEvent(BookCreatorEvents.SetSelectedBookByMenuClick(it))
-                }
+                    viewModel.sendEvent(
+                        BookCreatorEvents.SetSelectedBookByMenuClick(
+                            bookId = it,
+                        )
+                    )
+                },
             )
 //            viewModel.BookEditor(
 //                modifier = Modifier
@@ -183,6 +186,7 @@ fun BookCreatorScreen(
             viewModel.CommonDatePicker(
                 state = dataPickerState,
                 title = timePickerTitle,
+                datePickerType = uiState.datePickerType,
                 onDismissRequest = {
                     viewModel.sendEvent(DatePickerEvents.OnHideDatePicker)
                 },

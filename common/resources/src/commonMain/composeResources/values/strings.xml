@@ -129,4 +129,15 @@
     <string name="min_review_length">Минимальная длина отзыва</string>
     <string name="do_you_like_book_question">Вам понравилась книга?</string>
     <string name="review_error_when_user_rating_not_exist">Чтобы оставить отзыв, поставьте оценку книге</string>
+    <string name="date_picker_finish_date_error">Дата окончания чтения не может быть меньше, чем дата начала чтения</string>
+    <string name="date_picker_start_date_title">Начало чтения</string>
+    <string name="date_picker_end_date_title">Конец чтения</string>
+    <string name="date_selector_menu_start_date">Добавить дату начала чтения</string>
+    <string name="date_selector_menu_end_date">Добавить дату окончания чтения</string>
+    <string name="date_picker_delete_start_date_button_title">Удалить дату начала чтения</string>
+    <string name="date_picker_delete_start_date_and_end_date_button_title">Удалить дату начала и окончания чтения</string>
+    <string name="date_picker_delete_end_date_button_title">Удалить дату окончания чтения</string>
+    <string name="date_selector_menu_change_start_date">Изменить дату начала чтения</string>
+    <string name="date_selector_menu_change_end_date">Изменить дату окончания чтения</string>
+    <string name="date_selector_menu_delete_confirm_title">Вы уверены что хотите удалить дату начала и окончания чтения?</string>
 </resources>

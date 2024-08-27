@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,7 +29,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import date.CommonDatePicker
 import date.DatePickerEvents
@@ -83,12 +81,8 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
         )
     )
     val shapeInDp = if (fullScreenBookInfo.value || showLeftDrawer.value) 0.dp else 8.dp
-    val statusBookTextFieldValue =
-        remember(key1 = bookItem.readingStatus) { mutableStateOf(TextFieldValue(text = bookItem.readingStatus.nameValue)) }
     val dataPickerState = rememberDatePickerState()
-    val scrollableState = rememberScrollState()
     val hideSaveButton = remember { mutableStateOf(false) }
-    val linkToAuthor = remember { mutableStateOf(false) }
     hideSaveButton.value = bookValues.value.bookName.value.text.isEmpty() ||
             bookValues.value.authorName.value.text.isEmpty()
 
@@ -185,6 +179,7 @@ fun BaseEventScope<BaseEvent>.BookScreenContent(
                 CommonDatePicker(
                     state = dataPickerState,
                     title = timePickerTitle,
+                    datePickerType = datePickerType.value,
                     onDismissRequest = {
                         this@BookScreenContent.sendEvent(DatePickerEvents.OnHideDatePicker)
                     },

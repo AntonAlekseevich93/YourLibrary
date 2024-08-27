@@ -56,4 +56,50 @@ class BookInfoInteractor(
         )
     }
 
+    suspend fun updateBookReadingStartDate(
+        book: BookVo,
+        startDateInMillis: Long,
+        startDateInString: String
+    ) {
+        val updatedBook = book.copy(
+            startDateInMillis = startDateInMillis,
+            startDateInString = startDateInString
+        )
+        repository.updateUserBook(updatedBook)
+    }
+
+    suspend fun updateBookReadingEndDate(
+        book: BookVo,
+        endDateInMillis: Long,
+        endDateInString: String
+    ) {
+        val updatedBook = book.copy(
+            endDateInMillis = endDateInMillis,
+            endDateInString = endDateInString
+        )
+        repository.updateUserBook(updatedBook)
+    }
+
+    suspend fun deleteBookReadingStartAndEndDate(
+        book: BookVo,
+    ) {
+        val updatedBook = book.copy(
+            startDateInMillis = 0,
+            startDateInString = "",
+            endDateInMillis = 0,
+            endDateInString = ""
+        )
+        repository.updateUserBook(updatedBook)
+    }
+
+    suspend fun deleteBookReadingEndDate(
+        book: BookVo,
+    ) {
+        val updatedBook = book.copy(
+            endDateInMillis = 0,
+            endDateInString = ""
+        )
+        repository.updateUserBook(updatedBook)
+    }
+
 }
