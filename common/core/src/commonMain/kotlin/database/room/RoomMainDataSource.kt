@@ -1,7 +1,6 @@
 package database.room
 
 import androidx.room.RoomDatabase
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import database.room.dao.AuthorsDao
 import database.room.dao.AuthorsTimestampDao
 import database.room.dao.BookTimestampDao
@@ -45,8 +44,9 @@ class RoomMainDataSource(
     private fun getRoomDatabase(
         builder: RoomDatabase.Builder<AppDatabase>
     ): AppDatabase {
-        return builder
-            .setDriver(BundledSQLiteDriver())
+        val driverProvider = SqlDriverProvider()
+     return builder
+            .setDriver(driverProvider.provideDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
             .fallbackToDestructiveMigration(true)//todo fix
             .build()

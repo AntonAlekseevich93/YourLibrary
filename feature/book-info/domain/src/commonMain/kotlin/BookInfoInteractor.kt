@@ -1,10 +1,12 @@
 import kotlinx.coroutines.flow.Flow
+import main_models.AuthorVo
 import main_models.BookVo
 import main_models.ReadingStatus
 import main_models.rating_review.ReviewAndRatingVo
 
 class BookInfoInteractor(
     private val repository: BookInfoRepository,
+    private val bookCreatorRepository: BookCreatorRepository,
     private val authorRepository: AuthorsRepository,
     private val searchRepository: SearchRepository,
     private val reviewAndRatingRepository: ReviewAndRatingRepository,
@@ -15,6 +17,9 @@ class BookInfoInteractor(
 
     suspend fun getLocalBookById(bookId: String): Flow<BookVo?> =
         repository.getLocalBookById(bookId)
+
+    suspend fun getLocalAuthorById(originalAuthorId: String): AuthorVo? =
+        authorRepository.getLocalAuthorById(originalAuthorId)
 
     suspend fun changeUserBookReadingStatus(book: BookVo, newStatus: ReadingStatus) {
         repository.updateUserBook(
@@ -100,6 +105,10 @@ class BookInfoInteractor(
             endDateInString = ""
         )
         repository.updateUserBook(updatedBook)
+    }
+
+    suspend fun createBook(book: BookVo, author: AuthorVo) {
+        bookCreatorRepository.createBook(book, author = author)
     }
 
 }

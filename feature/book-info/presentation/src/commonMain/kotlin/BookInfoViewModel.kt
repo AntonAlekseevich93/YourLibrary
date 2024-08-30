@@ -10,7 +10,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import main_models.AuthorVo
+import main_models.BookVo
 import main_models.DatePickerType
+import main_models.ReadingStatus
 import main_models.books.BookShortVo
 import models.BookInfoScope
 import models.BookInfoUiState
@@ -56,14 +58,9 @@ class BookInfoViewModel(
 
             is BookScreenEvents.SetEditMode -> _uiState.value.isEditMode.value = true
             is BookScreenEvents.ChangeReadingStatusEvent -> {
-                scope.launch(Dispatchers.IO) {
-                    uiState.value.bookItem.value?.let {
-                        interactor.changeUserBookReadingStatus(
-                            book = it,
-                            newStatus = event.selectedStatus
-                        )
-                    }
-                }
+                changeBookReadingStatusIfBookExistOrCreateBookWithNewStatus(
+                    newStatus = event.selectedStatus
+                )
             }
 
             is BookScreenEvents.CloseBookInfoScreen -> {
@@ -286,6 +283,38 @@ class BookInfoViewModel(
                 bookForAllUsers = bookForAllUsers,
             )
         }
+    }
+
+    private fun changeBookReadingStatusIfBookExistOrCreateBookWithNewStatus(
+        newStatus: ReadingStatus,
+    ) {
+        scope.launch(Dispatchers.IO) {
+            if (uiState.value.bookItem.value != null) {
+                interactor.changeUserBookReadingStatus(
+                    book = uiState.value.bookItem.value!!,
+                    newStatus = newStatus
+                )
+            } else if (uiState.value.shortBookItem.value != null) {
+                val bookVo =
+                    uiState.value.shortBookItem.value!!.createUserBookBasedOnShortBook(newStatus)
+                val authorVo = getOrCreateAuthor(bookVo)
+                interactor.createBook(bookVo, author = authorVo)
+            }
+        }
+    }
+
+    private suspend fun getOrCreateAuthor(book: BookVo): AuthorVo {
+        val localAuthor = interactor.getLocalAuthorById(book.originalAuthorId)
+        return localAuthor ?: AuthorVo(
+            serverId = null,
+            localId = null,
+            id = book.originalAuthorId,
+            name = book.originalAuthorName,
+            uppercaseName = book.originalAuthorName.uppercase(),
+            timestampOfCreating = 0,
+            timestampOfUpdating = 0,
+            isCreatedByUser = false
+        )
     }
 
     private fun addReview(reviewText: String) {

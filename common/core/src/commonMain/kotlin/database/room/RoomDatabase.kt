@@ -1,5 +1,6 @@
 package database.room
 
+import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import database.room.dao.AuthorsDao
@@ -25,6 +26,7 @@ import database.room.entities.ReviewAndRatingTimestampEntity
         ReviewAndRatingTimestampEntity::class,
     ], version = 8
 )
+@ConstructedBy(AppDatabaseCtor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getBooksDao(): BooksDao
     abstract fun getBooksTimestampDao(): BookTimestampDao

@@ -1,6 +1,7 @@
 package main_models.books
 
 import kotlinx.serialization.Serializable
+import main_models.BookVo
 import main_models.ReadingStatus
 import main_models.rating_review.ReviewAndRatingVo
 
@@ -28,4 +29,40 @@ data class BookShortVo(
     val ratingSum: Int,
     val localReadingStatus: ReadingStatus? = null,
     val localCurrentUserRating: ReviewAndRatingVo? = null
-)
+){
+    fun createUserBookBasedOnShortBook(readingStatus: ReadingStatus): BookVo =
+        BookVo(
+            bookId = this.bookId,
+            serverId = this.id,
+            localId = null,
+            originalAuthorId = this.originalAuthorId,
+            bookName = this.bookName,
+            bookNameUppercase = this.bookName.uppercase(),
+            originalAuthorName = this.originalAuthorName,
+            description = this.description,
+            /**we don`t save covers link. Only image imageName**/
+            userCoverUrl = null,
+            pageCount = this.numbersOfPages,
+            isbn = this.isbn,
+            readingStatus = readingStatus,
+            ageRestrictions = this.ageRestrictions,
+            bookGenreId = this.bookGenreId,
+            startDateInString = "",
+            endDateInString = "",
+            startDateInMillis = 0,
+            endDateInMillis = 0,
+            timestampOfCreating = 0,
+            timestampOfUpdating = 0,
+            isRussian = this.isRussian,
+            imageName = this.imageName,
+            authorIsCreatedManually = false,
+            isLoadedToServer = false,
+            bookIsCreatedManually = false,
+            imageFolderId = this.imageFolderId,
+            ratingValue = this.ratingValue,
+            ratingCount = this.ratingCount,
+            reviewCount = this.reviewCount,
+            ratingSum = this.ratingSum,
+            bookForAllUsers = true,
+        )
+}

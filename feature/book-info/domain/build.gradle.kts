@@ -10,6 +10,7 @@ kotlin {
             dependencies {
                 implementation(project(":common:models"))
                 implementation(project(":feature:book-info:api"))
+                implementation(project(":feature:book-creator:api"))
                 implementation(project(":feature:authors:api"))
                 implementation(project(":feature:search:api"))
                 implementation(project(":feature:rating-review:api"))

@@ -193,11 +193,13 @@ class SynchronizationRepositoryImpl(
         return success
     }
 
+    /**we don't need to send authors
+     * because the server creates authors on its own from the data from the book**/
     private suspend fun getSynchronizeBody(userId: Long): SynchronizeUserDataRequest {
         val booksTimestamp = bookRepository.getBookTimestamp(userId = userId)
         val authorTimestampVo = authorsRepository.getAuthorsTimestamp(userId)
         val books =
-            bookRepository.getNotSynchronizedBooks(userId) //todo нужно еще не синхронизированных авторов получать
+            bookRepository.getNotSynchronizedBooks(userId)
         val reviewAndRatingTimestamp = reviewAndRatingRepository.getReviewAndRatingTimestamp(userId)
         val reviewsAndRatings = reviewAndRatingRepository.getNotSynchronizedReviewAndRating(userId)
             .mapNotNull { it.toRemoteDto() }

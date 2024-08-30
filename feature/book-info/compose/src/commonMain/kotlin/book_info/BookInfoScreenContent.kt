@@ -359,6 +359,13 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
             useDivider = false,
             selectStatusListener = {
                 showDialog = false
+                sendEvent(
+                    BookScreenEvents.ChangeReadingStatusEvent(
+                        selectedStatus = it,
+                        bookId = uiState.shortBookItem.value?.bookId
+                            ?: uiState.bookItem.value?.bookId.orEmpty()
+                    )
+                )
             },
             dismiss = { showDialog = false }
         )
