@@ -42,7 +42,8 @@ data class BookCreatorUiState(
     val showSearchAuthorError: Boolean = false,
     val showFullScreenBookSelector: Boolean = false,
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
-    val selectedBookByMenuClick: MutableState<SelectedBook?> = mutableStateOf(null)
+    val selectedBookByMenuClick: MutableState<SelectedBook?> = mutableStateOf(null),
+    val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
 ) : BaseUIState
 
 data class SelectedBook(

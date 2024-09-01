@@ -10,6 +10,7 @@ import models.AdminEvents
 import models.AdminUiState
 import models.ModerationBookState
 import platform.Platform
+import platform.PlatformInfoData
 
 class AdminViewModel(
     private val platform: Platform,
@@ -18,15 +19,21 @@ class AdminViewModel(
     private val tooltipHandler: TooltipHandler,
     private val drawerScope: DrawerScope,
     private val appConfig: AppConfig,
+    private val platformInfo: PlatformInfoData,
 ) : BaseMVIViewModel<AdminUiState, BaseEvent>(AdminUiState()) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
 
     init {
+        uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
         updateUIState(
             uiStateValue.copy(
                 skipLongImageLoading = appConfig.skipLongImageLoading,
                 useCustomHost = appConfig.useCustomHost,
-                customUrl = uiStateValue.customUrl.copy(text = appConfig.customUrl)
+                useHttp = appConfig.useHttp,
+                customUrl = uiStateValue.customUrl.copy(text = appConfig.customUrl),
+                useNonModerationRange = appConfig.useNonModerationRange,
+                rangeStart = uiStateValue.rangeStart.copy(text = appConfig.startNonModerationRange),
+                rangeEnd = uiStateValue.rangeEnd.copy(text = appConfig.endNonModerationRange),
             )
         )
     }
@@ -67,9 +74,18 @@ class AdminViewModel(
                 updateUIState(uiStateValue.copy(useCustomHost = appConfig.useCustomHost))
             }
 
+            is AdminEvents.ChangeNeedUseHttp -> {
+                appConfig.changeUseHttp()
+                updateUIState(uiStateValue.copy(useHttp = appConfig.useHttp))
+            }
+
             is AdminEvents.ChangeNeedUseNonModerationRange -> {
                 appConfig.changeUseNonModerationRange(event.needUse)
                 updateUIState(uiStateValue.copy(useNonModerationRange = appConfig.useNonModerationRange))
+            }
+
+            is AdminEvents.CloseModerationScreen -> {
+                updateUIState(uiStateValue.copy(moderationBookState = ModerationBookState()))
             }
         }
     }

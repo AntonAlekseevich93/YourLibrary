@@ -72,7 +72,10 @@ class MainActivity : ComponentActivity() {
 
         PlatformSDK.init(
             configuration = PlatformConfiguration(applicationContext),
-            platformInfo = PlatformInfoData(),
+            platformInfo = PlatformInfoData(
+                canUseModifierBlur = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+                hazeBlurEnabled = Build.VERSION.SDK_INT >= MIN_SDK_HAZE_BLUR_VERSION,
+            ),
             platform = Platform.MOBILE(),
             navigationHandler = createNavigationHandler(
                 navigator = navigator,
@@ -106,6 +109,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val MIN_SDK_HAZE_BLUR_VERSION = 32
     }
 }
 

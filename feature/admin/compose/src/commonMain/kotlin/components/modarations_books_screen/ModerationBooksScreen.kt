@@ -34,6 +34,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import components.modarations_books_screen.elements.BookCover
 import main_models.genre.GenreUtils
@@ -44,7 +45,10 @@ import tags.CustomTag
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
-    state: ModerationBookState
+    state: ModerationBookState,
+    hazeModifier: Modifier = Modifier,
+    topPadding: Dp,
+    bottomPadding: Dp,
 ) {
     val resultBook by remember(state.selectedItem?.id) { mutableStateOf(state.selectedItem) }
     val scrollableState = rememberScrollState()
@@ -55,10 +59,10 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
         shortDescription.value = !state.selectedItem?.imageResultUrl.isNullOrEmpty()
     }
     resultBook?.let { book ->
-        Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollableState)) {
+        Column(modifier = hazeModifier.fillMaxSize().verticalScroll(scrollableState)) {
             Row(
                 verticalAlignment = Alignment.Bottom,
-                modifier = Modifier.padding(top = 24.dp, start = 24.dp)
+                modifier = Modifier.padding(top = topPadding.plus(24.dp), start = 24.dp)
             ) {
                 BookCover(
                     coverUrl = book.rawCoverUrl.orEmpty(),
@@ -360,6 +364,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 }
             }
 
+            Spacer(Modifier.padding(bottomPadding))
         }
     }
 }

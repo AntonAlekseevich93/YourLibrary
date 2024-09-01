@@ -26,6 +26,7 @@ data class ApplicationUiState(
     val selectedShortBook: MutableState<BookShortVo?> = mutableStateOf(null),
     val searchedBooks: List<BookVo> = emptyList(),
     val previousBookInfoViewModel: MutableState<BookInfoViewModel?> = mutableStateOf(null),
+    val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
 ) : BaseUIState {
     val pathInfoList: SnapshotStateList<PathInfoVo> =
         mutableStateListOf()

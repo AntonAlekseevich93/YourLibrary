@@ -11,15 +11,19 @@ import models.ShelfEvents
 import models.ShelfUiState
 import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
+import platform.PlatformInfoData
 
 class ShelfViewModel(
     private val platform: Platform,
     private val repository: ShelfRepository,
     private val applicationScope: ApplicationScope,
+    private val platformInfo: PlatformInfoData,
 ) : BaseMVIViewModel<ShelfUiState, BaseEvent>(ShelfUiState(platform = platform)) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val lock = Any()
+
     init {
+        uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
         ReadingStatus.entries.forEach { status ->
             scope.launch(Dispatchers.IO) {
                 repository.getAllBooksByReadingStatus(status.id).collect { books ->

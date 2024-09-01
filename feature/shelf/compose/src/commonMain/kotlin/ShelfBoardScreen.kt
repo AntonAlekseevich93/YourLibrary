@@ -42,8 +42,6 @@ fun ShelfBoardScreen(
 ) {
     val uiState = viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
-    val verticalPadding: Int = remember { if (platform.isDesktop()) 0 else 6 }
-    val horizontalPadding: Int = remember { if (platform.isDesktop()) 24 else 10 }
     val bottomSheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberBottomSheetState(
             initialValue = BottomSheetValue.Collapsed
@@ -102,8 +100,13 @@ fun ShelfBoardScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    AppBarGradientBox()
-                    Spacer(Modifier.padding(20.dp))
+                    if (uiState.value.isHazeBlurEnabled.value) {
+                        AppBarGradientBox()
+                        Spacer(Modifier.padding(20.dp))
+                    } else {
+                        Spacer(Modifier.padding(40.dp))
+                    }
+
                     PullRefreshIndicator(
                         uiState.value.isRefreshingState,
                         pullRefreshState,

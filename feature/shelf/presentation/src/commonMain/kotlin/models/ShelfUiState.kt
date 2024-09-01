@@ -19,7 +19,8 @@ data class ShelfUiState @OptIn(ExperimentalMaterialApi::class) constructor(
     val fullShelfIndex: Int = -1,
     val sortBookList: List<BookVo> = emptyList(),
     val bottomSheetExpandEvent: () -> Unit = {},
-    val isRefreshingState : Boolean =  false
+    val isRefreshingState: Boolean = false,
+    val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
 ) : BaseUIState {
 
     //todo это надо вынести в ViewModel. А не выполнять логику в compose

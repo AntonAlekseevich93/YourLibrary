@@ -1,5 +1,7 @@
-import AppConstants.BASE_URL
-import AppConstants.SHEME
+import AppConstants.BASE_HTTPS_URL
+import AppConstants.BASE_HTTP_URL
+import AppConstants.SHEME_HTTP
+import AppConstants.SHEME_HTTPS
 import com.russhwolf.settings.Settings
 import java.util.UUID
 
@@ -8,8 +10,14 @@ class AppConfig() {
     private val isCustomHost = useCustomHost
 
     val customUrl = settings.getString(CUSTOM_URL, "")
+    val useHttp = settings.getBoolean(USE_HTTP, false)
 
-    val baseUrl: String = if (isCustomHost) "$SHEME$customUrl/" else BASE_URL
+    val baseUrl: String = if (useHttp) {
+        if (isCustomHost) "$SHEME_HTTP$customUrl/" else BASE_HTTP_URL
+    } else {
+        if (isCustomHost) "$SHEME_HTTPS$customUrl/" else BASE_HTTPS_URL
+    }
+
 
     val authToken
         get() = settings.getString(key = AUTH_TOKEN_KEY, defaultValue = DEFAULT_LOCAL_TOKEN)
@@ -28,6 +36,12 @@ class AppConfig() {
 
     val useNonModerationRange
         get() = settings.getBoolean(key = NEED_USE_NON_MODERATION_RANGE, defaultValue = false)
+
+    val startNonModerationRange
+        get() = settings.getString(NON_MODERATION_START_RANGE, defaultValue = "")
+
+    val endNonModerationRange
+        get() = settings.getString(NON_MODERATION_END_RANGE, defaultValue = "")
 
     private val currentUserEmail
         get() = settings.getString(key = CURRENT_USER_EMAIL_KEY, defaultValue = DEFAULT_LOCAL_EMAIL)
@@ -64,6 +78,10 @@ class AppConfig() {
         settings.putBoolean(key = NEED_USE_CUSTOM_HOST, value = isCustom)
     }
 
+    fun changeUseHttp() {
+        settings.putBoolean(key = USE_HTTP, value = !useHttp)
+    }
+
     fun changeUseNonModerationRange(use: Boolean) {
         settings.putBoolean(key = NEED_USE_NON_MODERATION_RANGE, value = use)
     }
@@ -94,6 +112,7 @@ class AppConfig() {
         private const val DEFAULT_LOCAL_EMAIL = "default_local_email"
         private const val SKIP_LONG_IMAGE_LOADING = "skip_long_image_loading"
         private const val CUSTOM_URL = "CUSTOM_URL"
+        private const val USE_HTTP = "USE_HTTP"
         private const val NON_MODERATION_START_RANGE = "NON_MODERATION_START_RANGE"
         private const val NON_MODERATION_END_RANGE = "NON_MODERATION_END_RANGE"
         private const val NEED_USE_CUSTOM_HOST = "NEED_USE_CUSTOM_HOST"

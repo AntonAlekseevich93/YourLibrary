@@ -221,7 +221,7 @@ private fun ApplicationScope.MainWindow(
 
     PlatformSDK.init(
         configuration = PlatformConfiguration(buildVariant),
-        platformInfo = PlatformInfoData(),
+        platformInfo = PlatformInfoData(hazeBlurEnabled = true, canUseModifierBlur = true),
         platform = Platform.DESKTOP(isDebug = buildVariant.isDebug()),
         navigationHandler = createNavigationHandler(
             navigator,

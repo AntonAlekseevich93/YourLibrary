@@ -27,7 +27,9 @@ data class BookInfoUiState(
     val currentBookUserReviewAndRating: MutableState<ReviewAndRatingVo?> = mutableStateOf(null),
     val reviewsAndRatings: MutableState<List<ReviewAndRatingVo>> = mutableStateOf(emptyList()),
     val reviewsCount: MutableState<Int> = mutableStateOf(0),
-    val currentDateInMillis: MutableState<Long> = mutableStateOf(0)
+    val currentDateInMillis: MutableState<Long> = mutableStateOf(0),
+    val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
+    val isCanUseModifierBlur: MutableState<Boolean> = mutableStateOf(true),
 ) {
 
     fun setSelectedAuthor(authorVo: AuthorVo) {

@@ -93,7 +93,7 @@ class HttpAppClient(
     private fun getFullUrl(url: String): String = "${appConfig.baseUrl}$url"
 
     companion object {
-        private const val TOKEN_KEY = "user_token"
-        private const val DEVICE_ID_KEY = "device_id"
+        private const val TOKEN_KEY = "user-token"
+        private const val DEVICE_ID_KEY = "device-id"
     }
 }

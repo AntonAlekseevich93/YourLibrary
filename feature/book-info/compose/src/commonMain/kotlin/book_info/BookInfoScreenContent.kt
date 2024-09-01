@@ -3,6 +3,7 @@ package book_info
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -33,13 +34,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.AsyncImage
+import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.placeholder
@@ -116,6 +118,27 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
         )
     }
 
+    var asyncImageModifier = Modifier.height(height).fillMaxWidth()
+    var imageBoxModifier = Modifier.height(height).fillMaxWidth()
+    var backgroundImageModifier: Modifier = Modifier
+
+    if (uiState.isHazeBlurEnabled.value) {
+        asyncImageModifier = asyncImageModifier.haze(
+            state = hazeState,
+            style = HazeStyle(
+                tint = Color.Black.copy(alpha = .2f),
+                blurRadius = 30.dp,
+            )
+        )
+        imageBoxModifier = imageBoxModifier.hazeChild(
+            state = hazeState,
+        )
+    } else if (uiState.isCanUseModifierBlur.value) {
+        backgroundImageModifier = backgroundImageModifier.blur(35.dp)
+    } else {
+        //todo для android меньше 12
+    }
+
     Box(
         modifier = Modifier.height(height).fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
@@ -127,27 +150,25 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
             maxWidth = 150.dp
         )
 
-        Box(Modifier) {
-            AsyncImage(
-                modifier = Modifier.height(height).fillMaxWidth().haze(
-                    state = hazeState,
-                    style = HazeStyle(
-                        tint = Color.Black.copy(alpha = .2f),
-                        blurRadius = 30.dp,
-                    )
-                ),
-                request = ComposableImageRequest(imageUrl) {
-                    scale(Scale.FILL)
-                    placeholder(Res.drawable.ic_default_book_cover_7)
-                    error(Res.drawable.ic_default_book_cover_7)
-                },
-                contentScale = ContentScale.FillBounds,
-                contentDescription = null,
-            )
-            Box(
-                modifier = Modifier.height(height).fillMaxWidth().hazeChild(
-                    state = hazeState,
+        val painter = rememberAsyncImagePainter(
+            ComposableImageRequest(imageUrl) {
+                scale(Scale.FILL)
+                placeholder(Res.drawable.ic_default_book_cover_7)
+                error(Res.drawable.ic_default_book_cover_7)
+            }
+        )
+
+        Box {
+            Column(backgroundImageModifier) {
+                Image(
+                    painter,
+                    modifier = asyncImageModifier,
+                    contentScale = ContentScale.FillBounds,
+                    contentDescription = null,
                 )
+            }
+            Box(
+                modifier = imageBoxModifier
             )
         }
 
@@ -161,13 +182,9 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                 shape = RoundedCornerShape(6.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
-                AsyncImage(
+                Image(
+                    painter,
                     modifier = imageModifier,
-                    request = ComposableImageRequest(imageUrl) {
-                        scale(Scale.FILL)
-                        placeholder(Res.drawable.ic_default_book_cover_7)
-                        error(Res.drawable.ic_default_book_cover_7)
-                    },
                     contentScale = ContentScale.FillBounds,
                     contentDescription = null,
                 )

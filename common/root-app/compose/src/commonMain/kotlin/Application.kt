@@ -129,6 +129,7 @@ fun Application(
                             if (openedRoute.value == Routes.main_route) {
                                 viewModel.MainAppBar(
                                     hazeBlurState = hazeBlurState,
+                                    isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
                                     searchedBooks = uiState.searchedBooks,
                                     platformDisplayHeight = platformDisplayHeight,
                                     showSearchAppBarTextField = showSearchAppBarTextField,
@@ -141,7 +142,10 @@ fun Application(
                         },
                         bottomBar = {
                             if (platform.isMobile() && openedRoute.value != Routes.book_info_route) {
-                                viewModel.CustomBottomBar(hazeState = hazeBlurState)
+                                viewModel.CustomBottomBar(
+                                    hazeState = hazeBlurState,
+                                    isHazeBlurEnabled = uiState.isHazeBlurEnabled.value
+                                )
                             }
                         },
                         modifier = Modifier
@@ -161,23 +165,30 @@ fun Application(
                                     destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
                                 )
                             ) {
+                                var mainScreenModifier =
+                                    Modifier.pointerInput(showSearchAppBarTextField.value) {
+                                        if (showSearchAppBarTextField.value) {
+                                            showSearchAppBarTextField.value = false
+                                        }
+                                    }
+
+                                if (uiState.isHazeBlurEnabled.value) {
+                                    mainScreenModifier = mainScreenModifier.haze(
+                                        hazeBlurState,
+                                        HazeStyle(
+                                            tint = Color.Black.copy(alpha = .2f),
+                                            blurRadius = 30.dp,
+                                        )
+                                    )
+                                }
+
                                 MainScreen(
                                     platform = platform,
                                     showLeftDrawer = uiState.showLeftDrawerState,
                                     showSearch = showSearch,
                                     leftDrawerState = leftDrawerState,
                                     shelfViewModel = shelfViewModel,
-                                    modifier = Modifier.pointerInput(showSearchAppBarTextField.value) {
-                                        if (showSearchAppBarTextField.value) {
-                                            showSearchAppBarTextField.value = false
-                                        }
-                                    }.haze(
-                                        hazeBlurState,
-                                        HazeStyle(
-                                            tint = Color.Black.copy(alpha = .2f),
-                                            blurRadius = 30.dp,
-                                        )
-                                    ),
+                                    modifier = mainScreenModifier,
                                     parentPaddingValues = paddingValues
                                 )
                             }
@@ -264,7 +275,8 @@ fun Application(
                                 )
                             ) {
                                 AdminPanelScreen(
-                                    showLeftDrawer = uiState.showLeftDrawerState
+                                    showLeftDrawer = uiState.showLeftDrawerState,
+                                    hazeState = hazeBlurState
                                 )
                             }
                         }

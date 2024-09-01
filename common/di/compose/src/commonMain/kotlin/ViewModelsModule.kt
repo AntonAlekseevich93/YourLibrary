@@ -9,7 +9,7 @@ val viewModelsModule = DI.Module("viewModelsModule") {
         MainScreenViewModel(instance(), instance(), instance(), instance(), instance())
     }
     bind<ShelfViewModel>() with singleton {
-        ShelfViewModel(instance(), instance(), instance())
+        ShelfViewModel(instance(), instance(), instance(), instance())
     }
     bind<SearchViewModel>() with singleton {
         SearchViewModel(instance())
@@ -39,7 +39,15 @@ val viewModelsModule = DI.Module("viewModelsModule") {
     }
 
     bind<AdminViewModel>() with singleton {
-        AdminViewModel(instance(), instance(), instance(), instance(), instance(), instance())
+        AdminViewModel(
+            instance(),
+            instance(),
+            instance(),
+            instance(),
+            instance(),
+            instance(),
+            instance()
+        )
     }
     bind<BooksListInfoViewModel>() with singleton {
         BooksListInfoViewModel(

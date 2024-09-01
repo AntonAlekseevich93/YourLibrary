@@ -1,5 +1,7 @@
 package models
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.input.TextFieldValue
 import base.BaseUIState
@@ -10,10 +12,12 @@ data class AdminUiState(
     val moderationBookState: ModerationBookState = ModerationBookState(),
     val skipLongImageLoading: Boolean = false,
     val useCustomHost: Boolean = false,
+    val useHttp: Boolean = false,
     val useNonModerationRange: Boolean = false,
     val customUrl: TextFieldValue = TextFieldValue(""),
     val rangeStart: TextFieldValue = TextFieldValue(""),
     val rangeEnd: TextFieldValue = TextFieldValue(""),
+    val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
 ) : BaseUIState
 
 data class ModerationBookState(

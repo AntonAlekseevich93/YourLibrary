@@ -33,6 +33,10 @@ class BookCreatorViewModel(
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
 
+    init {
+        uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
+    }
+
     override fun sendEvent(event: BaseEvent) {
         when (event) {
             is BookEditorEvents.OnAuthorTextChanged -> onAuthorTextChanged(

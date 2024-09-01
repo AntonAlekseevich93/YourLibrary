@@ -60,6 +60,17 @@ fun BookInfoScreen(
     val isTransparentAppbar = remember { mutableStateOf(true) }
     var reviewButtonPosition by remember { mutableStateOf(0) }
     var showDateSelectorDialog by remember { mutableStateOf(false) }
+    var modifier = Modifier.fillMaxSize().background(Color.Transparent).verticalScroll(scrollState)
+
+    if (uiState.isHazeBlurEnabled.value) {
+        modifier = modifier.haze(
+            state = appBarHazeState,
+            style = HazeStyle(
+                tint = Color.Black.copy(alpha = .2f),
+                blurRadius = 30.dp,
+            )
+        )
+    }
 
     LaunchedEffect(scrollState) {
         snapshotFlow { scrollState.value }.collect { scrollOffset ->
@@ -100,16 +111,7 @@ fun BookInfoScreen(
         },
         containerColor = ApplicationTheme.colors.cardBackgroundDark,
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize().background(Color.Transparent)
-                .verticalScroll(scrollState).haze(
-                    state = appBarHazeState,
-                    style = HazeStyle(
-                        tint = Color.Black.copy(alpha = .2f),
-                        blurRadius = 30.dp,
-                    )
-                ),
-        ) {
+        Column(modifier = modifier) {
             Box(
                 modifier = Modifier.padding(bottom = 110.dp)
             ) {

@@ -1,3 +1,6 @@
+package components.modarations_books_screen
+
+import ApplicationTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,7 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -27,17 +30,18 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeChild
 
 @Composable
-fun BookCreatorAppBar(
+fun AdminPanelAppBar(
     hazeBlurState: HazeState,
+    isHazeBlurEnabled: Boolean,
     title: String,
     showBackButton: Boolean,
-    showSearchButton: Boolean,
-    isHazeBlurEnabled: Boolean,
     onClose: () -> Unit,
+    onBack: () -> Unit,
 ) {
-
-    var modifier = Modifier.fillMaxWidth().sizeIn(minHeight = 85.dp)
     val shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 8.dp)
+    var modifier = Modifier
+        .fillMaxWidth()
+        .sizeIn(minHeight = 85.dp)
 
     modifier = if (isHazeBlurEnabled) {
         modifier.hazeChild(
@@ -55,9 +59,10 @@ fun BookCreatorAppBar(
         AppBarComponent(
             title = title,
             showBackButton = showBackButton,
-            showSearchButton = showSearchButton,
-            onClose = onClose
+            onClose = onClose,
+            onBack = onBack,
         )
+
     }
 }
 
@@ -66,7 +71,7 @@ fun BookCreatorAppBar(
 internal fun AppBarComponent(
     title: String,
     showBackButton: Boolean,
-    showSearchButton: Boolean,
+    onBack: () -> Unit,
     onClose: () -> Unit,
 ) {
     CompositionLocalProvider(
@@ -81,8 +86,7 @@ internal fun AppBarComponent(
             TopAppBar(
                 title = {
                     Box(
-                        Modifier.fillMaxWidth().background(Color.Transparent)
-                            .padding(start = 16.dp),
+                        Modifier.fillMaxWidth().background(Color.Transparent),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -94,21 +98,37 @@ internal fun AppBarComponent(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
-                    Spacer(Modifier.padding(start = 32.dp))
+                    if (showBackButton) {
+                        IconButton(
+                            onClick = {
+                                onBack.invoke()
+                            },
+                            modifier = Modifier
+                        ) {
+
+                            Icon(
+                                imageVector = Icons.Rounded.ArrowBackIosNew,
+                                contentDescription = null,
+                            )
+                        }
+                    } else {
+                        Spacer(Modifier.padding(end = 46.dp))
+                    }
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            onClose.invoke()
-                        },
-                        modifier = Modifier
-                    ) {
-
-                        Icon(
-                            imageVector = Icons.Rounded.Close,
-                            contentDescription = null,
-                        )
-                    }
+                    Spacer(Modifier.padding(end = 36.dp))
+//                    IconButton(f
+//                        onClick = {
+//                            onClose.invoke()
+//                        },
+//                        modifier = Modifier
+//                    ) {
+//
+//                        Icon(
+//                            imageVector = Icons.Rounded.Close,
+//                            contentDescription = null,
+//                        )
+//                    }
                 }
             )
         }

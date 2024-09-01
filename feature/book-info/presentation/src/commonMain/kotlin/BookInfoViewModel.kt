@@ -41,6 +41,8 @@ class BookInfoViewModel(
 
     init {
         uiState.value.currentDateInMillis.value = platformInfo.getCurrentTime().timeInMillis
+        uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
+        uiState.value.isCanUseModifierBlur.value = platformInfo.isCanUseModifierBlur
     }
 
     override fun sendEvent(event: BaseEvent) {

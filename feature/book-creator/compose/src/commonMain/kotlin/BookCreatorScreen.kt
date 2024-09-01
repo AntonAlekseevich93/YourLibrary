@@ -71,6 +71,7 @@ fun BookCreatorScreen(
         topBar = {
             BookCreatorAppBar(
                 hazeBlurState = hazeState,
+                isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
                 title = if (uiState.isCreateBookManually || uiState.shortBookItem != null) Strings.add_book else "Поиск",
                 showBackButton = uiState.showFullScreenBookSelector,
                 showSearchButton = uiState.isCreateBookManually || uiState.shortBookItem != null,

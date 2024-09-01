@@ -16,6 +16,7 @@ import models.ProjectFoldersEvents
 import models.SettingsDataProvider
 import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
+import platform.PlatformInfoData
 import tooltip_area.TooltipEvents
 
 class ApplicationViewModel(
@@ -23,7 +24,8 @@ class ApplicationViewModel(
     private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,
     private val settingsDataProvider: SettingsDataProvider,
-    private val userInteractor: UserInteractor
+    private val userInteractor: UserInteractor,
+    private val platformInfo: PlatformInfoData,
 ) : BaseMVIViewModel<ApplicationUiState, BaseEvent>(ApplicationUiState()),
     ApplicationScope, DrawerScope {
 
@@ -31,6 +33,7 @@ class ApplicationViewModel(
     private var searchJob: Job? = null
 
     init {
+        uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
         scope.launch {
             launch(Dispatchers.IO) {
                 interactor.synchronizeBooksWithAuthors()

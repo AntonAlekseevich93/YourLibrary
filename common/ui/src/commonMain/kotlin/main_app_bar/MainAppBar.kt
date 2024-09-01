@@ -1,5 +1,6 @@
 package main_app_bar
 
+import ApplicationTheme
 import BaseEvent
 import BaseEventScope
 import androidx.compose.animation.AnimatedVisibility
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -53,6 +55,7 @@ fun BaseEventScope<BaseEvent>.MainAppBar(
     searchedBooks: List<BookVo>,
     platformDisplayHeight: Dp?,
     showSearchAppBarTextField: State<Boolean>,
+    isHazeBlurEnabled: Boolean,
     changeVisibilitySearchAppBarTextField: () -> Unit,
 ) {
     var showSearchResult by remember { mutableStateOf(false) }
@@ -68,6 +71,22 @@ fun BaseEventScope<BaseEvent>.MainAppBar(
         }
     }
     val animatedHeight = remember { with(density) { Animatable(85.dp.toPx()) } }
+    var appBarModifier = Modifier.fillMaxWidth()
+        .height(with(density) { animatedHeight.value.toDp() })
+        .pointerInput(Unit) {
+            //need for blocking scroll on screen
+        }
+
+    val shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 8.dp)
+
+    appBarModifier = if (isHazeBlurEnabled) {
+        appBarModifier.hazeChild(
+            state = hazeBlurState,
+            shape = shape
+        )
+    } else {
+        appBarModifier.clip(shape).background(ApplicationTheme.colors.mainBackgroundColor)
+    }
 
     LaunchedEffect(targetHeight) {
         animatedHeight.animateTo(
@@ -78,16 +97,7 @@ fun BaseEventScope<BaseEvent>.MainAppBar(
         )
     }
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(with(density) { animatedHeight.value.toDp() })
-            .hazeChild(
-                state = hazeBlurState,
-                shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 8.dp)
-            )
-            .pointerInput(Unit) {
-                //need for blocking scroll on screen
-            },
+        modifier = appBarModifier,
         verticalArrangement = Arrangement.Top
     ) {
         AppBarComponent(showSearchAppBarTextField.value, changeVisibilitySearchAppBarTextField)

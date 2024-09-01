@@ -17,6 +17,8 @@ sealed class AdminEvents : BaseEvent {
     class ChangeNonModerationStartRange(val startRange: TextFieldValue) : AdminEvents()
     class ChangeNonModerationEndRange(val endRange: TextFieldValue) : AdminEvents()
     class ChangeNeedUseCustomUrl(val needUse: Boolean) : AdminEvents()
+    data object ChangeNeedUseHttp : AdminEvents()
     class ChangeNeedUseNonModerationRange(val needUse: Boolean) : AdminEvents()
     data object ChangeSkipImageLongLoadingSettings : AdminEvents()
+    data object CloseModerationScreen : AdminEvents()
 }

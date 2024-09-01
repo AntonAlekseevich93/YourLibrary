@@ -1,5 +1,6 @@
 package bottom_app_bar
 
+import ApplicationTheme
 import BaseEvent
 import BaseEventScope
 import androidx.compose.animation.animateColorAsState
@@ -58,16 +59,27 @@ import dev.chrisbanes.haze.hazeChild
 import menu_bar.LeftMenuBarEvents
 
 @Composable
-fun BaseEventScope<BaseEvent>.CustomBottomBar(hazeState: HazeState) {
+fun BaseEventScope<BaseEvent>.CustomBottomBar(
+    hazeState: HazeState,
+    isHazeBlurEnabled: Boolean
+) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val shape = RoundedCornerShape(16.dp)
+
+    var modifier: Modifier = Modifier
+        .padding(vertical = 16.dp, horizontal = 16.dp)
+        .fillMaxWidth()
+        .height(64.dp)
+
+    modifier = if (isHazeBlurEnabled) {
+        modifier.hazeChild(state = hazeState, shape = shape)
+    } else {
+        modifier.clip(shape).background(ApplicationTheme.colors.mainBackgroundColor)
+    }
+
     Column(Modifier.background(Color.Transparent)) {
         Box(
-            modifier = Modifier
-                .padding(vertical = 16.dp, horizontal = 16.dp)
-                .fillMaxWidth()
-                .height(64.dp)
-                .hazeChild(state = hazeState, shape = shape)
+            modifier = modifier
                 .border(
                     width = Dp.Hairline,
                     brush = Brush.verticalGradient(
