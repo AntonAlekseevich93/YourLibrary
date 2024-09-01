@@ -34,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -136,7 +137,9 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
     } else if (uiState.isCanUseModifierBlur.value) {
         backgroundImageModifier = backgroundImageModifier.blur(35.dp)
     } else {
-        //todo для android меньше 12
+        backgroundImageModifier = asyncImageModifier.background(Color.Black)
+        asyncImageModifier =
+            asyncImageModifier.alpha(0.2f).background(Color.Black.copy(alpha = 0.5f))
     }
 
     Box(
