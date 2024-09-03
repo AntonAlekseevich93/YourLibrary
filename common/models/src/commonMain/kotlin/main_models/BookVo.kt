@@ -34,6 +34,7 @@ data class BookVo(
     val reviewCount: Int,
     val ratingSum: Int,
     val bookForAllUsers: Boolean,
+    val originalMainBookId: String,
 ) {
     var remoteImageLink: String? = null
 

@@ -30,11 +30,11 @@ class BookInfoInteractor(
     suspend fun getAllBooksByAuthor(authorId: String) =
         searchRepository.getAllBooksByAuthor(authorId)
 
-    suspend fun getCurrentUserReviewAndRatingByBook(bookId: String): Flow<ReviewAndRatingVo?> =
-        reviewAndRatingRepository.getCurrentUserLocalReviewAndRatingByBookFlow(bookId)
+    suspend fun getCurrentUserReviewAndRatingByBook(mainBookId: String): Flow<ReviewAndRatingVo?> =
+        reviewAndRatingRepository.getCurrentUserLocalReviewAndRatingByBookFlow(mainBookId)
 
-    suspend fun getAllRemoteReviewsAndRatingsByBookId(bookId: String) =
-        reviewAndRatingRepository.getAllRemoteReviewsAndRatingsByBookId(bookId)
+    suspend fun getAllRemoteReviewsAndRatingsByBookId(mainBookId: String) =
+        reviewAndRatingRepository.getAllRemoteReviewsAndRatingsByBookId(mainBookId)
 
     suspend fun updateOrCreateRating(
         newRating: Int,
@@ -43,6 +43,7 @@ class BookInfoInteractor(
         bookGenreId: Int,
         isCreatedManuallyBook: Boolean,
         bookForAllUsers: Boolean,
+        mainBookId: String,
     ) {
         reviewAndRatingRepository.addOrUpdateRatingByBookId(
             newRating = newRating,
@@ -51,13 +52,14 @@ class BookInfoInteractor(
             bookGenreId = bookGenreId,
             isCreatedManuallyBook = isCreatedManuallyBook,
             bookForAllUsers = bookForAllUsers,
+            mainBookId = mainBookId
         )
     }
 
-    suspend fun addReview(reviewText: String, bookId: String) {
+    suspend fun addReview(reviewText: String, mainBookId: String) {
         reviewAndRatingRepository.addReviewByBookId(
             reviewText = reviewText,
-            bookId = bookId
+            mainBookId = mainBookId
         )
     }
 

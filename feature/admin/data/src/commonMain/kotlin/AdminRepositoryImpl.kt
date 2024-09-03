@@ -1,3 +1,4 @@
+import HttpParams.CHANGED_BOOK_NAME
 import HttpParams.RANGE_END
 import HttpParams.RANGE_START
 import database.LocalAdminDataSource
@@ -69,9 +70,19 @@ class AdminRepositoryImpl(
         } else null
     }
 
-    override suspend fun setBookAsApprovedWithoutUploadImage(book: BookShortVo): BookShortVo? {
+    override suspend fun setBookAsApprovedWithoutUploadImage(
+        book: BookShortVo,
+        changedName: String?
+    ): BookShortVo? {
+        val params = mutableMapOf<String, String>()
+        changedName?.let {
+            params[CHANGED_BOOK_NAME] = it
+        }
         val bookResult =
-            remoteAdminDataSource.setBookAsApprovedWithoutUploadImage(book = book.toDto())?.result?.books?.firstOrNull()
+            remoteAdminDataSource.setBookAsApprovedWithoutUploadImage(
+                book = book.toDto(),
+                params = params
+            )?.result?.books?.firstOrNull()
         return if (bookResult?.imageName != null) {
             val imageUrl = remoteConfig.getImageUrl(
                 bookResult.imageName,

@@ -46,10 +46,11 @@ class ReviewAndRatingRepositoryImpl(
         bookGenreId: Int,
         isCreatedManuallyBook: Boolean,
         bookForAllUsers: Boolean,
+        mainBookId: String,
     ) {
         val userId = appConfig.userId
         val existedRating = localReviewAndRatingDataSource.getCurrentUserReviewAndRatingByBook(
-            bookId = bookId,
+            mainBookId = mainBookId,
             userId = userId
         ).firstOrNull()
         val currentLocalTimestamp =
@@ -67,7 +68,8 @@ class ReviewAndRatingRepositoryImpl(
                 userId = userId.toInt(),
                 userName = "Антон Алексеевич", //todo fix this
                 deviceId = appConfig.deviceId,
-                timestamp = timestamp
+                timestamp = timestamp,
+                mainBookId = mainBookId
             )
         } else {
             resultReviewAndRatingVo = existedRating.copy(
@@ -100,11 +102,11 @@ class ReviewAndRatingRepositoryImpl(
 
     override suspend fun addReviewByBookId(
         reviewText: String,
-        bookId: String,
+        mainBookId: String,
     ) {
         val userId = appConfig.userId
         val existedRating = localReviewAndRatingDataSource.getCurrentUserReviewAndRatingByBook(
-            bookId = bookId,
+            mainBookId = mainBookId,
             userId = userId
         ).firstOrNull()
         val currentLocalTimestamp =
@@ -146,22 +148,22 @@ class ReviewAndRatingRepositoryImpl(
         localReviewAndRatingDataSource.updateReviewAndRatingTimestamp(timestamp.toEntity())
     }
 
-    override suspend fun getCurrentUserLocalReviewAndRatingByBookFlow(bookId: String): Flow<ReviewAndRatingVo?> =
+    override suspend fun getCurrentUserLocalReviewAndRatingByBookFlow(mainBookId: String): Flow<ReviewAndRatingVo?> =
         localReviewAndRatingDataSource.getCurrentUserReviewAndRatingByBookFlow(
-            bookId = bookId,
+            mainBookId = mainBookId,
             userId = appConfig.userId
         ).map { list ->
             list.firstOrNull()?.toVo()
         }
 
-    override suspend fun getCurrentUserLocalReviewAndRatingByBook(bookId: String): ReviewAndRatingVo? =
+    override suspend fun getCurrentUserLocalReviewAndRatingByBook(mainBookId: String): ReviewAndRatingVo? =
         localReviewAndRatingDataSource.getCurrentUserReviewAndRatingByBook(
-            bookId = bookId,
+            mainBookId = mainBookId,
             userId = appConfig.userId
         ).firstOrNull()?.toVo()
 
-    override suspend fun getAllRemoteReviewsAndRatingsByBookId(bookId: String): List<ReviewAndRatingVo> =
-        remoteReviewAndRatingDataSource.getAllRemoteReviewsAndRatingsByBookId(bookId)?.result?.reviewsAndRatings?.mapNotNull { it.toVo() }
+    override suspend fun getAllRemoteReviewsAndRatingsByBookId(mainBookId: String): List<ReviewAndRatingVo> =
+        remoteReviewAndRatingDataSource.getAllRemoteReviewsAndRatingsByBookId(mainBookId)?.result?.reviewsAndRatings?.mapNotNull { it.toVo() }
             ?: emptyList()
 
 }

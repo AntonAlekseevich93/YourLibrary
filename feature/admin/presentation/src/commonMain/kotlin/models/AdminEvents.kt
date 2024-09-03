@@ -21,4 +21,8 @@ sealed class AdminEvents : BaseEvent {
     class ChangeNeedUseNonModerationRange(val needUse: Boolean) : AdminEvents()
     data object ChangeSkipImageLongLoadingSettings : AdminEvents()
     data object CloseModerationScreen : AdminEvents()
+    data object OnChangeBookName : AdminEvents()
+    data object OnCancelChangeBookName : AdminEvents()
+    data object OnDeleteChangeBookName : AdminEvents()
+    data class OnSaveChangeBookName(val newBookName: String) : AdminEvents()
 }

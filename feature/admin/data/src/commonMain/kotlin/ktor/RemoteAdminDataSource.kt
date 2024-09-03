@@ -48,13 +48,16 @@ class RemoteAdminDataSource(
             requestTimeout = if (appConfig.skipLongImageLoading) 2500 else null
         )
 
-    suspend fun setBookAsApprovedWithoutUploadImage(book: BookShortRemoteDto) =
-        httpClient.post(
-            url = SET_BOOK_AS_APPROVED_WITHOUT_UPLOAD_IMAGE,
-            resultClass = BookShortResponse::class,
-            bodyRequest = book,
-            errorClass = String::class,
-            requestTimeout = if (appConfig.skipLongImageLoading) 2500 else null
-        )
+    suspend fun setBookAsApprovedWithoutUploadImage(
+        book: BookShortRemoteDto,
+        params: Map<String, String>
+    ) = httpClient.post(
+        url = SET_BOOK_AS_APPROVED_WITHOUT_UPLOAD_IMAGE,
+        resultClass = BookShortResponse::class,
+        bodyRequest = book,
+        errorClass = String::class,
+        requestTimeout = if (appConfig.skipLongImageLoading) 2500 else null,
+        params = params
+    )
 
 }

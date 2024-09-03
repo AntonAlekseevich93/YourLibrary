@@ -19,21 +19,21 @@ interface ReviewAndRatingDao {
         userId: Long
     ): List<ReviewAndRatingEntity>
 
-    @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and bookId = :bookId")
+    @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and mainBookId = :mainBookId")
     suspend fun getReviewAndRatingByBookId(
-        bookId: String,
+        mainBookId: String,
         userId: Long
     ): List<ReviewAndRatingEntity>
 
-    @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and bookId = :bookId")
+    @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and mainBookId = :mainBookId")
     fun getCurrentUserReviewAndRatingByBookFlow(
-        bookId: String,
+        mainBookId: String,
         userId: Long
     ): Flow<List<ReviewAndRatingEntity>>
 
-    @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and bookId = :bookId")
+    @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and mainBookId = :mainBookId")
     suspend fun getCurrentUserReviewAndRatingByBook(
-        bookId: String,
+        mainBookId: String,
         userId: Long
     ): List<ReviewAndRatingEntity>
 }

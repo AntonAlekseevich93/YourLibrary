@@ -19,6 +19,9 @@ class AdminInteractor(
     suspend fun uploadBookImage(book: BookShortVo): BookShortVo? =
         repository.uploadBookImage(book)
 
-    suspend fun setBookAsApprovedWithoutUploadImage(book: BookShortVo): BookShortVo? =
-        repository.setBookAsApprovedWithoutUploadImage(book)
+    suspend fun setBookAsApprovedWithoutUploadImage(
+        book: BookShortVo,
+        changedName: String?
+    ): BookShortVo? =
+        repository.setBookAsApprovedWithoutUploadImage(book, changedName)
 }

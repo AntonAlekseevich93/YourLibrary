@@ -87,6 +87,24 @@ class AdminViewModel(
             is AdminEvents.CloseModerationScreen -> {
                 updateUIState(uiStateValue.copy(moderationBookState = ModerationBookState()))
             }
+
+            is AdminEvents.OnChangeBookName -> {
+                uiStateValue.moderationBookState.showChangedBookNameField.value = true
+            }
+
+            is AdminEvents.OnCancelChangeBookName -> {
+                uiStateValue.moderationBookState.showChangedBookNameField.value = false
+            }
+
+            is AdminEvents.OnDeleteChangeBookName -> {
+                uiStateValue.moderationBookState.showChangedBookNameField.value = true
+                uiStateValue.moderationBookState.moderationChangedName.value = null
+            }
+
+            is AdminEvents.OnSaveChangeBookName -> {
+                uiStateValue.moderationBookState.showChangedBookNameField.value = false
+                uiStateValue.moderationBookState.moderationChangedName.value = event.newBookName
+            }
         }
     }
 
@@ -152,6 +170,7 @@ class AdminViewModel(
     }
 
     private fun selectNextBook() {
+        uiStateValue.moderationBookState.moderationChangedName.value = null
         uiStateValue.moderationBookState.apply {
             val listSize = booksForModeration.size
             val currentBookIndex = booksForModeration.indexOf(selectedItem)
@@ -233,7 +252,11 @@ class AdminViewModel(
             )
 
             scope.launch(Dispatchers.IO) {
-                val bookResponse = interactor.setBookAsApprovedWithoutUploadImage(book)
+                val bookResponse =
+                    interactor.setBookAsApprovedWithoutUploadImage(
+                        book,
+                        changedName = uiStateValue.moderationBookState
+                            .moderationChangedName.value.takeIf { !it.isNullOrEmpty() && it != book.bookName })
                 withContext(Dispatchers.Main) {
                     updateUIState(
                         uiStateValue.copy(
@@ -244,6 +267,7 @@ class AdminViewModel(
                         )
                     )
                     if (bookResponse != null) {
+                        uiStateValue.moderationBookState.moderationChangedName.value = null
                         uiStateValue.moderationBookState.booksForModeration.replaceAll { if (it.id == bookResponse.id) bookResponse else it }
                     } else if (appConfig.skipLongImageLoading) {
                         selectNextBook()

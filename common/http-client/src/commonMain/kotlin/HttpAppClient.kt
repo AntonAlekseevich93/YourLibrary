@@ -27,6 +27,7 @@ class HttpAppClient(
         resultClass: KClass<TResult>,
         errorClass: KClass<TError>,
         requestTimeout: Long? = null,
+        params: Map<String, String> = emptyMap()
     ): BaseResponse<TResult, TError>? {
         return try {
             val response: HttpResponse = httpClient.post(getFullUrl(url)) {
@@ -34,12 +35,15 @@ class HttpAppClient(
                 header(TOKEN_KEY, appConfig.authToken)
                 header(DEVICE_ID_KEY, appConfig.deviceId)
                 setBody(bodyRequest)
-                if(requestTimeout != null) {
+                if (requestTimeout != null) {
                     timeout {
                         requestTimeoutMillis = requestTimeout
                         connectTimeoutMillis = requestTimeout
                         socketTimeoutMillis = requestTimeout
                     }
+                }
+                params.forEach {
+                    parameter(key = it.key, value = it.value)
                 }
             }
             val jsonAsString: String = response.body<String>()

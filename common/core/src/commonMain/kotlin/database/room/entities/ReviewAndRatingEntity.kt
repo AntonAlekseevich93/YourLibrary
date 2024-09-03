@@ -27,6 +27,7 @@ data class ReviewAndRatingEntity(
     @SerialName("bookGenreId") val bookGenreId: Int,
     @SerialName("isCreatedManuallyBook") val isCreatedManuallyBook: Boolean,
     @SerialName("bookForAllUsers") val bookForAllUsers: Boolean,
+    @SerialName("mainBookId") val mainBookId: String,
 )
 
 fun ReviewAndRatingEntity.toVo(): ReviewAndRatingVo {
@@ -52,6 +53,7 @@ fun ReviewAndRatingEntity.toVo(): ReviewAndRatingVo {
         bookGenreId = bookGenreId,
         isCreatedManuallyBook = isCreatedManuallyBook,
         bookForAllUsers = bookForAllUsers,
+        mainBookId = mainBookId,
     )
 }
 
@@ -77,5 +79,6 @@ fun ReviewAndRatingVo.toLocalDto(): ReviewAndRatingEntity {
         bookGenreId = bookGenreId,
         isCreatedManuallyBook = isCreatedManuallyBook,
         bookForAllUsers = bookForAllUsers,
+        mainBookId = mainBookId
     )
 }

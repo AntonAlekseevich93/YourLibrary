@@ -113,8 +113,8 @@ class BookInfoViewModel(
             interactor.getLocalBookByLocalId(localBookId).collect { response ->
                 response?.let { book ->
                     _uiState.value.bookItem.value = book
-                    getCurrentUserReviewAndRatingByBook(book.bookId)
-                    getAllReviewsAndRatingsByBookId(book.bookId)
+                    getCurrentUserReviewAndRatingByBook(mainBookId = book.originalMainBookId)
+                    getAllReviewsAndRatingsByBookId(mainBookId = book.originalMainBookId)
                     getAllBooksByAuthor(book.originalAuthorId)
                 }
             }
@@ -127,8 +127,8 @@ class BookInfoViewModel(
         _uiState.value.shortBookItem.value = shortBook
         shortBookJob = scope.launch(Dispatchers.Main) {
             replaceShortBookByLocalBookIfExist(shortBook.bookId)
-            getCurrentUserReviewAndRatingByBook(shortBook.bookId)
-            getAllReviewsAndRatingsByBookId(shortBook.bookId)
+            getCurrentUserReviewAndRatingByBook(mainBookId = shortBook.mainBookId)
+            getAllReviewsAndRatingsByBookId(mainBookId = shortBook.mainBookId)
             getAllBooksByAuthor(shortBook.originalAuthorId)
         }
     }
@@ -142,15 +142,15 @@ class BookInfoViewModel(
 //                    shortBookJob?.cancel()
                     _uiState.value.shortBookItem.value = null
                     _uiState.value.bookItem.value = book
-                    getCurrentUserReviewAndRatingByBook(book.bookId)
+                    getCurrentUserReviewAndRatingByBook(mainBookId = book.originalMainBookId)
                 }
             }
         }
     }
 
-    private suspend fun getCurrentUserReviewAndRatingByBook(bookId: String) {
+    private suspend fun getCurrentUserReviewAndRatingByBook(mainBookId: String) {
         scope.launch(Dispatchers.IO) {
-            interactor.getCurrentUserReviewAndRatingByBook(bookId).collect { reviewAndRating ->
+            interactor.getCurrentUserReviewAndRatingByBook(mainBookId).collect { reviewAndRating ->
                 reviewAndRating?.let {
                     _uiState.value.currentBookUserReviewAndRating.value = it
                     if (!it.reviewText.isNullOrEmpty()) {
@@ -165,9 +165,9 @@ class BookInfoViewModel(
         }
     }
 
-    private suspend fun getAllReviewsAndRatingsByBookId(bookId: String) {
+    private suspend fun getAllReviewsAndRatingsByBookId(mainBookId: String) {
         reviewAndRatingJob = scope.launch(Dispatchers.IO) {
-            val response = interactor.getAllRemoteReviewsAndRatingsByBookId(bookId)
+            val response = interactor.getAllRemoteReviewsAndRatingsByBookId(mainBookId)
             if (response.isNotEmpty()) {
                 val resultList = response.toMutableList()
                 resultList.removeAll { it.userId == appConfig.userId.toInt() }
@@ -275,6 +275,9 @@ class BookInfoViewModel(
                 ?: false
             val bookForAllUsers = _uiState.value.bookItem.value?.bookIsCreatedManually
                 ?: true
+            val mainBookId = _uiState.value.bookItem.value?.originalMainBookId
+                ?: _uiState.value.shortBookItem.value?.mainBookId
+                ?: return@launch
 
             interactor.updateOrCreateRating(
                 newRating = newRating,
@@ -283,6 +286,7 @@ class BookInfoViewModel(
                 bookGenreId = bookGenreId,
                 isCreatedManuallyBook = bookIsCreatedManually,
                 bookForAllUsers = bookForAllUsers,
+                mainBookId = mainBookId
             )
         }
     }
@@ -321,12 +325,13 @@ class BookInfoViewModel(
 
     private fun addReview(reviewText: String) {
         scope.launch(Dispatchers.IO) {
-            val bookId: String =
-                _uiState.value.bookItem.value?.bookId ?: _uiState.value.shortBookItem.value?.bookId
-                ?: return@launch
+            val mainBookId: String =
+                _uiState.value.bookItem.value?.originalMainBookId
+                    ?: _uiState.value.shortBookItem.value?.mainBookId
+                    ?: return@launch
             interactor.addReview(
                 reviewText = reviewText,
-                bookId = bookId
+                mainBookId = mainBookId
             )
         }
     }

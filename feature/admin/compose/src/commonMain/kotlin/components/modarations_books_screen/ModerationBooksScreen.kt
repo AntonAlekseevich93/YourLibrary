@@ -25,6 +25,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -41,6 +43,7 @@ import main_models.genre.GenreUtils
 import models.AdminEvents
 import models.ModerationBookState
 import tags.CustomTag
+import text_fields.CommonTextField
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -160,11 +163,91 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                     }
                 )
                 Text(
-                    modifier = Modifier.padding(start = 8.dp),
+                    modifier = Modifier.clickable {
+                        sendEvent(AdminEvents.OnChangeBookName)
+                    }.padding(start = 8.dp),
                     text = book.bookName,
                     style = ApplicationTheme.typography.bodyBold,
                     color = ApplicationTheme.colors.mainTextColor
                 )
+            }
+
+            if (state.moderationChangedName.value != null) {
+                Row(
+                    modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Измененное название:",
+                        style = ApplicationTheme.typography.footnoteBold,
+                        color = if (state.moderationChangedName.value!!.isEmpty()) {
+                            ApplicationTheme.colors.adminPanelButtons.disapprovedColor
+                        } else {
+                            ApplicationTheme.colors.adminPanelButtons.uploadColor
+                        }
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = state.moderationChangedName.value!!,
+                        style = ApplicationTheme.typography.bodyBold,
+                        color = ApplicationTheme.colors.mainTextColor
+                    )
+                }
+            }
+
+            if (state.showChangedBookNameField.value) {
+                val textField: MutableState<TextFieldValue> =
+                    remember {
+                        mutableStateOf(
+                            TextFieldValue(
+                                text = state.moderationChangedName.value ?: book.bookName
+                            )
+                        )
+                    }
+                Column(modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp)) {
+                    CommonTextField(
+                        modifier = Modifier,
+                        focusedIndicatorLineThickness = 1.dp,
+                        unfocusedIndicatorLineThickness = 1.dp,
+                        textState = textField.value,
+                        onTextChanged = {
+                            textField.value = it
+                        },
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = 12.dp)
+                    ) {
+                        Text(
+                            text = "Сохранить",
+                            modifier = Modifier.clickable {
+                                sendEvent(AdminEvents.OnSaveChangeBookName(textField.value.text.trim()))
+                            }.padding(end = 12.dp),
+                            style = ApplicationTheme.typography.footnoteBold,
+                            color = ApplicationTheme.colors.mainTextColor
+                        )
+
+                        Text(
+                            text = "Отменить",
+                            modifier = Modifier.clickable {
+                                sendEvent(AdminEvents.OnCancelChangeBookName)
+                            }.padding(end = 12.dp),
+                            style = ApplicationTheme.typography.footnoteBold,
+                            color = ApplicationTheme.colors.mainTextColor
+                        )
+
+                        Text(
+                            text = "Удалить",
+                            modifier = Modifier.clickable {
+                                sendEvent(AdminEvents.OnDeleteChangeBookName)
+                            },
+                            style = ApplicationTheme.typography.footnoteBold,
+                            color = ApplicationTheme.colors.mainTextColor
+                        )
+                    }
+
+                }
+
             }
 
             Row(

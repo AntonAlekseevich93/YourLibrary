@@ -28,8 +28,9 @@ data class BookShortVo(
     val reviewCount: Int,
     val ratingSum: Int,
     val localReadingStatus: ReadingStatus? = null,
-    val localCurrentUserRating: ReviewAndRatingVo? = null
-){
+    val localCurrentUserRating: ReviewAndRatingVo? = null,
+    val mainBookId: String,
+) {
     fun createUserBookBasedOnShortBook(readingStatus: ReadingStatus): BookVo =
         BookVo(
             bookId = this.bookId,
@@ -64,5 +65,6 @@ data class BookShortVo(
             reviewCount = this.reviewCount,
             ratingSum = this.ratingSum,
             bookForAllUsers = true,
+            originalMainBookId = mainBookId
         )
 }

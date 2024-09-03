@@ -13,10 +13,10 @@ interface ReviewAndRatingRepository {
 
     suspend fun updateReviewAndRatingTimestamp(timestamp: ReviewAndRatingTimestampVo)
 
-    suspend fun getCurrentUserLocalReviewAndRatingByBookFlow(bookId: String): Flow<ReviewAndRatingVo?>
-    suspend fun getCurrentUserLocalReviewAndRatingByBook(bookId: String): ReviewAndRatingVo?
+    suspend fun getCurrentUserLocalReviewAndRatingByBookFlow(mainBookId: String): Flow<ReviewAndRatingVo?>
+    suspend fun getCurrentUserLocalReviewAndRatingByBook(mainBookId: String): ReviewAndRatingVo?
 
-    suspend fun getAllRemoteReviewsAndRatingsByBookId(bookId: String): List<ReviewAndRatingVo>
+    suspend fun getAllRemoteReviewsAndRatingsByBookId(mainBookId: String): List<ReviewAndRatingVo>
 
     suspend fun addOrUpdateRatingByBookId(
         newRating: Int,
@@ -25,10 +25,11 @@ interface ReviewAndRatingRepository {
         bookGenreId: Int,
         isCreatedManuallyBook: Boolean,
         bookForAllUsers: Boolean,
+        mainBookId: String,
     )
 
     suspend fun addReviewByBookId(
         reviewText: String,
-        bookId: String,
+        mainBookId: String,
     )
 }

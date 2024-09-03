@@ -26,6 +26,7 @@ data class ReviewAndRatingRemoteDto(
     @SerialName("bookGenreId") val bookGenreId: Int,
     @SerialName("isCreatedManuallyBook") val isCreatedManuallyBook: Boolean,
     @SerialName("bookForAllUsers") val bookForAllUsers: Boolean,
+    @SerialName("mainBookId") val mainBookId: String,
 )
 
 fun ReviewAndRatingVo.toDto(): ReviewAndRatingRemoteDto {
@@ -50,6 +51,7 @@ fun ReviewAndRatingVo.toDto(): ReviewAndRatingRemoteDto {
         bookGenreId = bookGenreId,
         isCreatedManuallyBook = isCreatedManuallyBook,
         bookForAllUsers = bookForAllUsers,
+        mainBookId = mainBookId
     )
 }
 
@@ -76,6 +78,7 @@ fun ReviewAndRatingRemoteDto.toVo(): ReviewAndRatingVo? {
         bookGenreId = bookGenreId,
         isCreatedManuallyBook = isCreatedManuallyBook,
         bookForAllUsers = bookForAllUsers,
+        mainBookId = mainBookId
     )
 }
 
@@ -101,5 +104,6 @@ fun ReviewAndRatingVo.toRemoteDto(): ReviewAndRatingRemoteDto? {
         bookGenreId = bookGenreId,
         isCreatedManuallyBook = isCreatedManuallyBook,
         bookForAllUsers = bookForAllUsers,
+        mainBookId = mainBookId
     )
 }

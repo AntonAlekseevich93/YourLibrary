@@ -32,16 +32,16 @@ class LocalReviewAndRatingDataSource(
     }
 
     suspend fun getCurrentUserReviewAndRatingByBookFlow(
-        bookId: String,
+        mainBookId: String,
         userId: Long
     ): Flow<List<ReviewAndRatingEntity>> =
-        reviewAndRatingDao.getCurrentUserReviewAndRatingByBookFlow(bookId, userId)
+        reviewAndRatingDao.getCurrentUserReviewAndRatingByBookFlow(mainBookId, userId)
 
     suspend fun getCurrentUserReviewAndRatingByBook(
-        bookId: String,
+        mainBookId: String,
         userId: Long
     ): List<ReviewAndRatingEntity> =
-        reviewAndRatingDao.getCurrentUserReviewAndRatingByBook(bookId, userId)
+        reviewAndRatingDao.getCurrentUserReviewAndRatingByBook(mainBookId, userId)
 
     private suspend fun createEmptyTimestamp(userId: Long): ReviewAndRatingTimestampEntity {
         val timestamp = ReviewAndRatingTimestampEntity(
@@ -62,7 +62,7 @@ class LocalReviewAndRatingDataSource(
     ) {
         reviewAndRating.forEach { item ->
             val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(
-                item.bookId,
+                mainBookId = item.mainBookId,
                 userId = userId
             ).firstOrNull()
             if (existedReviewAndRating == null) {
@@ -78,7 +78,7 @@ class LocalReviewAndRatingDataSource(
         userId: Long,
     ): Long {
         val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(
-            reviewAndRating.bookId,
+            mainBookId = reviewAndRating.mainBookId,
             userId = userId
         ).firstOrNull()
         return if (existedReviewAndRating == null) {
@@ -99,7 +99,7 @@ class LocalReviewAndRatingDataSource(
     ): Long? {
         if (reviewAndRating.reviewText.isNullOrEmpty()) return null
         val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(
-            reviewAndRating.bookId,
+            mainBookId = reviewAndRating.mainBookId,
             userId = userId
         ).firstOrNull()
 
@@ -118,7 +118,7 @@ class LocalReviewAndRatingDataSource(
     ): Long? {
         if (reviewAndRating.reviewText.isNullOrEmpty()) return null
         val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(
-            reviewAndRating.bookId,
+            mainBookId = reviewAndRating.mainBookId,
             userId = userId
         ).firstOrNull()
         existedReviewAndRating?.copy(

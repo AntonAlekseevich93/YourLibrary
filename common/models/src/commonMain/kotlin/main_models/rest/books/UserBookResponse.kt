@@ -43,6 +43,7 @@ data class UserBookRemoteDto(
     @SerialName("reviewCount") val reviewCount: Int,
     @SerialName("ratingSum") val ratingSum: Int,
     @SerialName("bookForAllUsers") val bookForAllUsers: Boolean,
+    @SerialName("originalMainBookId") val originalMainBookId: String,
 )
 
 fun BookVo.toRemoteDto(): UserBookRemoteDto = UserBookRemoteDto(
@@ -74,6 +75,7 @@ fun BookVo.toRemoteDto(): UserBookRemoteDto = UserBookRemoteDto(
     reviewCount = reviewCount,
     ratingSum = ratingSum,
     bookForAllUsers = bookForAllUsers,
+    originalMainBookId = originalMainBookId,
 )
 
 fun UserBookRemoteDto.toVo(): BookVo? {
@@ -110,5 +112,6 @@ fun UserBookRemoteDto.toVo(): BookVo? {
         reviewCount = reviewCount,
         ratingSum = ratingSum,
         bookForAllUsers = bookForAllUsers,
+        originalMainBookId = originalMainBookId,
     )
 }
