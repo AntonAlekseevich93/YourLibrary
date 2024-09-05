@@ -582,7 +582,7 @@ class BookCreatorViewModel(
             reviewCount = shortBook.reviewCount,
             ratingSum = shortBook.ratingSum,
             bookForAllUsers = true,
-            originalMainBookId = shortBook.mainBookId
+            originalMainBookId = shortBook.getMainBookIdByShortBook()
         )
 
     private fun createManuallyUserBook(): BookVo {

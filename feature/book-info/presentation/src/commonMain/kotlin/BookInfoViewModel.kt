@@ -127,8 +127,8 @@ class BookInfoViewModel(
         _uiState.value.shortBookItem.value = shortBook
         shortBookJob = scope.launch(Dispatchers.Main) {
             replaceShortBookByLocalBookIfExist(shortBook.bookId)
-            getCurrentUserReviewAndRatingByBook(mainBookId = shortBook.mainBookId)
-            getAllReviewsAndRatingsByBookId(mainBookId = shortBook.mainBookId)
+            getCurrentUserReviewAndRatingByBook(mainBookId = shortBook.getMainBookIdByShortBook())
+            getAllReviewsAndRatingsByBookId(mainBookId = shortBook.getMainBookIdByShortBook())
             getAllBooksByAuthor(shortBook.originalAuthorId)
         }
     }
@@ -276,7 +276,7 @@ class BookInfoViewModel(
             val bookForAllUsers = _uiState.value.bookItem.value?.bookIsCreatedManually
                 ?: true
             val mainBookId = _uiState.value.bookItem.value?.originalMainBookId
-                ?: _uiState.value.shortBookItem.value?.mainBookId
+                ?: _uiState.value.shortBookItem.value?.getMainBookIdByShortBook()
                 ?: return@launch
 
             interactor.updateOrCreateRating(
@@ -327,7 +327,7 @@ class BookInfoViewModel(
         scope.launch(Dispatchers.IO) {
             val mainBookId: String =
                 _uiState.value.bookItem.value?.originalMainBookId
-                    ?: _uiState.value.shortBookItem.value?.mainBookId
+                    ?: _uiState.value.shortBookItem.value?.getMainBookIdByShortBook()
                     ?: return@launch
             interactor.addReview(
                 reviewText = reviewText,

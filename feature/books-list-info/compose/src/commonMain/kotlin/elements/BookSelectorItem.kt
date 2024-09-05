@@ -147,6 +147,7 @@ fun BookSelectorItem(
                                 .clip(CircleShape)
                                 .padding(end = 4.dp)
                         )
+
                         Text(
                             text = bookItem.ratingValue.toString(),
                             style = ApplicationTheme.typography.footnoteRegular,
@@ -160,6 +161,7 @@ fun BookSelectorItem(
                             color = ApplicationTheme.colors.hintColor,
                             modifier = Modifier.padding()
                         )
+
                         bookItem.localCurrentUserRating?.let { userRating ->
                             CurrentUserRatingLabel(
                                 rating = userRating.ratingScore,

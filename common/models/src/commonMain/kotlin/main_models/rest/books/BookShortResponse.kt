@@ -30,7 +30,8 @@ data class BookShortRemoteDto(
     @SerialName("ratingCount") val ratingCount: Int,
     @SerialName("reviewCount") val reviewCount: Int,
     @SerialName("ratingSum") val ratingSum: Int,
-    @SerialName("mainBookId") val mainBookId: String
+    @SerialName("mainBookId") val mainBookId: String,
+    @SerialName("isMainBook") val isMainBook: Boolean,
 )
 
 fun BookShortRemoteDto.toVo(
@@ -58,6 +59,7 @@ fun BookShortRemoteDto.toVo(
         reviewCount = reviewCount,
         ratingSum = ratingSum,
         mainBookId = mainBookId,
+        isMainBook = isMainBook,
     )
 }
 
@@ -82,6 +84,7 @@ fun BookShortVo.toDto(): BookShortRemoteDto {
         ratingCount = ratingCount,
         reviewCount = reviewCount,
         ratingSum = ratingSum,
-        mainBookId = mainBookId
+        mainBookId = mainBookId,
+        isMainBook = isMainBook,
     )
 }

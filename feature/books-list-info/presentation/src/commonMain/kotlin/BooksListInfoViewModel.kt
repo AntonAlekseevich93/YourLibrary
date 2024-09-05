@@ -59,7 +59,7 @@ class BooksListInfoViewModel(
                 getCurrentUserReviewAndRatingByBook(
                     index,
                     bookId = item.bookId,
-                    mainBookId = item.mainBookId
+                    mainBookId = item.getMainBookIdByShortBook()
                 )
                 getReadingStatusByBookId(index, item.bookId)
             }
