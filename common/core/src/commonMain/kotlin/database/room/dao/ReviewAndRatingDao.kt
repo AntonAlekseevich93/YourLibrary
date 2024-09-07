@@ -12,6 +12,9 @@ interface ReviewAndRatingDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdateReviewAndRating(reviewAndRating: ReviewAndRatingEntity): Long
 
+    @Query("DELETE FROM ReviewAndRatingEntity")
+    suspend fun deleteAllData()
+
     @Query("SELECT * FROM ReviewAndRatingEntity WHERE (timestampOfUpdatingScore > :ratingTimestamp OR timestampOfUpdatingReview > :reviewTimestamp) AND userId = :userId")
     suspend fun getNotSynchronizedReviewAndRating(
         ratingTimestamp: Long,

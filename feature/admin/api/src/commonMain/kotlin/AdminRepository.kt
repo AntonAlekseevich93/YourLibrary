@@ -12,4 +12,6 @@ interface AdminRepository {
         book: BookShortVo,
         changedName: String?
     ): BookShortVo?
+
+    suspend fun clearReviewAndRatingDb()
 }

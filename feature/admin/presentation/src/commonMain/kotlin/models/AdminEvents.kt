@@ -20,9 +20,11 @@ sealed class AdminEvents : BaseEvent {
     data object ChangeNeedUseHttp : AdminEvents()
     class ChangeNeedUseNonModerationRange(val needUse: Boolean) : AdminEvents()
     data object ChangeSkipImageLongLoadingSettings : AdminEvents()
-    data object CloseModerationScreen : AdminEvents()
+    data object OnBack : AdminEvents()
     data object OnChangeBookName : AdminEvents()
     data object OnCancelChangeBookName : AdminEvents()
     data object OnDeleteChangeBookName : AdminEvents()
+    data object ClearReviewAndRatingDb : AdminEvents()
+    data object OpenDatabaseMenuScreen : AdminEvents()
     data class OnSaveChangeBookName(val newBookName: String) : AdminEvents()
 }

@@ -84,8 +84,12 @@ class AdminViewModel(
                 updateUIState(uiStateValue.copy(useNonModerationRange = appConfig.useNonModerationRange))
             }
 
-            is AdminEvents.CloseModerationScreen -> {
-                updateUIState(uiStateValue.copy(moderationBookState = ModerationBookState()))
+            is AdminEvents.OnBack -> {
+                if (uiStateValue.databaseMenuScreen.value) {
+                    uiStateValue.databaseMenuScreen.value = false
+                } else {
+                    updateUIState(uiStateValue.copy(moderationBookState = ModerationBookState()))
+                }
             }
 
             is AdminEvents.OnChangeBookName -> {
@@ -104,6 +108,16 @@ class AdminViewModel(
             is AdminEvents.OnSaveChangeBookName -> {
                 uiStateValue.moderationBookState.showChangedBookNameField.value = false
                 uiStateValue.moderationBookState.moderationChangedName.value = event.newBookName
+            }
+
+            is AdminEvents.OpenDatabaseMenuScreen -> {
+                uiStateValue.databaseMenuScreen.value = true
+            }
+
+            is AdminEvents.ClearReviewAndRatingDb -> {
+                scope.launch {
+                    interactor.clearReviewAndRatingDb()
+                }
             }
         }
     }

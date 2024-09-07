@@ -37,20 +37,6 @@ class BooksListInfoViewModel(
         }
     }
 
-    fun getBookByLocalId(localBookId: Long) {
-        bookJob?.cancel()
-        reviewAndRatingJob?.cancel()
-        bookJob = scope.launch(Dispatchers.IO) {
-            interactor.getLocalBookByLocalId(localBookId).collect { response ->
-                response?.let { book ->
-//                    _uiState.value.bookItem.value = book
-//                    getCurrentUserReviewAndRatingByBook(book.bookId)
-//
-                }
-            }
-        }
-    }
-
     fun setBookList(bookList: List<BookShortVo>) {
         _uiState.value.bookList.clear()
         _uiState.value.bookList.addAll(bookList)

@@ -163,10 +163,12 @@ fun BookSelectorItem(
                         )
 
                         bookItem.localCurrentUserRating?.let { userRating ->
-                            CurrentUserRatingLabel(
-                                rating = userRating.ratingScore,
-                                modifier = Modifier.padding(start = 8.dp),
-                            )
+                            if (userRating.bookId == bookItem.bookId) {
+                                CurrentUserRatingLabel(
+                                    rating = userRating.ratingScore,
+                                    modifier = Modifier.padding(start = 8.dp),
+                                )
+                            }
                         }
                     }
                 }

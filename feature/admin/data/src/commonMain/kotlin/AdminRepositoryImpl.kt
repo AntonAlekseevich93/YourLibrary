@@ -93,4 +93,8 @@ class AdminRepositoryImpl(
         } else null
     }
 
+    override suspend fun clearReviewAndRatingDb() {
+        localAdminDataSource.clearReviewAndRatingDb()
+    }
+
 }

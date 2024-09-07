@@ -24,4 +24,8 @@ class AdminInteractor(
         changedName: String?
     ): BookShortVo? =
         repository.setBookAsApprovedWithoutUploadImage(book, changedName)
+
+    suspend fun clearReviewAndRatingDb() {
+        repository.clearReviewAndRatingDb()
+    }
 }
