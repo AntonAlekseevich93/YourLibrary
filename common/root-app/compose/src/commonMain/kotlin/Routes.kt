@@ -8,4 +8,5 @@ object Routes {
     const val settings_screen_route = "/settings_screen"
     const val profile_screen_route = "/profile_screen"
     const val admin_screen_route = "/admin_screen"
+    const val books_list_info_route = "/books_list_info_route"
 }

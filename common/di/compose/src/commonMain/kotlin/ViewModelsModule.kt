@@ -49,7 +49,8 @@ val viewModelsModule = DI.Module("viewModelsModule") {
             instance()
         )
     }
-    bind<BooksListInfoViewModel>() with singleton {
+
+    bind<BooksListInfoViewModel>() with factory {
         BooksListInfoViewModel(
             instance(),
             instance(),

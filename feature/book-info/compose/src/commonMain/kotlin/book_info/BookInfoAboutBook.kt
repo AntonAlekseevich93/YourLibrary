@@ -3,6 +3,8 @@ package book_info
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +25,7 @@ import book_info.elements.BookInfoCommonItem
 import book_info.elements.BookMenu
 import main_models.books.BookShortVo
 import main_models.rating_review.ReviewAndRatingVo
+import models.BookScreenEvents
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import rating.elements.BookRatingMiniBlock
@@ -222,6 +225,9 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
                     text = "Все ${otherBooksByAuthor.value.size}",
                     style = ApplicationTheme.typography.headlineBold,
                     color = ApplicationTheme.colors.screenColor.activeLinkColor,
+                    modifier = Modifier.clickable(MutableInteractionSource(), null) {
+                        sendEvent(BookScreenEvents.ShowFullAuthorBooksScreen)
+                    }
                 )
             }
 

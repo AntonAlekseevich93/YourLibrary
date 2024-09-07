@@ -16,4 +16,5 @@ sealed class BookScreenEvents : BaseEvent {
     data object OnBack : BookScreenEvents()
     class OpenShortBook(val shortBook: BookShortVo) : BookScreenEvents()
     class ShowDateSelector(val datePickerType: DatePickerType) : BookScreenEvents()
+    data object ShowFullAuthorBooksScreen : BookScreenEvents()
 }

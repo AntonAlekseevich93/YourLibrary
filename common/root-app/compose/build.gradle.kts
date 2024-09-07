@@ -27,6 +27,8 @@ kotlin {
                 implementation(project(":feature:search:compose"))
                 implementation(project(":feature:book-info:compose"))
                 implementation(project(":feature:book-info:presentation"))
+                implementation(project(":feature:books-list-info:compose"))
+                implementation(project(":feature:books-list-info:presentation"))
                 implementation(project(":feature:book-creator:compose"))
                 implementation(project(":feature:settings:compose"))
                 implementation(project(":feature:authors:compose"))

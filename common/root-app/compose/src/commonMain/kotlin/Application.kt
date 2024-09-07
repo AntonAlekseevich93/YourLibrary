@@ -2,9 +2,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -86,9 +86,6 @@ fun Application(
             } else if (showBookInfoBackButton.value) {
                 showBookInfoBackButton.value = false
             }
-            if (!uiState.fullScreenBookInfo.value && platform.isMobile() && currentRoute == Routes.main_route) {
-                uiState.fullScreenBookInfo.value = true
-            }
             canShowLeftBar.value = currentRoute != Routes.vault_route
             canShowMainButton.value = currentRoute != Routes.main_route
         }
@@ -141,7 +138,9 @@ fun Application(
                             }
                         },
                         bottomBar = {
-                            if (platform.isMobile() && openedRoute.value != Routes.book_info_route) {
+                            if (platform.isMobile() && openedRoute.value != Routes.book_info_route &&
+                                openedRoute.value != Routes.books_list_info_route
+                            ) {
                                 viewModel.CustomBottomBar(
                                     hazeState = hazeBlurState,
                                     isHazeBlurEnabled = uiState.isHazeBlurEnabled.value
@@ -160,10 +159,7 @@ fun Application(
                         ) {
                             scene(
                                 route = Routes.main_route,
-                                navTransition = NavTransition(
-                                    createTransition = fadeIn(tween(1)),
-                                    destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
-                                )
+                                navTransition = defaultNavTransition
                             ) {
                                 var mainScreenModifier =
                                     Modifier.pointerInput(showSearchAppBarTextField.value) {
@@ -195,13 +191,10 @@ fun Application(
 
                             scene(
                                 route = Routes.book_info_route,
-                                navTransition = NavTransition(
-                                    createTransition = fadeIn(),
-                                    destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
-                                )
+                                navTransition = defaultNavTransition,
                             ) {
                                 BackHandler {
-                                    viewModel.onBackFromBookScreen()
+                                    viewModel.onBackWithCheckViewModelStore()
                                 }
                                 BookInfoScreen(
                                     bookItemId = uiState.selectedBookId.value,
@@ -211,7 +204,10 @@ fun Application(
                                 )
                             }
 
-                            scene(route = Routes.book_creator_route) {
+                            scene(
+                                route = Routes.book_creator_route,
+                                navTransition = defaultNavTransition
+                            ) {
                                 BookCreatorScreen(
                                     platform = platform,
                                     fullScreenBookCreator = mutableStateOf(false),
@@ -223,10 +219,7 @@ fun Application(
 
                             scene(
                                 route = Routes.vault_route,
-                                navTransition = NavTransition(
-                                    createTransition = fadeIn(tween(1)),
-                                    destroyTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessHigh))
-                                )
+                                navTransition = defaultNavTransition
                             ) {
                                 viewModel.CreationAndSelectionProjectFolderScreen(
                                     pathInfoList = uiState.pathInfoList,
@@ -235,10 +228,7 @@ fun Application(
 
                             scene(
                                 route = Routes.authors_screen_route,
-                                navTransition = NavTransition(
-                                    createTransition = expandHorizontally(),
-                                    destroyTransition = slideOutHorizontally(tween(100))
-                                )
+                                navTransition = defaultNavTransition,
                             ) {
                                 AuthorsScreen(
                                     showLeftDrawer = uiState.showLeftDrawerState
@@ -257,10 +247,7 @@ fun Application(
 
                             scene(
                                 route = Routes.profile_screen_route,
-                                navTransition = NavTransition(
-                                    createTransition = expandHorizontally(),
-                                    destroyTransition = slideOutHorizontally(tween(100))
-                                )
+                                navTransition = defaultNavTransition,
                             ) {
                                 ProfileScreen(
                                     showLeftDrawer = uiState.showLeftDrawerState
@@ -269,14 +256,30 @@ fun Application(
 
                             scene(
                                 route = Routes.admin_screen_route,
-                                navTransition = NavTransition(
-                                    createTransition = expandHorizontally(),
-                                    destroyTransition = slideOutHorizontally(tween(100))
-                                )
+                                navTransition = defaultNavTransition
                             ) {
                                 AdminPanelScreen(
                                     showLeftDrawer = uiState.showLeftDrawerState,
                                     hazeState = hazeBlurState
+                                )
+                            }
+
+                            scene(
+                                route = Routes.books_list_info_route,
+                                navTransition = defaultNavTransition
+                            ) {
+                                BackHandler {
+                                    viewModel.onBackWithCheckViewModelStore()
+                                }
+                                BooksListInfoScreen(
+                                    bookList = uiState.booksListInfoScreenBooks.value,
+                                    previousViewModel = uiState.previousBooksListInfoViewModel.value,
+                                    hazeState = hazeBlurState,
+                                    isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
+                                    changeBookReadingStatus = {
+
+                                    },
+                                    onBack = { viewModel.onBackWithCheckViewModelStore() }
                                 )
                             }
                         }
@@ -313,3 +316,14 @@ fun Application(
         }
     }
 }
+
+val defaultNavTransition = NavTransition(
+    createTransition = slideInHorizontally(
+        initialOffsetX = { fullWidth -> fullWidth },
+        animationSpec = tween(durationMillis = 300)
+    ),
+    destroyTransition = slideOutHorizontally(
+        targetOffsetX = { fullWidth -> fullWidth },
+        animationSpec = tween(durationMillis = 300)
+    )
+)

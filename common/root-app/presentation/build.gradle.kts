@@ -19,6 +19,7 @@ kotlin {
                 implementation(project(":feature:settings:presentation"))
                 implementation(project(":feature:user:domain"))
                 implementation(project(":feature:book-info:presentation"))
+                implementation(project(":feature:books-list-info:presentation"))
             }
         }
     }

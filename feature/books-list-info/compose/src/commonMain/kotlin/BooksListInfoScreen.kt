@@ -1,0 +1,121 @@
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowCircleUp
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.haze
+import di.ViewModelStackStore
+import elements.BookSelectorItem
+import kotlinx.coroutines.launch
+import main_models.books.BookShortVo
+import models.BooksListInfoScreenEvents
+
+@Composable
+fun BooksListInfoScreen(
+    bookList: List<BookShortVo>,
+    previousViewModel: BooksListInfoViewModel?,
+    hazeState: HazeState,
+    isHazeBlurEnabled: Boolean,
+    changeBookReadingStatus: (bookId: String) -> Unit,
+    onBack: () -> Unit,
+) {
+    val viewModel = remember {
+        previousViewModel ?: ViewModelStackStore.createViewModel<BooksListInfoViewModel>()
+    }
+    val uiState by viewModel.uiState.collectAsState()
+    val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = bookList) {
+        viewModel.setBookList(bookList)
+    }
+
+    Scaffold(
+        topBar = {
+            BooksListInfoAppBar(
+                hazeBlurState = hazeState,
+                isHazeBlurEnabled = isHazeBlurEnabled,
+                title = "Заголовок",
+                showBackButton = true,
+                onBack = onBack,
+                onClose = {
+
+                }
+            )
+        },
+        floatingActionButton = {
+            if (lazyListState.firstVisibleItemIndex > 5) {
+                FloatingActionButton(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    containerColor = ApplicationTheme.colors.mainBackgroundColor,
+                    onClick = {
+                        scope.launch {
+                            lazyListState.scrollToItem(0)
+                        }
+
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowCircleUp,
+                        contentDescription = null,
+                        tint = ApplicationTheme.colors.mainIconsColor,
+                    )
+                }
+            }
+        },
+        containerColor = ApplicationTheme.colors.cardBackgroundDark,
+        snackbarHost = {
+
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier.padding(top = 1.dp) //fixes haze bug
+        ) {
+            LazyColumn(
+                state = lazyListState,
+                modifier = Modifier.haze(
+                    state = hazeState,
+                    style = HazeStyle(
+                        tint = Color.Black.copy(alpha = .04f),
+                        blurRadius = 30.dp,
+                    )
+                )
+            ) {
+                item {
+                    Spacer(modifier = Modifier.padding(paddingValues.calculateTopPadding()))
+                }
+                items(uiState.bookList) {
+                    BookSelectorItem(
+                        bookItem = it,
+                        modifier = Modifier.padding(end = 16.dp),
+                        onClick = { viewModel.sendEvent(BooksListInfoScreenEvents.OnBookSelected(it)) },
+                        maxLinesBookName = 2,
+                        maxLinesAuthorName = 1,
+                        changeBookReadingStatus = changeBookReadingStatus,
+                    )
+                    Spacer(Modifier.padding(vertical = 12.dp))
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(paddingValues.calculateBottomPadding()))
+                }
+            }
+        }
+    }
+}

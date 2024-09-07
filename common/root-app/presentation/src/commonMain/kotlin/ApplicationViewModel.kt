@@ -116,20 +116,29 @@ class ApplicationViewModel(
         uiStateValue.apply {
             previousBookInfoViewModel.value = null
             ViewModelStackStore.clearViewModelStack()
-            fullScreenBookInfo.value = false
             navigationHandler.goBack()
         }
     }
 
-    override fun onBackFromBookScreen() {
-        val previousViewModel = ViewModelStackStore.getPreviousViewModelOrNull<BookInfoViewModel>()
-        if (previousViewModel != null) {
-            uiStateValue.previousBookInfoViewModel.value = previousViewModel
-        } else {
+    override fun onBackWithCheckViewModelStore() {
+        val previousViewModel = ViewModelStackStore.getPreviousViewModelOrNull()
+        if (previousViewModel == null) {
             ViewModelStackStore.clearViewModelStack()
             uiStateValue.apply {
                 previousBookInfoViewModel.value = null
-                fullScreenBookInfo.value = false
+                previousBooksListInfoViewModel.value = null
+            }
+        } else {
+            when (previousViewModel) {
+                is BookInfoViewModel -> {
+                    uiStateValue.previousBookInfoViewModel.value = previousViewModel
+                    uiStateValue.previousBooksListInfoViewModel.value = null
+                }
+
+                is BooksListInfoViewModel -> {
+                    uiStateValue.previousBooksListInfoViewModel.value = previousViewModel
+                    uiStateValue.previousBookInfoViewModel.value = null
+                }
             }
         }
         navigationHandler.goBack()
@@ -165,6 +174,11 @@ class ApplicationViewModel(
 
     override fun changedReadingStatus(oldStatusId: String, bookId: String) {
         uiStateValue.removeBookBooksInfoUiState(id = oldStatusId, bookId = bookId)
+    }
+
+    override fun navigateToBooksListInfo(books: List<BookShortVo>) {
+        uiStateValue.booksListInfoScreenBooks.value = books
+        navigationHandler.navigateToBooksListInfo()
     }
 
     fun isDbPathIsExist(platform: Platform): Boolean {

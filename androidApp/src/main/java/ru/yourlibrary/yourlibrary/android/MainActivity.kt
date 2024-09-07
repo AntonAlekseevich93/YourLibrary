@@ -121,7 +121,9 @@ fun createNavigationHandler(
     desktopTooltip: MutableState<TooltipItem>,
     currentRoute: State<String>,
 ): NavigationHandler {
-    var lastScreenRouteBeforeBookInfo: String = Routes.main_route
+    val defaultRoute = Routes.main_route
+    var lastScreenRouteBeforeBookInfo: String = defaultRoute
+    var lastScreenRouteBeforeBooksListInfo: String = defaultRoute
 
     val handler = object : NavigationHandler {
         override fun navigateToSearch() {
@@ -171,7 +173,7 @@ fun createNavigationHandler(
         }
 
         override fun navigateToBookInfo() {
-            if (currentRoute.value != Routes.book_info_route) {
+            if (currentRoute.value != Routes.book_info_route && currentRoute.value != Routes.books_list_info_route) {
                 lastScreenRouteBeforeBookInfo = currentRoute.value
             }
             navigator.value?.navigate(
@@ -179,8 +181,25 @@ fun createNavigationHandler(
             )
         }
 
+        override fun navigateToBooksListInfo() {
+            if (currentRoute.value != Routes.books_list_info_route) {
+                if (currentRoute.value == Routes.book_info_route && lastScreenRouteBeforeBookInfo != defaultRoute) {
+                    lastScreenRouteBeforeBooksListInfo = lastScreenRouteBeforeBookInfo
+                } else if (currentRoute.value != Routes.book_info_route) {
+                    lastScreenRouteBeforeBooksListInfo = currentRoute.value
+                }
+            }
+            navigator.value?.navigate(
+                route = Routes.books_list_info_route,
+            )
+        }
+
         override fun closeBookInfoScreen() {
             navigator.value?.goBack(PopUpTo(route = lastScreenRouteBeforeBookInfo))
+        }
+
+        override fun closeBooksListInfoScreen() {
+            navigator.value?.goBack(PopUpTo(route = lastScreenRouteBeforeBooksListInfo))
         }
 
         override fun navigateToAuthorsScreen() {

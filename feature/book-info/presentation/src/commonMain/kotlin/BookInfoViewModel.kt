@@ -70,7 +70,7 @@ class BookInfoViewModel(
             }
 
             is BookScreenEvents.OnBack -> {
-                applicationScope.onBackFromBookScreen()
+                applicationScope.onBackWithCheckViewModelStore()
             }
 
             is BookScreenEvents.OpenShortBook -> {
@@ -80,6 +80,10 @@ class BookInfoViewModel(
             is BookScreenEvents.ShowDateSelector -> {
                 uiState.value.datePickerType.value = event.datePickerType
                 uiState.value.showDatePicker.value = true
+            }
+
+            is BookScreenEvents.ShowFullAuthorBooksScreen -> {
+                applicationScope.navigateToBooksListInfo(uiState.value.otherBooksByAuthor.value)
             }
 
             is ReviewAndRatingEvents.ChangeBookRating -> {

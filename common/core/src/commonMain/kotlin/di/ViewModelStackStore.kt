@@ -2,14 +2,9 @@ package di
 
 object ViewModelStackStore {
     val viewModelList = mutableListOf<Any>()
-    inline fun <reified T> getPreviousViewModelOrNull(): T? {
+    fun getPreviousViewModelOrNull(): Any? {
         viewModelList.removeLastOrNull()
-        val item = viewModelList.lastOrNull()
-        return if (item is T) {
-            item
-        } else {
-            null
-        }
+        return viewModelList.lastOrNull()
     }
 
     inline fun <reified T> createViewModel(): T {
