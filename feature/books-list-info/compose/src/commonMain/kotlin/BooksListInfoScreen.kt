@@ -105,7 +105,14 @@ fun BooksListInfoScreen(
                     BookSelectorItem(
                         bookItem = it,
                         modifier = Modifier.padding(end = 16.dp),
-                        onClick = { viewModel.sendEvent(BooksListInfoScreenEvents.OnBookSelected(it)) },
+                        onClick = {
+                            viewModel.sendEvent(
+                                BooksListInfoScreenEvents.OnBookSelected(
+                                    it,
+                                    needSaveScreenId = false
+                                )
+                            )
+                        },
                         maxLinesBookName = 2,
                         maxLinesAuthorName = 1,
                         changeBookReadingStatus = changeBookReadingStatus,

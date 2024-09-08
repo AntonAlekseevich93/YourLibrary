@@ -14,10 +14,7 @@ import platform.PlatformInfoData
 class BooksListInfoViewModel(
     private val platformInfo: PlatformInfoData,
     private val interactor: BooksListInfoInteractor,
-    private val navigationHandler: NavigationHandler,
-    private val tooltipHandler: TooltipHandler,
     private val applicationScope: ApplicationScope,
-    private val drawerScope: DrawerScope,
     private val appConfig: AppConfig,
 ) : BooksListInfoScope<BaseEvent> {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
@@ -32,7 +29,11 @@ class BooksListInfoViewModel(
     override fun sendEvent(event: BaseEvent) {
         when (event) {
             is BooksListInfoScreenEvents.OnBookSelected -> {
-                applicationScope.openBookInfoScreen(bookId = null, shortBook = event.shortBook)
+                applicationScope.openBookInfoScreen(
+                    bookId = null,
+                    shortBook = event.shortBook,
+                    event.needSaveScreenId
+                )
             }
         }
     }

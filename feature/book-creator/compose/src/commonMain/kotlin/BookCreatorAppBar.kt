@@ -7,12 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -97,18 +93,7 @@ internal fun AppBarComponent(
                     Spacer(Modifier.padding(start = 32.dp))
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            onClose.invoke()
-                        },
-                        modifier = Modifier
-                    ) {
-
-                        Icon(
-                            imageVector = Icons.Rounded.Close,
-                            contentDescription = null,
-                        )
-                    }
+                    Spacer(Modifier.padding(start = 32.dp))
                 }
             )
         }

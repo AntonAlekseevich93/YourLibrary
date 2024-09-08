@@ -7,6 +7,4 @@ sealed class DrawerEvents : BaseEvent {
     data object OpenRightDrawerOrCloseEvent : DrawerEvents()
     class OpenBook(val bookId: Long?) :
         DrawerEvents()
-
-    data object ToMain : DrawerEvents()
 }

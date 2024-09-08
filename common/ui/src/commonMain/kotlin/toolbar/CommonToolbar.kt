@@ -63,7 +63,6 @@ fun BaseEventScope<BaseEvent>.CommonToolbar(
                             }))
                         },
                         onClick = {
-                            this@CommonToolbar.sendEvent(ToolbarEvents.ToMain)
                         }
                     )
 
@@ -95,7 +94,6 @@ fun BaseEventScope<BaseEvent>.CommonToolbar(
                 iconSize = 18.dp,
                 pointerInnerPadding = 4.dp,
                 onClick = {
-                    this@CommonToolbar.sendEvent(ToolbarEvents.OnCloseEvent)
                 },
                 tooltipCallback = {
                     this@CommonToolbar.sendEvent(TooltipEvents.SetTooltipEvent(it.apply {

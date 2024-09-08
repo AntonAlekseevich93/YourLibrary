@@ -1,8 +1,6 @@
 package bottom_app_bar
 
 import ApplicationTheme
-import BaseEvent
-import BaseEventScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -56,12 +54,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeChild
-import menu_bar.LeftMenuBarEvents
+import navigation.MenuItem
+import navigation.RootComponent
 
 @Composable
-fun BaseEventScope<BaseEvent>.CustomBottomBar(
+fun CustomBottomBar(
     hazeState: HazeState,
-    isHazeBlurEnabled: Boolean
+    isHazeBlurEnabled: Boolean,
+    navigationComponent: RootComponent,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val shape = RoundedCornerShape(16.dp)
@@ -98,20 +98,19 @@ fun BaseEventScope<BaseEvent>.CustomBottomBar(
                     selectedTabIndex = bottomBarTabs.indexOf(tab)
                     when (tab) {
                         is BottomBarTab.Creator -> {
-                            this@CustomBottomBar.sendEvent(LeftMenuBarEvents.OnCreateBookClickEvent)
+                            navigationComponent.menuClick(MenuItem.CREATOR)
                         }
 
                         is BottomBarTab.Profile -> {
-                            this@CustomBottomBar.sendEvent(LeftMenuBarEvents.OnProfileClickEvent)
+                            navigationComponent.menuClick(MenuItem.PROFILE)
                         }
 
                         is BottomBarTab.Home -> {
-                            this@CustomBottomBar.sendEvent(LeftMenuBarEvents.OnHomeClickEvent)
-
+                            navigationComponent.menuClick(MenuItem.MAIN)
                         }
 
                         is BottomBarTab.Settings -> {
-                            this@CustomBottomBar.sendEvent(LeftMenuBarEvents.OnAdminPanelClickEvent)
+                            navigationComponent.menuClick(MenuItem.SETTINGS)
                         }
                     }
                 }

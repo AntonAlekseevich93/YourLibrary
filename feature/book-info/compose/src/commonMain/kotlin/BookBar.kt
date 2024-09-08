@@ -22,7 +22,6 @@ import main_models.TooltipPosition
 import models.BookScreenEvents
 import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
-import toolbar.ToolbarEvents
 import tooltip_area.TooltipEvents
 import tooltip_area.TooltipIconArea
 import yourlibrary.common.resources.generated.resources.Res
@@ -105,7 +104,6 @@ internal fun BaseEventScope<BaseEvent>.BookBar(
                         }))
                     },
                     onClick = {
-                        this@BookBar.sendEvent(ToolbarEvents.ToMain)
                     }
                 )
 

@@ -2,7 +2,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,7 +31,6 @@ import androidx.compose.ui.unit.dp
 fun BookCreatorAppBar(
     title: String,
     transparentAppbar: State<Boolean>,
-    showBackButton: State<Boolean>,
     onClose: () -> Unit,
     onBack: () -> Unit,
 ) {
@@ -45,7 +43,6 @@ fun BookCreatorAppBar(
         AppBarComponent(
             title = title,
             transparentAppbar = transparentAppbar,
-            showBackButton = showBackButton,
             onClose = onClose,
             onBack = onBack
         )
@@ -57,7 +54,6 @@ fun BookCreatorAppBar(
 internal fun AppBarComponent(
     title: String,
     transparentAppbar: State<Boolean>,
-    showBackButton: State<Boolean>,
     onClose: () -> Unit,
     onBack: () -> Unit,
 ) {
@@ -86,30 +82,26 @@ internal fun AppBarComponent(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
-                    if (showBackButton.value) {
-                        Card(
-                            modifier = Modifier.size(44.dp),
-                            shape = CircleShape,
-                            colors = CardDefaults.cardColors(
-                                containerColor = if (transparentAppbar.value)
-                                    Color.Transparent
-                                else ApplicationTheme.colors.mainBackgroundColor.copy(alpha = 0.5f)
-                            )
+                    Card(
+                        modifier = Modifier.size(44.dp),
+                        shape = CircleShape,
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (transparentAppbar.value)
+                                Color.Transparent
+                            else ApplicationTheme.colors.mainBackgroundColor.copy(alpha = 0.5f)
+                        )
+                    ) {
+                        IconButton(
+                            onClick = {
+                                onBack.invoke()
+                            },
+                            modifier = Modifier
                         ) {
-                            IconButton(
-                                onClick = {
-                                    onBack.invoke()
-                                },
-                                modifier = Modifier
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.ArrowBackIosNew,
-                                    contentDescription = null,
-                                )
-                            }
+                            Icon(
+                                imageVector = Icons.Rounded.ArrowBackIosNew,
+                                contentDescription = null,
+                            )
                         }
-                    } else {
-                        Spacer(Modifier.padding(start = 32.dp))
                     }
                 },
                 actions = {

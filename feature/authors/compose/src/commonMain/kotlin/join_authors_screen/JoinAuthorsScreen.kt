@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import di.Inject
 import platform.isMobile
 import toolbar.CommonToolbar
-import toolbar.ToolbarEvents
 
 @Composable
 fun JoinAuthorsScreen(
@@ -71,7 +70,6 @@ fun JoinAuthorsScreen(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
-                        viewModel.sendEvent(ToolbarEvents.OnCloseEvent)
                     },
                 )
             },

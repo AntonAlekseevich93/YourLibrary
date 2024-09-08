@@ -10,13 +10,11 @@ import kotlinx.coroutines.withContext
 import models.UserEvents
 import models.UserUiState
 import platform.Platform
-import toolbar.ToolbarEvents
 import tooltip_area.TooltipEvents
 
 class UserViewModel(
     private val platform: Platform,
     private val interactor: UserInteractor,
-    private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,
     private val drawerScope: DrawerScope,
     private val appConfig: AppConfig,
@@ -44,11 +42,6 @@ class UserViewModel(
     override fun sendEvent(event: BaseEvent) {
         when (event) {
             is TooltipEvents.SetTooltipEvent -> tooltipHandler.setTooltip(event.tooltip)
-            is ToolbarEvents.OnCloseEvent -> {
-                navigationHandler.goBack()
-            }
-
-            is ToolbarEvents.ToMain -> navigationHandler.navigateToMain()
             is UserEvents.OnSignUpClick -> updateUIState(
                 uiStateValue.copy(isSignUnState = mutableStateOf(true))
             )

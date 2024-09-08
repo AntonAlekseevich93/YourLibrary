@@ -55,7 +55,6 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
     topPadding: Dp,
     bottomPadding: Dp,
     bookValues: BookValues,
-    platform: Platform,
     selectedAuthor: AuthorVo?,
     showSearchBookError: Boolean,
     showSearchAuthorError: Boolean,
@@ -187,7 +186,7 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
                 modifier = Modifier.padding(end = 16.dp),
                 onClick = { selectedBook ->
                     booksListInfoViewModel.sendEvent(
-                        BooksListInfoScreenEvents.OnBookSelected(selectedBook)
+                        BooksListInfoScreenEvents.OnBookSelected(selectedBook, needSaveScreenId = true)
                     )
                 },
                 maxLinesBookName = 2,

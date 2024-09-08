@@ -2,9 +2,7 @@ package ru.yourlibrary.yourlibrary.android
 
 import AppTheme
 import Application
-import NavigationHandler
 import PlatformSDK
-import Routes
 import TooltipHandler
 import android.graphics.Color
 import android.os.Build
@@ -19,13 +17,11 @@ import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
@@ -35,14 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.arkivanov.decompose.defaultComponentContext
 import di.PlatformConfiguration
-import kotlinx.coroutines.launch
 import main_models.TooltipItem
-import moe.tlaster.precompose.PreComposeApp
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
-import moe.tlaster.precompose.navigation.rememberNavigator
+import navigation.DefaultRootComponent
 import platform.Platform
 import platform.PlatformInfoData
 
@@ -51,10 +43,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val navigator: MutableState<Navigator?> = mutableStateOf(null)
         val desktopTooltip = mutableStateOf(TooltipItem())
-        val currentRoute = mutableStateOf("")
-
         window.navigationBarColor = ContextCompat.getColor(this, R.color.your_navigation_bar_color)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -69,7 +58,9 @@ class MainActivity : ComponentActivity() {
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             }
         }
-
+        val root = DefaultRootComponent(
+            componentContext = defaultComponentContext(),
+        )
         PlatformSDK.init(
             configuration = PlatformConfiguration(applicationContext),
             platformInfo = PlatformInfoData(
@@ -77,35 +68,18 @@ class MainActivity : ComponentActivity() {
                 hazeBlurEnabled = Build.VERSION.SDK_INT >= MIN_SDK_HAZE_BLUR_VERSION,
             ),
             platform = Platform.MOBILE(),
-            navigationHandler = createNavigationHandler(
-                navigator = navigator,
-                desktopTooltip = desktopTooltip,
-                currentRoute = currentRoute,
-            ),
             tooltipHandler = createTooltipHandler(desktopTooltip)
         )
 
         setContent {
             val platformDisplayHeight = LocalConfiguration.current.screenHeightDp.dp
-            val scope = rememberCoroutineScope()
-            LaunchedEffect(key1 = Unit) {
-                scope.launch {
-                    navigator.value?.currentEntry?.collect {
-                        currentRoute.value = it?.route?.route ?: ""
-                    }
-                }
-            }
             AppTheme {
                 CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-                    PreComposeApp {
-                        navigator.value = rememberNavigator()
-                        Application(
-                            platform = Platform.MOBILE(),
-                            isKeyboardShown = keyboardAsState(),
-                            navigator = navigator.value ?: rememberNavigator(),
-                            platformDisplayHeight = platformDisplayHeight
-                        )
-                    }
+                    Application(
+                        platform = Platform.MOBILE(),
+                        platformDisplayHeight = platformDisplayHeight,
+                        component = root
+                    )
                 }
             }
         }
@@ -114,136 +88,6 @@ class MainActivity : ComponentActivity() {
     companion object {
         private const val MIN_SDK_HAZE_BLUR_VERSION = 32
     }
-}
-
-fun createNavigationHandler(
-    navigator: MutableState<Navigator?>,
-    desktopTooltip: MutableState<TooltipItem>,
-    currentRoute: State<String>,
-): NavigationHandler {
-    val defaultRoute = Routes.main_route
-    var lastScreenRouteBeforeBookInfo: String = defaultRoute
-    var lastScreenRouteBeforeBooksListInfo: String = defaultRoute
-
-    val handler = object : NavigationHandler {
-        override fun navigateToSearch() {
-
-        }
-
-        override fun navigateToSelectorVault(needPopBackStack: Boolean) {
-            if (currentRoute.value != Routes.vault_route) {
-                desktopTooltip.value.showTooltip = false
-                //todo здесь происходит мигание анимации, но без этого баг. Подумать
-                if (needPopBackStack) navigator.value?.popBackStack()
-                navigator.value?.navigate(route = Routes.vault_route)
-            }
-        }
-
-        override fun navigateToBookCreator(popUpToMain: Boolean) {
-            if (currentRoute.value != Routes.book_creator_route) {
-                val options = if (popUpToMain)
-                    NavOptions(popUpTo = PopUpTo(Routes.main_route))
-                else {
-                    NavOptions(launchSingleTop = false)
-                }
-
-                navigator.value?.navigate(
-                    route = Routes.book_creator_route,
-                    options = options,
-                )
-            }
-        }
-
-        override fun goBack() {
-            desktopTooltip.value.showTooltip = false
-            navigator.value?.goBack()
-        }
-
-        override fun navigateToMain() {
-            if (currentRoute.value != Routes.main_route) {
-                navigator.value?.navigate(
-                    route = Routes.main_route,
-                    options = NavOptions(launchSingleTop = false),
-                )
-            }
-        }
-
-        override fun restartWindow() {
-            //nop
-        }
-
-        override fun navigateToBookInfo() {
-            if (currentRoute.value != Routes.book_info_route && currentRoute.value != Routes.books_list_info_route) {
-                lastScreenRouteBeforeBookInfo = currentRoute.value
-            }
-            navigator.value?.navigate(
-                route = Routes.book_info_route,
-            )
-        }
-
-        override fun navigateToBooksListInfo() {
-            if (currentRoute.value != Routes.books_list_info_route) {
-                if (currentRoute.value == Routes.book_info_route && lastScreenRouteBeforeBookInfo != defaultRoute) {
-                    lastScreenRouteBeforeBooksListInfo = lastScreenRouteBeforeBookInfo
-                } else if (currentRoute.value != Routes.book_info_route) {
-                    lastScreenRouteBeforeBooksListInfo = currentRoute.value
-                }
-            }
-            navigator.value?.navigate(
-                route = Routes.books_list_info_route,
-            )
-        }
-
-        override fun closeBookInfoScreen() {
-            navigator.value?.goBack(PopUpTo(route = lastScreenRouteBeforeBookInfo))
-        }
-
-        override fun closeBooksListInfoScreen() {
-            navigator.value?.goBack(PopUpTo(route = lastScreenRouteBeforeBooksListInfo))
-        }
-
-        override fun navigateToAuthorsScreen() {
-            if (currentRoute.value != Routes.authors_screen_route) {
-                navigator.value?.navigate(
-                    route = Routes.authors_screen_route,
-                )
-            }
-        }
-
-        override fun navigateToJoinAuthorsScreen() {
-            if (currentRoute.value != Routes.join_authors_screen_route) {
-                navigator.value?.navigate(
-                    route = Routes.join_authors_screen_route
-                )
-            }
-        }
-
-        override fun navigateToSettingsScreen() {
-            if (currentRoute.value != Routes.settings_screen_route) {
-                navigator.value?.navigate(
-                    route = Routes.settings_screen_route
-                )
-            }
-        }
-
-        override fun navigateToProfile() {
-            if (currentRoute.value != Routes.profile_screen_route) {
-                navigator.value?.navigate(
-                    route = Routes.profile_screen_route
-                )
-            }
-        }
-
-        override fun navigateToAdminPanel() {
-            if (currentRoute.value != Routes.admin_screen_route) {
-                navigator.value?.navigate(
-                    route = Routes.admin_screen_route
-                )
-            }
-        }
-
-    }
-    return handler
 }
 
 fun createTooltipHandler(

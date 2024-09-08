@@ -1,5 +1,4 @@
 import base.BaseMVIViewModel
-import di.ViewModelStackStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -10,10 +9,12 @@ import main_app_bar.MainAppBarEvents
 import main_models.TooltipItem
 import main_models.books.BookShortVo
 import main_models.path.PathInfoVo
-import menu_bar.LeftMenuBarEvents
 import models.ApplicationUiState
 import models.ProjectFoldersEvents
 import models.SettingsDataProvider
+import navigation.RootComponent
+import navigation.activeScreenAsBookInfoOrNull
+import navigation.isBookInfo
 import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
 import platform.PlatformInfoData
@@ -21,7 +22,6 @@ import tooltip_area.TooltipEvents
 
 class ApplicationViewModel(
     private val interactor: ApplicationInteractor,
-    private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,
     private val settingsDataProvider: SettingsDataProvider,
     private val userInteractor: UserInteractor,
@@ -32,7 +32,10 @@ class ApplicationViewModel(
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
 
+    lateinit var component: RootComponent
+
     init {
+
         uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
         scope.launch {
             launch(Dispatchers.IO) {
@@ -62,7 +65,6 @@ class ApplicationViewModel(
             is ProjectFoldersEvents.CreateFolder -> createFolder(event.path, event.name)
             is ProjectFoldersEvents.SelectPathInfo -> {
                 selectPathInfo(event.pathInfo)
-                navigationHandler.navigateToMain()
             }
 
             is ProjectFoldersEvents.RenamePath -> {
@@ -79,93 +81,63 @@ class ApplicationViewModel(
                 }
             }
 
-            is ProjectFoldersEvents.RestartApp -> navigationHandler.restartWindow()
-            is LeftMenuBarEvents.OnSearchClickEvent -> navigationHandler.navigateToSearch()
-            is LeftMenuBarEvents.OnCreateBookClickEvent -> navigationHandler.navigateToBookCreator()
-            is LeftMenuBarEvents.OnSelectAnotherVaultEvent -> navigationHandler.navigateToSelectorVault()
-            is LeftMenuBarEvents.OnAuthorsClickEvent -> navigationHandler.navigateToAuthorsScreen()
-            is LeftMenuBarEvents.OnSettingsClickEvent -> navigationHandler.navigateToSettingsScreen()
-            is LeftMenuBarEvents.OnProfileClickEvent -> navigationHandler.navigateToProfile()
-            is LeftMenuBarEvents.OnAdminPanelClickEvent -> navigationHandler.navigateToAdminPanel()
-            is LeftMenuBarEvents.OnHomeClickEvent -> navigationHandler.navigateToMain()
             is MainAppBarEvents.OnSearch -> {
                 searchInLocalBooks(event.text)
             }
 
-            is DrawerEvents.OpenBook -> openBookInfoScreen(event.bookId, null)
+            is DrawerEvents.OpenBook -> openBookInfoScreen(event.bookId, null, true)
 
             is DrawerEvents.OpenLeftDrawerOrCloseEvent -> {
                 openLeftDrawerOrClose()
             }
 
             is DrawerEvents.OpenRightDrawerOrCloseEvent -> openRightDrawerOrClose()
-            is DrawerEvents.ToMain -> navigationHandler.navigateToMain()
         }
     }
 
-    override fun openBookInfoScreen(bookId: Long?, shortBook: BookShortVo?) {
-        navigationHandler.navigateToBookInfo()
-        uiStateValue.apply {
-            previousBookInfoViewModel.value = null
-            selectedBookId.value = bookId
-            selectedShortBook.value = shortBook
+    override fun openBookInfoScreen(
+        bookId: Long?,
+        shortBook: BookShortVo?,
+        needSaveScreenId: Boolean
+    ) {
+        when (val item = component.screenStack.value.active.instance) {
+            is RootComponent.Screen.MainScreen -> {
+                component.screenStack
+                item.component.openBookInfo(bookId = bookId, needSaveScreenId = needSaveScreenId)
+            }
+
+            is RootComponent.Screen.BookInfoScreen -> {
+                item.component.openBookInfo(shortVo = shortBook, bookId = bookId)
+            }
+
+            is RootComponent.Screen.BookCreatorScreen -> {
+                item.component.openBookInfo(
+                    bookId = bookId,
+                    shortBook = shortBook,
+                    needSaveScreenId = needSaveScreenId
+                )
+            }
+
+            else -> {
+                //nop
+            }
+        }
+        if (component.isBookInfo()) {
+            component.activeScreenAsBookInfoOrNull()?.component?.setBookShort(
+                shortBook
+            )
         }
     }
 
     override fun closeBookInfoScreen() {
-        uiStateValue.apply {
-            previousBookInfoViewModel.value = null
-            ViewModelStackStore.clearViewModelStack()
-            navigationHandler.goBack()
-        }
-    }
-
-    override fun onBackWithCheckViewModelStore() {
-        val previousViewModel = ViewModelStackStore.getPreviousViewModelOrNull()
-        if (previousViewModel == null) {
-            ViewModelStackStore.clearViewModelStack()
-            uiStateValue.apply {
-                previousBookInfoViewModel.value = null
-                previousBooksListInfoViewModel.value = null
-            }
-        } else {
-            when (previousViewModel) {
-                is BookInfoViewModel -> {
-                    uiStateValue.previousBookInfoViewModel.value = previousViewModel
-                    uiStateValue.previousBooksListInfoViewModel.value = null
-                }
-
-                is BooksListInfoViewModel -> {
-                    uiStateValue.previousBooksListInfoViewModel.value = previousViewModel
-                    uiStateValue.previousBookInfoViewModel.value = null
-                }
-            }
-        }
-        navigationHandler.goBack()
+        component.activeScreenAsBookInfoOrNull()?.component?.onBackClicked()
     }
 
     override fun openLeftDrawerOrClose() {
-        uiStateValue.apply {
-            if (!showLeftDrawerState.value) {
-                showLeftDrawerState.value = true
-                openLeftDrawerEvent.value.invoke()
-            } else {
-                showLeftDrawerState.value = false
-                closeLeftDrawerEvent.value.invoke()
-            }
-        }
+
     }
 
     override fun openRightDrawerOrClose() {
-        uiStateValue.apply {
-            if (!showRightDrawerState.value) {
-                showRightDrawerState.value = true
-                openRightDrawerEvent.value.invoke()
-            } else {
-                showRightDrawerState.value = false
-                closeRightDrawerEvent.value.invoke()
-            }
-        }
     }
 
     override fun setTooltip(tooltip: TooltipItem) {
@@ -178,7 +150,6 @@ class ApplicationViewModel(
 
     override fun navigateToBooksListInfo(books: List<BookShortVo>) {
         uiStateValue.booksListInfoScreenBooks.value = books
-        navigationHandler.navigateToBooksListInfo()
     }
 
     fun isDbPathIsExist(platform: Platform): Boolean {
@@ -228,7 +199,7 @@ class ApplicationViewModel(
                         libraryName = libraryName
                     )
                     if (isSuccess) {
-                        navigationHandler.navigateToMain()
+
                     }
                 }
             }
@@ -246,7 +217,6 @@ class ApplicationViewModel(
                 path = resultPath,
                 libraryName = name
             )
-            navigationHandler.navigateToMain()
         }
     }
 }

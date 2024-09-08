@@ -15,9 +15,6 @@ import platform.PlatformInfoData
 class AdminViewModel(
     private val platform: Platform,
     private val interactor: AdminInteractor,
-    private val navigationHandler: NavigationHandler,
-    private val tooltipHandler: TooltipHandler,
-    private val drawerScope: DrawerScope,
     private val appConfig: AppConfig,
     private val platformInfo: PlatformInfoData,
 ) : BaseMVIViewModel<AdminUiState, BaseEvent>(AdminUiState()) {

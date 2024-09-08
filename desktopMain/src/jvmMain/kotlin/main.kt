@@ -16,12 +16,10 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -46,13 +44,7 @@ import build_variants.DesktopBuildVariants
 import build_variants.isDebug
 import buttons.ButtonThemeSwitcher
 import di.PlatformConfiguration
-import kotlinx.coroutines.launch
 import main_models.TooltipItem
-import moe.tlaster.precompose.PreComposeApp
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
-import moe.tlaster.precompose.navigation.rememberNavigator
 import platform.Platform
 import platform.PlatformInfoData
 import java.awt.FileDialog
@@ -66,7 +58,6 @@ fun main() = application {
     )
 
     val applicationState = remember { MyApplicationState() }
-
     for (window in applicationState.windows) {
         key(window) {
             MainWindow(
@@ -79,136 +70,6 @@ fun main() = application {
             )
         }
     }
-}
-
-fun createNavigationHandler(
-    navigator: MutableState<Navigator?>,
-    desktopTooltip: MutableState<TooltipItem>,
-    currentRoute: State<String>,
-    restart: () -> Unit
-): NavigationHandler {
-    val defaultRoute = Routes.main_route
-    var lastScreenRouteBeforeBookInfo: String = defaultRoute
-    var lastScreenRouteBeforeBooksListInfo: String = defaultRoute
-    val handler = object : NavigationHandler {
-        override fun navigateToSearch() {
-
-        }
-
-        override fun navigateToSelectorVault(needPopBackStack: Boolean) {
-            if (currentRoute.value != Routes.vault_route) {
-                desktopTooltip.value.showTooltip = false
-                //todo здесь происходит мигание анимации, но без этого баг. Подумать
-                if (needPopBackStack) navigator.value?.popBackStack()
-                navigator.value?.navigate(route = Routes.vault_route)
-            }
-        }
-
-        override fun navigateToBookCreator(popUpToMain: Boolean) {
-            if (currentRoute.value != Routes.book_creator_route) {
-                val options = if (popUpToMain)
-                    NavOptions(popUpTo = PopUpTo(Routes.main_route))
-                else {
-                    NavOptions(launchSingleTop = false)
-                }
-
-                navigator.value?.navigate(
-                    route = Routes.book_creator_route,
-                    options = options,
-                )
-            }
-        }
-
-        override fun goBack() {
-            desktopTooltip.value.showTooltip = false
-            navigator.value?.goBack()
-        }
-
-        override fun navigateToMain() {
-            if (currentRoute.value != Routes.main_route) {
-                navigator.value?.navigate(
-                    route = Routes.main_route,
-                    options = NavOptions(launchSingleTop = false),
-                )
-            }
-        }
-
-        override fun restartWindow() {
-            restart.invoke()
-        }
-
-        override fun navigateToBookInfo() {
-            if (currentRoute.value != Routes.book_info_route && currentRoute.value != Routes.books_list_info_route) {
-                lastScreenRouteBeforeBookInfo = currentRoute.value
-            }
-            navigator.value?.navigate(
-                route = Routes.book_info_route,
-            )
-        }
-
-        override fun navigateToBooksListInfo() {
-            if (currentRoute.value != Routes.books_list_info_route) {
-                if (currentRoute.value == Routes.book_info_route && lastScreenRouteBeforeBookInfo != defaultRoute) {
-                    lastScreenRouteBeforeBooksListInfo = lastScreenRouteBeforeBookInfo
-                } else if (currentRoute.value != Routes.book_info_route) {
-                    lastScreenRouteBeforeBooksListInfo = currentRoute.value
-                }
-            }
-            navigator.value?.navigate(
-                route = Routes.books_list_info_route,
-            )
-        }
-
-        override fun closeBookInfoScreen() {
-            navigator.value?.goBack(PopUpTo(route = lastScreenRouteBeforeBookInfo))
-        }
-
-        override fun closeBooksListInfoScreen() {
-            navigator.value?.goBack(PopUpTo(route = lastScreenRouteBeforeBooksListInfo))
-        }
-
-        override fun navigateToAuthorsScreen() {
-            if (currentRoute.value != Routes.authors_screen_route) {
-                navigator.value?.navigate(
-                    route = Routes.authors_screen_route,
-                )
-            }
-        }
-
-        override fun navigateToJoinAuthorsScreen() {
-            if (currentRoute.value != Routes.join_authors_screen_route) {
-                navigator.value?.navigate(
-                    route = Routes.join_authors_screen_route
-                )
-            }
-        }
-
-        override fun navigateToSettingsScreen() {
-            if (currentRoute.value != Routes.settings_screen_route) {
-                navigator.value?.navigate(
-                    route = Routes.settings_screen_route
-                )
-            }
-        }
-
-        override fun navigateToProfile() {
-            if (currentRoute.value != Routes.profile_screen_route) {
-                navigator.value?.navigate(
-                    route = Routes.profile_screen_route
-                )
-            }
-        }
-
-        override fun navigateToAdminPanel() {
-            if (currentRoute.value != Routes.admin_screen_route) {
-                navigator.value?.navigate(
-                    route = Routes.admin_screen_route
-                )
-            }
-        }
-
-    }
-    return handler
 }
 
 fun createTooltipHandler(
@@ -228,26 +89,12 @@ private fun ApplicationScope.MainWindow(
     buildVariant: DesktopBuildVariants,
     restart: () -> Unit,
 ) {
-    val navigator: MutableState<Navigator?> = mutableStateOf(null)
     val desktopTooltip = remember { mutableStateOf(TooltipItem()) }
-    val currentRoute = remember { mutableStateOf("") }
-    val scope = rememberCoroutineScope()
-    scope.launch {
-        navigator.value?.currentEntry?.collect {
-            currentRoute.value = it?.route?.route ?: ""
-        }
-    }
 
     PlatformSDK.init(
         configuration = PlatformConfiguration(buildVariant),
         platformInfo = PlatformInfoData(hazeBlurEnabled = true, canUseModifierBlur = true),
         platform = Platform.DESKTOP(isDebug = buildVariant.isDebug()),
-        navigationHandler = createNavigationHandler(
-            navigator,
-            desktopTooltip,
-            currentRoute = currentRoute,
-            restart = restart
-        ),
         tooltipHandler = createTooltipHandler(desktopTooltip)
     )
 
@@ -271,14 +118,12 @@ private fun ApplicationScope.MainWindow(
                 if (fullScreenState.placement == WindowPlacement.Floating) {
                     isFullScreen.value = false
                 }
-                PreComposeApp {
-                    navigator.value = rememberNavigator()
-                    Application(
-                        platform = Platform.DESKTOP(isDebug = buildVariant.isDebug()),
-                        navigator = navigator.value ?: rememberNavigator(),
-                        desktopTooltip = desktopTooltip,
-                    )
-                }
+
+//                    Application(
+//                        platform = Platform.DESKTOP(isDebug = buildVariant.isDebug()),
+//                        navigator = navigator.value ?: rememberNavigator(),
+//                        desktopTooltip = desktopTooltip,
+//                    )
             }
         }
     } else {
@@ -305,14 +150,11 @@ private fun ApplicationScope.MainWindow(
                             isFullScreen.value = true
                         }
                     )
-                    PreComposeApp {
-                        navigator.value = rememberNavigator()
-                        Application(
-                            platform = Platform.DESKTOP(isDebug = buildVariant.isDebug()),
-                            navigator = navigator.value ?: rememberNavigator(),
-                            desktopTooltip = desktopTooltip
-                        )
-                    }
+//                        Application(
+//                            platform = Platform.DESKTOP(isDebug = buildVariant.isDebug()),
+//                            navigator = navigator.value ?: rememberNavigator(),
+//                            desktopTooltip = desktopTooltip
+//                        )
                 }
             }
         }

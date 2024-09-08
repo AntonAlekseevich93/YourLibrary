@@ -18,8 +18,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +26,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import book_editor.elements.BookEditorEvents
@@ -43,18 +40,12 @@ import genre.GenreSelector
 import kotlinx.coroutines.launch
 import main_models.DatePickerType
 import models.BookCreatorEvents
-import platform.Platform
 import reading_status.ReadingStatusSelectorDialog
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookCreatorScreen(
-    platform: Platform,
-    fullScreenBookCreator: MutableState<Boolean>,
-    showRightDrawer: MutableState<Boolean>,
-    isKeyboardShown: State<Boolean>,
-    modifier: Modifier = Modifier,
     hazeState: HazeState,
 ) {
     val viewModel = remember { Inject.instance<BookCreatorViewModel>() }
@@ -62,8 +53,6 @@ fun BookCreatorScreen(
     val uiState by viewModel.uiState.collectAsState()
     val lazyListState = rememberLazyListState()
     val dataPickerState = rememberDatePickerState()
-    val statusBookTextFieldValue =
-        remember { mutableStateOf(TextFieldValue(text = uiState.defaultStatus.nameValue)) }
     val scope = rememberCoroutineScope()
     var selectionGenreState by remember { mutableStateOf(false) }
 
@@ -76,7 +65,6 @@ fun BookCreatorScreen(
                 showBackButton = uiState.showFullScreenBookSelector,
                 showSearchButton = uiState.isCreateBookManually || uiState.shortBookItem != null,
                 onClose = {
-                    viewModel.sendEvent(BookCreatorEvents.GoBack)
                 }
             )
         },
@@ -126,7 +114,6 @@ fun BookCreatorScreen(
                 bottomPadding = it.calculateBottomPadding(),
                 showError = uiState.showSearchBookError,
                 bookValues = uiState.bookValues,
-                platform = platform,
                 booksListInfoViewModel = booksListInfoViewModel,
                 selectedAuthor = uiState.selectedAuthor,
                 similarSearchAuthors = uiState.similarSearchAuthors,
@@ -144,41 +131,6 @@ fun BookCreatorScreen(
                     )
                 },
             )
-//            viewModel.BookEditor(
-//                modifier = Modifier
-//                    .haze(
-//                        state = hazeState,
-//                        style = HazeStyle(
-//                            tint = Color.Black.copy(alpha = .2f),
-//                            blurRadius = 30.dp,
-//                        )
-//                    )
-//                    .padding(top = it.calculateTopPadding()),
-//                platform = platform,
-//                bookValues = uiState.bookValues,
-//                similarSearchAuthors = uiState.similarSearchAuthors,
-//                selectedAuthor = uiState.selectedAuthor,
-//                createNewAuthor = uiState.needCreateNewAuthor,
-//                isKeyboardShown = isKeyboardShown.value,
-//                statusBookTextFieldValue = statusBookTextFieldValue,
-//                similarBooks = uiState.similarBooks,
-//                isSearchBookProcess = uiState.isSearchBookProcess,
-//                isSearchAuthorProcess = uiState.isSearchAuthorProcess,
-//                isCreateBookManually = uiState.isCreateBookManually,
-//                shortBook = uiState.shortBookItem,
-//                isBookCoverManually = uiState.isBookCoverManually,
-//                showSearchBookError = uiState.showSearchBookError,
-//                showSearchAuthorError = uiState.showSearchAuthorError,
-//                genreSelectorListener = { selectionGenreState = true },
-//                bookWasNotFound = uiState.bookWasNotFound,
-//                authorWasNotFound = uiState.authorWasNotFound,
-//                onClickSave = {
-//                    viewModel.sendEvent(BookCreatorEvents.CreateBookEvent)
-//                },
-//                changeBookReadingStatus = {
-//                    viewModel.sendEvent(BookCreatorEvents.SetSelectedBookByMenuClick(it))
-//                }
-//            )
         }
 
         AnimatedVisibility(uiState.showDatePicker) {

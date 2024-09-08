@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import di.Inject
-import models.SettingsEvents
 import platform.Platform
 import platform.isMobile
 
@@ -40,7 +39,6 @@ fun SettingsScreen(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
-                        viewModel.sendEvent(SettingsEvents.CloseSettingsScreen)
                     },
                 )
             },

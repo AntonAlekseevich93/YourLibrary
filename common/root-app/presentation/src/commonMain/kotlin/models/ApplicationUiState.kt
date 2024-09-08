@@ -1,7 +1,5 @@
 package models
 
-import BookInfoViewModel
-import BooksListInfoViewModel
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -16,17 +14,7 @@ import main_models.books.BookShortVo
 import main_models.path.PathInfoVo
 
 data class ApplicationUiState(
-    val showLeftDrawerState: MutableState<Boolean> = mutableStateOf(false),
-    val showRightDrawerState: MutableState<Boolean> = mutableStateOf(false),
-    val openLeftDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
-    val openRightDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
-    val closeLeftDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
-    val closeRightDrawerEvent: MutableState<() -> Unit> = mutableStateOf({}),
-    val selectedBookId: MutableState<Long?> = mutableStateOf(null),
-    val selectedShortBook: MutableState<BookShortVo?> = mutableStateOf(null),
     val searchedBooks: List<BookVo> = emptyList(),
-    val previousBookInfoViewModel: MutableState<BookInfoViewModel?> = mutableStateOf(null),
-    val previousBooksListInfoViewModel: MutableState<BooksListInfoViewModel?> = mutableStateOf(null),
     val booksListInfoScreenBooks: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
     val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
 ) : BaseUIState {

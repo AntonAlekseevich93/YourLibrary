@@ -10,7 +10,6 @@ kotlin {
         named("jvmMain") {
             dependencies {
                 Dependencies.Kotlin
-                implementation(Dependencies.PreCompose.preComposeWithNavigation)
                 implementation(compose.uiTooling)
                 implementation(compose.material3)
                 implementation(compose.desktop.currentOs)

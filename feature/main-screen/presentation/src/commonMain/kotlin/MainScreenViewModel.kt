@@ -12,7 +12,6 @@ import tooltip_area.TooltipEvents
 
 class MainScreenViewModel(
     private val repository: MainScreenRepository,
-    private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,
     private val drawerScope: DrawerScope,
     private val applicationScope: ApplicationScope,

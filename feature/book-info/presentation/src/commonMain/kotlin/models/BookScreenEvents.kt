@@ -11,9 +11,6 @@ sealed class BookScreenEvents : BaseEvent {
     data object SetEditMode : BookScreenEvents()
     class ChangeReadingStatusEvent(val selectedStatus: ReadingStatus, bookId: String) :
         BookScreenEvents()
-
-    data object CloseBookInfoScreen : BookScreenEvents()
-    data object OnBack : BookScreenEvents()
     class OpenShortBook(val shortBook: BookShortVo) : BookScreenEvents()
     class ShowDateSelector(val datePickerType: DatePickerType) : BookScreenEvents()
     data object ShowFullAuthorBooksScreen : BookScreenEvents()

@@ -7,7 +7,6 @@ import main_models.books.BookShortVo
 import main_models.genre.Genre
 
 sealed class BookCreatorEvents : BaseEvent {
-    data object GoBack : BookCreatorEvents()
     data object CreateBookEvent : BookCreatorEvents()
     data object ClearUrlEvent : BookCreatorEvents()
     data object OnFinishParsingUrl : BookCreatorEvents()

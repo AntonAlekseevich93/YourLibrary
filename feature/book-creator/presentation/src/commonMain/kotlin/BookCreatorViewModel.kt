@@ -27,7 +27,6 @@ import java.util.UUID
 class BookCreatorViewModel(
     private val platformInfo: PlatformInfoData,
     private val interactor: BookCreatorInteractor,
-    private val navigationHandler: NavigationHandler,
     private val applicationScope: ApplicationScope,
 ) : BaseMVIViewModel<BookCreatorUiState, BaseEvent>(BookCreatorUiState()) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
@@ -98,7 +97,6 @@ class BookCreatorViewModel(
                 hideSearchError()
             }
 
-            is BookCreatorEvents.GoBack -> navigationHandler.goBack()
             is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.ClearUrlEvent -> clearUrl()
             is BookCreatorEvents.OnClearUrlAndCreateBookManuallyEvent -> {
@@ -219,7 +217,6 @@ class BookCreatorViewModel(
             val author = getOrCreateAuthor(newBook)
             interactor.createBook(newBook, author = author)
             clearAllBookInfo()
-            navigationHandler.goBack()
         }
     }
 

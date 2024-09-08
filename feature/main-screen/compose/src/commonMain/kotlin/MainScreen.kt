@@ -21,7 +21,6 @@ import platform.Platform
 @Composable
 fun MainScreen(
     platform: Platform,
-    showLeftDrawer: MutableState<Boolean>,
     showSearch: MutableState<Boolean>,
     leftDrawerState: DrawerState,
     shelfViewModel: ShelfViewModel,

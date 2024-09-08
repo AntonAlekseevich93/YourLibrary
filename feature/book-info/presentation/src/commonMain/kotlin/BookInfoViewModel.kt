@@ -17,15 +17,13 @@ import main_models.books.BookShortVo
 import models.BookInfoScope
 import models.BookInfoUiState
 import models.BookScreenEvents
-import navigation_drawer.contents.models.DrawerEvents
+import navigation.screens.BookInfoComponent
 import platform.PlatformInfoData
-import toolbar.ToolbarEvents
 import tooltip_area.TooltipEvents
 
 class BookInfoViewModel(
     private val platformInfo: PlatformInfoData,
     private val interactor: BookInfoInteractor,
-    private val navigationHandler: NavigationHandler,
     private val tooltipHandler: TooltipHandler,
     private val applicationScope: ApplicationScope,
     private val drawerScope: DrawerScope,
@@ -39,6 +37,8 @@ class BookInfoViewModel(
     private val _uiState: MutableStateFlow<BookInfoUiState> = MutableStateFlow(BookInfoUiState())
     val uiState = _uiState.asStateFlow()
 
+    lateinit var component: BookInfoComponent
+
     init {
         uiState.value.currentDateInMillis.value = platformInfo.getCurrentTime().timeInMillis
         uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
@@ -48,8 +48,6 @@ class BookInfoViewModel(
     override fun sendEvent(event: BaseEvent) {
         when (event) {
             is TooltipEvents.SetTooltipEvent -> tooltipHandler.setTooltip(event.tooltip)
-            is DrawerEvents.OpenLeftDrawerOrCloseEvent -> drawerScope.openLeftDrawerOrClose()
-            is DrawerEvents.OpenRightDrawerOrCloseEvent -> drawerScope.openRightDrawerOrClose()
             is BookScreenEvents.BookScreenCloseEvent -> {
                 applicationScope.closeBookInfoScreen()
             }
@@ -65,16 +63,9 @@ class BookInfoViewModel(
                 )
             }
 
-            is BookScreenEvents.CloseBookInfoScreen -> {
-                navigationHandler.closeBookInfoScreen()
-            }
-
-            is BookScreenEvents.OnBack -> {
-                applicationScope.onBackWithCheckViewModelStore()
-            }
-
             is BookScreenEvents.OpenShortBook -> {
-                applicationScope.openBookInfoScreen(bookId = null, shortBook = event.shortBook)
+                component.updateScrollPosition(uiState.value.scrollPosition.value)
+                applicationScope.openBookInfoScreen(bookId = null, shortBook = event.shortBook, false)
             }
 
             is BookScreenEvents.ShowDateSelector -> {
@@ -105,8 +96,6 @@ class BookInfoViewModel(
             is DatePickerEvents.OnHideDatePicker -> {
                 _uiState.value.showDatePicker.value = false
             }
-
-            is ToolbarEvents.ToMain -> navigationHandler.navigateToMain()
         }
     }
 

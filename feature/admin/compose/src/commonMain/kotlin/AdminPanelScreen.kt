@@ -14,7 +14,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,7 +37,6 @@ import yourlibrary.common.resources.generated.resources.admin_panel
 
 @Composable
 fun AdminPanelScreen(
-    showLeftDrawer: State<Boolean>,
     hazeState: HazeState,
 ) {
     val viewModel = remember { Inject.instance<AdminViewModel>() }

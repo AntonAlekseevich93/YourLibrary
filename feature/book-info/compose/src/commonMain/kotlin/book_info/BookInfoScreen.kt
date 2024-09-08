@@ -26,6 +26,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import date.CommonDatePicker
 import date.DateChangeSelectorDialog
 import date.DatePickerEvents
@@ -37,6 +38,7 @@ import kotlinx.coroutines.launch
 import main_models.DatePickerType
 import main_models.books.BookShortVo
 import models.BookScreenEvents
+import navigation.screens.BookInfoComponent
 import org.jetbrains.compose.resources.stringResource
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.end_date
@@ -45,13 +47,13 @@ import yourlibrary.common.resources.generated.resources.start_date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookInfoScreen(
-    bookItemId: Long?,
-    bookShortVo: BookShortVo?,
-    showBackButton: State<Boolean>,
-    previousViewModel: BookInfoViewModel?,
+    navigationComponent: BookInfoComponent
 ) {
-    val viewModel = remember {
-        previousViewModel ?: ViewModelStackStore.createViewModel<BookInfoViewModel>()
+    val bookShortVo: State<BookShortVo>? = navigationComponent.model?.subscribeAsState()
+    val bookItemId = navigationComponent.getBookIdOrNull()
+    val viewModel = remember { ViewModelStackStore.createViewModel<BookInfoViewModel>() }
+    LaunchedEffect(Unit) {
+        viewModel.component = navigationComponent
     }
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
@@ -60,7 +62,7 @@ fun BookInfoScreen(
     val isTransparentAppbar = remember { mutableStateOf(true) }
     var reviewButtonPosition by remember { mutableStateOf(0) }
     var showDateSelectorDialog by remember { mutableStateOf(false) }
-    var modifier = Modifier.fillMaxSize().background(Color.Transparent).verticalScroll(scrollState)
+    var modifier = Modifier.fillMaxSize().background(Color.Transparent)
 
     if (uiState.isHazeBlurEnabled.value) {
         modifier = modifier.haze(
@@ -74,6 +76,7 @@ fun BookInfoScreen(
 
     LaunchedEffect(scrollState) {
         snapshotFlow { scrollState.value }.collect { scrollOffset ->
+            uiState.scrollPosition.value = scrollOffset
             if (scrollOffset > 220 && isTransparentAppbar.value) {
                 isTransparentAppbar.value = false
             } else if (scrollOffset < 220 && !isTransparentAppbar.value) {
@@ -83,15 +86,16 @@ fun BookInfoScreen(
     }
 
     LaunchedEffect(key1 = bookItemId, key2 = bookShortVo) {
-        if (previousViewModel == null &&
-            viewModel.uiState.value.shortBookItem.value == null && viewModel.uiState.value.bookItem.value == null
-        ) {
+        if (viewModel.uiState.value.shortBookItem.value == null && viewModel.uiState.value.bookItem.value == null) {
             bookItemId?.let {
                 viewModel.getBookByLocalId(bookItemId)
             }
             bookShortVo?.let {
-                viewModel.setShortBook(it)
+                viewModel.setShortBook(it.value)
             }
+        }
+        scope.launch {
+            scrollState.animateScrollTo(navigationComponent.getSavedScrollPosition())
         }
     }
 
@@ -100,18 +104,17 @@ fun BookInfoScreen(
             BookCreatorAppBar(
                 transparentAppbar = isTransparentAppbar,
                 title = "",
-                showBackButton = showBackButton,
                 onClose = {
-                    viewModel.sendEvent(BookScreenEvents.CloseBookInfoScreen)
+                    navigationComponent.onCloseClicked()
                 },
                 onBack = {
-                    viewModel.sendEvent(BookScreenEvents.OnBack)
+                    navigationComponent.onBackClicked()
                 }
             )
         },
         containerColor = ApplicationTheme.colors.cardBackgroundDark,
     ) {
-        Column(modifier = modifier) {
+        Column(modifier = modifier.verticalScroll(scrollState)) {
             Box(
                 modifier = Modifier.padding(bottom = 110.dp)
             ) {

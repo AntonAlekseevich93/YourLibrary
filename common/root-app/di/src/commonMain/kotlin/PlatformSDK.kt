@@ -15,17 +15,15 @@ object PlatformSDK {
         configuration: PlatformConfiguration,
         platformInfo: PlatformInfoData,
         platform: Platform,
-        navigationHandler: NavigationHandler,
         tooltipHandler: TooltipHandler,
     ) {
         val rootComposeModule = DI.Module(
             name = "rootComposeModule",
             init = {
-                bind<NavigationHandler>() with singleton { navigationHandler }
                 bind<TooltipHandler>() with singleton { tooltipHandler }
                 bind<PlatformConfiguration>() with singleton { configuration }
                 bind<ApplicationViewModel>() with singleton {
-                    ApplicationViewModel(instance(), instance(), instance(), instance(), instance(), instance())
+                    ApplicationViewModel(instance(), instance(), instance(), instance(), instance())
                 }
                 bind<Platform>() with singleton { platform }
                 bind<FileManager>() with singleton { FileManager() }

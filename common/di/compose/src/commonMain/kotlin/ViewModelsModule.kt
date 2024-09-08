@@ -6,7 +6,7 @@ import org.kodein.di.singleton
 
 val viewModelsModule = DI.Module("viewModelsModule") {
     bind<MainScreenViewModel>() with singleton {
-        MainScreenViewModel(instance(), instance(), instance(), instance(), instance())
+        MainScreenViewModel(instance(), instance(), instance(), instance())
     }
     bind<ShelfViewModel>() with singleton {
         ShelfViewModel(instance(), instance(), instance(), instance())
@@ -22,20 +22,19 @@ val viewModelsModule = DI.Module("viewModelsModule") {
             instance(),
             instance(),
             instance(),
-            instance()
         )
     }
     bind<BookCreatorViewModel>() with singleton {
-        BookCreatorViewModel(instance(), instance(), instance(), instance())
+        BookCreatorViewModel(instance(), instance(), instance())
     }
     bind<SettingsViewModel>() with singleton {
-        SettingsViewModel(instance(), instance(), instance())
+        SettingsViewModel(instance(), instance())
     }
     bind<AuthorsViewModel>() with singleton {
-        AuthorsViewModel(instance(), instance(), instance(), instance(), instance())
+        AuthorsViewModel(instance(), instance(), instance(), instance())
     }
     bind<UserViewModel>() with singleton {
-        UserViewModel(instance(), instance(), instance(), instance(), instance(), instance())
+        UserViewModel(instance(), instance(), instance(), instance(), instance())
     }
 
     bind<AdminViewModel>() with singleton {
@@ -44,9 +43,6 @@ val viewModelsModule = DI.Module("viewModelsModule") {
             instance(),
             instance(),
             instance(),
-            instance(),
-            instance(),
-            instance()
         )
     }
 
@@ -56,9 +52,6 @@ val viewModelsModule = DI.Module("viewModelsModule") {
             instance(),
             instance(),
             instance(),
-            instance(),
-            instance(),
-            instance()
         )
     }
 }

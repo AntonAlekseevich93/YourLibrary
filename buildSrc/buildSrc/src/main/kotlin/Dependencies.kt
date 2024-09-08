@@ -64,12 +64,6 @@ object Dependencies {
         const val ksoupNetwork = "com.fleeksoft.ksoup:ksoup-network:$version"
     }
 
-    //navigation
-    object PreCompose {
-        private const val version = "1.6.1"
-        const val preComposeWithNavigation = "moe.tlaster:precompose:$version"
-    }
-
     object FilePicker {
         private const val version = "2.1.0"
         const val filePicker = "com.darkrockstudios:mpfilepicker:$version"

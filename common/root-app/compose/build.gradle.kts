@@ -9,7 +9,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(Dependencies.FilePicker.filePicker)
-                implementation(Dependencies.PreCompose.preComposeWithNavigation)
                 implementation(deps.bundles.sketchImageLoader)
                 implementation(deps.hazeBlur)
                 implementation(project(":common:core"))
