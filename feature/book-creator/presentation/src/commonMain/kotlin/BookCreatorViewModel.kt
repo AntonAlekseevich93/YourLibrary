@@ -579,11 +579,14 @@ class BookCreatorViewModel(
             reviewCount = shortBook.reviewCount,
             ratingSum = shortBook.ratingSum,
             bookForAllUsers = true,
-            originalMainBookId = shortBook.getMainBookIdByShortBook()
+            originalMainBookId = shortBook.getMainBookIdByShortBook(),
+            lang = shortBook.lang,
+            publicationYear = shortBook.publicationYear,
         )
 
     private fun createManuallyUserBook(): BookVo {
         val author = uiStateValue.selectedAuthor
+        var needFix: String? = null
         uiStateValue.bookValues.apply {
             val bookId = UUID.randomUUID().toString()
             return BookVo(
@@ -619,7 +622,9 @@ class BookCreatorViewModel(
                 reviewCount = 0,
                 ratingSum = 0,
                 bookForAllUsers = false,
-                originalMainBookId = bookId
+                originalMainBookId = bookId,
+                lang = needFix!!,
+                publicationYear = needFix!!
             )
         }
     }

@@ -13,6 +13,7 @@ kotlin {
                 implementation(deps.hazeBlur)
                 implementation(project(":common:core"))
                 implementation(project(":common:root-app:presentation"))
+                implementation(project(":common:root-app:api"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:models"))
                 implementation(project(":common:scopes"))

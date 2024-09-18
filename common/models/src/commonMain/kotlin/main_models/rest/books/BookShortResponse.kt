@@ -32,6 +32,8 @@ data class BookShortRemoteDto(
     @SerialName("ratingSum") val ratingSum: Int,
     @SerialName("mainBookId") val mainBookId: String,
     @SerialName("isMainBook") val isMainBook: Boolean,
+    @SerialName("lang") val lang: String,
+    @SerialName("publicationYear") val publicationYear: String?,
 )
 
 fun BookShortRemoteDto.toVo(
@@ -60,6 +62,8 @@ fun BookShortRemoteDto.toVo(
         ratingSum = ratingSum,
         mainBookId = mainBookId,
         isMainBook = isMainBook,
+        lang = lang,
+        publicationYear = publicationYear,
     )
 }
 
@@ -86,5 +90,7 @@ fun BookShortVo.toDto(): BookShortRemoteDto {
         ratingSum = ratingSum,
         mainBookId = mainBookId,
         isMainBook = isMainBook,
+        lang = lang,
+        publicationYear = publicationYear,
     )
 }

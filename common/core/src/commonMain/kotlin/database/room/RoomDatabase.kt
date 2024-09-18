@@ -24,7 +24,7 @@ import database.room.entities.ReviewAndRatingTimestampEntity
         AuthorsTimestampEntity::class,
         ReviewAndRatingEntity::class,
         ReviewAndRatingTimestampEntity::class,
-    ], version = 9
+    ], version = 10
 )
 @ConstructedBy(AppDatabaseCtor::class)
 abstract class AppDatabase : RoomDatabase() {

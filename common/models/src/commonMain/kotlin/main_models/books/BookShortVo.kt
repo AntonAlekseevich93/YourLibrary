@@ -31,6 +31,8 @@ data class BookShortVo(
     val localCurrentUserRating: ReviewAndRatingVo? = null,
     val mainBookId: String,
     val isMainBook: Boolean,
+    val lang: String,
+    val publicationYear: String?,
 ) {
     fun createUserBookBasedOnShortBook(readingStatus: ReadingStatus): BookVo =
         BookVo(
@@ -66,8 +68,10 @@ data class BookShortVo(
             reviewCount = this.reviewCount,
             ratingSum = this.ratingSum,
             bookForAllUsers = true,
-            originalMainBookId = getMainBookIdByShortBook()
+            originalMainBookId = getMainBookIdByShortBook(),
+            lang = this.lang,
+            publicationYear = this.publicationYear,
         )
 
-    fun getMainBookIdByShortBook(): String = if(isMainBook) bookId else mainBookId
+    fun getMainBookIdByShortBook(): String = if (isMainBook) bookId else mainBookId
 }

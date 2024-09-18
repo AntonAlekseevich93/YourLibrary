@@ -41,6 +41,8 @@ data class BookEntity(
     @SerialName("ratingSum") val ratingSum: Int,
     @SerialName("bookForAllUsers") val bookForAllUsers: Boolean,
     @SerialName("originalMainBookId") val originalMainBookId: String,
+    @SerialName("lang") val lang: String,
+    @SerialName("publicationYear") val publicationYear: String,
 )
 
 fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
@@ -77,6 +79,8 @@ fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
     ratingSum = ratingSum,
     bookForAllUsers = bookForAllUsers,
     originalMainBookId = originalMainBookId,
+    lang = lang,
+    publicationYear = publicationYear ?: ""
 )
 
 fun BookEntity.toVo(remoteImageLink: String?): BookVo {
@@ -113,6 +117,8 @@ fun BookEntity.toVo(remoteImageLink: String?): BookVo {
         ratingSum = ratingSum,
         bookForAllUsers = bookForAllUsers,
         originalMainBookId = originalMainBookId,
+        lang = lang,
+        publicationYear = publicationYear
     )
     book.remoteImageLink = remoteImageLink
     return book

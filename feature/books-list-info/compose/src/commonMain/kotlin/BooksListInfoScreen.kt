@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
-import di.ViewModelStackStore
+import di.Inject
 import elements.BookSelectorItem
 import kotlinx.coroutines.launch
 import main_models.books.BookShortVo
@@ -30,15 +30,12 @@ import models.BooksListInfoScreenEvents
 @Composable
 fun BooksListInfoScreen(
     bookList: List<BookShortVo>,
-    previousViewModel: BooksListInfoViewModel?,
     hazeState: HazeState,
     isHazeBlurEnabled: Boolean,
     changeBookReadingStatus: (bookId: String) -> Unit,
     onBack: () -> Unit,
 ) {
-    val viewModel = remember {
-        previousViewModel ?: ViewModelStackStore.createViewModel<BooksListInfoViewModel>()
-    }
+    val viewModel = remember { Inject.instance<BooksListInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -56,7 +53,7 @@ fun BooksListInfoScreen(
                 showBackButton = true,
                 onBack = onBack,
                 onClose = {
-
+//                    viewModel.sendEvent(BooksListInfoScreenEvents.CloseBooksListInfoScreen)
                 }
             )
         },

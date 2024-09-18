@@ -33,7 +33,7 @@ import date.DatePickerEvents
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
-import di.ViewModelStackStore
+import di.Inject
 import kotlinx.coroutines.launch
 import main_models.DatePickerType
 import main_models.books.BookShortVo
@@ -51,7 +51,7 @@ fun BookInfoScreen(
 ) {
     val bookShortVo: State<BookShortVo>? = navigationComponent.model?.subscribeAsState()
     val bookItemId = navigationComponent.getBookIdOrNull()
-    val viewModel = remember { ViewModelStackStore.createViewModel<BookInfoViewModel>() }
+    val viewModel = remember { Inject.instance<BookInfoViewModel>() }
     LaunchedEffect(Unit) {
         viewModel.component = navigationComponent
     }
