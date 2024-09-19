@@ -45,7 +45,7 @@ class RemoteAdminDataSource(
             resultClass = BookShortResponse::class,
             bodyRequest = book,
             errorClass = String::class,
-            requestTimeout = if (appConfig.skipLongImageLoading) 2500 else null
+            requestTimeout = 2500
         )
 
     suspend fun setBookAsApprovedWithoutUploadImage(
@@ -56,7 +56,7 @@ class RemoteAdminDataSource(
         resultClass = BookShortResponse::class,
         bodyRequest = book,
         errorClass = String::class,
-        requestTimeout = if (appConfig.skipLongImageLoading) 2500 else null,
+        requestTimeout = 2500,
         params = params
     )
 

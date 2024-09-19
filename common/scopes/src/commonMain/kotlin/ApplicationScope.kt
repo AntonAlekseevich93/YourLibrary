@@ -6,4 +6,5 @@ interface ApplicationScope {
     fun changedReadingStatus(oldStatusId: String, bookId: String)
     fun navigateToBooksListInfo(books: List<BookShortVo>)
     fun openModerationScreen()
+    fun openModerationBooksScreen()
 }

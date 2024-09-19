@@ -28,9 +28,6 @@ class AppConfig() {
     val userId
         get() = settings.getLong(key = currentUserEmail, defaultValue = -1)
 
-    val skipLongImageLoading
-        get() = settings.getBoolean(key = SKIP_LONG_IMAGE_LOADING, defaultValue = false)
-
     val useCustomHost
         get() = settings.getBoolean(key = NEED_USE_CUSTOM_HOST, defaultValue = false)
 
@@ -70,10 +67,6 @@ class AppConfig() {
         settings.putLong(key = currentUserEmail, value = userId)
     }
 
-    fun changeSkipLongImageLoading(skip: Boolean) {
-        settings.putBoolean(key = SKIP_LONG_IMAGE_LOADING, value = skip)
-    }
-
     fun changeUseCustomHost(isCustom: Boolean) {
         settings.putBoolean(key = NEED_USE_CUSTOM_HOST, value = isCustom)
     }
@@ -110,7 +103,6 @@ class AppConfig() {
         private const val DEFAULT_LOCAL_TOKEN = "default_local_token"
         private const val CURRENT_USER_EMAIL_KEY = "current_user_email_key"
         private const val DEFAULT_LOCAL_EMAIL = "default_local_email"
-        private const val SKIP_LONG_IMAGE_LOADING = "skip_long_image_loading"
         private const val CUSTOM_URL = "CUSTOM_URL"
         private const val USE_HTTP = "USE_HTTP"
         private const val NON_MODERATION_START_RANGE = "NON_MODERATION_START_RANGE"

@@ -11,7 +11,6 @@ data class AdminUiState(
     val isLoading: Boolean = false,
     val moderationBookState: ModerationBookState = ModerationBookState(),
     val databaseMenuScreen: MutableState<Boolean> = mutableStateOf(false),
-    val skipLongImageLoading: Boolean = false,
     val useCustomHost: Boolean = false,
     val useHttp: Boolean = false,
     val useNonModerationRange: Boolean = false,

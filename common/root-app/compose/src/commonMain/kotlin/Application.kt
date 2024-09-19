@@ -21,6 +21,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.essenty.backhandler.BackCallback
+import components.modarations_books_screen.ModerationBooksScreen
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
@@ -152,6 +153,13 @@ fun Application(
 
                     is RootComponent.Screen.ModerationScreen -> {
                         ModerationScreen(
+                            hazeState = hazeBlurState,
+                            navigationComponent = screen.component
+                        )
+                    }
+
+                    is RootComponent.Screen.ModerationBooksScreen -> {
+                        ModerationBooksScreen(
                             hazeState = hazeBlurState,
                             navigationComponent = screen.component
                         )

@@ -26,7 +26,6 @@ class AdminViewModel(
         uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
         updateUIState(
             uiStateValue.copy(
-                skipLongImageLoading = appConfig.skipLongImageLoading,
                 useCustomHost = appConfig.useCustomHost,
                 useHttp = appConfig.useHttp,
                 customUrl = uiStateValue.customUrl.copy(text = appConfig.customUrl),
@@ -46,10 +45,6 @@ class AdminViewModel(
             is AdminEvents.SelectBook -> selectBook(event.selectedBook)
             is AdminEvents.UploadBookCover -> uploadBookImage()
             is AdminEvents.SetBookAsApprovedWithoutUploadImage -> setBookAsApprovedWithoutUploadImage()
-            is AdminEvents.ChangeSkipImageLongLoadingSettings -> {
-                appConfig.changeSkipLongImageLoading(!uiStateValue.skipLongImageLoading)
-                updateUIState(uiStateValue.copy(skipLongImageLoading = appConfig.skipLongImageLoading))
-            }
 
             is AdminEvents.CustomUrlChanged -> {
                 appConfig.changeCustomUrl(event.url.text)
@@ -118,6 +113,10 @@ class AdminViewModel(
                     interactor.clearReviewAndRatingDb()
                 }
             }
+
+            is AdminEvents.OnOpenModerationScreen -> {
+                applicationScope.openModerationScreen()
+            }
         }
     }
 
@@ -139,7 +138,7 @@ class AdminViewModel(
                     )
                 )
                 withContext(Dispatchers.Main) {
-                    applicationScope.openModerationScreen()
+                    applicationScope.openModerationBooksScreen()
                 }
             }
         }
@@ -229,7 +228,7 @@ class AdminViewModel(
                     )
                     if (bookResponse != null) {
                         uiStateValue.moderationBookState.booksForModeration.replaceAll { if (it.id == bookResponse.id) bookResponse else it }
-                    } else if (appConfig.skipLongImageLoading) {
+                    } else {
                         selectNextBook()
                     }
                 }
@@ -265,7 +264,7 @@ class AdminViewModel(
                     if (bookResponse != null) {
                         uiStateValue.moderationBookState.moderationChangedName.value = null
                         uiStateValue.moderationBookState.booksForModeration.replaceAll { if (it.id == bookResponse.id) bookResponse else it }
-                    } else if (appConfig.skipLongImageLoading) {
+                    } else {
                         selectNextBook()
                     }
                 }

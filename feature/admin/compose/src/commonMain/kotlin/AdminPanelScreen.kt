@@ -1,8 +1,5 @@
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,10 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import components.modarations_books_screen.AdminPanelAppBar
-import components.modarations_books_screen.DatabaseScreen
+import buttons.MenuButton
+import components.AdminPanelAppBar
+import components.DatabaseScreen
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
@@ -33,6 +31,9 @@ import org.jetbrains.compose.resources.stringResource
 import text_fields.CommonTextField
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.admin_panel
+import yourlibrary.common.resources.generated.resources.ic_code
+import yourlibrary.common.resources.generated.resources.ic_database
+import yourlibrary.common.resources.generated.resources.ic_moderation_menu
 
 @Composable
 fun AdminPanelScreen(
@@ -73,46 +74,59 @@ fun AdminPanelScreen(
                                 top = it.calculateTopPadding().plus(24.dp), bottom = 24.dp
                             )
                         ) {
-                            Text(
-                                text = "Модерация книг на русском языке",
-                                style = ApplicationTheme.typography.bodyBold,
-                                color = ApplicationTheme.colors.mainTextColor,
-                                modifier = Modifier.padding(start = 24.dp).clickable {
-                                    viewModel.sendEvent(AdminEvents.GetRussianBooksForModeration)
+                            MenuButton(
+                                icon = Res.drawable.ic_moderation_menu,
+                                iconColorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
+                                invoke = {
+                                    Text(
+                                        text = "Модерирование",
+                                        style = ApplicationTheme.typography.headlineRegular,
+                                        color = ApplicationTheme.colors.mainTextColor,
+
+                                        )
+                                },
+                                onClick = {
+                                    viewModel.sendEvent(AdminEvents.OnOpenModerationScreen)
                                 }
                             )
 
-                            Text(
-                                text = "Модерация книг на английском языке",
-                                style = ApplicationTheme.typography.bodyBold,
-                                color = ApplicationTheme.colors.mainTextColor,
-                                modifier = Modifier.padding(start = 24.dp, top = 12.dp).clickable {
-                                    viewModel.sendEvent(AdminEvents.GetEnglishBooksForModeration)
+                            MenuButton(
+                                icon = Res.drawable.ic_code,
+                                iconColorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
+                                invoke = {
+                                    Text(
+                                        text = "Книжный парсинг",
+                                        style = ApplicationTheme.typography.headlineRegular,
+                                        color = ApplicationTheme.colors.mainTextColor,
+
+                                        )
+                                },
+                                onClick = {
+
                                 }
                             )
 
-                            Text(
-                                text = "Database menu",
-                                style = ApplicationTheme.typography.bodyBold,
-                                color = ApplicationTheme.colors.mainTextColor,
-                                modifier = Modifier.padding(start = 24.dp, top = 12.dp).clickable {
+                            MenuButton(
+                                icon = Res.drawable.ic_database,
+                                iconSize = 16.dp,
+                                iconColorFilter = ColorFilter.tint(
+                                    ApplicationTheme.colors.mainIconsColor.copy(
+                                        alpha = 0.8f
+                                    )
+                                ),
+                                invoke = {
+                                    Text(
+                                        text = "База данных",
+                                        style = ApplicationTheme.typography.headlineRegular,
+                                        color = ApplicationTheme.colors.mainTextColor,
+
+                                        )
+                                },
+                                onClick = {
                                     viewModel.sendEvent(AdminEvents.OpenDatabaseMenuScreen)
                                 }
                             )
 
-                            AnimatedVisibility(
-                                visible = uiState.isLoading,
-                                enter = fadeIn(),
-                                exit = fadeOut()
-                            ) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize()
-                                        .background(ApplicationTheme.colors.cardBackgroundDark),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator(color = ApplicationTheme.colors.hintColor)
-                                }
-                            }
                         }
                     }
 
@@ -140,21 +154,6 @@ fun AdminPanelScreen(
                         .padding(bottom = it.calculateBottomPadding().plus(46.dp))
                         .align(Alignment.BottomStart)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = uiState.skipLongImageLoading,
-                            onCheckedChange = {
-                                viewModel.sendEvent(AdminEvents.ChangeSkipImageLongLoadingSettings)
-                            }
-                        )
-                        Text(
-                            text = "Пропускать долгую загрузку фотографий",
-                            style = ApplicationTheme.typography.footnoteRegular,
-                            color = ApplicationTheme.colors.mainTextColor,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = 12.dp)

@@ -141,4 +141,5 @@
     <string name="date_selector_menu_change_end_date">Изменить дату окончания чтения</string>
     <string name="date_selector_menu_delete_confirm_title">Вы уверены что хотите удалить дату начала и окончания чтения?</string>
     <string name="moderation_books_title">Модерация книг</string>
+    <string name="moderation_screen_title">Модерация</string>
 </resources>

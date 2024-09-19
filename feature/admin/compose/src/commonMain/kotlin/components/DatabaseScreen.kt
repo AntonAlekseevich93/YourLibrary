@@ -1,4 +1,4 @@
-package components.modarations_books_screen
+package components
 
 import ApplicationTheme
 import BaseEvent
