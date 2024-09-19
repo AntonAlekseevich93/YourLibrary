@@ -5,12 +5,9 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.Font
-import yourlibrary.common.resources.generated.resources.KreadonBold
-import yourlibrary.common.resources.generated.resources.KreadonExtraBold
-import yourlibrary.common.resources.generated.resources.KreadonExtraLight
-import yourlibrary.common.resources.generated.resources.KreadonLight
-import yourlibrary.common.resources.generated.resources.KreadonMedium
-import yourlibrary.common.resources.generated.resources.KreadonRegular
+import yourlibrary.common.resources.generated.resources.Raleway_Bold
+import yourlibrary.common.resources.generated.resources.Raleway_Medium
+import yourlibrary.common.resources.generated.resources.Raleway_Regular
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.copilot
 
@@ -56,12 +53,9 @@ fun MainTypography(): AppTypography {
 //    )
 
     val fontFamilyMain = FontFamily(
-        Font(Res.font.KreadonRegular, FontWeight.Normal),
-        Font(Res.font.KreadonBold, FontWeight.Bold),
-        Font(Res.font.KreadonLight, FontWeight.Light),
-        Font(Res.font.KreadonExtraBold, FontWeight.ExtraBold),
-        Font(Res.font.KreadonExtraLight, FontWeight.ExtraLight),
-        Font(Res.font.KreadonMedium, FontWeight.Medium),
+        Font(Res.font.Raleway_Regular, FontWeight.Normal),
+        Font(Res.font.Raleway_Bold, FontWeight.Bold),
+        Font(Res.font.Raleway_Medium, FontWeight.Medium),
     )
 
     return AppTypography(
@@ -138,22 +132,22 @@ fun MainTypography(): AppTypography {
             fontFamily = fontFamilyMain,
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
-            letterSpacing = 0.45.sp,
-            lineHeight = 24.sp,
+            letterSpacing = 0.30.sp,
+            lineHeight = 22.sp,
         ),
         headlineMedium = TextStyle(
             fontFamily = fontFamilyMain,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
-            letterSpacing = 0.45.sp,
-            lineHeight = 24.sp,
+            letterSpacing = 0.30.sp,
+            lineHeight = 22.sp,
         ),
         headlineBold = TextStyle(
             fontFamily = fontFamilyMain,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            letterSpacing = 0.45.sp,
-            lineHeight = 24.sp,
+            letterSpacing = 0.30.sp,
+            lineHeight = 22.sp,
         ),
         bodyRegular = TextStyle(
             fontFamily = fontFamilyMain,

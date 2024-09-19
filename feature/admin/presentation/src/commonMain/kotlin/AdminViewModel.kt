@@ -6,6 +6,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_models.books.BookShortVo
+import main_models.books.LANG
 import models.AdminEvents
 import models.AdminUiState
 import models.ModerationBookState
@@ -37,8 +38,8 @@ class AdminViewModel(
 
     override fun sendEvent(event: BaseEvent) {
         when (event) {
-            is AdminEvents.GetBooksForModerating -> getBooksForModeration()
-            is AdminEvents.GetBooksForModeratingWithoutUploadingImages -> getBooksForModerationWithoutUploadingImages()
+            is AdminEvents.GetRussianBooksForModeration -> getBooksForModeration(lang = LANG.RUSSIAN)
+            is AdminEvents.GetEnglishBooksForModeration -> getBooksForModeration(lang = LANG.ENGLISH)
             is AdminEvents.ApprovedBook -> setBookAsApprove()
             is AdminEvents.DiscardBook -> setBookAsDiscarded()
             is AdminEvents.SelectBook -> selectBook(event.selectedBook)
@@ -119,30 +120,10 @@ class AdminViewModel(
         }
     }
 
-    private fun getBooksForModeration() {
+    private fun getBooksForModeration(lang: LANG) {
         scope.launch {
             updateUIState(uiStateValue.copy(isLoading = true))
-            interactor.getBooksForModeration().data?.books?.let {
-                val newList = SnapshotStateList<BookShortVo>()
-                newList.addAll(it)
-                val selectedPosition = 0
-                updateUIState(
-                    uiStateValue.copy(
-                        moderationBookState = ModerationBookState(
-                            booksForModeration = newList,
-                            selectedItem = if (newList.isNotEmpty()) newList[selectedPosition] else null,
-                        ),
-                        isLoading = false
-                    )
-                )
-            }
-        }
-    }
-
-    private fun getBooksForModerationWithoutUploadingImages() {
-        scope.launch {
-            updateUIState(uiStateValue.copy(isLoading = true))
-            interactor.getBooksForModeration().data?.books?.let {
+            interactor.getBooksForModeration(lang).data?.books?.let {
                 val newList = SnapshotStateList<BookShortVo>()
                 newList.addAll(it)
                 val selectedPosition = 0

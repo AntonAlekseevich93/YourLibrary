@@ -5,8 +5,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import main_models.books.BookShortVo
 
 sealed class AdminEvents : BaseEvent {
-    data object GetBooksForModerating : AdminEvents()
-    data object GetBooksForModeratingWithoutUploadingImages : AdminEvents()
+    data object GetRussianBooksForModeration : AdminEvents()
+    data object GetEnglishBooksForModeration : AdminEvents()
     data object ApprovedBook : AdminEvents()
     data object DiscardBook : AdminEvents()
     data object ApprovedWithChangesBook : AdminEvents()

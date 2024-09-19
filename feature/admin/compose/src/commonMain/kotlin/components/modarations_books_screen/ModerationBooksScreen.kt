@@ -34,9 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.Hyphens
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import components.modarations_books_screen.elements.BookCover
 import main_models.genre.GenreUtils
@@ -63,9 +67,9 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
     }
     resultBook?.let { book ->
         Column(modifier = hazeModifier.fillMaxSize().verticalScroll(scrollableState)) {
-            Row(
+            Row(//todo remove
                 verticalAlignment = Alignment.Bottom,
-                modifier = Modifier.padding(top = topPadding.plus(24.dp), start = 24.dp)
+                modifier = Modifier.padding(top = topPadding.plus(24.dp), start = 16.dp)
             ) {
                 BookCover(
                     coverUrl = book.rawCoverUrl.orEmpty(),
@@ -129,6 +133,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 }
             }
 
+            //todo remove
             if (state.isUploadingBookImage) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -150,12 +155,12 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
             }
 
             Row(
-                modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp),
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Название:",
-                    style = ApplicationTheme.typography.footnoteBold,
+                    style = ApplicationTheme.typography.bodyBold,
                     color = if (book.bookName.isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
@@ -174,12 +179,12 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
 
             if (state.moderationChangedName.value != null) {
                 Row(
-                    modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp),
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Измененное название:",
-                        style = ApplicationTheme.typography.footnoteBold,
+                        style = ApplicationTheme.typography.bodyBold,
                         color = if (state.moderationChangedName.value!!.isEmpty()) {
                             ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                         } else {
@@ -189,7 +194,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                     Text(
                         modifier = Modifier.padding(start = 8.dp),
                         text = state.moderationChangedName.value!!,
-                        style = ApplicationTheme.typography.bodyBold,
+                        style = ApplicationTheme.typography.bodyRegular,
                         color = ApplicationTheme.colors.mainTextColor
                     )
                 }
@@ -204,7 +209,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                             )
                         )
                     }
-                Column(modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp)) {
+                Column(modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp)) {
                     CommonTextField(
                         modifier = Modifier,
                         focusedIndicatorLineThickness = 1.dp,
@@ -251,12 +256,12 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
             }
 
             Row(
-                modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp),
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Автор:",
-                    style = ApplicationTheme.typography.footnoteBold,
+                    style = ApplicationTheme.typography.bodyBold,
                     color = if (book.originalAuthorName.isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
@@ -266,18 +271,18 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
                     text = book.originalAuthorName,
-                    style = ApplicationTheme.typography.footnoteRegular,
+                    style = ApplicationTheme.typography.bodyRegular,
                     color = ApplicationTheme.colors.mainTextColor
                 )
             }
 
             Row(
-                modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 24.dp),
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "ServerId:",
-                    style = ApplicationTheme.typography.footnoteBold,
+                    style = ApplicationTheme.typography.bodyBold,
                     color = if (book.id.toString().isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
@@ -287,7 +292,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
                     text = book.id.toString(),
-                    style = ApplicationTheme.typography.footnoteRegular,
+                    style = ApplicationTheme.typography.bodyRegular,
                     color = ApplicationTheme.colors.mainTextColor
                 )
             }
@@ -298,11 +303,11 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 color = ApplicationTheme.colors.dividerLight
             )
 
-            Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
+            Row(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
                 val genre = GenreUtils.getGenreById(book.bookGenreId)
                 Text(
                     text = "${Strings.genre}:",
-                    style = ApplicationTheme.typography.footnoteBold,
+                    style = ApplicationTheme.typography.bodyBold,
                     color = if (genre.name.isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
@@ -313,15 +318,15 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
                     text = genre.name,
-                    style = ApplicationTheme.typography.footnoteRegular,
+                    style = ApplicationTheme.typography.bodyRegular,
                     color = ApplicationTheme.colors.mainTextColor
                 )
             }
 
-            Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
+            Row(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
                 Text(
                     text = "Возрастные ограничения:",
-                    style = ApplicationTheme.typography.footnoteBold,
+                    style = ApplicationTheme.typography.bodyBold,
                     color = if (book.ageRestrictions.isNullOrEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
@@ -332,16 +337,16 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                     Text(
                         modifier = Modifier.padding(start = 8.dp),
                         text = it,
-                        style = ApplicationTheme.typography.footnoteRegular,
+                        style = ApplicationTheme.typography.bodyRegular,
                         color = ApplicationTheme.colors.mainTextColor
                     )
                 }
             }
 
-            Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
+            Row(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
                 Text(
                     text = "${Strings.pages_title}:",
-                    style = ApplicationTheme.typography.footnoteBold,
+                    style = ApplicationTheme.typography.bodyBold,
                     color = if (book.numbersOfPages.toString().isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
@@ -351,15 +356,15 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
                     text = book.numbersOfPages.toString(),
-                    style = ApplicationTheme.typography.footnoteRegular,
+                    style = ApplicationTheme.typography.bodyRegular,
                     color = ApplicationTheme.colors.mainTextColor
                 )
             }
 
-            Row(modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp)) {
+            Row(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
                 Text(
                     text = "${Strings.isbn}:",
-                    style = ApplicationTheme.typography.footnoteBold,
+                    style = ApplicationTheme.typography.bodyBold,
                     color = if (book.isbn.isEmpty()) {
                         ApplicationTheme.colors.adminPanelButtons.disapprovedColor
                     } else {
@@ -369,27 +374,34 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreen(
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
                     text = book.isbn,
-                    style = ApplicationTheme.typography.footnoteRegular,
+                    style = ApplicationTheme.typography.bodyRegular,
                     color = ApplicationTheme.colors.mainTextColor
                 )
             }
 
             Text(
-                modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).clickable {
+                modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp).clickable {
                     shortDescription.value = !shortDescription.value
                 },
                 text = book.description,
-                style = ApplicationTheme.typography.footnoteRegular,
+                style = ApplicationTheme.typography.bodyRegular.copy(
+                    textDirection = TextDirection.Content,
+                    hyphens = Hyphens.Auto,
+                    lineBreak = LineBreak.Paragraph
+                ),
                 color = ApplicationTheme.colors.mainTextColor,
                 maxLines = descriptionMaxLines,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Justify,
+                softWrap = true,
+                letterSpacing = TextUnit.Unspecified,
             )
 
             if (!state.isUploadingBookImage) {
                 FlowRow(
                     modifier = Modifier.padding(
-                        start = 24.dp,
-                        end = 24.dp,
+                        start = 16.dp,
+                        end = 16.dp,
                         bottom = 84.dp
                     )
                 ) { // todo fix bottom padding its for mobile

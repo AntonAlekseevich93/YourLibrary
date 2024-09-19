@@ -55,18 +55,17 @@ fun AdminPanelScreen(
                 }
             )
         },
-        containerColor = ApplicationTheme.colors.mainBackgroundColor,
+        containerColor = ApplicationTheme.colors.cardBackgroundDark,
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(ApplicationTheme.colors.mainBackgroundColor)
+                .background(ApplicationTheme.colors.cardBackgroundDark)
         ) {
             Box {
                 Column(
                     modifier = Modifier
-                        .background(ApplicationTheme.colors.mainBackgroundColor)
+                        .background(ApplicationTheme.colors.cardBackgroundDark)
                         .fillMaxSize()
                 ) {
                     AnimatedVisibility(visible = uiState.moderationBookState.selectedItem == null && !uiState.databaseMenuScreen.value) {
@@ -76,20 +75,20 @@ fun AdminPanelScreen(
                             )
                         ) {
                             Text(
-                                text = "Получить книги для модерации",
+                                text = "Модерация книг на русском языке",
                                 style = ApplicationTheme.typography.bodyBold,
                                 color = ApplicationTheme.colors.mainTextColor,
                                 modifier = Modifier.padding(start = 24.dp).clickable {
-                                    viewModel.sendEvent(AdminEvents.GetBooksForModerating)
+                                    viewModel.sendEvent(AdminEvents.GetRussianBooksForModeration)
                                 }
                             )
 
                             Text(
-                                text = "Получить книги для модерации без необходимости загружать изображения",
+                                text = "Модерация книг на английском языке",
                                 style = ApplicationTheme.typography.bodyBold,
                                 color = ApplicationTheme.colors.mainTextColor,
                                 modifier = Modifier.padding(start = 24.dp, top = 12.dp).clickable {
-                                    viewModel.sendEvent(AdminEvents.GetBooksForModeratingWithoutUploadingImages)
+                                    viewModel.sendEvent(AdminEvents.GetEnglishBooksForModeration)
                                 }
                             )
 
@@ -109,7 +108,7 @@ fun AdminPanelScreen(
                             ) {
                                 Box(
                                     modifier = Modifier.fillMaxSize()
-                                        .background(ApplicationTheme.colors.mainBackgroundColor),
+                                        .background(ApplicationTheme.colors.cardBackgroundDark),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     CircularProgressIndicator(color = ApplicationTheme.colors.hintColor)

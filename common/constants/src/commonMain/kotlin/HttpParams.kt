@@ -10,6 +10,7 @@ object HttpParams {
     const val AUTHORS_OTHER_DEVICES_LAST_TIMESTAMP = "authors_other_devices_last_timestamp"
     const val RANGE_START = "rangeStart"
     const val RANGE_END = "rangeEnd"
+    const val LANG = "lang"
     const val CHANGED_BOOK_NAME = "changedBookName"
 
 }

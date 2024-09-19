@@ -19,6 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.Hyphens
+import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import book_info.elements.AboutRating
 import book_info.elements.BookInfoCommonItem
@@ -149,7 +153,13 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
             text = description,
             collapsedMaxLine = 5,
             modifier = Modifier.padding(horizontal = 16.dp),
-            showMoreStyle = SpanStyle(color = Color(0xFFedf6f9), fontWeight = FontWeight.Bold)
+            showMoreStyle = SpanStyle(color = Color(0xFFedf6f9), fontWeight = FontWeight.Bold),
+            style = ApplicationTheme.typography.headlineRegular.copy(
+                textDirection = TextDirection.Content,
+                hyphens = Hyphens.Auto,
+                lineBreak = LineBreak.Paragraph
+            ),
+            textAlign = TextAlign.Justify,
         )
 
         Text(

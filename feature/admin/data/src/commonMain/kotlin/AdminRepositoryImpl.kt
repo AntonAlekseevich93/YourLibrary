@@ -1,9 +1,11 @@
 import HttpParams.CHANGED_BOOK_NAME
+import HttpParams.LANG
 import HttpParams.RANGE_END
 import HttpParams.RANGE_START
 import database.LocalAdminDataSource
 import ktor.RemoteAdminDataSource
 import main_models.books.BookShortVo
+import main_models.books.LANG
 import main_models.rest.BackendErrors
 import main_models.rest.Response
 import main_models.rest.admin.NonModerationBooksResponse
@@ -17,7 +19,7 @@ class AdminRepositoryImpl(
     private val appConfig: AppConfig,
 ) : AdminRepository {
 
-    override suspend fun getBooksForModeration(): Response<NonModerationBooksResponse?> {
+    override suspend fun getBooksForModeration(lang: LANG): Response<NonModerationBooksResponse?> {
         val params = mutableMapOf<String, String>()
         if (appConfig.useNonModerationRange) {
             appConfig.getNonModerationRangeOrNull()?.let {
@@ -25,6 +27,7 @@ class AdminRepositoryImpl(
                 params[RANGE_END] = it.last.toString()
             }
         }
+        params[LANG] = lang.value
         val response = remoteAdminDataSource.getBooksForModeration(params)
         return if (response?.result?.books != null) {
             Response.Success(
