@@ -22,6 +22,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.essenty.backhandler.BackCallback
 import components.modarations_books_screen.ModerationBooksScreen
+import components.parsing_screens.SingleBookParsingScreen
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
@@ -148,7 +149,17 @@ fun Application(
                     }
 
                     is RootComponent.Screen.SettingsScreen -> {
-                        AdminPanelScreen(hazeState = hazeBlurState)
+                        SettingsScreen(
+                            hazeState = hazeBlurState,
+                            navigationComponent = screen.component,
+                        )
+                    }
+
+                    is RootComponent.Screen.AdminScreen -> {
+                        AdminPanelScreen(
+                            hazeState = hazeBlurState,
+                            navigationComponent = screen.component
+                        )
                     }
 
                     is RootComponent.Screen.ModerationScreen -> {
@@ -160,6 +171,20 @@ fun Application(
 
                     is RootComponent.Screen.ModerationBooksScreen -> {
                         ModerationBooksScreen(
+                            hazeState = hazeBlurState,
+                            navigationComponent = screen.component
+                        )
+                    }
+
+                    is RootComponent.Screen.AdminParsingBooksScreen -> {
+                        AdminParsingBooksScreen(
+                            hazeState = hazeBlurState,
+                            navigationComponent = screen.component
+                        )
+                    }
+
+                    is RootComponent.Screen.SingleBookParsingScreen -> {
+                        SingleBookParsingScreen(
                             hazeState = hazeBlurState,
                             navigationComponent = screen.component
                         )

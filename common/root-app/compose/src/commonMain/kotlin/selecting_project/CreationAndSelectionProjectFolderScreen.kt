@@ -68,14 +68,8 @@ fun BaseEventScope<BaseEvent>.CreationAndSelectionProjectFolderScreen(
                     PathInfoBlock(
                         pathInfo = pathInfo,
                         selectedPathInfo = {
-                            this@CreationAndSelectionProjectFolderScreen.sendEvent(
-                                ProjectFoldersEvents.SelectPathInfo(pathInfo)
-                            )
                         },
                         renamePath = { newName ->
-                            this@CreationAndSelectionProjectFolderScreen.sendEvent(
-                                ProjectFoldersEvents.RenamePath(pathInfo, newName)
-                            )
                         },
                         restartApp = {
                             this@CreationAndSelectionProjectFolderScreen.sendEvent(
@@ -155,9 +149,6 @@ fun BaseEventScope<BaseEvent>.CreationAndSelectionProjectFolderScreen(
                                     showDirPicker.value = true
                                 },
                                 createVaultListener = { name ->
-                                    this@CreationAndSelectionProjectFolderScreen.sendEvent(
-                                        ProjectFoldersEvents.CreateFolder(selectedPath, name)
-                                    )
                                 },
                                 onBackClick = {
                                     isMainScreen.value = true
@@ -174,11 +165,6 @@ fun BaseEventScope<BaseEvent>.CreationAndSelectionProjectFolderScreen(
                 selectedPath = path
                 if (isSelectedFolderProcess) {
                     isSelectedFolderProcess = false
-                    this@CreationAndSelectionProjectFolderScreen.sendEvent(
-                        ProjectFoldersEvents.SelectFolderEvent(
-                            path
-                        )
-                    )
                 }
             }
             showDirPicker.value = false

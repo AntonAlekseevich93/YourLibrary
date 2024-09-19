@@ -1,4 +1,4 @@
-package components
+package elements
 
 import ApplicationTheme
 import androidx.compose.foundation.background
@@ -8,14 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -32,11 +30,11 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeChild
 
 @Composable
-fun AdminPanelAppBar(
+fun SettingsAppBar(
     hazeBlurState: HazeState,
     isHazeBlurEnabled: Boolean,
     title: String,
-    showCloseButton: Boolean = true,
+    showBackButton: Boolean,
     onClose: () -> Unit,
     onBack: () -> Unit,
 ) {
@@ -60,7 +58,7 @@ fun AdminPanelAppBar(
     ) {
         AppBarComponent(
             title = title,
-            showCloseButton = showCloseButton,
+            showBackButton = showBackButton,
             onClose = onClose,
             onBack = onBack,
         )
@@ -72,7 +70,7 @@ fun AdminPanelAppBar(
 @Composable
 internal fun AppBarComponent(
     title: String,
-    showCloseButton: Boolean,
+    showBackButton: Boolean,
     onBack: () -> Unit,
     onClose: () -> Unit,
 ) {
@@ -100,38 +98,25 @@ internal fun AppBarComponent(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
-
-                    IconButton(
-                        onClick = {
-                            onBack.invoke()
-                        },
-                        modifier = Modifier
-                    ) {
-
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBackIosNew,
-                            contentDescription = null,
-                        )
-                    }
-                },
-                actions = {
-                    if (showCloseButton) {
+                    if (showBackButton) {
                         IconButton(
                             onClick = {
-                                onClose.invoke()
+                                onBack.invoke()
                             },
                             modifier = Modifier
                         ) {
 
                             Icon(
-                                imageVector = Icons.Rounded.Close,
+                                imageVector = Icons.Rounded.ArrowBackIosNew,
                                 contentDescription = null,
-                                modifier = Modifier.size(30.dp)
                             )
                         }
                     } else {
-                        Spacer(Modifier.padding(end = 36.dp))
+                        Spacer(Modifier.padding(end = 46.dp))
                     }
+                },
+                actions = {
+                    Spacer(Modifier.padding(end = 36.dp))
                 }
             )
         }

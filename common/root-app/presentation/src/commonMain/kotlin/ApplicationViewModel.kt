@@ -8,10 +8,7 @@ import kotlinx.coroutines.withContext
 import main_app_bar.MainAppBarEvents
 import main_models.TooltipItem
 import main_models.books.BookShortVo
-import main_models.path.PathInfoVo
 import models.ApplicationUiState
-import models.ProjectFoldersEvents
-import models.SettingsDataProvider
 import navigation.RootComponent
 import navigation.activeScreenAsBookInfoOrNull
 import navigation.isBookInfo
@@ -23,7 +20,6 @@ import tooltip_area.TooltipEvents
 class ApplicationViewModel(
     private val interactor: ApplicationInteractor,
     private val tooltipHandler: TooltipHandler,
-    private val settingsDataProvider: SettingsDataProvider,
     private val userInteractor: UserInteractor,
     private val platformInfo: PlatformInfoData,
 ) : BaseMVIViewModel<ApplicationUiState, BaseEvent>(ApplicationUiState()),
@@ -61,25 +57,6 @@ class ApplicationViewModel(
     override fun sendEvent(event: BaseEvent) {
         when (event) {
             is TooltipEvents.SetTooltipEvent -> tooltipHandler.setTooltip(event.tooltip)
-            is ProjectFoldersEvents.SelectFolderEvent -> selectFolder(event.path)
-            is ProjectFoldersEvents.CreateFolder -> createFolder(event.path, event.name)
-            is ProjectFoldersEvents.SelectPathInfo -> {
-                selectPathInfo(event.pathInfo)
-            }
-
-            is ProjectFoldersEvents.RenamePath -> {
-                scope.launch {
-                    val newPath = interactor.renamePath(
-                        pathInfo = event.pathInfo,
-                        newName = event.newName,
-                    )
-                    settingsDataProvider.updateLibraryNameInFile(
-                        path = newPath,
-                        oldName = event.pathInfo.libraryName,
-                        newName = event.newName
-                    )
-                }
-            }
 
             is MainAppBarEvents.OnSearch -> {
                 searchInLocalBooks(event.text)
@@ -130,7 +107,7 @@ class ApplicationViewModel(
     }
 
     override fun openModerationScreen() {
-        (component.screenStack.value.active.instance as? RootComponent.Screen.SettingsScreen)?.let {
+        (component.screenStack.value.active.instance as? RootComponent.Screen.AdminScreen)?.let {
             it.component.openModerationScreen()
         }
     }
@@ -143,6 +120,18 @@ class ApplicationViewModel(
 
     override fun closeBookInfoScreen() {
         component.activeScreenAsBookInfoOrNull()?.component?.onBackClicked()
+    }
+
+    override fun openAdminParsingBooksScreen() {
+        (component.screenStack.value.active.instance as? RootComponent.Screen.AdminScreen)?.let {
+            it.component.openParsingScreen()
+        }
+    }
+
+    override fun openAdminPanel() {
+        (component.screenStack.value.active.instance as? RootComponent.Screen.SettingsScreen)?.let {
+            it.component.openAdminPanel()
+        }
     }
 
     override fun openLeftDrawerOrClose() {
@@ -185,50 +174,6 @@ class ApplicationViewModel(
                     updateUIState(uiStateValue.copy(searchedBooks = emptyList()))
                 }
             }
-        }
-    }
-
-    private fun selectPathInfo(pathInfo: PathInfoVo) {
-        if (!pathInfo.isSelected) {
-            interactor.setPathAsSelected(pathInfo.id)
-        }
-    }
-
-    private fun setFolderAsSelected(path: String, libraryName: String): Boolean {
-        interactor.createDbPath(path = path, libraryName = libraryName)?.let { id ->
-            interactor.setPathAsSelected(id)
-            return true
-        }
-        return false
-    }
-
-    private fun selectFolder(path: String) {
-        scope.launch {
-            interactor.getPathByOs(path).let { osPath ->
-                settingsDataProvider.getLibraryNameIfExist(osPath)?.let { libraryName ->
-                    val isSuccess = setFolderAsSelected(
-                        path = osPath,
-                        libraryName = libraryName
-                    )
-                    if (isSuccess) {
-
-                    }
-                }
-            }
-        }
-    }
-
-    private fun createFolder(path: String, name: String) {
-        interactor.createFolderAndGetPath(path, name)?.let { resultPath ->
-            settingsDataProvider.createAppSettingsFile(
-                path = resultPath,
-                libraryName = name,
-                themeName = "Dark" //todo
-            )
-            interactor.createDbPath(
-                path = resultPath,
-                libraryName = name
-            )
         }
     }
 }

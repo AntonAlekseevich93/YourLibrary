@@ -20,7 +20,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
-import navigation.screens.ModerationBooksScreenComponent
+import navigation.screen_components.ModerationBooksScreenComponent
 import org.jetbrains.compose.resources.stringResource
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.moderation_books_title
@@ -50,8 +50,9 @@ fun ModerationBooksScreen(
                 hazeBlurState = hazeState,
                 isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
                 title = stringResource(Res.string.moderation_books_title),
-                showBackButton = true,
-                onClose = {},
+                onClose = {
+                    navigationComponent.onCloseScreen()
+                },
                 onBack = {
                     navigationComponent.onBack()
                 }

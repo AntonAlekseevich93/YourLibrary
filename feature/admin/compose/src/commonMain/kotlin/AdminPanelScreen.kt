@@ -27,6 +27,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
 import models.AdminEvents
+import navigation.screen_components.AdminScreenComponent
 import org.jetbrains.compose.resources.stringResource
 import text_fields.CommonTextField
 import yourlibrary.common.resources.generated.resources.Res
@@ -38,6 +39,7 @@ import yourlibrary.common.resources.generated.resources.ic_moderation_menu
 @Composable
 fun AdminPanelScreen(
     hazeState: HazeState,
+    navigationComponent: AdminScreenComponent
 ) {
     val viewModel = remember { Inject.instance<AdminViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
@@ -48,10 +50,10 @@ fun AdminPanelScreen(
                 hazeBlurState = hazeState,
                 isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
                 title = stringResource(Res.string.admin_panel),
-                showBackButton = uiState.databaseMenuScreen.value,
+                showCloseButton = false,
                 onClose = {},
                 onBack = {
-                    viewModel.sendEvent(AdminEvents.OnBack)
+                    navigationComponent.onBack()
                 }
             )
         },
@@ -109,6 +111,7 @@ fun AdminPanelScreen(
                             MenuButton(
                                 icon = Res.drawable.ic_database,
                                 iconSize = 16.dp,
+                                iconModifier = Modifier.padding(start = 2.dp, end = 1.dp),
                                 iconColorFilter = ColorFilter.tint(
                                     ApplicationTheme.colors.mainIconsColor.copy(
                                         alpha = 0.8f

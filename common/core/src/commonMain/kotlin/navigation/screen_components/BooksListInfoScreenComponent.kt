@@ -1,4 +1,4 @@
-package navigation.screens
+package navigation.screen_components
 
 import com.arkivanov.decompose.ComponentContext
 

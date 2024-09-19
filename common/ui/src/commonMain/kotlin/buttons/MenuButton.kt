@@ -26,6 +26,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun MenuButton(
     icon: DrawableResource,
+    iconModifier: Modifier = Modifier,
     iconSize: Dp = 20.dp,
     iconColorFilter: ColorFilter? = null,
     showDivider: Boolean = true,
@@ -44,7 +45,7 @@ fun MenuButton(
                     painter = painterResource(icon),
                     contentDescription = null,
                     colorFilter = iconColorFilter,
-                    modifier = Modifier
+                    modifier = iconModifier
                         .padding(end = 20.dp)
                         .size(iconSize)
                 )

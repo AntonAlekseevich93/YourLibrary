@@ -17,7 +17,7 @@ import main_models.books.BookShortVo
 import models.BookInfoScope
 import models.BookInfoUiState
 import models.BookScreenEvents
-import navigation.screens.BookInfoComponent
+import navigation.screen_components.BookInfoComponent
 import platform.PlatformInfoData
 import tooltip_area.TooltipEvents
 
@@ -65,7 +65,11 @@ class BookInfoViewModel(
 
             is BookScreenEvents.OpenShortBook -> {
                 component.updateScrollPosition(uiState.value.scrollPosition.value)
-                applicationScope.openBookInfoScreen(bookId = null, shortBook = event.shortBook, false)
+                applicationScope.openBookInfoScreen(
+                    bookId = null,
+                    shortBook = event.shortBook,
+                    false
+                )
             }
 
             is BookScreenEvents.ShowDateSelector -> {

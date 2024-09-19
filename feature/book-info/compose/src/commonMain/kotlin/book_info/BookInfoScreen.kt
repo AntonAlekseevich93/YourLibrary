@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 import main_models.DatePickerType
 import main_models.books.BookShortVo
 import models.BookScreenEvents
-import navigation.screens.BookInfoComponent
+import navigation.screen_components.BookInfoComponent
 import org.jetbrains.compose.resources.stringResource
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.end_date

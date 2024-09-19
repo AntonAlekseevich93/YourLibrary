@@ -7,4 +7,7 @@ interface ApplicationScope {
     fun navigateToBooksListInfo(books: List<BookShortVo>)
     fun openModerationScreen()
     fun openModerationBooksScreen()
+    fun openAdminParsingBooksScreen()
+
+    fun openAdminPanel()
 }
