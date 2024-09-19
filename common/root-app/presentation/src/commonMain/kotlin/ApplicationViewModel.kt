@@ -129,6 +129,12 @@ class ApplicationViewModel(
         }
     }
 
+    override fun openModerationScreen() {
+        (component.screenStack.value.active.instance as? RootComponent.Screen.SettingsScreen)?.let {
+            it.component.openModerationScreen()
+        }
+    }
+
     override fun closeBookInfoScreen() {
         component.activeScreenAsBookInfoOrNull()?.component?.onBackClicked()
     }

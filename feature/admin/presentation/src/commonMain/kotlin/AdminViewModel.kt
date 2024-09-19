@@ -18,6 +18,7 @@ class AdminViewModel(
     private val interactor: AdminInteractor,
     private val appConfig: AppConfig,
     private val platformInfo: PlatformInfoData,
+    private val applicationScope: ApplicationScope,
 ) : BaseMVIViewModel<AdminUiState, BaseEvent>(AdminUiState()) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
 
@@ -137,6 +138,9 @@ class AdminViewModel(
                         isLoading = false
                     )
                 )
+                withContext(Dispatchers.Main) {
+                    applicationScope.openModerationScreen()
+                }
             }
         }
     }

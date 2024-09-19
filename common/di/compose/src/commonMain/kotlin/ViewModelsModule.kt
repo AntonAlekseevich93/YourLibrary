@@ -43,6 +43,7 @@ val viewModelsModule = DI.Module("viewModelsModule") {
             instance(),
             instance(),
             instance(),
+            instance()
         )
     }
 

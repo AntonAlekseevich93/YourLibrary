@@ -150,6 +150,13 @@ fun Application(
                         AdminPanelScreen(hazeState = hazeBlurState)
                     }
 
+                    is RootComponent.Screen.ModerationScreen -> {
+                        ModerationScreen(
+                            hazeState = hazeBlurState,
+                            navigationComponent = screen.component
+                        )
+                    }
+
                     is RootComponent.Screen.BooksListInfoScreen -> {
 //                                    BooksListInfoScreen(
 //                                        bookList = uiState.booksListInfoScreenBooks.value,

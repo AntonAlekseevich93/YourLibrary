@@ -24,7 +24,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import components.modarations_books_screen.AdminPanelAppBar
 import components.modarations_books_screen.DatabaseScreen
-import components.modarations_books_screen.ModerationBooksScreen
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
@@ -48,7 +47,7 @@ fun AdminPanelScreen(
                 hazeBlurState = hazeState,
                 isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
                 title = stringResource(Res.string.admin_panel),
-                showBackButton = uiState.moderationBookState.selectedItem != null || uiState.databaseMenuScreen.value,
+                showBackButton = uiState.databaseMenuScreen.value,
                 onClose = {},
                 onBack = {
                     viewModel.sendEvent(AdminEvents.OnBack)
@@ -68,7 +67,7 @@ fun AdminPanelScreen(
                         .background(ApplicationTheme.colors.cardBackgroundDark)
                         .fillMaxSize()
                 ) {
-                    AnimatedVisibility(visible = uiState.moderationBookState.selectedItem == null && !uiState.databaseMenuScreen.value) {
+                    AnimatedVisibility(visible = !uiState.databaseMenuScreen.value) {
                         Column(
                             modifier = Modifier.padding(
                                 top = it.calculateTopPadding().plus(24.dp), bottom = 24.dp
@@ -117,25 +116,6 @@ fun AdminPanelScreen(
                         }
                     }
 
-                    AnimatedVisibility(visible = uiState.moderationBookState.selectedItem != null) {
-                        var moderationModifier: Modifier = Modifier
-                        if (uiState.isHazeBlurEnabled.value) {
-                            moderationModifier = moderationModifier.haze(
-                                state = hazeState,
-                                style = HazeStyle(
-                                    tint = Color.Black.copy(alpha = .04f),
-                                    blurRadius = 30.dp,
-                                )
-                            )
-                        }
-                        viewModel.ModerationBooksScreen(
-                            state = uiState.moderationBookState,
-                            hazeModifier = moderationModifier,
-                            topPadding = it.calculateTopPadding(),
-                            bottomPadding = it.calculateBottomPadding(),
-                        )
-                    }
-
                     AnimatedVisibility(visible = uiState.databaseMenuScreen.value) {
                         var modifier: Modifier = Modifier
                         if (uiState.isHazeBlurEnabled.value) {
@@ -155,114 +135,112 @@ fun AdminPanelScreen(
                     }
                 }
 
-                if (uiState.moderationBookState.selectedItem == null) {
-                    Column(
-                        modifier = Modifier.padding(start = 10.dp, bottom = 44.dp, end = 10.dp)
-                            .padding(bottom = it.calculateBottomPadding().plus(46.dp))
-                            .align(Alignment.BottomStart)
+                Column(
+                    modifier = Modifier.padding(start = 10.dp, bottom = 44.dp, end = 10.dp)
+                        .padding(bottom = it.calculateBottomPadding().plus(46.dp))
+                        .align(Alignment.BottomStart)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(
+                            checked = uiState.skipLongImageLoading,
+                            onCheckedChange = {
+                                viewModel.sendEvent(AdminEvents.ChangeSkipImageLongLoadingSettings)
+                            }
+                        )
+                        Text(
+                            text = "Пропускать долгую загрузку фотографий",
+                            style = ApplicationTheme.typography.footnoteRegular,
+                            color = ApplicationTheme.colors.mainTextColor,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 12.dp)
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Checkbox(
-                                checked = uiState.skipLongImageLoading,
-                                onCheckedChange = {
-                                    viewModel.sendEvent(AdminEvents.ChangeSkipImageLongLoadingSettings)
-                                }
-                            )
-                            Text(
-                                text = "Пропускать долгую загрузку фотографий",
-                                style = ApplicationTheme.typography.footnoteRegular,
-                                color = ApplicationTheme.colors.mainTextColor,
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-                        }
+                        Checkbox(
+                            checked = uiState.useCustomHost,
+                            onCheckedChange = {
+                                viewModel.sendEvent(AdminEvents.ChangeNeedUseCustomUrl(it))
+                            }
+                        )
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(vertical = 12.dp)
-                        ) {
-                            Checkbox(
-                                checked = uiState.useCustomHost,
-                                onCheckedChange = {
-                                    viewModel.sendEvent(AdminEvents.ChangeNeedUseCustomUrl(it))
-                                }
-                            )
+                        CommonTextField(
+                            textState = uiState.customUrl,
+                            onTextChanged = {
+                                viewModel.sendEvent(AdminEvents.CustomUrlChanged(it))
+                            },
+                            placeholder = {
+                                Text(
+                                    text = "Custom url",
+                                    color = ApplicationTheme.colors.mainTextColor,
+                                    style = ApplicationTheme.typography.footnoteRegular
+                                )
+                            },
+                            unfocusedIndicatorLineThickness = 1.dp
+                        )
+                    }
 
-                            CommonTextField(
-                                textState = uiState.customUrl,
-                                onTextChanged = {
-                                    viewModel.sendEvent(AdminEvents.CustomUrlChanged(it))
-                                },
-                                placeholder = {
-                                    Text(
-                                        text = "Custom url",
-                                        color = ApplicationTheme.colors.mainTextColor,
-                                        style = ApplicationTheme.typography.footnoteRegular
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    ) {
+                        Checkbox(
+                            checked = uiState.useHttp,
+                            onCheckedChange = {
+                                viewModel.sendEvent(AdminEvents.ChangeNeedUseHttp)
+                            }
+                        )
+                        Text(
+                            text = "Use HTTP",
+                            style = ApplicationTheme.typography.footnoteRegular,
+                            color = ApplicationTheme.colors.mainTextColor,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    ) {
+                        Checkbox(
+                            checked = uiState.useNonModerationRange,
+                            onCheckedChange = {
+                                viewModel.sendEvent(
+                                    AdminEvents.ChangeNeedUseNonModerationRange(
+                                        it
                                     )
-                                },
-                                unfocusedIndicatorLineThickness = 1.dp
-                            )
-                        }
+                                )
+                            }
+                        )
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(vertical = 12.dp)
-                        ) {
-                            Checkbox(
-                                checked = uiState.useHttp,
-                                onCheckedChange = {
-                                    viewModel.sendEvent(AdminEvents.ChangeNeedUseHttp)
-                                }
-                            )
-                            Text(
-                                text = "Use HTTP",
-                                style = ApplicationTheme.typography.footnoteRegular,
-                                color = ApplicationTheme.colors.mainTextColor,
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-                        }
+                        CommonTextField(
+                            modifier = Modifier.weight(1f),
+                            textState = uiState.rangeStart,
+                            onTextChanged = {
+                                viewModel.sendEvent(AdminEvents.ChangeNonModerationStartRange(it))
+                            },
+                            unfocusedIndicatorLineThickness = 1.dp,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(vertical = 12.dp)
-                        ) {
-                            Checkbox(
-                                checked = uiState.useNonModerationRange,
-                                onCheckedChange = {
-                                    viewModel.sendEvent(
-                                        AdminEvents.ChangeNeedUseNonModerationRange(
-                                            it
-                                        )
-                                    )
-                                }
-                            )
+                        Text(
+                            text = "-",
+                            style = ApplicationTheme.typography.footnoteRegular,
+                            color = ApplicationTheme.colors.mainTextColor,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
 
-                            CommonTextField(
-                                modifier = Modifier.weight(1f),
-                                textState = uiState.rangeStart,
-                                onTextChanged = {
-                                    viewModel.sendEvent(AdminEvents.ChangeNonModerationStartRange(it))
-                                },
-                                unfocusedIndicatorLineThickness = 1.dp,
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                            )
-
-                            Text(
-                                text = "-",
-                                style = ApplicationTheme.typography.footnoteRegular,
-                                color = ApplicationTheme.colors.mainTextColor,
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-
-                            CommonTextField(
-                                modifier = Modifier.weight(1f),
-                                textState = uiState.rangeEnd,
-                                onTextChanged = {
-                                    viewModel.sendEvent(AdminEvents.ChangeNonModerationEndRange(it))
-                                },
-                                unfocusedIndicatorLineThickness = 1.dp,
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                            )
-                        }
+                        CommonTextField(
+                            modifier = Modifier.weight(1f),
+                            textState = uiState.rangeEnd,
+                            onTextChanged = {
+                                viewModel.sendEvent(AdminEvents.ChangeNonModerationEndRange(it))
+                            },
+                            unfocusedIndicatorLineThickness = 1.dp,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
                     }
                 }
             }

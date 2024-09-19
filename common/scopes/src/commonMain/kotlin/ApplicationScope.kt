@@ -5,4 +5,5 @@ interface ApplicationScope {
     fun openBookInfoScreen(bookId: Long?, shortBook: BookShortVo?, needSaveScreenId: Boolean)
     fun changedReadingStatus(oldStatusId: String, bookId: String)
     fun navigateToBooksListInfo(books: List<BookShortVo>)
+    fun openModerationScreen()
 }

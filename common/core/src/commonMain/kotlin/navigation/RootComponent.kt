@@ -18,9 +18,11 @@ import navigation.screens.DefaultBookCreatorScreenComponent
 import navigation.screens.DefaultBookInfoComponent
 import navigation.screens.DefaultBooksListInfoScreenComponent
 import navigation.screens.DefaultMainScreenComponent
+import navigation.screens.DefaultModerationScreenComponent
 import navigation.screens.DefaultProfileScreenComponent
 import navigation.screens.DefaultSettingsScreenComponent
 import navigation.screens.MainScreenComponent
+import navigation.screens.ModerationScreenComponent
 import navigation.screens.ProfileScreenComponent
 import navigation.screens.SettingsScreenComponent
 
@@ -41,6 +43,7 @@ interface RootComponent : BackHandlerOwner {
         class ProfileScreen(val component: ProfileScreenComponent) : Screen()
         class SettingsScreen(val component: SettingsScreenComponent) : Screen()
         class BooksListInfoScreen(val component: BooksListInfoScreenComponent) : Screen()
+        class ModerationScreen(val component: ModerationScreenComponent) : Screen()
     }
 }
 
@@ -125,6 +128,10 @@ class DefaultRootComponent(
             is Config.BooksListInfoConfig -> RootComponent.Screen.BooksListInfoScreen(
                 itemBooksListInfoScreen(componentContext)
             )
+
+            is Config.ModerationConfig -> RootComponent.Screen.ModerationScreen(
+                itemModerationScreen(componentContext)
+            )
         }
 
     private fun itemMainScreen(componentContext: ComponentContext): MainScreenComponent =
@@ -186,11 +193,26 @@ class DefaultRootComponent(
     private fun itemSettingsScreen(componentContext: ComponentContext): SettingsScreenComponent =
         DefaultSettingsScreenComponent(
             componentContext = componentContext,
+            openModerationScreenCallback = {
+                val id = getNextStackKey
+                push(
+                    id = id,
+                    config = Config.ModerationConfig(id)
+                )
+            }
         )
 
     private fun itemBooksListInfoScreen(componentContext: ComponentContext): BooksListInfoScreenComponent =
         DefaultBooksListInfoScreenComponent(
             componentContext = componentContext,
+        )
+
+    private fun itemModerationScreen(componentContext: ComponentContext): ModerationScreenComponent =
+        DefaultModerationScreenComponent(
+            componentContext = componentContext,
+            onBackListener = {
+                pop()
+            }
         )
 
     private fun popUntilStackIdFindOrFirstScreen(id: Int) {
@@ -261,6 +283,9 @@ class DefaultRootComponent(
 
         @Serializable
         data class BooksListInfoConfig(val ids: Int) : Config(ids)
+
+        @Serializable
+        data class ModerationConfig(val ids: Int) : Config(ids)
     }
 
     companion object {
