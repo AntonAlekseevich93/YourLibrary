@@ -2,21 +2,27 @@ package navigation.screen_components
 
 import com.arkivanov.decompose.ComponentContext
 
-interface SingleBookParsingScreenComponent {
+interface ParsingScreenComponent {
     fun onBack()
     fun onCloseScreen()
+    fun openSingleParsingScreen()
 }
 
-class DefaultSingleBookParsingScreenComponent(
+class DefaultParsingScreenComponent(
     componentContext: ComponentContext,
     val onBackListener: () -> Unit,
     val onCloseScreenListener: () -> Unit,
-) : SingleBookParsingScreenComponent, ComponentContext by componentContext {
+    val onOpenSingleBookParsingScreen: () -> Unit,
+) : ParsingScreenComponent, ComponentContext by componentContext {
     override fun onBack() {
         onBackListener()
     }
 
     override fun onCloseScreen() {
         onCloseScreenListener()
+    }
+
+    override fun openSingleParsingScreen() {
+        onOpenSingleBookParsingScreen()
     }
 }

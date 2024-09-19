@@ -176,8 +176,8 @@ fun Application(
                         )
                     }
 
-                    is RootComponent.Screen.AdminParsingBooksScreen -> {
-                        AdminParsingBooksScreen(
+                    is RootComponent.Screen.ParsingScreen -> {
+                        ParsingScreen(
                             hazeState = hazeBlurState,
                             navigationComponent = screen.component
                         )

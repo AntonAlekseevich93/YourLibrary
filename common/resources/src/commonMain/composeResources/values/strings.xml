@@ -142,4 +142,11 @@
     <string name="date_selector_menu_delete_confirm_title">Вы уверены что хотите удалить дату начала и окончания чтения?</string>
     <string name="moderation_books_title">Модерация книг</string>
     <string name="moderation_screen_title">Модерация</string>
+    <string name="books_parsing">Книжный парсинг</string>
+    <string name="parsing">Парсинг</string>
+    <string name="single_book_parsing">Парсинг одной книги</string>
+    <string name="database">База данных</string>
+    <string name="moderation">Модерирование</string>
+    <string name="russian_books">Книги на русском языке</string>
+    <string name="english_books">Книги на английском языке</string>
 </resources>

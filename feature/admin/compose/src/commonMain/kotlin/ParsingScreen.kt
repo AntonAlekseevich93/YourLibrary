@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import buttons.MenuButton
 import components.AdminPanelAppBar
@@ -19,15 +20,17 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
-import navigation.screen_components.AdminParsingBooksScreenComponent
+import navigation.screen_components.ParsingScreenComponent
+import org.jetbrains.compose.resources.stringResource
 import yourlibrary.common.resources.generated.resources.Res
-import yourlibrary.common.resources.generated.resources.flag_gb
-import yourlibrary.common.resources.generated.resources.flag_ru
+import yourlibrary.common.resources.generated.resources.ic_code
+import yourlibrary.common.resources.generated.resources.parsing
+import yourlibrary.common.resources.generated.resources.single_book_parsing
 
 @Composable
-fun AdminParsingBooksScreen(
+fun ParsingScreen(
     hazeState: HazeState,
-    navigationComponent: AdminParsingBooksScreenComponent,
+    navigationComponent: ParsingScreenComponent,
 ) {
     val viewModel = remember { Inject.instance<AdminViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
@@ -47,9 +50,10 @@ fun AdminParsingBooksScreen(
             AdminPanelAppBar(
                 hazeBlurState = hazeState,
                 isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
-                title = "Книжный парсинг",
-//                title = stringResource(Res.string.moderation_screen_title),
-                onClose = {},
+                title = stringResource(Res.string.parsing),
+                onClose = {
+                    navigationComponent.onCloseScreen()
+                },
                 onBack = {
                     navigationComponent.onBack()
                 }
@@ -68,30 +72,17 @@ fun AdminParsingBooksScreen(
                     .fillMaxSize()
             ) {
                 MenuButton(
-                    icon = Res.drawable.flag_ru,
+                    icon = Res.drawable.ic_code,
+                    iconColorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                     invoke = {
                         Text(
-                            text = "Книги на русском языке",
-                            style = ApplicationTheme.typography.headlineRegular,
-                            color = ApplicationTheme.colors.mainTextColor,
-
-                            )
-                    },
-                    onClick = {
-                    }
-                )
-
-                MenuButton(
-                    icon = Res.drawable.flag_gb,
-                    showDivider = false,
-                    invoke = {
-                        Text(
-                            text = "Книги на английском языке",
+                            text = stringResource(Res.string.single_book_parsing),
                             style = ApplicationTheme.typography.headlineRegular,
                             color = ApplicationTheme.colors.mainTextColor,
                         )
                     },
                     onClick = {
+                        navigationComponent.openSingleParsingScreen()
                     }
                 )
             }

@@ -32,9 +32,12 @@ import org.jetbrains.compose.resources.stringResource
 import text_fields.CommonTextField
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.admin_panel
+import yourlibrary.common.resources.generated.resources.books_parsing
+import yourlibrary.common.resources.generated.resources.database
 import yourlibrary.common.resources.generated.resources.ic_code
 import yourlibrary.common.resources.generated.resources.ic_database
 import yourlibrary.common.resources.generated.resources.ic_moderation_menu
+import yourlibrary.common.resources.generated.resources.moderation
 
 @Composable
 fun AdminPanelScreen(
@@ -81,7 +84,7 @@ fun AdminPanelScreen(
                                 iconColorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                                 invoke = {
                                     Text(
-                                        text = "Модерирование",
+                                        text = stringResource(Res.string.moderation),
                                         style = ApplicationTheme.typography.headlineRegular,
                                         color = ApplicationTheme.colors.mainTextColor,
 
@@ -97,14 +100,14 @@ fun AdminPanelScreen(
                                 iconColorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                                 invoke = {
                                     Text(
-                                        text = "Книжный парсинг",
+                                        text = stringResource(Res.string.books_parsing),
                                         style = ApplicationTheme.typography.headlineRegular,
                                         color = ApplicationTheme.colors.mainTextColor,
 
                                         )
                                 },
                                 onClick = {
-
+                                    navigationComponent.openParsingScreen()
                                 }
                             )
 
@@ -119,7 +122,7 @@ fun AdminPanelScreen(
                                 ),
                                 invoke = {
                                     Text(
-                                        text = "База данных",
+                                        text = stringResource(Res.string.database),
                                         style = ApplicationTheme.typography.headlineRegular,
                                         color = ApplicationTheme.colors.mainTextColor,
 
