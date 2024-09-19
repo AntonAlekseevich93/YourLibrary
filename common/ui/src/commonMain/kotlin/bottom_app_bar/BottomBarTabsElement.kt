@@ -63,7 +63,17 @@ fun CustomBottomBar(
     isHazeBlurEnabled: Boolean,
     navigationComponent: RootComponent,
 ) {
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    var selectedTabIndex by remember {
+        mutableIntStateOf(
+            when (navigationComponent.screenStack.value.active.instance) {
+                is RootComponent.Screen.MainScreen -> 0
+                is RootComponent.Screen.BookCreatorScreen -> 1
+                is RootComponent.Screen.ProfileScreen -> 2
+                is RootComponent.Screen.SettingsScreen -> 3
+                else -> 0
+            }
+        )
+    }
     val shape = RoundedCornerShape(16.dp)
 
     var modifier: Modifier = Modifier
