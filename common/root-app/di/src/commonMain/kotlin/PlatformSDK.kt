@@ -58,6 +58,7 @@ object PlatformSDK {
                     reviewAndRatingModule,
                     synchronizationModule,
                     booksListInfoModule,
+                    cacheManagerModule,
                 )
             }.direct
         )

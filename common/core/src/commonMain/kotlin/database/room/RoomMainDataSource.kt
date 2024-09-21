@@ -7,6 +7,7 @@ import database.room.dao.BookTimestampDao
 import database.room.dao.BooksDao
 import database.room.dao.ReviewAndRatingDao
 import database.room.dao.ReviewAndRatingTimestampDao
+import database.room.dao.cache.CacheBooksByAuthorDao
 import kotlinx.coroutines.Dispatchers
 import platform.Platform
 
@@ -41,11 +42,15 @@ class RoomMainDataSource(
         db.getReviewAndRatingTimestampDao()
     }
 
+    val cacheBooksByAuthorDao: CacheBooksByAuthorDao by lazy {
+        db.getCacheBooksByAuthorDao()
+    }
+
     private fun getRoomDatabase(
         builder: RoomDatabase.Builder<AppDatabase>
     ): AppDatabase {
         val driverProvider = SqlDriverProvider()
-     return builder
+        return builder
             .setDriver(driverProvider.provideDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
             .fallbackToDestructiveMigration(true)//todo fix

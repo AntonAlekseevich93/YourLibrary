@@ -27,6 +27,7 @@ kotlin {
                 implementation(project(":common:arch"))
                 implementation(project(":common:di:compose"))
                 implementation(project(":common:file-manager"))
+                implementation(project(":common:cache-manager:data")) //используется из-за модуля
                 implementation(project(":feature:main-screen:data")) //используется из-за модуля
                 implementation(project(":feature:main-screen:presentation"))
                 implementation(project(":feature:shelf:data")) //используется из-за модуля
