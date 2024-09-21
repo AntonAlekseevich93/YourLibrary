@@ -149,4 +149,8 @@
     <string name="moderation">Модерирование</string>
     <string name="russian_books">Книги на русском языке</string>
     <string name="english_books">Книги на английском языке</string>
+    <string name="clear_cache_bottom_sheet_info">После очиски данные не потеряются и останутся на сервере. Память устройства будет освобождена.</string>
+    <string name="administration_panel">Панель Администратора</string>
+    <string name="clear_all_cache">Очистить весь кэш</string>
+    <string name="dont_clear">Не очищать</string>
 </resources>

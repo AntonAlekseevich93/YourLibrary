@@ -22,4 +22,7 @@ interface CacheBooksByAuthorDao {
         userId: Long
     )
 
+    @Query("DELETE FROM CacheBookByAuthorEntity")
+    suspend fun clearAllCache()
+
 }

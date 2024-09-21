@@ -44,6 +44,10 @@ class CacheManagerDataSource(
         }
     }
 
+    suspend fun clearAllCache(){
+        booksByAuthorDao.clearAllCache()
+    }
+
     private fun isCacheValid(cachedTimestamp: Long): Boolean {
         val currentTimestamp = _currentTimestamp
         val differenceInMillis = currentTimestamp - cachedTimestamp

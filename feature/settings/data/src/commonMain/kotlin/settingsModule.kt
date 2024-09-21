@@ -7,7 +7,7 @@ import org.kodein.di.singleton
 
 val settingsModule = DI.Module("settingsModule") {
     bind<SettingsRepository>() with singleton {
-        SettingsRepositoryImpl(instance(), instance())
+        SettingsRepositoryImpl(instance())
     }
 
     bind<LocalSettingsDataSource>() with provider {

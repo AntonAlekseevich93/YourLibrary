@@ -37,4 +37,8 @@ class CacheManagerRepositoryImpl(
         )
     }
 
+    override suspend fun clearAllCache() {
+        cacheManagerDataSource.clearAllCache()
+    }
+
 }

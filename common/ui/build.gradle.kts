@@ -10,6 +10,8 @@ kotlin {
             dependencies {
                 implementation(deps.bundles.sketchImageLoader)
                 implementation(deps.hazeBlur)
+                implementation(deps.compottie)
+                implementation(deps.compottie.resources)
                 api(project(":common:core"))
                 implementation(project(":common:utils:date"))
                 implementation(project(":common:models"))

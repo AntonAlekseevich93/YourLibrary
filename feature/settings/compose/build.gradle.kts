@@ -9,6 +9,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(deps.hazeBlur)
+
                 implementation(project(":common:core"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:ui"))
@@ -20,6 +21,8 @@ kotlin {
                 implementation(project(":common:resources"))
                 implementation(project(":feature:settings:data"))
                 implementation(project(":feature:settings:presentation"))
+
+
             }
         }
     }

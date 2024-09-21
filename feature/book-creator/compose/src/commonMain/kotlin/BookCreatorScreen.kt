@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import animations.SuccessAnimation
 import book_editor.elements.BookEditorEvents
 import date.CommonDatePicker
 import date.DatePickerEvents
@@ -55,6 +56,7 @@ fun BookCreatorScreen(
     val dataPickerState = rememberDatePickerState()
     val scope = rememberCoroutineScope()
     var selectionGenreState by remember { mutableStateOf(false) }
+    val showSuccessAnimation = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -164,6 +166,7 @@ fun BookCreatorScreen(
                 currentStatus = uiState.selectedBookByMenuClick.value?.bookVo?.readingStatus,
                 useDivider = false,
                 selectStatusListener = {
+                    showSuccessAnimation.value = true
                     viewModel.sendEvent(BookCreatorEvents.ChangeBookReadingStatus(it))
                 },
                 dismiss = { viewModel.sendEvent(BookCreatorEvents.ClearSelectedBook) }
@@ -200,5 +203,12 @@ fun BookCreatorScreen(
                 }
             }
         }
+
+        SuccessAnimation(
+            show = showSuccessAnimation,
+            finishAnimation = {
+                showSuccessAnimation.value = false
+            }
+        )
     }
 }

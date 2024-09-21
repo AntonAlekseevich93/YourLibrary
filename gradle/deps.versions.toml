@@ -7,6 +7,7 @@ compose-version = "1.6.11"
 sketchImageLoader = "4.0.0-alpha03"
 hazeBlurVersion = "0.7.3"
 decomposeVersion = "3.1.0"
+compottieVersion="2.0.0-rc01"
 
 [libraries]
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
@@ -21,6 +22,10 @@ sketchExtensionsCompose = {group = "io.github.panpf.sketch4", name = "sketch-ext
 hazeBlur = {group = "dev.chrisbanes.haze", name = "haze", version.ref = "hazeBlurVersion"}
 decomposeMain = {group = "com.arkivanov.decompose", name = "decompose", version.ref = "decomposeVersion"}
 decomposeCompose = {group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decomposeVersion"}
+compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottieVersion" }
+compottie-dot = { module = "io.github.alexzhirkevich:compottie-dot", version.ref = "compottieVersion" }
+compottie-network = { module = "io.github.alexzhirkevich:compottie-network", version.ref = "compottieVersion" }
+compottie-resources = { module = "io.github.alexzhirkevich:compottie-resources", version.ref = "compottieVersion" }
 
 [plugins]
 room = { id = "androidx.room", version.ref = "androidxRoom" }

@@ -50,6 +50,8 @@ kotlin {
                 implementation(project(":feature:user:domain"))
                 implementation(project(":feature:rating-review:data"))
                 implementation(project(":feature:synchronization:data"))
+                implementation(project(":feature:settings:data"))
+                implementation(project(":feature:settings:domain"))
                 implementation(deps.compose.runtime)
             }
         }

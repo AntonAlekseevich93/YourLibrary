@@ -12,7 +12,7 @@ kotlin {
                 implementation(project(":common:models"))
                 implementation(project(":common:scopes"))
                 implementation(project(":common:arch"))
-                implementation(project(":feature:settings:api"))
+                implementation(project(":feature:settings:domain"))
             }
         }
     }

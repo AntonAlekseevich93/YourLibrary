@@ -2,14 +2,15 @@ import base.BaseMVIViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import models.SettingsEvents
 import models.SettingsUiState
 import platform.Platform
 
 class SettingsViewModel(
     private val platform: Platform,
-    private val repository: SettingsRepository,
-    private val applicationScope: ApplicationScope
+    private val interactor: SettingsInteractor,
+    private val applicationScope: ApplicationScope,
 ) : BaseMVIViewModel<SettingsUiState, BaseEvent>(SettingsUiState(platform)) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
 
@@ -17,6 +18,12 @@ class SettingsViewModel(
         when (event) {
             is SettingsEvents.OnOpenAdminPanel -> {
                 applicationScope.openAdminPanel()
+            }
+
+            is SettingsEvents.ClearAllCache -> {
+                scope.launch {
+                    interactor.clearAllCache()
+                }
             }
         }
     }
