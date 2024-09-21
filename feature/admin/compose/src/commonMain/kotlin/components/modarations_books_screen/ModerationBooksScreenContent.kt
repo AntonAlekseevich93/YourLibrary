@@ -3,9 +3,9 @@ package components.modarations_books_screen
 import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import Strings
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -13,24 +13,28 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.Hyphens
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
@@ -39,12 +43,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import components.modarations_books_screen.elements.AgeRestrictionsElement
+import components.modarations_books_screen.elements.AuthorElement
 import components.modarations_books_screen.elements.BookCover
-import main_models.genre.GenreUtils
+import components.modarations_books_screen.elements.BookNameElement
+import components.modarations_books_screen.elements.ChangeBookNameEditorElement
+import components.modarations_books_screen.elements.ChangedBookNameElement
+import components.modarations_books_screen.elements.GenreElement
+import components.modarations_books_screen.elements.IsbnElement
+import components.modarations_books_screen.elements.PagesElement
+import components.modarations_books_screen.elements.ServerIdElement
+import containters.CenterBoxContainer
 import models.AdminEvents
 import models.AdminUiState
 import tags.CustomTag
-import text_fields.OldCommonTextField
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -57,17 +69,16 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreenContent(
             uiState.moderationBookState.selectedItem
         )
     }
-
     val haptic = LocalHapticFeedback.current
     val shortDescription = remember { mutableStateOf(false) }
     val descriptionMaxLines by animateIntAsState(if (shortDescription.value) 3 else 2000)
+    var shortView by remember { mutableStateOf(true) }
     LaunchedEffect(uiState.moderationBookState.selectedItem?.imageResultUrl) {
         shortDescription.value =
             !uiState.moderationBookState.selectedItem?.imageResultUrl.isNullOrEmpty()
     }
     resultBook?.let { book ->
-
-        Row(//todo remove
+        Row(
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier.padding(top = topPadding.plus(24.dp), start = 16.dp)
         ) {
@@ -133,7 +144,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreenContent(
             }
         }
 
-        //todo remove
+
         if (uiState.moderationBookState.isUploadingBookImage) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -146,7 +157,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreenContent(
                 )
                 Text(
                     modifier = Modifier.padding(top = 8.dp),
-                    text = "Загружаем картинку на сервер",
+                    text = "Одобряем...",
                     style = ApplicationTheme.typography.captionRegular,
                     color = ApplicationTheme.colors.adminPanelButtons.uploadColor
                 )
@@ -154,234 +165,69 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreenContent(
 
         }
 
-        Row(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Название:",
-                style = ApplicationTheme.typography.bodyBold,
-                color = if (book.bookName.isEmpty()) {
-                    ApplicationTheme.colors.adminPanelButtons.disapprovedColor
-                } else {
-                    ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
-                }
-            )
-            Text(
-                modifier = Modifier.clickable {
-                    sendEvent(AdminEvents.OnChangeBookName)
-                }.padding(start = 8.dp),
-                text = book.bookName,
-                style = ApplicationTheme.typography.bodyBold,
-                color = ApplicationTheme.colors.mainTextColor
-            )
-        }
+        BookNameElement(book.bookName)
 
         if (uiState.moderationBookState.moderationChangedName.value != null) {
-            Row(
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Измененное название:",
-                    style = ApplicationTheme.typography.bodyBold,
-                    color = if (uiState.moderationBookState.moderationChangedName.value!!.isEmpty()) {
-                        ApplicationTheme.colors.adminPanelButtons.disapprovedColor
-                    } else {
-                        ApplicationTheme.colors.adminPanelButtons.uploadColor
-                    }
-                )
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = uiState.moderationBookState.moderationChangedName.value!!,
-                    style = ApplicationTheme.typography.bodyRegular,
-                    color = ApplicationTheme.colors.mainTextColor
-                )
-            }
+            ChangedBookNameElement(changedName = uiState.moderationBookState.moderationChangedName.value!!)
         }
 
         if (uiState.moderationBookState.showChangedBookNameField.value) {
-            val textField: MutableState<TextFieldValue> =
-                remember {
-                    mutableStateOf(
-                        TextFieldValue(
-                            text = uiState.moderationBookState.moderationChangedName.value
-                                ?: book.bookName
-                        )
-                    )
-                }
-            Column(modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp)) {
-                OldCommonTextField(
-                    modifier = Modifier,
-                    focusedIndicatorLineThickness = 1.dp,
-                    unfocusedIndicatorLineThickness = 1.dp,
-                    textState = textField.value,
-                    onTextChanged = {
-                        textField.value = it
-                    },
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 12.dp)
-                ) {
-                    Text(
-                        text = "Сохранить",
-                        modifier = Modifier.clickable {
-                            sendEvent(AdminEvents.OnSaveChangeBookName(textField.value.text.trim()))
-                        }.padding(end = 12.dp),
-                        style = ApplicationTheme.typography.footnoteBold,
-                        color = ApplicationTheme.colors.mainTextColor
-                    )
-
-                    Text(
-                        text = "Отменить",
-                        modifier = Modifier.clickable {
-                            sendEvent(AdminEvents.OnCancelChangeBookName)
-                        }.padding(end = 12.dp),
-                        style = ApplicationTheme.typography.footnoteBold,
-                        color = ApplicationTheme.colors.mainTextColor
-                    )
-
-                    Text(
-                        text = "Удалить",
-                        modifier = Modifier.clickable {
-                            sendEvent(AdminEvents.OnDeleteChangeBookName)
-                        },
-                        style = ApplicationTheme.typography.footnoteBold,
-                        color = ApplicationTheme.colors.mainTextColor
-                    )
-                }
-
-            }
+            ChangeBookNameEditorElement(
+                changedName = uiState.moderationBookState.moderationChangedName.value
+                    ?: book.bookName
+            )
 
         }
 
-        Row(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Автор:",
-                style = ApplicationTheme.typography.bodyBold,
-                color = if (book.originalAuthorName.isEmpty()) {
-                    ApplicationTheme.colors.adminPanelButtons.disapprovedColor
-                } else {
-                    ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
-                }
-            )
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = book.originalAuthorName,
-                style = ApplicationTheme.typography.bodyRegular,
-                color = ApplicationTheme.colors.mainTextColor
+        AuthorElement(authorName = book.originalAuthorName, shortView = shortView)
+
+        ServerIdElement(serverId = book.id.toString(), shortView = shortView)
+
+        if (!shortView) {
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 18.dp),
+                thickness = 1.dp,
+                color = ApplicationTheme.colors.dividerLight
             )
         }
 
-        Row(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "ServerId:",
-                style = ApplicationTheme.typography.bodyBold,
-                color = if (book.id.toString().isEmpty()) {
-                    ApplicationTheme.colors.adminPanelButtons.disapprovedColor
-                } else {
-                    ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
-                }
-            )
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = book.id.toString(),
-                style = ApplicationTheme.typography.bodyRegular,
-                color = ApplicationTheme.colors.mainTextColor
+
+        CenterBoxContainer {
+            Icon(
+                imageVector = Icons.Outlined.ExpandMore,
+                contentDescription = null,
+                tint = ApplicationTheme.colors.mainIconsColor,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null
+                    ) {
+                        shortView = !shortView
+                    }
+                    .size(22.dp)
+                    .graphicsLayer {
+                        rotationZ = if (shortView) 0f else 180f
+                    }
             )
         }
 
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 18.dp),
-            thickness = 1.dp,
-            color = ApplicationTheme.colors.dividerLight
-        )
 
-        Row(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
-            val genre = GenreUtils.getGenreById(book.bookGenreId)
-            Text(
-                text = "${Strings.genre}:",
-                style = ApplicationTheme.typography.bodyBold,
-                color = if (genre.name.isEmpty()) {
-                    ApplicationTheme.colors.adminPanelButtons.disapprovedColor
-                } else {
-                    ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
-                }
-            )
+        GenreElement(genreId = book.bookGenreId, shortView = shortView)
 
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = genre.name,
-                style = ApplicationTheme.typography.bodyRegular,
-                color = ApplicationTheme.colors.mainTextColor
-            )
-        }
 
-        Row(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
-            Text(
-                text = "Возрастные ограничения:",
-                style = ApplicationTheme.typography.bodyBold,
-                color = if (book.ageRestrictions.isNullOrEmpty()) {
-                    ApplicationTheme.colors.adminPanelButtons.disapprovedColor
-                } else {
-                    ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
-                }
-            )
-            book.ageRestrictions?.let {
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = it,
-                    style = ApplicationTheme.typography.bodyRegular,
-                    color = ApplicationTheme.colors.mainTextColor
-                )
-            }
-        }
+        AgeRestrictionsElement(ageRestriction = book.ageRestrictions, shortView = shortView)
 
-        Row(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
-            Text(
-                text = "${Strings.pages_title}:",
-                style = ApplicationTheme.typography.bodyBold,
-                color = if (book.numbersOfPages.toString().isEmpty()) {
-                    ApplicationTheme.colors.adminPanelButtons.disapprovedColor
-                } else {
-                    ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
-                }
-            )
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = book.numbersOfPages.toString(),
-                style = ApplicationTheme.typography.bodyRegular,
-                color = ApplicationTheme.colors.mainTextColor
-            )
-        }
+        PagesElement(pages = book.numbersOfPages.toString(), shortView = shortView)
 
-        Row(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
-            Text(
-                text = "${Strings.isbn}:",
-                style = ApplicationTheme.typography.bodyBold,
-                color = if (book.isbn.isEmpty()) {
-                    ApplicationTheme.colors.adminPanelButtons.disapprovedColor
-                } else {
-                    ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor
-                }
-            )
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = book.isbn,
-                style = ApplicationTheme.typography.bodyRegular,
-                color = ApplicationTheme.colors.mainTextColor
-            )
-        }
+        IsbnElement(isbn = book.isbn, shortView = shortView)
 
         Text(
-            modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp).clickable {
+            modifier = Modifier.padding(
+                start = 16.dp,
+                top = if (shortView) 0.dp else 12.dp,
+                end = 16.dp
+            ).clickable {
                 shortDescription.value = !shortDescription.value
             },
             text = book.description,
@@ -398,56 +244,24 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreenContent(
             letterSpacing = TextUnit.Unspecified,
         )
 
-        if (!uiState.moderationBookState.isUploadingBookImage) {
+        if (!uiState.moderationBookState.isUploadingBookImage && uiState.moderationBookState.booksForModeration.isNotEmpty()) {
             FlowRow(
                 modifier = Modifier.padding(
                     start = 16.dp,
                     end = 16.dp,
                     bottom = 84.dp
                 )
-            ) { // todo fix bottom padding its for mobile
-                if (!uiState.moderationBookState.selectedItem?.imageResultUrl.isNullOrEmpty()) {
-                    CustomTag(
-                        modifier = Modifier.padding(top = 12.dp),
-                        text = "Одобрено",
-                        color = ApplicationTheme.colors.adminPanelButtons.approvedColor,
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            HapticFeedbackType.LongPress
-                            sendEvent(AdminEvents.ApprovedBook)
-                        }
-                    )
-
-                    CustomTag(
-                        text = "Одобрено с изменениями",
-                        color = ApplicationTheme.colors.adminPanelButtons.approvedWithChangesColor,
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp),
-                        onClick = {
-
-                        }
-                    )
-                } else if (uiState.moderationBookState.canSetBookAsApprovedWithoutUploadImage) {
-                    CustomTag(
-                        text = "Одобрено без загрузки",
-                        color = ApplicationTheme.colors.adminPanelButtons.uploadColor,
-                        modifier = Modifier.padding(end = 16.dp, top = 12.dp),
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            HapticFeedbackType.LongPress
-                            sendEvent(AdminEvents.SetBookAsApprovedWithoutUploadImage)
-                        }
-                    )
-                } else {
-                    CustomTag(
-                        text = "Сохранить обложку в базу данных",
-                        color = ApplicationTheme.colors.adminPanelButtons.uploadColor,
-                        modifier = Modifier.padding(end = 16.dp, top = 12.dp),
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            sendEvent(AdminEvents.UploadBookCover)
-                        }
-                    )
-                }
+            ) {
+                CustomTag(
+                    text = "Одобрить текущую книгу",
+                    color = ApplicationTheme.colors.adminPanelButtons.uploadColor,
+                    modifier = Modifier.padding(end = 16.dp, top = 12.dp),
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        HapticFeedbackType.LongPress
+                        sendEvent(AdminEvents.SetBookAsApprovedWithoutUploadImage)
+                    }
+                )
 
                 CustomTag(
                     modifier = Modifier.padding(top = 12.dp),

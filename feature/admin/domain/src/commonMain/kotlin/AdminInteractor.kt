@@ -10,16 +10,9 @@ class AdminInteractor(
     suspend fun getBooksForModeration(lang: LANG): Response<NonModerationBooksResponse?> =
         repository.getBooksForModeration(lang)
 
-    suspend fun setBookAsApproved(book: BookShortVo) {
-        repository.setBookAsApproved(book)
-    }
-
     suspend fun setBookAsDiscarded(book: BookShortVo) {
         repository.setBookAsDiscarded(book)
     }
-
-    suspend fun uploadBookImage(book: BookShortVo): BookShortVo? =
-        repository.uploadBookImage(book)
 
     suspend fun setBookAsApprovedWithoutUploadImage(
         book: BookShortVo,

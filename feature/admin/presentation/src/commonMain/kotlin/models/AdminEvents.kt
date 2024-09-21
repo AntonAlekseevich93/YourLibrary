@@ -7,10 +7,7 @@ import main_models.books.BookShortVo
 sealed class AdminEvents : BaseEvent {
     data object GetRussianBooksForModeration : AdminEvents()
     data object GetEnglishBooksForModeration : AdminEvents()
-    data object ApprovedBook : AdminEvents()
     data object DiscardBook : AdminEvents()
-    data object ApprovedWithChangesBook : AdminEvents()
-    data object UploadBookCover : AdminEvents()
     data object SetBookAsApprovedWithoutUploadImage : AdminEvents()
     data class SelectBook(val selectedBook: BookShortVo) : AdminEvents()
     class CustomUrlChanged(val url: TextFieldValue) : AdminEvents()

@@ -5,10 +5,8 @@ import HttpAppClient
 import HttpConstants.CREATE_SINGLE_APPROVED_BOOK_IN_NON_MODERATION_TABLE
 import HttpConstants.GET_ALL_NON_MODERATING_BOOKS
 import HttpConstants.PARSE_SINGLE_BOOK
-import HttpConstants.SET_APPROVED_NON_MODERATING_BOOKS
 import HttpConstants.SET_BOOK_AS_APPROVED_WITHOUT_UPLOAD_IMAGE
 import HttpConstants.SET_DISCARDED_NON_MODERATING_BOOKS
-import HttpConstants.UPLOAD_BOOK_IMAGE
 import main_models.rest.ParsingBooksListRequest
 import main_models.rest.books.BookShortRemoteDto
 import main_models.rest.books.BookShortResponse
@@ -24,15 +22,6 @@ class RemoteAdminDataSource(
         params = params,
     )
 
-    suspend fun setBookAsApproved(book: BookShortRemoteDto) {
-        httpClient.post(
-            url = SET_APPROVED_NON_MODERATING_BOOKS,
-            resultClass = String::class,
-            bodyRequest = book,
-            errorClass = String::class
-        )
-    }
-
     suspend fun setBookAsDiscarded(book: BookShortRemoteDto) {
         httpClient.post(
             url = SET_DISCARDED_NON_MODERATING_BOOKS,
@@ -41,15 +30,6 @@ class RemoteAdminDataSource(
             errorClass = String::class
         )
     }
-
-    suspend fun uploadBookImage(book: BookShortRemoteDto) =
-        httpClient.post(
-            url = UPLOAD_BOOK_IMAGE,
-            resultClass = BookShortResponse::class,
-            bodyRequest = book,
-            errorClass = String::class,
-            requestTimeout = 2500
-        )
 
     suspend fun setBookAsApprovedWithoutUploadImage(
         book: BookShortRemoteDto,

@@ -27,7 +27,6 @@ data class ModerationBookState(
     val booksForModeration: SnapshotStateList<BookShortVo> = SnapshotStateList(),
     val selectedItem: BookShortVo? = null,
     val isUploadingBookImage: Boolean = false,
-    val canSetBookAsApprovedWithoutUploadImage: Boolean = false,
     val moderationChangedName: MutableState<String?> = mutableStateOf(null),
     val showChangedBookNameField: MutableState<Boolean> = mutableStateOf(false),
 )

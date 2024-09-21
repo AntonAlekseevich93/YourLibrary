@@ -42,10 +42,8 @@ class AdminViewModel(
         when (event) {
             is AdminEvents.GetRussianBooksForModeration -> getBooksForModeration(lang = LANG.RUSSIAN)
             is AdminEvents.GetEnglishBooksForModeration -> getBooksForModeration(lang = LANG.ENGLISH)
-            is AdminEvents.ApprovedBook -> setBookAsApprove()
             is AdminEvents.DiscardBook -> setBookAsDiscarded()
             is AdminEvents.SelectBook -> selectBook(event.selectedBook)
-            is AdminEvents.UploadBookCover -> uploadBookImage()
             is AdminEvents.SetBookAsApprovedWithoutUploadImage -> setBookAsApprovedWithoutUploadImage()
 
             is AdminEvents.CustomUrlChanged -> {
@@ -154,7 +152,6 @@ class AdminViewModel(
                         moderationBookState = ModerationBookState(
                             booksForModeration = newList,
                             selectedItem = if (newList.isNotEmpty()) newList[selectedPosition] else null,
-                            canSetBookAsApprovedWithoutUploadImage = true
                         ),
                         isLoading = false
                     )
@@ -163,16 +160,6 @@ class AdminViewModel(
                     applicationScope.openModerationBooksScreen()
                 }
             }
-        }
-    }
-
-    private fun setBookAsApprove() {
-        val currentBook = uiStateValue.moderationBookState.selectedItem?.copy()
-        if (currentBook != null) {
-            scope.launch {
-                interactor.setBookAsApproved(currentBook)
-            }
-            selectNextBook()
         }
     }
 
@@ -225,37 +212,6 @@ class AdminViewModel(
                 )
             )
         )
-    }
-
-    private fun uploadBookImage() {
-        uiStateValue.moderationBookState.selectedItem?.let { book ->
-            updateUIState(
-                uiStateValue.copy(
-                    moderationBookState = uiStateValue.moderationBookState.copy(
-                        isUploadingBookImage = true
-                    )
-                )
-            )
-
-            scope.launch(Dispatchers.IO) {
-                val bookResponse = interactor.uploadBookImage(book)
-                withContext(Dispatchers.Main) {
-                    updateUIState(
-                        uiStateValue.copy(
-                            moderationBookState = uiStateValue.moderationBookState.copy(
-                                isUploadingBookImage = false,
-                                selectedItem = bookResponse ?: book
-                            )
-                        )
-                    )
-                    if (bookResponse != null) {
-                        uiStateValue.moderationBookState.booksForModeration.replaceAll { if (it.id == bookResponse.id) bookResponse else it }
-                    } else {
-                        selectNextBook()
-                    }
-                }
-            }
-        }
     }
 
     private fun setBookAsApprovedWithoutUploadImage() {
