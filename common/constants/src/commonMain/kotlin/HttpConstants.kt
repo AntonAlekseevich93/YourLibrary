@@ -13,7 +13,6 @@ object HttpConstants {
     const val SET_BOOK_AS_APPROVED_WITHOUT_UPLOAD_IMAGE = "books/moderating/approvewithouimage"
     const val ADD_NEW_BOOK_BY_USER = "books/users/add"
     const val UPDATE_USER_BOOK = "books/users/update"
-
     const val SYNCHRONIZE_USER_DATA = "sync/user/data"
 
     //----------REVIEW AND RATING

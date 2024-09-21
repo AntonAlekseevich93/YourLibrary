@@ -5,7 +5,7 @@ plugins {
 }
 
 kotlin {
-    sourceSets{
+    sourceSets {
         commonMain {
             dependencies {
                 api(project(":feature:search:api"))
@@ -14,6 +14,7 @@ kotlin {
                 implementation(project(":common:core"))
                 implementation(project(":common:http-client"))
                 implementation(project(":common:app-config"))
+                implementation(project(":common:cache-manager:api"))
             }
         }
     }

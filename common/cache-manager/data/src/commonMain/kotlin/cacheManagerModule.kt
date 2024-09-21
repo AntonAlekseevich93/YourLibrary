@@ -7,7 +7,7 @@ import org.kodein.di.singleton
 
 val cacheManagerModule = DI.Module("cacheManagerModule") {
     bind<CacheManagerRepository>() with singleton {
-        CacheManagerRepositoryImpl(instance(), instance(), instance())
+        CacheManagerRepositoryImpl(instance(), instance(), instance(), instance())
     }
 
     bind<CacheManagerDataSource>() with provider {

@@ -59,7 +59,7 @@ fun BookShortRemoteDto.toCacheShortBook(): BookShortDtoCache {
     )
 }
 
-fun BookShortDtoCache.toCacheShortBook(): BookShortRemoteDto {
+fun BookShortDtoCache.toRemoteShortBook(): BookShortRemoteDto {
     return BookShortRemoteDto(
         id = id,
         bookId = bookId,
