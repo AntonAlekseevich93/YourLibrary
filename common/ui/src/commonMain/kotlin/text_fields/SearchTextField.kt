@@ -77,7 +77,7 @@ fun SearchTextField(
             }
 
 
-            CommonTextField(
+            OldCommonTextField(
                 modifier = Modifier
                     .sizeIn(minHeight = 50.dp)
                     .fillMaxWidth()

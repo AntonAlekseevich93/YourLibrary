@@ -95,6 +95,14 @@ class ApplicationViewModel(
                 )
             }
 
+            is RootComponent.Screen.SingleBookParsingScreen -> {
+                item.component.openBookInfo(
+                    bookId = bookId,
+                    shortBook = shortBook,
+                    needSaveScreenId = needSaveScreenId
+                )
+            }
+
             else -> {
                 //nop
             }

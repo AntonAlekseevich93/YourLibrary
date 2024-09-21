@@ -26,5 +26,9 @@ sealed class AdminEvents : BaseEvent {
     data object ClearReviewAndRatingDb : AdminEvents()
     data object OpenDatabaseMenuScreen : AdminEvents()
     data class OnSaveChangeBookName(val newBookName: String) : AdminEvents()
+    class OnParseSingleBook(val url: String) : AdminEvents()
     data object OnOpenModerationScreen : AdminEvents()
+    data object OnApproveParsedSingleBook : AdminEvents()
+    data object OnClearParsedSingleBookData : AdminEvents()
+    data class OnBookSelected(val shortBook: BookShortVo) : AdminEvents()
 }

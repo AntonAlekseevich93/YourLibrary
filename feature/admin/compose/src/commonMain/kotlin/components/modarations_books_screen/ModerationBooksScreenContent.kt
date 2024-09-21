@@ -44,7 +44,7 @@ import main_models.genre.GenreUtils
 import models.AdminEvents
 import models.AdminUiState
 import tags.CustomTag
-import text_fields.CommonTextField
+import text_fields.OldCommonTextField
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -211,7 +211,7 @@ fun BaseEventScope<BaseEvent>.ModerationBooksScreenContent(
                     )
                 }
             Column(modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp)) {
-                CommonTextField(
+                OldCommonTextField(
                     modifier = Modifier,
                     focusedIndicatorLineThickness = 1.dp,
                     unfocusedIndicatorLineThickness = 1.dp,

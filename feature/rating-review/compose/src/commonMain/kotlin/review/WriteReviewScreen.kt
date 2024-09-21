@@ -34,7 +34,7 @@ import common_events.ReviewAndRatingEvents
 import containters.CenterBoxContainer
 import org.jetbrains.compose.resources.stringResource
 import rating.elements.RatingBarElement
-import text_fields.CommonTextField
+import text_fields.OldCommonTextField
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.add_review_title
 import yourlibrary.common.resources.generated.resources.do_you_like_book_question
@@ -87,7 +87,7 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
             )
         }
 
-        CommonTextField(
+        OldCommonTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp)

@@ -1,5 +1,6 @@
 import main_models.books.BookShortVo
 import main_models.books.LANG
+import main_models.rest.DataResult
 import main_models.rest.Response
 import main_models.rest.admin.NonModerationBooksResponse
 
@@ -29,4 +30,10 @@ class AdminInteractor(
     suspend fun clearReviewAndRatingDb() {
         repository.clearReviewAndRatingDb()
     }
+
+    suspend fun parseSingleBook(url: String): DataResult<List<BookShortVo>, String> =
+        repository.parseSingleBook(url)
+
+    suspend fun approveParsedSingleBook(book: BookShortVo): String =
+        repository.approveParsedSingleBook(book)
 }

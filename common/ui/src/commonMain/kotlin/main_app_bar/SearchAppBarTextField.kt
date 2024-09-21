@@ -34,7 +34,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import text_fields.CommonTextField
+import text_fields.OldCommonTextField
 
 @Composable
 fun SearchAppBarTextField(
@@ -73,7 +73,7 @@ fun SearchAppBarTextField(
                 )
             }
 
-            CommonTextField(
+            OldCommonTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .sizeIn(minHeight = 46.dp)

@@ -18,6 +18,9 @@ data class AdminUiState(
     val rangeStart: TextFieldValue = TextFieldValue(""),
     val rangeEnd: TextFieldValue = TextFieldValue(""),
     val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
+    val singleParsingBook: MutableState<BookShortVo?> = mutableStateOf(null),
+    val singleParsingBookProcess: MutableState<Boolean> = mutableStateOf(false),
+    val singleParsingBookResultMessage: MutableState<String?> = mutableStateOf(null)
 ) : BaseUIState
 
 data class ModerationBookState(

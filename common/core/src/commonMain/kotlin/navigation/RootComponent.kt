@@ -315,6 +315,14 @@ class DefaultRootComponent(
             },
             onCloseScreenListener = {
                 popUntilStackIdFindOrFirstScreen(DEFAULT_SCREEN_ID)
+            },
+            showBookInfo = { bookId, shortBook, _ ->
+                bookInfoFirstScreenId = getCurrentStackKey
+                val id = getNextStackKey
+                push(
+                    id = id,
+                    config = Config.BookInfoConfig(id, bookId)
+                )
             }
         )
 

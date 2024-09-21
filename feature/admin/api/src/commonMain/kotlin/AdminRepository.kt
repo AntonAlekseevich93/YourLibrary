@@ -1,5 +1,6 @@
 import main_models.books.BookShortVo
 import main_models.books.LANG
+import main_models.rest.DataResult
 import main_models.rest.Response
 import main_models.rest.admin.NonModerationBooksResponse
 
@@ -15,4 +16,6 @@ interface AdminRepository {
     ): BookShortVo?
 
     suspend fun clearReviewAndRatingDb()
+    suspend fun parseSingleBook(url: String): DataResult<List<BookShortVo>, String>
+    suspend fun approveParsedSingleBook(book: BookShortVo): String
 }

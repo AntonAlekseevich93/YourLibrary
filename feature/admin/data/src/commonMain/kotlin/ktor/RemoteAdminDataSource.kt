@@ -2,11 +2,14 @@ package ktor
 
 import AppConfig
 import HttpAppClient
+import HttpConstants.CREATE_SINGLE_APPROVED_BOOK_IN_NON_MODERATION_TABLE
 import HttpConstants.GET_ALL_NON_MODERATING_BOOKS
+import HttpConstants.PARSE_SINGLE_BOOK
 import HttpConstants.SET_APPROVED_NON_MODERATING_BOOKS
 import HttpConstants.SET_BOOK_AS_APPROVED_WITHOUT_UPLOAD_IMAGE
 import HttpConstants.SET_DISCARDED_NON_MODERATING_BOOKS
 import HttpConstants.UPLOAD_BOOK_IMAGE
+import main_models.rest.ParsingBooksListRequest
 import main_models.rest.books.BookShortRemoteDto
 import main_models.rest.books.BookShortResponse
 
@@ -58,6 +61,21 @@ class RemoteAdminDataSource(
         errorClass = String::class,
         requestTimeout = 2500,
         params = params
+    )
+
+    suspend fun parseSingleBook(body: ParsingBooksListRequest) = httpClient.post(
+        url = PARSE_SINGLE_BOOK,
+        resultClass = BookShortResponse::class,
+        bodyRequest = body,
+        errorClass = String::class,
+        requestTimeout = 60000
+    )
+
+    suspend fun approveParsedSingleBook(book: BookShortRemoteDto) = httpClient.post(
+        url = CREATE_SINGLE_APPROVED_BOOK_IN_NON_MODERATION_TABLE,
+        resultClass = String::class,
+        bodyRequest = book,
+        errorClass = String::class,
     )
 
 }

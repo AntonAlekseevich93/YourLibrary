@@ -7,9 +7,13 @@ import ktor.RemoteAdminDataSource
 import main_models.books.BookShortVo
 import main_models.books.LANG
 import main_models.rest.BackendErrors
+import main_models.rest.DataResult
+import main_models.rest.ParsingBooksListRequest
 import main_models.rest.Response
 import main_models.rest.admin.NonModerationBooksResponse
+import main_models.rest.books.fromFakeToDto
 import main_models.rest.books.toDto
+import main_models.rest.books.toFakeVo
 import main_models.rest.books.toVo
 
 class AdminRepositoryImpl(
@@ -99,5 +103,25 @@ class AdminRepositoryImpl(
     override suspend fun clearReviewAndRatingDb() {
         localAdminDataSource.clearReviewAndRatingDb()
     }
+
+    override suspend fun parseSingleBook(url: String): DataResult<List<BookShortVo>, String> {
+        val response = remoteAdminDataSource.parseSingleBook(
+            ParsingBooksListRequest(
+                urls = listOf(url),
+                isRussian = null
+            )
+        )
+        val books = response?.result?.books?.mapNotNull { it.toFakeVo() }
+        return if (books != null) {
+            DataResult.success(books)
+        } else {
+            DataResult.failure(response?.error.orEmpty())
+        }
+    }
+
+    override suspend fun approveParsedSingleBook(book: BookShortVo): String =
+        remoteAdminDataSource.approveParsedSingleBook(
+            book.fromFakeToDto()
+        )?.result ?: "AdminRepositoryImpl.Client error"
 
 }

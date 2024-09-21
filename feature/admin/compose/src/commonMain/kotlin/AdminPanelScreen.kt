@@ -29,7 +29,7 @@ import di.Inject
 import models.AdminEvents
 import navigation.screen_components.AdminScreenComponent
 import org.jetbrains.compose.resources.stringResource
-import text_fields.CommonTextField
+import text_fields.OldCommonTextField
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.admin_panel
 import yourlibrary.common.resources.generated.resources.books_parsing
@@ -171,7 +171,7 @@ fun AdminPanelScreen(
                             }
                         )
 
-                        CommonTextField(
+                        OldCommonTextField(
                             textState = uiState.customUrl,
                             onTextChanged = {
                                 viewModel.sendEvent(AdminEvents.CustomUrlChanged(it))
@@ -220,7 +220,7 @@ fun AdminPanelScreen(
                             }
                         )
 
-                        CommonTextField(
+                        OldCommonTextField(
                             modifier = Modifier.weight(1f),
                             textState = uiState.rangeStart,
                             onTextChanged = {
@@ -237,7 +237,7 @@ fun AdminPanelScreen(
                             modifier = Modifier.padding(start = 8.dp)
                         )
 
-                        CommonTextField(
+                        OldCommonTextField(
                             modifier = Modifier.weight(1f),
                             textState = uiState.rangeEnd,
                             onTextChanged = {

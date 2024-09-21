@@ -7,6 +7,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_models.books.BookShortVo
 import main_models.books.LANG
+import main_models.rest.failure
+import main_models.rest.success
 import models.AdminEvents
 import models.AdminUiState
 import models.ModerationBookState
@@ -116,6 +118,26 @@ class AdminViewModel(
 
             is AdminEvents.OnOpenModerationScreen -> {
                 applicationScope.openModerationScreen()
+            }
+
+            is AdminEvents.OnParseSingleBook -> {
+                parseSingleBook(event.url)
+            }
+
+            is AdminEvents.OnApproveParsedSingleBook -> {
+                approveParsedSingleBook()
+            }
+
+            is AdminEvents.OnClearParsedSingleBookData -> {
+                clearParsedSingleBookData()
+            }
+
+            is AdminEvents.OnBookSelected -> {
+                applicationScope.openBookInfoScreen(
+                    bookId = null,
+                    shortBook = event.shortBook,
+                    needSaveScreenId = false
+                )
             }
         }
     }
@@ -270,5 +292,40 @@ class AdminViewModel(
                 }
             }
         }
+    }
+
+    private fun parseSingleBook(url: String) {
+        uiStateValue.singleParsingBookProcess.value = true
+        uiStateValue.singleParsingBookResultMessage.value = null
+        scope.launch {
+            val response = interactor.parseSingleBook(url = url)
+            response.success?.firstOrNull().let { book ->
+                withContext(Dispatchers.IO) {
+                    uiStateValue.singleParsingBook.value = book
+                }
+            }
+            response.failure?.let {
+                uiStateValue.singleParsingBookResultMessage.value = it
+            }
+
+
+            uiStateValue.singleParsingBookProcess.value = false
+        }
+    }
+
+    private fun approveParsedSingleBook() {
+        scope.launch {
+            uiStateValue.singleParsingBook.value?.let {
+                uiStateValue.singleParsingBookProcess.value = true
+                val serverMessage = interactor.approveParsedSingleBook(it)
+                uiStateValue.singleParsingBookResultMessage.value = serverMessage
+                uiStateValue.singleParsingBookProcess.value = false
+            }
+        }
+    }
+
+    private fun clearParsedSingleBookData() {
+        uiStateValue.singleParsingBookResultMessage.value = null
+        uiStateValue.singleParsingBook.value = null
     }
 }

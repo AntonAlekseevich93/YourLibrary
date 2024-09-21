@@ -37,7 +37,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import main_models.path.PathInfoVo
 import org.jetbrains.compose.resources.painterResource
-import text_fields.CommonTextField
+import text_fields.OldCommonTextField
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_more_button
 import java.awt.Desktop
@@ -94,7 +94,7 @@ internal fun PathInfoBlock(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(bottom = 4.dp)
                     ) {
-                        CommonTextField(
+                        OldCommonTextField(
                             modifier = Modifier.sizeIn(maxWidth = 140.dp, minWidth = 140.dp),
                             textState = textField.value,
                             onTextChanged = {

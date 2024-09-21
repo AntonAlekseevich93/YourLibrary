@@ -30,7 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import text_fields.CommonTextField
+import text_fields.OldCommonTextField
 
 
 @Composable
@@ -113,7 +113,7 @@ internal fun CreateLibraryBlock(
                     backgroundColor = ApplicationTheme.colors.textFieldColorDark,
                     modifier = Modifier
                 ) {
-                    CommonTextField(
+                    OldCommonTextField(
                         modifier = Modifier.sizeIn(maxWidth = 140.dp, minWidth = 140.dp),
                         textState = textField.value,
                         onTextChanged = {

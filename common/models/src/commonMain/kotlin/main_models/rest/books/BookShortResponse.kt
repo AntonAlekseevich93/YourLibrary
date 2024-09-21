@@ -94,3 +94,62 @@ fun BookShortVo.toDto(): BookShortRemoteDto {
         publicationYear = publicationYear,
     )
 }
+
+fun BookShortRemoteDto.toFakeVo(
+): BookShortVo? {
+    return BookShortVo(
+        id = -1,
+        bookId = bookId ?: return null,
+        originalAuthorId = "",
+        bookName = bookName ?: return null,
+        originalBookName = originalBookName ?: return null,
+        originalAuthorName = originalAuthorName ?: return null,
+        description = description ?: return null,
+        imageResultUrl = rawCoverUrl.orEmpty(),
+        numbersOfPages = numbersOfPages ?: return null,
+        isbn = isbn ?: return null,
+        bookGenreId = bookGenreId ?: return null,
+        ageRestrictions = ageRestrictions,
+        imageName = imageName,
+        isRussian = isRussian,
+        rawCoverUrl = rawCoverUrl,
+        imageFolderId = imageFolderId,
+        ratingValue = ratingValue,
+        ratingCount = ratingCount,
+        reviewCount = reviewCount,
+        ratingSum = ratingSum,
+        mainBookId = mainBookId,
+        isMainBook = isMainBook,
+        lang = lang,
+        publicationYear = publicationYear,
+    )
+}
+
+fun BookShortVo.fromFakeToDto(
+): BookShortRemoteDto {
+    return BookShortRemoteDto(
+        id = null,
+        bookId = bookId,
+        originalAuthorId = null,
+        bookName = bookName,
+        originalBookName = originalBookName,
+        originalAuthorName = originalAuthorName,
+        description = description,
+        numbersOfPages = numbersOfPages,
+        isbn = isbn,
+        bookGenreId = bookGenreId,
+        ageRestrictions = ageRestrictions,
+        imageName = imageName,
+        isRussian = isRussian,
+        rawCoverUrl = rawCoverUrl,
+        imageFolderId = imageFolderId,
+        ratingValue = ratingValue,
+        ratingCount = ratingCount,
+        reviewCount = reviewCount,
+        ratingSum = ratingSum,
+        mainBookId = mainBookId,
+        isMainBook = isMainBook,
+        lang = lang,
+        publicationYear = publicationYear,
+    )
+}

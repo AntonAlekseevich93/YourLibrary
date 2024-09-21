@@ -21,6 +21,7 @@ kotlin {
                 implementation(project(":common:resources"))
                 implementation(project(":feature:admin:data"))
                 implementation(project(":feature:admin:presentation"))
+                implementation(project(":feature:books-list-info:compose"))
             }
         }
     }

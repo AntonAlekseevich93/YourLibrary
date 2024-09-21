@@ -17,7 +17,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import text_fields.CommonTextField
+import text_fields.OldCommonTextField
 
 @Composable
 fun SignInFields(
@@ -36,7 +36,7 @@ fun SignInFields(
     }
 
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        CommonTextField(
+        OldCommonTextField(
             modifier = Modifier.sizeIn(maxWidth = 340.dp).padding(bottom = 12.dp).fillMaxWidth(),
             textState = emailTextField.value,
             onTextChanged = {
@@ -56,7 +56,7 @@ fun SignInFields(
             }
         )
 
-        CommonTextField(
+        OldCommonTextField(
             modifier = Modifier.sizeIn(maxWidth = 340.dp).padding(bottom = 12.dp).fillMaxWidth(),
             textState = passwordTextField.value,
             onTextChanged = {
