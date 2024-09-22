@@ -14,6 +14,7 @@ kotlin {
                 implementation(project(":common:scopes"))
                 implementation(project(":common:ui"))
                 implementation(project(":feature:books-list-info:domain"))
+                implementation(project(":feature:book-creator:domain"))
             }
         }
     }

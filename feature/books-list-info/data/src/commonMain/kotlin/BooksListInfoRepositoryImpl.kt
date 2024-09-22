@@ -29,8 +29,8 @@ class BooksListInfoRepositoryImpl(
                 }
             }
 
-    override suspend fun getLocalBookById(bookId: String): Flow<BookVo?> =
-        localBooksListInfoDataSource.getLocalBookById(bookId, userId = appConfig.userId)
+    override suspend fun getLocalBookByIdFlow(bookId: String): Flow<BookVo?> =
+        localBooksListInfoDataSource.getLocalBookByIdFlow(bookId, userId = appConfig.userId)
             .map {
                 it.firstOrNull()?.let { book ->
                     book.toVo(
@@ -42,6 +42,20 @@ class BooksListInfoRepositoryImpl(
                     )
                 }
             }
+
+
+    override suspend fun getLocalBookById(bookId: String): BookVo? =
+        localBooksListInfoDataSource.getLocalBookById(bookId, userId = appConfig.userId)
+            .map {
+                it.toVo(
+                    remoteImageLink = remoteConfig.getImageUrl(
+                        imageName = it.imageName,
+                        imageFolderId = it.imageFolderId,
+                        bookServerId = it.serverId
+                    )
+                )
+            }.firstOrNull()
+
 
     override suspend fun getBookReadingStatus(bookId: String): ReadingStatus? {
         val status = localBooksListInfoDataSource.getBookReadingStatus(bookId, appConfig.userId)

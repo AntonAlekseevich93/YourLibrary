@@ -13,18 +13,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import animations.SuccessAnimation
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
 import elements.BookSelectorItem
 import kotlinx.coroutines.launch
+import models.BooksListInfoScreenEvents
 import navigation.screen_components.BooksListInfoScreenComponent
+import reading_status.ReadingStatusSelectorDialog
 
 @Composable
 fun BooksListInfoScreen(
@@ -36,6 +40,8 @@ fun BooksListInfoScreen(
     val uiState by viewModel.uiState.collectAsState()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+    val showSuccessAnimation = remember { mutableStateOf(false) }
+
     LaunchedEffect(key1 = Unit) {
         viewModel.setBookList(navigationComponent.books)
     }
@@ -98,7 +104,11 @@ fun BooksListInfoScreen(
                 }
             ) {
                 item {
-                    Spacer(modifier = Modifier.padding(paddingValues.calculateTopPadding()))
+                    Spacer(
+                        modifier = Modifier.padding(
+                            top = paddingValues.calculateTopPadding().plus(16.dp)
+                        )
+                    )
                 }
                 items(uiState.bookList) {
                     BookSelectorItem(
@@ -109,8 +119,12 @@ fun BooksListInfoScreen(
                         },
                         maxLinesBookName = 2,
                         maxLinesAuthorName = 1,
-                        changeBookReadingStatus = {
-//                            changeBookReadingStatus
+                        changeBookReadingStatus = { bookId ->
+                            viewModel.sendEvent(
+                                BooksListInfoScreenEvents.OnSetBookForChangeReadingStatus(
+                                    bookId = bookId
+                                )
+                            )
                         },
                     )
                     Spacer(Modifier.padding(vertical = 12.dp))
@@ -120,5 +134,24 @@ fun BooksListInfoScreen(
                 }
             }
         }
+
+        if (uiState.selectedBookForChangeReadingStatus.value != null) {
+            ReadingStatusSelectorDialog(
+                currentStatus = uiState.selectedBookForChangeReadingStatus.value?.localReadingStatus,
+                useDivider = false,
+                selectStatusListener = {
+                    showSuccessAnimation.value = true
+                    viewModel.sendEvent(BooksListInfoScreenEvents.ChangeBookReadingStatus(it))
+                },
+                dismiss = { viewModel.sendEvent(BooksListInfoScreenEvents.ClearSelectedBookForChangeReadingStatus) }
+            )
+        }
+
+        SuccessAnimation(
+            show = showSuccessAnimation,
+            finishAnimation = {
+                showSuccessAnimation.value = false
+            }
+        )
     }
 }

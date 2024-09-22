@@ -23,8 +23,11 @@ class LocalBooksListInfoDataSource(
     suspend fun getLocalBookByLocalId(bookLocalId: Long, userId: Long): Flow<List<BookEntity>> =
         booksDao.getLocalBookByLocalId(bookLocalId = bookLocalId, userId = userId)
 
-    suspend fun getLocalBookById(bookId: String, userId: Long): Flow<List<BookEntity>> =
+    suspend fun getLocalBookByIdFlow(bookId: String, userId: Long): Flow<List<BookEntity>> =
         booksDao.getLocalBookById(bookId = bookId, userId = userId)
+
+    suspend fun getLocalBookById(bookId: String, userId: Long): List<BookEntity> =
+        booksDao.getBookByBookId(bookId = bookId, userId = userId)
 
     suspend fun getBookReadingStatus(bookId: String, userId: Long): String? =
         booksDao.getBookStatusByBookId(bookId, userId = userId).firstOrNull()?.readingStatus

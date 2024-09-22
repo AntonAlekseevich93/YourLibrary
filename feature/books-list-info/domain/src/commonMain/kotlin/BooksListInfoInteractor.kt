@@ -13,7 +13,10 @@ class BooksListInfoInteractor(
     suspend fun getLocalBookByLocalId(localBookId: Long): Flow<BookVo?> =
         repository.getLocalBookByLocalId(localBookId)
 
-    suspend fun getLocalBookById(bookId: String): Flow<BookVo?> =
+    suspend fun getLocalBookByIdFlow(bookId: String): Flow<BookVo?> =
+        repository.getLocalBookByIdFlow(bookId)
+
+    suspend fun getLocalBookById(bookId: String): BookVo? =
         repository.getLocalBookById(bookId)
 
     suspend fun getCurrentUserReviewAndRatingByBook(mainBookId: String): ReviewAndRatingVo? =
