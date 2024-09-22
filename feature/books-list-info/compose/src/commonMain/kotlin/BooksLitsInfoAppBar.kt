@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeChild
@@ -82,13 +83,15 @@ internal fun AppBarComponent(
                 title = {
                     Box(
                         Modifier.fillMaxWidth().background(Color.Transparent)
-                            .padding(start = 16.dp),
+                            .padding(start = 16.dp, end = 16.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = title,
                             color = Color.White,
-                            style = ApplicationTheme.typography.appTitle
+                            style = ApplicationTheme.typography.appTitle,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 },

@@ -322,9 +322,12 @@ class BookInfoViewModel(
     private fun openAuthorBooks() {
         val bookAuthorId = _uiState.value.bookItem.value?.originalAuthorId
             ?: _uiState.value.shortBookItem.value?.originalAuthorId
-        bookAuthorId?.let {
+        val authorName = _uiState.value.bookItem.value?.originalAuthorName
+            ?: _uiState.value.shortBookItem.value?.originalAuthorName
+        if (bookAuthorId != null && authorName != null) {
             component.openAuthorsBooks(
-                authorId = it,
+                screenTitle = authorName,
+                authorId = bookAuthorId,
                 books = uiState.value.otherBooksByAuthor.value,
                 needSaveScreenId = !component.previousScreenIsBookInfo
             )

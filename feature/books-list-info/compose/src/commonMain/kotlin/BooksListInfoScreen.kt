@@ -41,12 +41,26 @@ fun BooksListInfoScreen(
         viewModel.setBookList(navigationComponent.books)
     }
 
+    var hazeBlurModifier: Modifier = Modifier
+
+    LaunchedEffect(Unit) {
+        if (isHazeBlurEnabled) {
+            hazeBlurModifier = hazeBlurModifier.haze(
+                state = hazeState,
+                style = HazeStyle(
+                    tint = Color.Black.copy(alpha = .04f),
+                    blurRadius = 30.dp,
+                )
+            )
+        }
+    }
+
     Scaffold(
         topBar = {
             BooksListInfoAppBar(
                 hazeBlurState = hazeState,
                 isHazeBlurEnabled = isHazeBlurEnabled,
-                title = "Заголовок",
+                title = navigationComponent.screenTitle,
                 showBackButton = true,
                 onBack = {
                     navigationComponent.onBack()
@@ -86,13 +100,7 @@ fun BooksListInfoScreen(
         ) {
             LazyColumn(
                 state = lazyListState,
-                modifier = Modifier.haze(
-                    state = hazeState,
-                    style = HazeStyle(
-                        tint = Color.Black.copy(alpha = .04f),
-                        blurRadius = 30.dp,
-                    )
-                )
+                modifier = hazeBlurModifier
             ) {
                 item {
                     Spacer(modifier = Modifier.padding(paddingValues.calculateTopPadding()))

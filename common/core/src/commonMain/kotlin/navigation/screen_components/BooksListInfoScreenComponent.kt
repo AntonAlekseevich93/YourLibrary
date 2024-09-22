@@ -6,6 +6,7 @@ import main_models.books.BookShortVo
 interface BooksListInfoScreenComponent {
     val authorId: String?
     val books: List<BookShortVo>
+    val screenTitle: String
     fun onBack()
     fun onCloseScreen()
 }
@@ -13,6 +14,7 @@ interface BooksListInfoScreenComponent {
 class DefaultBooksListInfoScreenComponent(
     componentContext: ComponentContext,
     override val authorId: String?,
+    override val screenTitle: String,
     override val books: List<BookShortVo>,
     val onBackListener: () -> Unit,
     val onCloseListener: () -> Unit,

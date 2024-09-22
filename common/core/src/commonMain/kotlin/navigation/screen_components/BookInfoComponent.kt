@@ -15,7 +15,12 @@ interface BookInfoComponent {
     fun getBookIdOrNull(): Long?
     fun getSavedScrollPosition(): Int
     fun updateScrollPosition(newPosition: Int)
-    fun openAuthorsBooks(authorId: String, books: List<BookShortVo>, needSaveScreenId: Boolean)
+    fun openAuthorsBooks(
+        screenTitle: String,
+        authorId: String,
+        books: List<BookShortVo>,
+        needSaveScreenId: Boolean
+    )
 }
 
 class DefaultBookInfoComponent(
@@ -24,7 +29,7 @@ class DefaultBookInfoComponent(
     private val bookId: Long?,
     private val onBack: () -> Unit,
     private val showBookInfo: (bookId: Long?) -> Unit,
-    private val openAuthorsBooksScreen: (authorId: String, books: List<BookShortVo>, needSaveScreenId: Boolean) -> Unit,
+    private val openAuthorsBooksScreen: (screenTitle: String, authorId: String, books: List<BookShortVo>, needSaveScreenId: Boolean) -> Unit,
     private val onCloseScreen: () -> Unit,
 ) : BookInfoComponent, ComponentContext by componentContext {
     private var savedScrollPosition: Int = 0
@@ -49,11 +54,12 @@ class DefaultBookInfoComponent(
     }
 
     override fun openAuthorsBooks(
+        screenTitle: String,
         authorId: String,
         books: List<BookShortVo>,
         needSaveScreenId: Boolean,
     ) {
-        openAuthorsBooksScreen(authorId, books, needSaveScreenId)
+        openAuthorsBooksScreen(screenTitle, authorId, books, needSaveScreenId)
     }
 
     override fun getSavedScrollPosition(): Int = savedScrollPosition

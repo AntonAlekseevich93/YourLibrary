@@ -143,6 +143,7 @@ class DefaultRootComponent(
                 itemBooksListInfoScreen(
                     componentContext,
                     authorId = config.authorId,
+                    screenTitle = config.screenTitle,
                     books = config.books
                 )
             )
@@ -203,14 +204,19 @@ class DefaultRootComponent(
                 popUntilStackIdFindOrFirstScreen(bookInfoFirstScreenId)
                 bookInfoFirstScreenId = DEFAULT_SCREEN_ID
             },
-            openAuthorsBooksScreen = { authorId, books, needSaveScreenId ->
+            openAuthorsBooksScreen = { screenTitle, authorId, books, needSaveScreenId ->
                 if (needSaveScreenId) {
                     bookListInfoFirstScreenId = getCurrentStackKey
                 }
                 val id = getNextStackKey
                 push(
                     id = id,
-                    config = Config.BooksListInfoConfig(id, authorId, books)
+                    config = Config.BooksListInfoConfig(
+                        ids = id,
+                        screenTitle = screenTitle,
+                        authorId = authorId,
+                        books = books
+                    )
                 )
             }
         )
@@ -253,11 +259,13 @@ class DefaultRootComponent(
     private fun itemBooksListInfoScreen(
         componentContext: ComponentContext,
         authorId: String?,
-        books: List<BookShortVo>
+        books: List<BookShortVo>,
+        screenTitle: String,
     ): BooksListInfoScreenComponent =
         DefaultBooksListInfoScreenComponent(
             componentContext = componentContext,
             authorId = authorId,
+            screenTitle = screenTitle,
             books = books,
             onBackListener = {
                 pop()
@@ -430,6 +438,7 @@ class DefaultRootComponent(
         data class BooksListInfoConfig(
             val ids: Int,
             val authorId: String?,
+            val screenTitle: String,
             val books: List<BookShortVo>
         ) : Config(ids)
 
