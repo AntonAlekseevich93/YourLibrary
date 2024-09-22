@@ -7,6 +7,7 @@ import main_models.books.BookShortVo
 
 interface BookInfoComponent {
     val model: Value<BookShortVo>?
+    val previousScreenIsBookInfo: Boolean
     fun onBackClicked()
     fun onCloseClicked()
     fun openBookInfo(shortVo: BookShortVo?, bookId: Long?)
@@ -14,13 +15,16 @@ interface BookInfoComponent {
     fun getBookIdOrNull(): Long?
     fun getSavedScrollPosition(): Int
     fun updateScrollPosition(newPosition: Int)
+    fun openAuthorsBooks(authorId: String, books: List<BookShortVo>, needSaveScreenId: Boolean)
 }
 
 class DefaultBookInfoComponent(
     componentContext: ComponentContext,
+    override val previousScreenIsBookInfo: Boolean,
+    private val bookId: Long?,
     private val onBack: () -> Unit,
     private val showBookInfo: (bookId: Long?) -> Unit,
-    private val bookId: Long?,
+    private val openAuthorsBooksScreen: (authorId: String, books: List<BookShortVo>, needSaveScreenId: Boolean) -> Unit,
     private val onCloseScreen: () -> Unit,
 ) : BookInfoComponent, ComponentContext by componentContext {
     private var savedScrollPosition: Int = 0
@@ -42,6 +46,14 @@ class DefaultBookInfoComponent(
 
     override fun openBookInfo(shortVo: BookShortVo?, bookId: Long?) {
         showBookInfo(bookId)
+    }
+
+    override fun openAuthorsBooks(
+        authorId: String,
+        books: List<BookShortVo>,
+        needSaveScreenId: Boolean,
+    ) {
+        openAuthorsBooksScreen(authorId, books, needSaveScreenId)
     }
 
     override fun getSavedScrollPosition(): Int = savedScrollPosition

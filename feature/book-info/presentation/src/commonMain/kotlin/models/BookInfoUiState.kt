@@ -17,10 +17,7 @@ data class BookInfoUiState(
     val shortBookItem: MutableState<BookShortVo?> = mutableStateOf(null),
     val selectedPathInfo: MutableState<PathInfoVo> = mutableStateOf(PathInfoVo()),
     val similarSearchAuthors: SnapshotStateList<AuthorVo> = mutableStateListOf(),
-    val selectedAuthor: MutableState<AuthorVo?> = mutableStateOf<AuthorVo?>(null),
     val bookValues: MutableState<BookValues> = mutableStateOf(BookValues()),
-    val isEditMode: MutableState<Boolean> = mutableStateOf(false),
-    val needCreateNewAuthor: MutableState<Boolean> = mutableStateOf(false),
     var datePickerType: MutableState<DatePickerType> = mutableStateOf(DatePickerType.StartDate),
     val showDatePicker: MutableState<Boolean> = mutableStateOf(false),
     val otherBooksByAuthor: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
@@ -33,9 +30,6 @@ data class BookInfoUiState(
     val scrollPosition: MutableState<Int> = mutableStateOf(0)
 ) {
 
-    fun setSelectedAuthor(authorVo: AuthorVo) {
-        selectedAuthor.value = authorVo
-    }
 
     fun clearSimilarAuthorList() {
         similarSearchAuthors.clear()

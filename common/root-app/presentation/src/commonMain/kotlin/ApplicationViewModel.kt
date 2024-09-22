@@ -157,10 +157,6 @@ class ApplicationViewModel(
         uiStateValue.removeBookBooksInfoUiState(id = oldStatusId, bookId = bookId)
     }
 
-    override fun navigateToBooksListInfo(books: List<BookShortVo>) {
-        uiStateValue.booksListInfoScreenBooks.value = books
-    }
-
     fun isDbPathIsExist(platform: Platform): Boolean {
         val isExist = interactor.isPathIsExist(platform)
         if (isExist && interactor.isAppDbIsNotInitialized()) {

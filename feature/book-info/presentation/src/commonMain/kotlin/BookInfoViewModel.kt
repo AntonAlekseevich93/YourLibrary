@@ -1,4 +1,3 @@
-import androidx.compose.ui.text.TextRange
 import book_editor.elements.BookEditorEvents
 import common_events.ReviewAndRatingEvents
 import date.DatePickerEvents
@@ -56,7 +55,6 @@ class BookInfoViewModel(
                 //todo
             }
 
-            is BookScreenEvents.SetEditMode -> _uiState.value.isEditMode.value = true
             is BookScreenEvents.ChangeReadingStatusEvent -> {
                 changeBookReadingStatusIfBookExistOrCreateBookWithNewStatus(
                     newStatus = event.selectedStatus
@@ -68,7 +66,7 @@ class BookInfoViewModel(
                 applicationScope.openBookInfoScreen(
                     bookId = null,
                     shortBook = event.shortBook,
-                    false
+                    needSaveScreenId = false
                 )
             }
 
@@ -78,7 +76,7 @@ class BookInfoViewModel(
             }
 
             is BookScreenEvents.ShowFullAuthorBooksScreen -> {
-                applicationScope.navigateToBooksListInfo(uiState.value.otherBooksByAuthor.value)
+                openAuthorBooks()
             }
 
             is ReviewAndRatingEvents.ChangeBookRating -> {
@@ -93,7 +91,6 @@ class BookInfoViewModel(
                 //todo
             }
 
-            is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
             is DatePickerEvents.OnDeleteDate -> deleteDate(event.datePickerType)
             is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
@@ -246,17 +243,6 @@ class BookInfoViewModel(
         }
     }
 
-    private fun onSuggestionAuthorClick(author: AuthorVo) {
-        _uiState.value.apply {
-            setSelectedAuthor(author)
-            bookValues.value.authorName.value = bookValues.value.authorName.value.copy(
-                author.name,
-                selection = TextRange(author.name.length)
-            )
-            clearSearchAuthor()
-        }
-    }
-
     private fun updateRating(newRating: Int) {
         scope.launch(Dispatchers.IO) {
             val bookId: String =
@@ -329,6 +315,18 @@ class BookInfoViewModel(
             interactor.addReview(
                 reviewText = reviewText,
                 mainBookId = mainBookId
+            )
+        }
+    }
+
+    private fun openAuthorBooks() {
+        val bookAuthorId = _uiState.value.bookItem.value?.originalAuthorId
+            ?: _uiState.value.shortBookItem.value?.originalAuthorId
+        bookAuthorId?.let {
+            component.openAuthorsBooks(
+                authorId = it,
+                books = uiState.value.otherBooksByAuthor.value,
+                needSaveScreenId = !component.previousScreenIsBookInfo
             )
         }
     }

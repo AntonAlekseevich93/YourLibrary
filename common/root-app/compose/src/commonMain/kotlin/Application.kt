@@ -191,16 +191,11 @@ fun Application(
                     }
 
                     is RootComponent.Screen.BooksListInfoScreen -> {
-//                                    BooksListInfoScreen(
-//                                        bookList = uiState.booksListInfoScreenBooks.value,
-//                                        previousViewModel = uiState.previousBooksListInfoViewModel.value,
-//                                        hazeState = hazeBlurState,
-//                                        isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
-//                                        changeBookReadingStatus = {
-//
-//                                        },
-//                                        onBack = { viewModel.onBackWithCheckViewModelStore() }
-//                                    )
+                        BooksListInfoScreen(
+                            hazeState = hazeBlurState,
+                            isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
+                            navigationComponent = screen.component
+                        )
                     }
                 }
             }

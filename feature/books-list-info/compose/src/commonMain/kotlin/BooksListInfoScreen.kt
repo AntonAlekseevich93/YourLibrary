@@ -24,24 +24,21 @@ import dev.chrisbanes.haze.haze
 import di.Inject
 import elements.BookSelectorItem
 import kotlinx.coroutines.launch
-import main_models.books.BookShortVo
 import models.BooksListInfoScreenEvents
+import navigation.screen_components.BooksListInfoScreenComponent
 
 @Composable
 fun BooksListInfoScreen(
-    bookList: List<BookShortVo>,
     hazeState: HazeState,
     isHazeBlurEnabled: Boolean,
-    changeBookReadingStatus: (bookId: String) -> Unit,
-    onBack: () -> Unit,
+    navigationComponent: BooksListInfoScreenComponent,
 ) {
     val viewModel = remember { Inject.instance<BooksListInfoViewModel>() }
     val uiState by viewModel.uiState.collectAsState()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
-
-    LaunchedEffect(key1 = bookList) {
-        viewModel.setBookList(bookList)
+    LaunchedEffect(key1 = Unit) {
+        viewModel.setBookList(navigationComponent.books)
     }
 
     Scaffold(
@@ -51,9 +48,11 @@ fun BooksListInfoScreen(
                 isHazeBlurEnabled = isHazeBlurEnabled,
                 title = "Заголовок",
                 showBackButton = true,
-                onBack = onBack,
+                onBack = {
+                    navigationComponent.onBack()
+                },
                 onClose = {
-//                    viewModel.sendEvent(BooksListInfoScreenEvents.CloseBooksListInfoScreen)
+                    navigationComponent.onCloseScreen()
                 }
             )
         },
@@ -112,7 +111,9 @@ fun BooksListInfoScreen(
                         },
                         maxLinesBookName = 2,
                         maxLinesAuthorName = 1,
-                        changeBookReadingStatus = changeBookReadingStatus,
+                        changeBookReadingStatus = {
+//                            changeBookReadingStatus
+                        },
                     )
                     Spacer(Modifier.padding(vertical = 12.dp))
                 }

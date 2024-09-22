@@ -10,12 +10,10 @@ import base.BaseUIState
 import main_models.BookVo
 import main_models.BooksInfoHeader
 import main_models.ReadingStatus
-import main_models.books.BookShortVo
 import main_models.path.PathInfoVo
 
 data class ApplicationUiState(
     val searchedBooks: List<BookVo> = emptyList(),
-    val booksListInfoScreenBooks: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
     val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
 ) : BaseUIState {
     val pathInfoList: SnapshotStateList<PathInfoVo> =

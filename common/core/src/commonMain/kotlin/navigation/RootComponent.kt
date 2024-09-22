@@ -11,6 +11,7 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import kotlinx.serialization.Serializable
+import main_models.books.BookShortVo
 import navigation.screen_components.AdminScreenComponent
 import navigation.screen_components.BookCreatorScreenComponent
 import navigation.screen_components.BookInfoComponent
@@ -73,6 +74,7 @@ class DefaultRootComponent(
 
     private val navigation = StackNavigation<Config>()
     private var bookInfoFirstScreenId: Int = DEFAULT_SCREEN_ID
+    private var bookListInfoFirstScreenId: Int = DEFAULT_SCREEN_ID
 
     override fun onBackClicked() {
         pop()
@@ -138,7 +140,11 @@ class DefaultRootComponent(
             )
 
             is Config.BooksListInfoConfig -> RootComponent.Screen.BooksListInfoScreen(
-                itemBooksListInfoScreen(componentContext)
+                itemBooksListInfoScreen(
+                    componentContext,
+                    authorId = config.authorId,
+                    books = config.books
+                )
             )
 
             is Config.ModerationConfig -> RootComponent.Screen.ModerationScreen(
@@ -172,7 +178,7 @@ class DefaultRootComponent(
                 val id = getNextStackKey
                 push(
                     id = id,
-                    config = Config.BookInfoConfig(id, bookId)
+                    config = Config.BookInfoConfig(id, bookId, previousScreenIsBookInfo = false)
                 )
             },
         )
@@ -182,19 +188,30 @@ class DefaultRootComponent(
         config: Config.BookInfoConfig
     ): BookInfoComponent =
         DefaultBookInfoComponent(
+            previousScreenIsBookInfo = config.previousScreenIsBookInfo,
             componentContext = componentContext,
             onBack = { pop() },
             showBookInfo = { bookId ->
                 val id = getNextStackKey
                 push(
                     id = id,
-                    config = Config.BookInfoConfig(id, bookId)
+                    config = Config.BookInfoConfig(id, bookId, previousScreenIsBookInfo = true)
                 )
             },
             bookId = config.bookId,
             onCloseScreen = {
                 popUntilStackIdFindOrFirstScreen(bookInfoFirstScreenId)
                 bookInfoFirstScreenId = DEFAULT_SCREEN_ID
+            },
+            openAuthorsBooksScreen = { authorId, books, needSaveScreenId ->
+                if (needSaveScreenId) {
+                    bookListInfoFirstScreenId = getCurrentStackKey
+                }
+                val id = getNextStackKey
+                push(
+                    id = id,
+                    config = Config.BooksListInfoConfig(id, authorId, books)
+                )
             }
         )
 
@@ -208,7 +225,7 @@ class DefaultRootComponent(
                 val id = getNextStackKey
                 push(
                     id = id,
-                    config = Config.BookInfoConfig(id, bookId)
+                    config = Config.BookInfoConfig(id, bookId, previousScreenIsBookInfo = false)
                 )
             }
         )
@@ -233,9 +250,22 @@ class DefaultRootComponent(
             }
         )
 
-    private fun itemBooksListInfoScreen(componentContext: ComponentContext): BooksListInfoScreenComponent =
+    private fun itemBooksListInfoScreen(
+        componentContext: ComponentContext,
+        authorId: String?,
+        books: List<BookShortVo>
+    ): BooksListInfoScreenComponent =
         DefaultBooksListInfoScreenComponent(
             componentContext = componentContext,
+            authorId = authorId,
+            books = books,
+            onBackListener = {
+                pop()
+            },
+            onCloseListener = {
+                popUntilStackIdFindOrFirstScreen(bookListInfoFirstScreenId)
+                bookListInfoFirstScreenId = DEFAULT_SCREEN_ID
+            }
         )
 
     private fun itemModerationScreen(componentContext: ComponentContext): ModerationScreenComponent =
@@ -321,7 +351,7 @@ class DefaultRootComponent(
                 val id = getNextStackKey
                 push(
                     id = id,
-                    config = Config.BookInfoConfig(id, bookId)
+                    config = Config.BookInfoConfig(id, bookId, previousScreenIsBookInfo = false)
                 )
             }
         )
@@ -381,7 +411,11 @@ class DefaultRootComponent(
         data class MainScreenConfig(val ids: Int) : Config(ids)
 
         @Serializable
-        data class BookInfoConfig(val ids: Int, val bookId: Long?) : Config(ids)
+        data class BookInfoConfig(
+            val ids: Int,
+            val bookId: Long?,
+            val previousScreenIsBookInfo: Boolean
+        ) : Config(ids)
 
         @Serializable
         data class BookCreatorConfig(val ids: Int) : Config(ids)
@@ -393,7 +427,11 @@ class DefaultRootComponent(
         data class SettingsConfig(val ids: Int) : Config(ids)
 
         @Serializable
-        data class BooksListInfoConfig(val ids: Int) : Config(ids)
+        data class BooksListInfoConfig(
+            val ids: Int,
+            val authorId: String?,
+            val books: List<BookShortVo>
+        ) : Config(ids)
 
         @Serializable
         data class ModerationConfig(val ids: Int) : Config(ids)
