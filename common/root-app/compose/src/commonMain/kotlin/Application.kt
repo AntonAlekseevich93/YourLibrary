@@ -141,7 +141,10 @@ fun Application(
                     }
 
                     is RootComponent.Screen.BookCreatorScreen -> {
-                        BookCreatorScreen(hazeState = hazeBlurState)
+                        BookCreatorScreen(
+                            hazeState = hazeBlurState,
+                            navigationComponent = screen.component
+                        )
                     }
 
                     is RootComponent.Screen.ProfileScreen -> {

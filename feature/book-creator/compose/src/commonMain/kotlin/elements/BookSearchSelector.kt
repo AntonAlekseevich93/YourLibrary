@@ -38,8 +38,6 @@ import loader.LoadingProcessWithTitle
 import main_models.AuthorVo
 import main_models.BookValues
 import main_models.books.BookShortVo
-import models.BooksListInfoScreenEvents
-import platform.Platform
 import text_fields.SearchTextField
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_authors
@@ -61,6 +59,7 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
     isSearchAuthorProcess: Boolean,
     booksListInfoViewModel: BooksListInfoViewModel,
     lazyListState: LazyListState,
+    openBookInfo: (book: BookShortVo) -> Unit,
     onClickManually: () -> Unit,
     changeBookReadingStatus: (bookId: String) -> Unit,
 ) {
@@ -185,9 +184,7 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
                 bookItem = it,
                 modifier = Modifier.padding(end = 16.dp),
                 onClick = { selectedBook ->
-                    booksListInfoViewModel.sendEvent(
-                        BooksListInfoScreenEvents.OnBookSelected(selectedBook, needSaveScreenId = true)
-                    )
+                    openBookInfo(selectedBook)
                 },
                 maxLinesBookName = 2,
                 maxLinesAuthorName = 1,

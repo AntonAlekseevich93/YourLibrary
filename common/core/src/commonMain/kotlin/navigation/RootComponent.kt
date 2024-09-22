@@ -172,14 +172,19 @@ class DefaultRootComponent(
     private fun itemMainScreen(componentContext: ComponentContext): MainScreenComponent =
         DefaultMainScreenComponent(
             componentContext = componentContext,
-            showBookInfo = { bookId, needSaveScreenId ->
+            showBookInfo = { bookId, shortBook, needSaveScreenId ->
                 if (needSaveScreenId) {
                     bookInfoFirstScreenId = getCurrentStackKey
                 }
                 val id = getNextStackKey
                 push(
                     id = id,
-                    config = Config.BookInfoConfig(id, bookId, previousScreenIsBookInfo = false)
+                    config = Config.BookInfoConfig(
+                        id,
+                        bookId,
+                        shortVo = shortBook,
+                        previousScreenIsBookInfo = false
+                    )
                 )
             },
         )
@@ -192,11 +197,16 @@ class DefaultRootComponent(
             previousScreenIsBookInfo = config.previousScreenIsBookInfo,
             componentContext = componentContext,
             onBack = { pop() },
-            showBookInfo = { bookId ->
+            showBookInfo = { bookId, shortBook ->
                 val id = getNextStackKey
                 push(
                     id = id,
-                    config = Config.BookInfoConfig(id, bookId, previousScreenIsBookInfo = true)
+                    config = Config.BookInfoConfig(
+                        id,
+                        bookId,
+                        shortVo = shortBook,
+                        previousScreenIsBookInfo = true
+                    )
                 )
             },
             bookId = config.bookId,
@@ -204,6 +214,7 @@ class DefaultRootComponent(
                 popUntilStackIdFindOrFirstScreen(bookInfoFirstScreenId)
                 bookInfoFirstScreenId = DEFAULT_SCREEN_ID
             },
+            shortBook = config.shortVo,
             openAuthorsBooksScreen = { screenTitle, authorId, books, needSaveScreenId ->
                 if (needSaveScreenId) {
                     bookListInfoFirstScreenId = getCurrentStackKey
@@ -231,7 +242,12 @@ class DefaultRootComponent(
                 val id = getNextStackKey
                 push(
                     id = id,
-                    config = Config.BookInfoConfig(id, bookId, previousScreenIsBookInfo = false)
+                    config = Config.BookInfoConfig(
+                        id,
+                        bookId,
+                        shortVo = shortBook,
+                        previousScreenIsBookInfo = false
+                    )
                 )
             }
         )
@@ -269,6 +285,21 @@ class DefaultRootComponent(
             books = books,
             onBackListener = {
                 pop()
+            },
+            openBookInfoScreen = { bookId, shortBook ->
+//                if (needSaveScreenId) {
+//                    bookInfoFirstScreenId = getCurrentStackKey
+//                }
+                val id = getNextStackKey
+                push(
+                    id = id,
+                    config = Config.BookInfoConfig(
+                        ids = id,
+                        bookId = bookId,
+                        shortVo = shortBook,
+                        previousScreenIsBookInfo = false
+                    )
+                )
             },
             onCloseListener = {
                 popUntilStackIdFindOrFirstScreen(bookListInfoFirstScreenId)
@@ -359,7 +390,12 @@ class DefaultRootComponent(
                 val id = getNextStackKey
                 push(
                     id = id,
-                    config = Config.BookInfoConfig(id, bookId, previousScreenIsBookInfo = false)
+                    config = Config.BookInfoConfig(
+                        id,
+                        bookId,
+                        shortVo = shortBook,
+                        previousScreenIsBookInfo = false
+                    )
                 )
             }
         )
@@ -422,6 +458,7 @@ class DefaultRootComponent(
         data class BookInfoConfig(
             val ids: Int,
             val bookId: Long?,
+            val shortVo: BookShortVo?,
             val previousScreenIsBookInfo: Boolean
         ) : Config(ids)
 

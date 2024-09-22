@@ -24,7 +24,6 @@ import dev.chrisbanes.haze.haze
 import di.Inject
 import elements.BookSelectorItem
 import kotlinx.coroutines.launch
-import models.BooksListInfoScreenEvents
 import navigation.screen_components.BooksListInfoScreenComponent
 
 @Composable
@@ -105,13 +104,8 @@ fun BooksListInfoScreen(
                     BookSelectorItem(
                         bookItem = it,
                         modifier = Modifier.padding(end = 16.dp),
-                        onClick = {
-                            viewModel.sendEvent(
-                                BooksListInfoScreenEvents.OnBookSelected(
-                                    it,
-                                    needSaveScreenId = false
-                                )
-                            )
+                        onClick = { shortBook ->
+                            navigationComponent.openBookInfo(bookId = null, shortBook = shortBook)
                         },
                         maxLinesBookName = 2,
                         maxLinesAuthorName = 1,

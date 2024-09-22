@@ -41,6 +41,7 @@ import genre.GenreSelector
 import kotlinx.coroutines.launch
 import main_models.DatePickerType
 import models.BookCreatorEvents
+import navigation.screen_components.BookCreatorScreenComponent
 import reading_status.ReadingStatusSelectorDialog
 
 
@@ -48,6 +49,7 @@ import reading_status.ReadingStatusSelectorDialog
 @Composable
 fun BookCreatorScreen(
     hazeState: HazeState,
+    navigationComponent: BookCreatorScreenComponent,
 ) {
     val viewModel = remember { Inject.instance<BookCreatorViewModel>() }
     val booksListInfoViewModel = remember { Inject.instance<BooksListInfoViewModel>() }
@@ -132,6 +134,13 @@ fun BookCreatorScreen(
                         )
                     )
                 },
+                openBookInfo = { shortBook ->
+                    navigationComponent.openBookInfo(
+                        bookId = null,
+                        shortBook = shortBook,
+                        needSaveScreenId = true
+                    )
+                }
             )
         }
 

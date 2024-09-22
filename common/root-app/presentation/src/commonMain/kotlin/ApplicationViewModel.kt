@@ -11,7 +11,6 @@ import main_models.books.BookShortVo
 import models.ApplicationUiState
 import navigation.RootComponent
 import navigation.activeScreenAsBookInfoOrNull
-import navigation.isBookInfo
 import navigation_drawer.contents.models.DrawerEvents
 import platform.Platform
 import platform.PlatformInfoData
@@ -80,7 +79,11 @@ class ApplicationViewModel(
         when (val item = component.screenStack.value.active.instance) {
             is RootComponent.Screen.MainScreen -> {
                 component.screenStack
-                item.component.openBookInfo(bookId = bookId, needSaveScreenId = needSaveScreenId)
+                item.component.openBookInfo(
+                    bookId = bookId,
+                    shortBook = shortBook,
+                    needSaveScreenId = needSaveScreenId
+                )
             }
 
             is RootComponent.Screen.BookInfoScreen -> {
@@ -106,11 +109,6 @@ class ApplicationViewModel(
             else -> {
                 //nop
             }
-        }
-        if (component.isBookInfo()) {
-            component.activeScreenAsBookInfoOrNull()?.component?.setBookShort(
-                shortBook
-            )
         }
     }
 

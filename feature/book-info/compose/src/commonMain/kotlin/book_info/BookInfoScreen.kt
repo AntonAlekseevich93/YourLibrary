@@ -15,7 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +25,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import date.CommonDatePicker
 import date.DateChangeSelectorDialog
 import date.DatePickerEvents
@@ -49,8 +47,8 @@ import yourlibrary.common.resources.generated.resources.start_date
 fun BookInfoScreen(
     navigationComponent: BookInfoComponent
 ) {
-    val bookShortVo: State<BookShortVo>? = navigationComponent.model?.subscribeAsState()
-    val bookItemId = navigationComponent.getBookIdOrNull()
+    val bookShortVo: BookShortVo? by remember { mutableStateOf(navigationComponent.shortBook) }
+    val bookItemId by remember { mutableStateOf(navigationComponent.getBookIdOrNull()) }
     val viewModel = remember { Inject.instance<BookInfoViewModel>() }
     LaunchedEffect(Unit) {
         viewModel.component = navigationComponent
@@ -88,10 +86,10 @@ fun BookInfoScreen(
     LaunchedEffect(key1 = bookItemId, key2 = bookShortVo) {
         if (viewModel.uiState.value.shortBookItem.value == null && viewModel.uiState.value.bookItem.value == null) {
             bookItemId?.let {
-                viewModel.getBookByLocalId(bookItemId)
+                viewModel.getBookByLocalId(it)
             }
             bookShortVo?.let {
-                viewModel.setShortBook(it.value)
+                viewModel.setShortBook(it)
             }
         }
         scope.launch {

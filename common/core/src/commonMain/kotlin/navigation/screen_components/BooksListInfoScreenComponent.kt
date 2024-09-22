@@ -9,6 +9,7 @@ interface BooksListInfoScreenComponent {
     val screenTitle: String
     fun onBack()
     fun onCloseScreen()
+    fun openBookInfo(bookId: Long?, shortBook: BookShortVo?)
 }
 
 class DefaultBooksListInfoScreenComponent(
@@ -18,6 +19,7 @@ class DefaultBooksListInfoScreenComponent(
     override val books: List<BookShortVo>,
     val onBackListener: () -> Unit,
     val onCloseListener: () -> Unit,
+    val openBookInfoScreen: (bookId: Long?, shortBook: BookShortVo?) -> Unit,
 ) : BooksListInfoScreenComponent, ComponentContext by componentContext {
 
     override fun onBack() {
@@ -26,5 +28,9 @@ class DefaultBooksListInfoScreenComponent(
 
     override fun onCloseScreen() {
         onCloseListener()
+    }
+
+    override fun openBookInfo(bookId: Long?, shortBook: BookShortVo?) {
+        openBookInfoScreen(bookId, shortBook)
     }
 }
