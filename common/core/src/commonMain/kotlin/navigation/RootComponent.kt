@@ -297,7 +297,7 @@ class DefaultRootComponent(
                         ids = id,
                         bookId = bookId,
                         shortVo = shortBook,
-                        previousScreenIsBookInfo = false
+                        previousScreenIsBookInfo = true
                     )
                 )
             },
