@@ -10,6 +10,7 @@ kotlin {
             dependencies {
                 api(project(":feature:rating-review:api"))
                 implementation(project(":common:core"))
+                implementation(project(":common:cache-manager:api"))
                 implementation(project(":common:models"))
                 implementation(project(":common:constants"))
                 implementation(project(":common:app-config"))

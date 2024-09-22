@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.map
 import ktor.RemoteReviewAndRatingDataSource
 import main_models.rating_review.ReviewAndRatingTimestampVo
 import main_models.rating_review.ReviewAndRatingVo
+import main_models.rest.rating_review.toRemoteDto
 import main_models.rest.rating_review.toRemoteRating
 import main_models.rest.rating_review.toRemoteReview
 import main_models.rest.rating_review.toVo
@@ -18,6 +19,7 @@ class ReviewAndRatingRepositoryImpl(
     private val appConfig: AppConfig,
     private val remoteConfig: RemoteConfig,
     private val platformInfo: PlatformInfoData,
+    private val cacheManagerRepository: CacheManagerRepository,
 ) : ReviewAndRatingRepository {
 
     override suspend fun getNotSynchronizedReviewAndRating(userId: Long) =
@@ -162,8 +164,24 @@ class ReviewAndRatingRepositoryImpl(
             userId = appConfig.userId
         ).firstOrNull()?.toVo()
 
-    override suspend fun getAllRemoteReviewsAndRatingsByBookId(mainBookId: String): List<ReviewAndRatingVo> =
-        remoteReviewAndRatingDataSource.getAllRemoteReviewsAndRatingsByBookId(mainBookId)?.result?.reviewsAndRatings?.mapNotNull { it.toVo() }
-            ?: emptyList()
+
+    override suspend fun getAllRemoteReviewsAndRatingsByBookId(mainBookId: String): List<ReviewAndRatingVo> {
+        val cachedReviewsAndRatings =
+            cacheManagerRepository.getCacheReviewsAndRatingsByBook(mainBookId = mainBookId)
+
+        val reviewsAndRatings = if (cachedReviewsAndRatings.isEmpty()) {
+            val remoteReviewsAndRatings =
+                remoteReviewAndRatingDataSource.getAllRemoteReviewsAndRatingsByBookId(mainBookId)?.result?.reviewsAndRatings
+            cacheManagerRepository.saveAllReviewsAndRatingsByBook(
+                mainBookId = mainBookId,
+                reviewsAndRatings = remoteReviewsAndRatings ?: emptyList()
+            )
+            remoteReviewsAndRatings
+        } else {
+            cachedReviewsAndRatings.mapNotNull { it.toRemoteDto() }
+        }
+
+        return reviewsAndRatings?.mapNotNull { it.toVo() }.orEmpty()
+    }
 
 }
