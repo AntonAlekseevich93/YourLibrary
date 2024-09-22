@@ -1,9 +1,11 @@
 import database.CacheManagerDataSource
 import database.room.entities.cache.CacheBookByAuthorEntity
-import database.room.entities.cache.toBookShortDtoCache
-import main_models.books.BookShortDtoCache
-import main_models.books.toCacheShortBook
+import database.room.entities.cache.CacheReviewAndRatingEntity
+import database.room.entities.cache.toCacheVo
+import main_models.books.CacheShortBookByAuthorVo
 import main_models.rest.books.BookShortRemoteDto
+import main_models.rest.rating_review.CacheReviewAndRatingVo
+import main_models.rest.rating_review.ReviewAndRatingRemoteDto
 import platform.PlatformInfoData
 
 class CacheManagerRepositoryImpl(
@@ -14,26 +16,66 @@ class CacheManagerRepositoryImpl(
 ) : CacheManagerRepository {
     override suspend fun getCacheAllAuthorBooks(
         authorId: String,
-    ): List<BookShortDtoCache> =
+    ): List<CacheShortBookByAuthorVo> =
         cacheManagerDataSource.getCacheAllAuthorBooks(
             authorId = authorId, userId = appConfig.userId,
-        ).map { it.toBookShortDtoCache() }
+        ).map { it.toCacheVo() }
 
     override suspend fun saveAllAuthorsBooks(authorId: String, books: List<BookShortRemoteDto>) {
         val userId = appConfig.userId
         val currentTimestamp = platformInfo.getCurrentTime().timeInMillis
-        val cacheBookByAuthorEntity = books.map {
+        val cacheBookByAuthorEntity = books.takeIf { it.isNotEmpty() }?.map {
             CacheBookByAuthorEntity(
-                cacheBook = it.toCacheShortBook(),
+                cacheBook = it,
                 cacheAuthorId = authorId,
                 cacheTimestamp = currentTimestamp,
                 cacheUserId = userId
             )
-        }
+        } ?: listOf( //we save empty data so as not to pull an empty request from the backend
+            CacheBookByAuthorEntity(
+                cacheBook = null,
+                cacheAuthorId = authorId,
+                cacheTimestamp = currentTimestamp,
+                cacheUserId = userId
+            )
+        )
         cacheManagerDataSource.saveAllAuthorsBooks(
             authorId = authorId,
             userId = userId,
             books = cacheBookByAuthorEntity
+        )
+    }
+
+    override suspend fun getCacheReviewsAndRatingsByBook(mainBookId: String): List<CacheReviewAndRatingVo> =
+        cacheManagerDataSource.getCacheAllReviewsAndRatingsByBook(
+            mainBookId = mainBookId, userId = appConfig.userId,
+        ).map { it.toCacheVo() }
+
+    override suspend fun saveAllReviewsAndRatingsByBook(
+        mainBookId: String,
+        reviewsAndRatings: List<ReviewAndRatingRemoteDto>
+    ) {
+        val userId = appConfig.userId
+        val currentTimestamp = platformInfo.getCurrentTime().timeInMillis
+        val cacheReviewsAndRatingsEntity = reviewsAndRatings.takeIf { it.isNotEmpty() }?.map {
+            CacheReviewAndRatingEntity(
+                cacheReviewAndRating = it,
+                cacheMainBookId = mainBookId,
+                cacheTimestamp = currentTimestamp,
+                cacheUserId = userId
+            )
+        } ?: listOf( //we save empty data so as not to pull an empty request from the backend
+            CacheReviewAndRatingEntity(
+                cacheReviewAndRating = null,
+                cacheMainBookId = mainBookId,
+                cacheTimestamp = currentTimestamp,
+                cacheUserId = userId
+            )
+        )
+        cacheManagerDataSource.saveAllReviewAndRatingByBook(
+            mainBookId = mainBookId,
+            userId = userId,
+            reviewsAndRatings = cacheReviewsAndRatingsEntity
         )
     }
 

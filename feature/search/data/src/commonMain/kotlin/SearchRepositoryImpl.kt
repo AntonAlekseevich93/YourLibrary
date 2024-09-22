@@ -4,7 +4,7 @@ import ktor.RemoteSearchDataSource
 import main_models.AuthorVo
 import main_models.BookVo
 import main_models.books.BookShortVo
-import main_models.books.toRemoteShortBook
+import main_models.books.toRemoteDto
 import main_models.rest.authors.toAuthorVo
 import main_models.rest.books.toVo
 
@@ -53,7 +53,7 @@ class SearchRepositoryImpl(
             )
             remoteBooks
         } else {
-            cachedBooks.map { it.toRemoteShortBook() }
+            cachedBooks.mapNotNull { it.toRemoteDto() }
         }
 
         return books?.mapNotNull {

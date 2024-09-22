@@ -2,6 +2,7 @@ package database
 
 import database.room.RoomMainDataSource
 import database.room.entities.cache.CacheBookByAuthorEntity
+import database.room.entities.cache.CacheReviewAndRatingEntity
 import platform.PlatformInfoData
 import java.util.concurrent.TimeUnit
 
@@ -10,6 +11,7 @@ class CacheManagerDataSource(
     roomDb: RoomMainDataSource,
 ) {
     private val booksByAuthorDao = roomDb.cacheBooksByAuthorDao
+    private val reviewAndRatingDao = roomDb.cacheReviewAndRatingDao
     private val _currentTimestamp
         get() = platformInfo.getCurrentTime().timeInMillis
 
@@ -44,8 +46,41 @@ class CacheManagerDataSource(
         }
     }
 
-    suspend fun clearAllCache(){
+    suspend fun getCacheAllReviewsAndRatingsByBook(
+        mainBookId: String,
+        userId: Long
+    ): List<CacheReviewAndRatingEntity> {
+        val cachedReviewAndRating = reviewAndRatingDao.getCacheReviewAndRatingByBook(
+            mainBookId = mainBookId,
+            userId = userId
+        )
+        return if (cachedReviewAndRating.isEmpty()) emptyList()
+        else {
+            val cachedTimestamp =
+                cachedReviewAndRating.firstOrNull()?.cacheTimestamp ?: return emptyList()
+            if (isCacheValid(cachedTimestamp)) {
+                return cachedReviewAndRating
+            } else {
+                reviewAndRatingDao.deleteCacheReviewAndRatingByBook(mainBookId, userId)
+            }
+            emptyList()
+        }
+    }
+
+    suspend fun saveAllReviewAndRatingByBook(
+        mainBookId: String,
+        userId: Long,
+        reviewsAndRatings: List<CacheReviewAndRatingEntity>
+    ) {
+        reviewAndRatingDao.deleteCacheReviewAndRatingByBook(mainBookId, userId)
+        reviewsAndRatings.forEach {
+            reviewAndRatingDao.insertReviewAndRating(it)
+        }
+    }
+
+    suspend fun clearAllCache() {
         booksByAuthorDao.clearAllCache()
+        reviewAndRatingDao.clearAllCache()
     }
 
     private fun isCacheValid(cachedTimestamp: Long): Boolean {
