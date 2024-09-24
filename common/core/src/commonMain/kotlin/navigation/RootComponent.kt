@@ -27,6 +27,7 @@ import navigation.screen_components.DefaultParsingScreenComponent
 import navigation.screen_components.DefaultProfileScreenComponent
 import navigation.screen_components.DefaultSettingsScreenComponent
 import navigation.screen_components.DefaultSingleBookParsingScreenComponent
+import navigation.screen_components.DefaultUserBookCreatorScreenComponent
 import navigation.screen_components.MainScreenComponent
 import navigation.screen_components.ModerationBooksScreenComponent
 import navigation.screen_components.ModerationScreenComponent
@@ -34,6 +35,7 @@ import navigation.screen_components.ParsingScreenComponent
 import navigation.screen_components.ProfileScreenComponent
 import navigation.screen_components.SettingsScreenComponent
 import navigation.screen_components.SingleBookParsingScreenComponent
+import navigation.screen_components.UserBookCreatorScreenComponent
 
 interface RootComponent : BackHandlerOwner {
 
@@ -49,6 +51,7 @@ interface RootComponent : BackHandlerOwner {
         class MainScreen(val component: MainScreenComponent) : Screen()
         class BookInfoScreen(val component: BookInfoComponent) : Screen()
         class BookCreatorScreen(val component: BookCreatorScreenComponent) : Screen()
+        class UserBookCreatorScreen(val component: UserBookCreatorScreenComponent) : Screen()
         class ProfileScreen(val component: ProfileScreenComponent) : Screen()
         class SettingsScreen(val component: SettingsScreenComponent) : Screen()
         class BooksListInfoScreen(val component: BooksListInfoScreenComponent) : Screen()
@@ -129,6 +132,10 @@ class DefaultRootComponent(
 
             is Config.BookCreatorConfig -> RootComponent.Screen.BookCreatorScreen(
                 itemBookCreatorScreen(componentContext)
+            )
+
+            is Config.UserBookCreatorConfig -> RootComponent.Screen.UserBookCreatorScreen(
+                itemUserBookCreatorScreen(componentContext)
             )
 
             is Config.ProfileConfig -> RootComponent.Screen.ProfileScreen(
@@ -249,6 +256,21 @@ class DefaultRootComponent(
                         previousScreenIsBookInfo = false
                     )
                 )
+            },
+            showUserBookCreatorScreen = {
+                val id = getNextStackKey
+                push(
+                    id = id,
+                    config = Config.UserBookCreatorConfig(id)
+                )
+            }
+        )
+
+    private fun itemUserBookCreatorScreen(componentContext: ComponentContext): UserBookCreatorScreenComponent =
+        DefaultUserBookCreatorScreenComponent(
+            componentContext = componentContext,
+            onBackListener = {
+                pop()
             }
         )
 
@@ -287,9 +309,6 @@ class DefaultRootComponent(
                 pop()
             },
             openBookInfoScreen = { bookId, shortBook ->
-//                if (needSaveScreenId) {
-//                    bookInfoFirstScreenId = getCurrentStackKey
-//                }
                 val id = getNextStackKey
                 push(
                     id = id,
@@ -464,6 +483,9 @@ class DefaultRootComponent(
 
         @Serializable
         data class BookCreatorConfig(val ids: Int) : Config(ids)
+
+        @Serializable
+        data class UserBookCreatorConfig(val ids: Int) : Config(ids)
 
         @Serializable
         data class ProfileConfig(val ids: Int) : Config(ids)

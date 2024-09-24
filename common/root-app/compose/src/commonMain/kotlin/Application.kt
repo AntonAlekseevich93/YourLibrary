@@ -1,8 +1,10 @@
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +46,7 @@ fun Application(
     desktopTooltip: MutableState<TooltipItem>? = null,
     platformDisplayHeight: Dp? = null,
     component: RootComponent,
+    keyboardShown: State<Boolean>,
 ) {
     val viewModel = remember { Inject.instance<ApplicationViewModel>() }
     viewModel.component = component
@@ -77,7 +80,7 @@ fun Application(
                 }
             },
             bottomBar = {
-                if (platform.isMobile() && showBottomBar) {
+                if (!keyboardShown.value && platform.isMobile() && showBottomBar) {
                     CustomBottomBar(
                         hazeState = hazeBlurState,
                         isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
@@ -85,7 +88,7 @@ fun Application(
                     )
                 }
             },
-            modifier = Modifier
+            modifier = Modifier.imePadding()
         ) { paddingValues ->
             component.backHandler.register(
                 BackCallback {
@@ -99,8 +102,7 @@ fun Application(
                     fallbackAnimation = stackAnimation(slide()),
                     onBack = component::onBackClicked,
                 ),
-
-                ) {
+            ) {
 
                 showMainAppBar = component.isMainScreen()
                 showBottomBar =
@@ -144,6 +146,13 @@ fun Application(
                         BookCreatorScreen(
                             hazeState = hazeBlurState,
                             navigationComponent = screen.component
+                        )
+                    }
+
+                    is RootComponent.Screen.UserBookCreatorScreen -> {
+                        UserBookCreatorScreen(
+                            hazeState = hazeBlurState,
+                            navigationComponent = screen.component,
                         )
                     }
 
@@ -197,7 +206,7 @@ fun Application(
                         BooksListInfoScreen(
                             hazeState = hazeBlurState,
                             isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
-                            navigationComponent = screen.component
+                            navigationComponent = screen.component,
                         )
                     }
                 }

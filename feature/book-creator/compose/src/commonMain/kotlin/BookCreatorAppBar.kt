@@ -1,14 +1,18 @@
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -26,33 +30,31 @@ import dev.chrisbanes.haze.hazeChild
 fun BookCreatorAppBar(
     hazeBlurState: HazeState,
     title: String,
-    showBackButton: Boolean,
-    showSearchButton: Boolean,
     isHazeBlurEnabled: Boolean,
-    onClose: () -> Unit,
+    showBackButton: Boolean,
+    appBarModifier: Modifier = Modifier,
+    onBack: () -> Unit,
 ) {
 
-    var modifier = Modifier.fillMaxWidth().sizeIn(minHeight = 85.dp)
-    val shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 8.dp)
+    var modifier = appBarModifier.fillMaxWidth()
 
     modifier = if (isHazeBlurEnabled) {
         modifier.hazeChild(
             state = hazeBlurState,
-            shape = shape
+            shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 8.dp)
         )
     } else {
-        modifier.clip(shape).background(ApplicationTheme.colors.mainBackgroundColor)
+        modifier.clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 8.dp))
+            .background(ApplicationTheme.colors.mainBackgroundColor)
     }
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.Top
     ) {
         AppBarComponent(
             title = title,
+            onBack = onBack,
             showBackButton = showBackButton,
-            showSearchButton = showSearchButton,
-            onClose = onClose
         )
     }
 }
@@ -62,17 +64,17 @@ fun BookCreatorAppBar(
 internal fun AppBarComponent(
     title: String,
     showBackButton: Boolean,
-    showSearchButton: Boolean,
-    onClose: () -> Unit,
+    onBack: () -> Unit,
 ) {
     CompositionLocalProvider(
         LocalContentColor provides Color.White
     ) {
         Column(
             modifier = Modifier
+                .height(88.dp)
+                .statusBarsPadding()
                 .background(Color.Transparent),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
         ) {
             TopAppBar(
                 title = {
@@ -90,11 +92,26 @@ internal fun AppBarComponent(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
-                    Spacer(Modifier.padding(start = 32.dp))
+                    if (showBackButton) {
+                        IconButton(
+                            onClick = {
+                                onBack.invoke()
+                            },
+                            modifier = Modifier
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.ArrowBackIosNew,
+                                contentDescription = null,
+                            )
+                        }
+                    } else {
+                        Spacer(Modifier.padding(start = 32.dp))
+                    }
                 },
                 actions = {
                     Spacer(Modifier.padding(start = 32.dp))
-                }
+                },
+                modifier = Modifier.padding(vertical = 4.dp)
             )
         }
     }

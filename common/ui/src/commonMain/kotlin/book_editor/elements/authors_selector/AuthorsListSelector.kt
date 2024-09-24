@@ -69,12 +69,7 @@ fun BaseEventScope<BaseEvent>.AuthorsListSelector(
                     title = "Создать новую книгу",
                     modifier = Modifier.padding(top = 24.dp),
                     onClick = {
-                        sendEvent(
-                            BookEditorEvents.OnCreateBookManually(
-                                setCreateNewAuthor = true,
-                                authorWasNotFound = true
-                            )
-                        )
+                        //todo
                     }
                 )
             }

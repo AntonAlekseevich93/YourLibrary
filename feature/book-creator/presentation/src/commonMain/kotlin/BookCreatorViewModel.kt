@@ -66,18 +66,6 @@ class BookCreatorViewModel(
                 )
             }
 
-            is BookEditorEvents.OnCreateBookManually -> {
-                updateUIState(
-                    uiStateValue.copy(
-                        isCreateBookManually = true,
-                        showSearchAuthorError = false,
-                        needCreateNewAuthor = event.setCreateNewAuthor,
-                        bookWasNotFound = event.bookWasNotFound,
-                        authorWasNotFound = event.authorWasNotFound,
-                    )
-                )
-            }
-
             is BookEditorEvents.OnSearchAuthorClick -> {
                 searchAuthor(event.name)
             }
@@ -99,33 +87,8 @@ class BookCreatorViewModel(
 
             is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.ClearUrlEvent -> clearUrl()
-            is BookCreatorEvents.OnClearUrlAndCreateBookManuallyEvent -> {
-                uiStateValue.bookValues.parsingUrl.value = TextFieldValue()
-                updateUIState(
-                    uiStateValue.copy(
-                        isCreateBookManually = true,
-                        showLoadingIndicator = false
-                    )
-                )
-            }
 
             is BookCreatorEvents.OnFinishParsingUrl -> finishParsing()
-            is BookCreatorEvents.OnCreateBookManuallyEvent -> {
-                uiStateValue.bookValues.parsingUrl.value = TextFieldValue()
-                updateUIState(
-                    uiStateValue.copy(
-                        isCreateBookManually = true
-                    )
-                )
-            }
-
-            is BookCreatorEvents.DisableCreateBookManuallyEvent -> {
-                updateUIState(
-                    uiStateValue.copy(
-                        isCreateBookManually = false
-                    )
-                )
-            }
 
             is BookCreatorEvents.ClearAllBookInfo -> {
                 clearAllBookInfo()
@@ -166,15 +129,6 @@ class BookCreatorViewModel(
 
             is BookCreatorEvents.SetSelectedGenre -> {
                 uiStateValue.bookValues.genre.value = event.genre
-            }
-
-            is BookCreatorEvents.HideFullScreenBookSelector -> {
-                updateUIState(uiStateValue.copy(showFullScreenBookSelector = false))
-            }
-
-            is BookCreatorEvents.OnBookSelected -> {
-                updateUIState(uiStateValue.copy(showFullScreenBookSelector = false))
-                setSelectedBook(event.shortBook)
             }
 
             is BookCreatorEvents.SetSelectedBookByMenuClick -> {

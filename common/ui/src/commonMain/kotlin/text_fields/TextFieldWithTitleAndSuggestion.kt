@@ -116,7 +116,7 @@ fun TextFieldWithTitleAndSuggestion(
             colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
             border = if (!disableBorder && (setAsSelected || isHovered.value || isFocused.value)) BorderStroke(
                 if (isFocused.value || setAsSelected) 2.dp else if (isHovered.value) 1.dp else 0.dp,
-                color = ApplicationTheme.colors.textFieldColor
+                color = ApplicationTheme.colors.textFieldColorOld
             ) else null
         ) {
             Row(

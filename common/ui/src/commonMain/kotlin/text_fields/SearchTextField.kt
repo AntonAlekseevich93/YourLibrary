@@ -63,7 +63,7 @@ fun SearchTextField(
         colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
         border = if (isHovered.value || isFocused) BorderStroke(
             if (isFocused) 2.dp else if (isHovered.value) 1.dp else 0.dp,
-            color = ApplicationTheme.colors.textFieldColor
+            color = ApplicationTheme.colors.textFieldColorOld
         ) else null
     ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

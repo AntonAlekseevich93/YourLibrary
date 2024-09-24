@@ -97,7 +97,7 @@ fun ActionBottomSheet(
                         closeBottomSheet()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = ApplicationTheme.colors.screenColor.activeLinkColor,
+                        backgroundColor = ApplicationTheme.colors.screenColor.activeButtonColor,
                         disabledBackgroundColor = ApplicationTheme.colors.pointerIsActiveCardColor
                     ),
                     modifier = Modifier.fillMaxWidth()

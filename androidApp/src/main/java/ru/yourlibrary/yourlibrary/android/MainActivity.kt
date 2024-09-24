@@ -45,7 +45,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val desktopTooltip = mutableStateOf(TooltipItem())
         window.navigationBarColor = ContextCompat.getColor(this, R.color.your_navigation_bar_color)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false)
             window.statusBarColor = Color.TRANSPARENT
@@ -78,7 +77,8 @@ class MainActivity : ComponentActivity() {
                     Application(
                         platform = Platform.MOBILE(),
                         platformDisplayHeight = platformDisplayHeight,
-                        component = root
+                        component = root,
+                        keyboardShown = keyboardAsState()
                     )
                 }
             }

@@ -110,7 +110,7 @@ internal fun CreateLibraryBlock(
             Box(modifier = Modifier.weight(2f), contentAlignment = Alignment.CenterEnd) {
                 Card(
                     border = BorderStroke(1.dp, ApplicationTheme.colors.divider),
-                    backgroundColor = ApplicationTheme.colors.textFieldColorDark,
+                    backgroundColor = ApplicationTheme.colors.textFieldColorDarkOld,
                     modifier = Modifier
                 ) {
                     OldCommonTextField(

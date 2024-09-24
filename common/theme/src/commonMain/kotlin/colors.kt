@@ -30,8 +30,8 @@ data class AppColors(
     val errorColor: Color,
     val successColor: Color,
     val readingStatusesColor: ReadingStatusesColor,
-    val textFieldColor: Color,
-    val textFieldColorDark: Color,
+    val textFieldColorOld: Color,
+    val textFieldColorDarkOld: Color,
     val hintColor: Color,
     val focusedTextFillBackground: Color,
     val dropdownBackground: Color,
@@ -45,6 +45,7 @@ data class AppColors(
     val adminPanelButtons: AdminPanelButtons,
     val titleColors: TitleColors,
     val screenColor: ScreenColor,
+    val textFieldColor: TextFieldColor,
 )
 
 class ReadingStatusesColor(
@@ -77,6 +78,17 @@ class ScreenColor(
     val iconColor: Color,
     val textColor: Color,
     val activeLinkColor: Color,
+    val activeButtonColor: Color,
+    val selectedTitleTextColor: Color,
+)
+
+class TextFieldColor(
+    val unfocusedLabelColor: Color,
+    val focusedIndicatorColor: Color,
+    val unfocusedIndicatorColor: Color,
+    val disabledIndicatorColor: Color,
+    val errorIndicatorColor: Color,
+    val cursorColor: Color,
 )
 
 val lightPaletteTheme = AppColors(
@@ -118,8 +130,8 @@ val lightPaletteTheme = AppColors(
         doneStatusColor = Color(0xFF9ef01a),
         deferredStatusColor = Color(0xFFd5b9b2),
     ),
-    textFieldColor = Color(0xFF3f3f3f),
-    textFieldColorDark = Color(0xFF101010),
+    textFieldColorOld = Color(0xFF3f3f3f),
+    textFieldColorDarkOld = Color(0xFF101010),
     hintColor = Color(0xFF949494),
     focusedTextFillBackground = Color(0xFF212121),
     dropdownBackground = Color(0xFF252525),
@@ -149,6 +161,16 @@ val lightPaletteTheme = AppColors(
         iconColor = Color(0xFFd4d4d4),
         textColor = Color(0xFFe5e5e5),
         activeLinkColor = Color(0xFF4361ee),
+        activeButtonColor = Color(0xFF4361ee),
+        selectedTitleTextColor = Color(0xFF4361ee),
+    ),
+    textFieldColor = TextFieldColor(
+        unfocusedLabelColor = Color(0xFF545454),
+        cursorColor = Color(0xFFd5b9b2),
+        focusedIndicatorColor = Color(0xFF414141),
+        unfocusedIndicatorColor = Color(0xFF414141),
+        disabledIndicatorColor = Color(0xFF414141),
+        errorIndicatorColor = Color(0xFFf85441),
     ),
 )
 
@@ -191,8 +213,8 @@ val darkPaletteTheme = AppColors(
         doneStatusColor = Color(0xFFccff33),
         deferredStatusColor = Color(0xFFd5b9b2),
     ),
-    textFieldColor = Color(0xFF3f3f3f),
-    textFieldColorDark = Color(0xFF101010),
+    textFieldColorOld = Color(0xFF3f3f3f),
+    textFieldColorDarkOld = Color(0xFF101010),
     hintColor = Color(0xFF949494),
     focusedTextFillBackground = Color(0xFF212121),
     dropdownBackground = Color(0xFF252525),
@@ -222,5 +244,15 @@ val darkPaletteTheme = AppColors(
         iconColor = Color(0xFFd4d4d4),
         textColor = Color(0xFFe5e5e5),
         activeLinkColor = Color(0xFF4361ee),
+        activeButtonColor = Color(0xFF4361ee),
+        selectedTitleTextColor = Color(0xFF4361ee),
+    ),
+    textFieldColor = TextFieldColor(
+        unfocusedLabelColor = Color(0xFFffbe0b),
+        cursorColor = Color(0xFFd5b9b2),
+        focusedIndicatorColor = Color(0xFF414141),
+        unfocusedIndicatorColor = Color(0xFF414141),
+        disabledIndicatorColor = Color(0xFF414141),
+        errorIndicatorColor = Color(0xFFf85441),
     ),
 )

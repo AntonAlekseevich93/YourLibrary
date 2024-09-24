@@ -4,6 +4,7 @@ import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import base.BaseUIState
 import main_models.AuthorVo
 import main_models.BookValues
@@ -30,7 +31,6 @@ data class BookCreatorUiState(
     val showDialogClearAllData: Boolean = false,
     var datePickerType: DatePickerType = DatePickerType.StartDate,
     val showDatePicker: Boolean = false,
-    val isCreateBookManually: Boolean = false,
     var similarBooks: List<BookShortVo> = listOf<BookShortVo>(),
     val similarBooksCache: List<BookShortVo> = listOf(),
     val isSearchBookProcess: Boolean = false,
@@ -40,11 +40,27 @@ data class BookCreatorUiState(
     val alertDialogConfig: CommonAlertDialogConfig? = null,
     val showSearchBookError: Boolean = false,
     val showSearchAuthorError: Boolean = false,
-    val showFullScreenBookSelector: Boolean = false,
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
     val selectedBookByMenuClick: MutableState<SelectedBook?> = mutableStateOf(null),
     val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
-) : BaseUIState
+    var userBookCreatorUiState: UserBookCreatorUiState = UserBookCreatorUiState(),
+) : BaseUIState {
+    fun updateUserBookCreatorUiState() {
+        val bookAuthorName = bookValues.authorName.value.text
+        val bookName = bookValues.bookName.value.text
+        val userBookCreatorBookName = userBookCreatorUiState.bookNameTextState.value.text
+        val userBookCreatorAuthorName = userBookCreatorUiState.authorNameTextState.value.text
+        if (bookAuthorName.isNotEmpty() && bookAuthorName != userBookCreatorAuthorName || bookName.isNotEmpty() && bookName != userBookCreatorBookName) {
+            clearUserBookCreatorUiState()
+            userBookCreatorUiState.bookNameTextState.value = TextFieldValue(bookName)
+            userBookCreatorUiState.authorNameTextState.value = TextFieldValue(bookAuthorName)
+        }
+    }
+
+    private fun clearUserBookCreatorUiState() {
+        userBookCreatorUiState = UserBookCreatorUiState()
+    }
+}
 
 data class SelectedBook(
     val bookId: String = "",

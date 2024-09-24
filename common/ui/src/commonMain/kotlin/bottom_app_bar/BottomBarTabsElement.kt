@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
@@ -77,7 +80,7 @@ fun CustomBottomBar(
     val shape = RoundedCornerShape(16.dp)
 
     var modifier: Modifier = Modifier
-        .padding(vertical = 16.dp, horizontal = 16.dp)
+        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         .fillMaxWidth()
         .height(64.dp)
 
@@ -87,7 +90,10 @@ fun CustomBottomBar(
         modifier.clip(shape).background(ApplicationTheme.colors.mainBackgroundColor)
     }
 
-    Column(Modifier.background(Color.Transparent)) {
+    Column(
+        Modifier.background(Color.Transparent)
+            .padding(bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding())
+    ) {
         Box(
             modifier = modifier
                 .border(

@@ -20,7 +20,7 @@ fun RenamingAuthorBlock(
 ) {
     Card(
         border = BorderStroke(1.dp, ApplicationTheme.colors.divider),
-        backgroundColor = ApplicationTheme.colors.textFieldColorDark,
+        backgroundColor = ApplicationTheme.colors.textFieldColorDarkOld,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     ) {
         OldCommonTextField(
