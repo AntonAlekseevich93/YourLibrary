@@ -5,10 +5,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import main_models.books.BookShortVo
 
 sealed class AdminEvents : BaseEvent {
-    data object GetRussianBooksForModeration : AdminEvents()
-    data object GetEnglishBooksForModeration : AdminEvents()
+    data class GetRussianBooksForModeration(val coversScreen: Boolean = false) : AdminEvents()
+    data class GetEnglishBooksForModeration(val coversScreen: Boolean = false) : AdminEvents()
     data object DiscardBook : AdminEvents()
+    data class OnDiscardBookCovers(val book: BookShortVo) : AdminEvents()
     data object SetBookAsApprovedWithoutUploadImage : AdminEvents()
+    data object ApproveAllBooks : AdminEvents()
     data class SelectBook(val selectedBook: BookShortVo) : AdminEvents()
     class CustomUrlChanged(val url: TextFieldValue) : AdminEvents()
     class ChangeNonModerationStartRange(val startRange: TextFieldValue) : AdminEvents()

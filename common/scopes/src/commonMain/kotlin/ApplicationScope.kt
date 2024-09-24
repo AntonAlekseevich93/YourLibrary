@@ -6,6 +6,7 @@ interface ApplicationScope {
     fun changedReadingStatus(oldStatusId: String, bookId: String)
     fun openModerationScreen()
     fun openModerationBooksScreen()
+    fun openModerationBooksCoversScreen()
     fun openAdminParsingBooksScreen()
     fun openAdminPanel()
 }

@@ -21,6 +21,7 @@ import navigation.screen_components.DefaultBookCreatorScreenComponent
 import navigation.screen_components.DefaultBookInfoComponent
 import navigation.screen_components.DefaultBooksListInfoScreenComponent
 import navigation.screen_components.DefaultMainScreenComponent
+import navigation.screen_components.DefaultModerationBooksCoversScreenComponent
 import navigation.screen_components.DefaultModerationBooksScreenComponent
 import navigation.screen_components.DefaultModerationScreenComponent
 import navigation.screen_components.DefaultParsingScreenComponent
@@ -29,6 +30,7 @@ import navigation.screen_components.DefaultSettingsScreenComponent
 import navigation.screen_components.DefaultSingleBookParsingScreenComponent
 import navigation.screen_components.DefaultUserBookCreatorScreenComponent
 import navigation.screen_components.MainScreenComponent
+import navigation.screen_components.ModerationBooksCoversScreenComponent
 import navigation.screen_components.ModerationBooksScreenComponent
 import navigation.screen_components.ModerationScreenComponent
 import navigation.screen_components.ParsingScreenComponent
@@ -57,6 +59,9 @@ interface RootComponent : BackHandlerOwner {
         class BooksListInfoScreen(val component: BooksListInfoScreenComponent) : Screen()
         class ModerationScreen(val component: ModerationScreenComponent) : Screen()
         class ModerationBooksScreen(val component: ModerationBooksScreenComponent) : Screen()
+        class ModerationBooksCoversScreen(val component: ModerationBooksCoversScreenComponent) :
+            Screen()
+
         class AdminScreen(val component: AdminScreenComponent) : Screen()
         class SingleBookParsingScreen(val component: SingleBookParsingScreenComponent) : Screen()
         class ParsingScreen(val component: ParsingScreenComponent) : Screen()
@@ -161,6 +166,10 @@ class DefaultRootComponent(
 
             is Config.ModerationBooksConfig -> RootComponent.Screen.ModerationBooksScreen(
                 itemModerationBooksScreen(componentContext)
+            )
+
+            is Config.ModerationBooksCoversConfig -> RootComponent.Screen.ModerationBooksCoversScreen(
+                itemModerationBooksCoversScreen(componentContext)
             )
 
             is Config.AdminConfig -> RootComponent.Screen.AdminScreen(
@@ -336,6 +345,13 @@ class DefaultRootComponent(
                     config = Config.ModerationBooksConfig(id)
                 )
             },
+            openModerationBooksCoversScreenEvent = {
+                val id = getNextStackKey
+                push(
+                    id = id,
+                    config = Config.ModerationBooksCoversConfig(id)
+                )
+            },
             onBackListener = {
                 pop()
             },
@@ -346,6 +362,17 @@ class DefaultRootComponent(
 
     private fun itemModerationBooksScreen(componentContext: ComponentContext): ModerationBooksScreenComponent =
         DefaultModerationBooksScreenComponent(
+            componentContext = componentContext,
+            onBackListener = {
+                pop()
+            },
+            onCloseScreenListener = {
+                popUntilStackIdFindOrFirstScreen(DEFAULT_SCREEN_ID)
+            }
+        )
+
+    private fun itemModerationBooksCoversScreen(componentContext: ComponentContext): ModerationBooksCoversScreenComponent =
+        DefaultModerationBooksCoversScreenComponent(
             componentContext = componentContext,
             onBackListener = {
                 pop()
@@ -506,6 +533,9 @@ class DefaultRootComponent(
 
         @Serializable
         data class ModerationBooksConfig(val ids: Int) : Config(ids)
+
+        @Serializable
+        data class ModerationBooksCoversConfig(val ids: Int) : Config(ids)
 
         @Serializable
         data class AdminConfig(val ids: Int) : Config(ids)

@@ -40,11 +40,21 @@ class AdminViewModel(
 
     override fun sendEvent(event: BaseEvent) {
         when (event) {
-            is AdminEvents.GetRussianBooksForModeration -> getBooksForModeration(lang = LANG.RUSSIAN)
-            is AdminEvents.GetEnglishBooksForModeration -> getBooksForModeration(lang = LANG.ENGLISH)
+            is AdminEvents.GetRussianBooksForModeration -> getBooksForModeration(
+                lang = LANG.RUSSIAN,
+                coversScreen = event.coversScreen
+            )
+
+            is AdminEvents.GetEnglishBooksForModeration -> getBooksForModeration(
+                lang = LANG.ENGLISH,
+                coversScreen = event.coversScreen
+            )
+
             is AdminEvents.DiscardBook -> setBookAsDiscarded()
+            is AdminEvents.OnDiscardBookCovers -> setDiscardBookCover(event.book)
             is AdminEvents.SelectBook -> selectBook(event.selectedBook)
             is AdminEvents.SetBookAsApprovedWithoutUploadImage -> setBookAsApprovedWithoutUploadImage()
+            is AdminEvents.ApproveAllBooks -> approveAllBooks()
 
             is AdminEvents.CustomUrlChanged -> {
                 appConfig.changeCustomUrl(event.url.text)
@@ -140,7 +150,7 @@ class AdminViewModel(
         }
     }
 
-    private fun getBooksForModeration(lang: LANG) {
+    private fun getBooksForModeration(lang: LANG, coversScreen: Boolean = false) {
         scope.launch {
             updateUIState(uiStateValue.copy(isLoading = true))
             interactor.getBooksForModeration(lang).data?.books?.let {
@@ -157,7 +167,11 @@ class AdminViewModel(
                     )
                 )
                 withContext(Dispatchers.Main) {
-                    applicationScope.openModerationBooksScreen()
+                    if (coversScreen) {
+                        applicationScope.openModerationBooksCoversScreen()
+                    } else {
+                        applicationScope.openModerationBooksScreen()
+                    }
                 }
             }
         }
@@ -170,6 +184,17 @@ class AdminViewModel(
                 interactor.setBookAsDiscarded(currentBook)
             }
             selectNextBook()
+        }
+    }
+
+    private fun setDiscardBookCover(book: BookShortVo) {
+        scope.launch {
+            interactor.setBookAsDiscarded(book)
+            withContext(Dispatchers.Main) {
+                uiStateValue.moderationBookState.booksForModeration.remove(
+                    book
+                )
+            }
         }
     }
 
@@ -246,6 +271,23 @@ class AdminViewModel(
                         selectNextBook()
                     }
                 }
+            }
+        }
+    }
+
+    private fun approveAllBooks() {
+        updateUIState(uiStateValue.copy(isLoading = true))
+        scope.launch(Dispatchers.IO) {
+            uiStateValue.moderationBookState.booksForModeration.toList().forEach { book ->
+                interactor.setBookAsApprovedWithoutUploadImage(
+                    book,
+                    changedName = uiStateValue.moderationBookState
+                        .moderationChangedName.value.takeIf { !it.isNullOrEmpty() && it != book.bookName })
+            }
+            withContext(Dispatchers.Main) {
+                updateUIState(uiStateValue.copy(isLoading = false))
+                uiStateValue.moderationBookState.booksForModeration.clear()
+
             }
         }
     }

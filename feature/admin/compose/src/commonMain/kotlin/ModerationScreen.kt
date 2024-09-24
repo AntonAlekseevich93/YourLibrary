@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import buttons.MenuButton
 import components.AdminPanelAppBar
@@ -84,11 +85,28 @@ fun ModerationScreen(
                             text = "Книги на русском языке",
                             style = ApplicationTheme.typography.headlineRegular,
                             color = ApplicationTheme.colors.mainTextColor,
-
-                            )
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
                     },
                     onClick = {
-                        viewModel.sendEvent(AdminEvents.GetRussianBooksForModeration)
+                        viewModel.sendEvent(AdminEvents.GetRussianBooksForModeration())
+                    }
+                )
+
+                MenuButton(
+                    icon = Res.drawable.flag_gb,
+                    invoke = {
+                        Text(
+                            text = "Книги на английском языке",
+                            style = ApplicationTheme.typography.headlineRegular,
+                            color = ApplicationTheme.colors.mainTextColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    },
+                    onClick = {
+                        viewModel.sendEvent(AdminEvents.GetEnglishBooksForModeration())
                     }
                 )
 
@@ -97,13 +115,15 @@ fun ModerationScreen(
                     showDivider = false,
                     invoke = {
                         Text(
-                            text = "Книги на английском языке",
+                            text = "Книги на английском (Обложки)",
                             style = ApplicationTheme.typography.headlineRegular,
                             color = ApplicationTheme.colors.mainTextColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     },
                     onClick = {
-                        viewModel.sendEvent(AdminEvents.GetEnglishBooksForModeration)
+                        viewModel.sendEvent(AdminEvents.GetEnglishBooksForModeration(coversScreen = true))
                     }
                 )
 

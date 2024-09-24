@@ -31,6 +31,7 @@ import dev.chrisbanes.haze.haze
 import di.Inject
 import main_app_bar.MainAppBar
 import main_models.TooltipItem
+import moderations_books_covers_screen.ModerationBooksCoversScreen
 import navigation.RootComponent
 import navigation.isBookCreatorScreen
 import navigation.isMainScreen
@@ -183,6 +184,13 @@ fun Application(
 
                     is RootComponent.Screen.ModerationBooksScreen -> {
                         ModerationBooksScreen(
+                            hazeState = hazeBlurState,
+                            navigationComponent = screen.component
+                        )
+                    }
+
+                    is RootComponent.Screen.ModerationBooksCoversScreen -> {
+                        ModerationBooksCoversScreen(
                             hazeState = hazeBlurState,
                             navigationComponent = screen.component
                         )

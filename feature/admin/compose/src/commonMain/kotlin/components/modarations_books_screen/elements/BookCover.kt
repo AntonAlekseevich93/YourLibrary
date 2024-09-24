@@ -1,7 +1,9 @@
 package components.modarations_books_screen.elements
 
 import ApplicationTheme
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -18,16 +20,26 @@ import com.github.panpf.sketch.resize.Scale
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun BookCover(
     coverUrl: String,
     modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
+    onLongPress: (() -> Unit)? = null
 ) {
     Card(
-        modifier = modifier.clickable {
-            onClick?.invoke()
-        },
+        modifier = modifier
+            .combinedClickable(
+                onLongClick = {
+                    onLongPress?.invoke()
+                },
+                interactionSource = MutableInteractionSource(),
+                indication = null,
+                onClick = {
+                    onClick?.invoke()
+                }
+            ),
         colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
