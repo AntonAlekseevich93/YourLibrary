@@ -403,24 +403,22 @@ class BookCreatorViewModel(
 
     private fun setSelectedDate(millis: Long, text: String) {
         uiStateValue.apply {
-            when (datePickerType) {
+            when (datePickerType.value) {
                 DatePickerType.StartDate -> {
-                    bookValues.startDateInMillis.value = millis
-                    bookValues.startDateInString.value = text
+                    uiStateValue.userBookCreatorUiState.startDate.value = millis
                 }
 
                 DatePickerType.EndDate -> {
-                    bookValues.endDateInMillis.value = millis
-                    bookValues.endDateInString.value = text
+                    uiStateValue.userBookCreatorUiState.endDate.value = millis
                 }
             }
         }
     }
 
     private fun showDatePicker(type: DatePickerType) {
+        uiStateValue.datePickerType.value = type
         updateUIState(
             uiStateValue.copy(
-                datePickerType = type,
                 showDatePicker = true
             )
         )

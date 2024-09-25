@@ -154,4 +154,12 @@
     <string name="clear_all_cache">Очистить весь кэш</string>
     <string name="service_development_info">Созданные вами книги доступны только вам.\n\nКнопка "Участвовать в развитии сервиса" позволяет создавать книги которые будут доступны всем пользователям после прохождения модерации.\n\nЧтобы участвовать в развитии сервиса нажмите переключатель, поля которые ранее были не обязательны, станут обязательны для заполнения.\n\nПосле одобрения книги модератором, книга станет доступна всем пользователям, а в вашем профиле появится дополнительная статистика.\n\nЕсли книга будет отклонена модератором, в профиле вы увидите причину и сможете отредактировать книгу чтобы она повторно попала на модерацию.\n\nСпасибо, что учавствуете в развитии сервиса!</string>
     <string name="dont_clear">Не очищать</string>
+    <string name="age_restrictions">Возрастные ограничения</string>
+    <string name="book_language">Язык книги</string>
+    <string name="create_book">Создать книгу</string>
+    <string name="service_development_title">О развитии сервиса</string>
+    <string name="service_development_toggle_title">Участвовать в развитии сервиса</string>
+    <string name="user_book_creator_screen_app_bar_title">Создание книги</string>
+    <string name="required_fields_to_fill_in">Обязательные поля отмечены </string>
+    <string name="select_genre">Выбрать жанр</string>
 </resources>

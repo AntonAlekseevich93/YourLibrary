@@ -30,7 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import animations.SuccessAnimation
 import animations.ToggleServiceDevelopmentAnimation
@@ -48,9 +53,13 @@ import dev.chrisbanes.haze.haze
 import di.Inject
 import genre.GenreSelector
 import main_models.DatePickerType
+import main_models.books.AGE_RESTRICTIONS
 import models.BookCreatorEvents
+import models.UserBookCreatorUiState
 import navigation.screen_components.UserBookCreatorScreenComponent
+import org.jetbrains.compose.resources.stringResource
 import reading_status.ReadingStatusSelectorDialog
+import user_book_creator_screen.BookCreatorAgeRestrictionsElement
 import user_book_creator_screen.BookCreatorAuthorElement
 import user_book_creator_screen.BookCreatorBookNameElement
 import user_book_creator_screen.BookCreatorDateElement
@@ -65,6 +74,8 @@ import user_book_creator_screen.BookCreatorSaveButton
 import user_book_creator_screen.BookCreatorServiceDevelopment
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_default_book_cover_7
+import yourlibrary.common.resources.generated.resources.required_fields_to_fill_in
+import yourlibrary.common.resources.generated.resources.user_book_creator_screen_app_bar_title
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,8 +90,10 @@ fun UserBookCreatorScreen(
     val scrollState = rememberScrollState()
     var selectionGenreState by remember { mutableStateOf(false) }
     val showSuccessAnimation = remember { mutableStateOf(false) }
+    var serviceDevelopmentAnimationNotShowed by remember { mutableStateOf(true) }
     val showServiceDevelopmentAnimation = remember { mutableStateOf(false) }
     var isServiceDevelopment by remember { mutableStateOf(false) }
+    var requiredFieldsIsNotEmpty = remember { mutableStateOf(false) }
 
     var hazeModifier: Modifier = Modifier
     if (uiState.isHazeBlurEnabled.value) {
@@ -93,12 +106,20 @@ fun UserBookCreatorScreen(
         )
     }
 
+    checkRequiredFields(
+        state = uiState.userBookCreatorUiState,
+        isServiceDevelopment = isServiceDevelopment,
+        callback = {
+            requiredFieldsIsNotEmpty.value = it
+        }
+    )
+
     Scaffold(
         topBar = {
             BookCreatorAppBar(
                 hazeBlurState = hazeState,
                 isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
-                title = "Создание книги",
+                title = stringResource(Res.string.user_book_creator_screen_app_bar_title),
                 showBackButton = true,
                 onBack = {
                     navigationComponent.onBack()
@@ -126,15 +147,6 @@ fun UserBookCreatorScreen(
                         bottom = it.calculateBottomPadding().plus(16.dp)
                     )
             ) {
-                BookCreatorServiceDevelopment(
-                    serviceDevelopment = isServiceDevelopment,
-                    serviceDevelopmentCallback = {
-                        isServiceDevelopment = !isServiceDevelopment
-                        if (isServiceDevelopment) {
-                            showServiceDevelopmentAnimation.value = true
-                        }
-                    }
-                )
                 val imageModifier = Modifier.sizeIn(
                     minHeight = 160.dp,
                     minWidth = 95.dp,
@@ -143,7 +155,7 @@ fun UserBookCreatorScreen(
                 )
                 CenterColumnContainer {
                     Card(
-                        modifier = imageModifier.padding(bottom = 16.dp),
+                        modifier = imageModifier.padding(bottom = 16.dp, top = 12.dp),
                         colors = CardDefaults.cardColors(ApplicationTheme.colors.cardBackgroundDark),
                         shape = RoundedCornerShape(6.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
@@ -161,18 +173,38 @@ fun UserBookCreatorScreen(
                     }
                 }
 
+                BookCreatorServiceDevelopment(
+                    serviceDevelopment = isServiceDevelopment,
+                    serviceDevelopmentCallback = {
+                        isServiceDevelopment = !isServiceDevelopment
+                        if (isServiceDevelopment && serviceDevelopmentAnimationNotShowed) {
+                            showServiceDevelopmentAnimation.value = true
+                            serviceDevelopmentAnimationNotShowed = false
+                        }
+                    }
+                )
+
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 12.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = 2.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Обязательные поля отмечены ",
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(color = ApplicationTheme.colors.textFieldColor.unfocusedLabelColor)) {
+                                append(stringResource(Res.string.required_fields_to_fill_in))
+                            }
+
+                            withStyle(
+                                style = SpanStyle(
+                                    color = ApplicationTheme.colors.readingStatusesColor.readingStatusColor,
+                                    fontSize = 26.sp,
+                                    baselineShift = BaselineShift(-1f)
+                                )
+                            ) {
+                                append("*")
+                            }
+                        },
                         style = ApplicationTheme.typography.footnoteRegular,
-                        color = ApplicationTheme.colors.mainTextColor,
-                    )
-                    Text(
-                        text = "*",
-                        style = ApplicationTheme.typography.title1Regular,
                         color = ApplicationTheme.colors.mainTextColor,
                     )
                 }
@@ -185,27 +217,22 @@ fun UserBookCreatorScreen(
                     isEnabled = uiState.bookValues.authorName.value.text.isEmpty(),
                     textState = uiState.userBookCreatorUiState.authorNameTextState,
                 )
-                BookCreatorImageUrlElement(
-                    imageUrlTextFieldValue = uiState.userBookCreatorUiState.imageUrlTextFieldValue,
-                    isServiceDevelopment = isServiceDevelopment
-                )
                 BookCreatorPagesElement(
                     textState = uiState.userBookCreatorUiState.pagesTextState,
-                    isServiceDevelopment = isServiceDevelopment
                 )
+
+                BookCreatorDescriptionElement(
+                    textFieldValue = uiState.userBookCreatorUiState.descriptionTextState
+                )
+
                 BookCreatorGenreElement(
                     selectedGenre = uiState.userBookCreatorUiState.selectedGenre,
                     onClick = { selectionGenreState = true }
                 )
-                BookCreatorReadingStatusElement(
-                    readingStatus = uiState.userBookCreatorUiState.readingStatus,
-                    changeStatusListener = {
-                        uiState.userBookCreatorUiState.readingStatus.value = it
-                    }
-                )
-                BookCreatorDateElement(
-                    onStartDateClick = {},
-                    onEndDateClick = {}
+
+                BookCreatorImageUrlElement(
+                    imageUrlTextFieldValue = uiState.userBookCreatorUiState.imageUrlTextFieldValue,
+                    isServiceDevelopment = isServiceDevelopment
                 )
 
                 BookCreatorIsbnElement(
@@ -213,8 +240,19 @@ fun UserBookCreatorScreen(
                     isServiceDevelopment = isServiceDevelopment
                 )
 
-                BookCreatorDescriptionElement(
-                    textFieldValue = uiState.userBookCreatorUiState.descriptionTextState
+                BookCreatorAgeRestrictionsElement(
+                    selectedAge = uiState.userBookCreatorUiState.selectedAge,
+                    isServiceDevelopment = isServiceDevelopment,
+                    selectedAgeListener = {
+                        uiState.userBookCreatorUiState.selectedAge.apply {
+                            value = if (it == value) {
+                                AGE_RESTRICTIONS.NON_SELECTED
+                            } else {
+                                it
+                            }
+                        }
+
+                    }
                 )
 
                 BookCreatorLangElement(
@@ -223,17 +261,46 @@ fun UserBookCreatorScreen(
                         uiState.userBookCreatorUiState.selectedLang.value = it
                     }
                 )
-                BookCreatorSaveButton()
+
+                BookCreatorReadingStatusElement(
+                    readingStatus = uiState.userBookCreatorUiState.readingStatus,
+                    changeStatusListener = {
+                        uiState.userBookCreatorUiState.readingStatus.value = it
+                    }
+                )
+                BookCreatorDateElement(
+                    onStartDateClick = {
+                        viewModel.sendEvent(DatePickerEvents.OnShowDatePicker(DatePickerType.StartDate))
+                    },
+                    onEndDateClick = {
+                        viewModel.sendEvent(DatePickerEvents.OnShowDatePicker(DatePickerType.EndDate))
+                    },
+                    readingStatus = uiState.userBookCreatorUiState.readingStatus,
+                    startDate = uiState.userBookCreatorUiState.startDate,
+                    endDate = uiState.userBookCreatorUiState.endDate,
+                )
+
+                BookCreatorSaveButton(enabled = requiredFieldsIsNotEmpty)
             }
         }
 
         AnimatedVisibility(uiState.showDatePicker) {
-            val timePickerTitle =
-                remember { if (uiState.datePickerType == DatePickerType.StartDate) Strings.start_date else Strings.end_date }
+            val timePickerTitle = remember(uiState.datePickerType.value) {
+                if (uiState.datePickerType.value == DatePickerType.StartDate) {
+                    Strings.start_date
+                } else {
+                    Strings.end_date
+                }
+            }
             viewModel.CommonDatePicker(
                 state = dataPickerState,
                 title = timePickerTitle,
-                datePickerType = uiState.datePickerType,
+                datePickerType = uiState.datePickerType.value,
+                minimumDate = if (uiState.datePickerType.value == DatePickerType.EndDate) {
+                    uiState.userBookCreatorUiState.startDate.value
+                } else {
+                    null
+                },
                 onDismissRequest = {
                     viewModel.sendEvent(DatePickerEvents.OnHideDatePicker)
                 },
@@ -258,9 +325,7 @@ fun UserBookCreatorScreen(
                 currentStatus = uiState.selectedBookByMenuClick.value?.bookVo?.readingStatus,
                 useDivider = false,
                 selectStatusListener = {
-                    if (!showSuccessAnimation.value) {
-                        showSuccessAnimation.value = true
-                    }
+                    showSuccessAnimation.value = true
                     viewModel.sendEvent(BookCreatorEvents.ChangeBookReadingStatus(it))
                 },
                 dismiss = { viewModel.sendEvent(BookCreatorEvents.ClearSelectedBook) }
@@ -310,5 +375,33 @@ fun UserBookCreatorScreen(
                 showServiceDevelopmentAnimation.value = false
             }
         )
+    }
+}
+
+private fun checkRequiredFields(
+    state: UserBookCreatorUiState,
+    isServiceDevelopment: Boolean,
+    callback: (isValid: Boolean) -> Unit
+) {
+    val pages = state.pagesTextState.value.text.toIntOrNull()
+    val bookName = state.bookNameTextState.value.text
+    val authorName = state.authorNameTextState.value.text
+    val description = state.descriptionTextState.value.text
+    val imageUrl = state.imageUrlTextFieldValue.value.text
+    val genre = state.selectedGenre.value
+    val isbn = state.isbnTextState.value.text
+    val age = state.selectedAge.value
+    if (isServiceDevelopment && pages != null && bookName.isNotEmpty() && authorName.isNotEmpty() &&
+        description.isNotEmpty() && imageUrl.isNotEmpty() && genre != null && isbn.isNotEmpty()
+        && age != AGE_RESTRICTIONS.NON_SELECTED && (state.endDate.value == 0L || state.endDate.value > state.startDate.value)
+    ) {
+        callback(true)
+    } else if (!isServiceDevelopment && (pages != null) && bookName.isNotEmpty() &&
+        authorName.isNotEmpty() && description.isNotEmpty() && genre != null
+        && (state.endDate.value == 0L || state.endDate.value > state.startDate.value)
+    ) {
+        callback(true)
+    } else {
+        callback(false)
     }
 }

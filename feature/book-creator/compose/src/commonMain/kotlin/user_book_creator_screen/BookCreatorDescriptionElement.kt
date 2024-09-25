@@ -10,7 +10,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import text_fields.CommonTextField
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.description
 
 @Composable
 internal fun BookCreatorDescriptionElement(
@@ -19,7 +22,7 @@ internal fun BookCreatorDescriptionElement(
     CommonTextField(
         labelText = buildAnnotatedString {
             withStyle(style = SpanStyle(color = ApplicationTheme.colors.textFieldColor.unfocusedLabelColor)) {
-                append("Описание")
+                append(stringResource(Res.string.description))
             }
 
             withStyle(style = SpanStyle(color = ApplicationTheme.colors.readingStatusesColor.readingStatusColor)) {
@@ -28,6 +31,6 @@ internal fun BookCreatorDescriptionElement(
         },
         textState = textFieldValue,
         maxLines = 25,
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
     )
 }

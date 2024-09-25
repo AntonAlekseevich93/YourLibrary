@@ -1,7 +1,9 @@
 package user_book_creator_screen
 
 import ApplicationTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +30,8 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.service_development_info
+import yourlibrary.common.resources.generated.resources.service_development_title
+import yourlibrary.common.resources.generated.resources.service_development_toggle_title
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,8 +40,9 @@ internal fun BookCreatorServiceDevelopment(
     serviceDevelopmentCallback: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
         val tooltipState = rememberTooltipState(isPersistent = true)
         val scope = rememberCoroutineScope()
@@ -49,7 +54,7 @@ internal fun BookCreatorServiceDevelopment(
                 RichTooltip(
                     title = {
                         Text(
-                            text = "О развитии сервиса",
+                            text = stringResource(Res.string.service_development_title),
                             style = ApplicationTheme.typography.buttonBold,
                             color = ApplicationTheme.colors.mainTextColor,
                         )
@@ -62,7 +67,8 @@ internal fun BookCreatorServiceDevelopment(
                         titleContentColor = ApplicationTheme.colors.mainBackgroundColor,
                         actionContentColor = ApplicationTheme.colors.mainBackgroundColor,
                     ),
-                    modifier = Modifier.verticalScroll(scrollState)
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                        .verticalScroll(scrollState)
                 ) {
                     Text(
                         text = stringResource(Res.string.service_development_info),
@@ -73,9 +79,7 @@ internal fun BookCreatorServiceDevelopment(
             },
             state = tooltipState,
         ) {
-            IconButton(
-                onClick = { scope.launch { tooltipState.show() } }
-            ) {
+            IconButton(onClick = { scope.launch { tooltipState.show() } }) {
                 Icon(
                     imageVector = Icons.Filled.Info,
                     contentDescription = null,
@@ -85,7 +89,7 @@ internal fun BookCreatorServiceDevelopment(
         }
 
         Text(
-            text = "Участвовать в развитии сервиса",
+            text = stringResource(Res.string.service_development_toggle_title),
             style = ApplicationTheme.typography.footnoteRegular,
             color = ApplicationTheme.colors.mainTextColor,
             textAlign = TextAlign.Start,
@@ -102,6 +106,5 @@ internal fun BookCreatorServiceDevelopment(
                 checkedTrackColor = ApplicationTheme.colors.screenColor.activeLinkColor,
             )
         )
-
     }
 }

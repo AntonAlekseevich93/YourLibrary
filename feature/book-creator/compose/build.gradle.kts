@@ -16,6 +16,7 @@ kotlin {
                 implementation(project(":common:scopes"))
                 implementation(project(":common:arch"))
                 implementation(project(":common:ui"))
+                implementation(project(":common:utils:date"))
                 implementation(project(":common:resources:drawable"))
                 implementation(project(":common:resources:strings"))
                 implementation(project(":common:resources"))

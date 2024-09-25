@@ -14,10 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import main_models.genre.Genre
+import org.jetbrains.compose.resources.stringResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.select_genre
 
 @Composable
 internal fun BookCreatorGenreElement(
@@ -43,13 +48,15 @@ internal fun BookCreatorGenreElement(
                         if (genreIsSelected) {
                             append(selectedGenre.value?.name.orEmpty())
                         } else {
-                            append("Выбрать жанр")
+                            append(stringResource(Res.string.select_genre))
                         }
                     }
                     if (!genreIsSelected) {
                         withStyle(
                             style = SpanStyle(
                                 color = ApplicationTheme.colors.readingStatusesColor.readingStatusColor,
+                                fontSize = 20.sp,
+                                baselineShift = BaselineShift(-0.2f)
                             )
                         ) {
                             append("*")
@@ -64,7 +71,8 @@ internal fun BookCreatorGenreElement(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp)
             )
         },
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp).fillMaxWidth(),
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp, top = 4.dp)
+            .fillMaxWidth(),
         colors = FilterChipDefaults.filterChipColors(
             containerColor = Color.Transparent,
             selectedContainerColor = Color.Transparent,

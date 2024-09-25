@@ -29,7 +29,7 @@ data class BookCreatorUiState(
     val urlFieldIsWork: Boolean = true,
     val showParsingResult: Boolean = false,
     val showDialogClearAllData: Boolean = false,
-    var datePickerType: DatePickerType = DatePickerType.StartDate,
+    var datePickerType: MutableState<DatePickerType> = mutableStateOf(DatePickerType.StartDate),
     val showDatePicker: Boolean = false,
     var similarBooks: List<BookShortVo> = listOf<BookShortVo>(),
     val similarBooksCache: List<BookShortVo> = listOf(),
