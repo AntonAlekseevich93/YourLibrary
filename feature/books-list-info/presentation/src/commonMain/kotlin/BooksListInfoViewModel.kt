@@ -72,7 +72,11 @@ class BooksListInfoViewModel(
                                 userId = appConfig.userId
                             )
                         val authorVo = getOrCreateAuthor(bookVo, shortBook = shortBookWithNewStatus)
-                        bookCreatorInteractor.createBook(bookVo, author = authorVo)
+                        bookCreatorInteractor.createBook(
+                            bookVo,
+                            author = authorVo,
+                            isServiceDevelopment = false
+                        )
                     } else if (localBook.readingStatus.id != newStatus.id) {
                         bookCreatorInteractor.changeUserBookReadingStatus(
                             book = localBook,

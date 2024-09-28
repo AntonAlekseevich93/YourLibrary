@@ -13,4 +13,7 @@ interface ReviewAndRatingTimestampDao {
 
     @Query("SELECT * FROM ReviewAndRatingTimestampEntity WHERE userId = :userId")
     suspend fun getTimestamp(userId: Int): List<ReviewAndRatingTimestampEntity>
+
+    @Query("DELETE FROM ReviewAndRatingTimestampEntity")
+    suspend fun deleteAllData()
 }

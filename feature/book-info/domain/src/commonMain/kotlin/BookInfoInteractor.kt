@@ -110,7 +110,7 @@ class BookInfoInteractor(
     }
 
     suspend fun createBook(book: BookVo, author: AuthorVo) {
-        bookCreatorRepository.createBook(book, author = author)
+        bookCreatorRepository.createBook(book, author = author, isServiceDevelopment = false)
     }
 
 }

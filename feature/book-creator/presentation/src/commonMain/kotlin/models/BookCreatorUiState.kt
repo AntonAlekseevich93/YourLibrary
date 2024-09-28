@@ -26,8 +26,6 @@ data class BookCreatorUiState(
     val bookWasNotFound: Boolean = false,
     val authorWasNotFound: Boolean = false,
     val showClearButtonOfUrlElement: Boolean = false,
-    val urlFieldIsWork: Boolean = true,
-    val showParsingResult: Boolean = false,
     val showDialogClearAllData: Boolean = false,
     var datePickerType: MutableState<DatePickerType> = mutableStateOf(DatePickerType.StartDate),
     val showDatePicker: Boolean = false,
@@ -44,6 +42,8 @@ data class BookCreatorUiState(
     val selectedBookByMenuClick: MutableState<SelectedBook?> = mutableStateOf(null),
     val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
     var userBookCreatorUiState: UserBookCreatorUiState = UserBookCreatorUiState(),
+    var showCreatedManuallyBookAnimation: MutableState<Boolean> = mutableStateOf(false),
+    var isServiceDevelopment: MutableState<Boolean> = mutableStateOf(false),
 ) : BaseUIState {
     fun updateUserBookCreatorUiState() {
         val bookAuthorName = bookValues.authorName.value.text

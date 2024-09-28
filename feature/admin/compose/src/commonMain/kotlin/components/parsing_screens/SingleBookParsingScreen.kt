@@ -98,7 +98,7 @@ fun SingleBookParsingScreen(
                 ) {
                     CommonTextField(
                         modifier = Modifier.padding(horizontal = 16.dp),
-                        labelText = "Ссылка на книгу",
+                        label = "Ссылка на книгу",
                         textChangedListener = {
                             pastedUrl = it
                             if (pastedUrl.isEmpty()) {

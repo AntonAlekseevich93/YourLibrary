@@ -16,4 +16,7 @@ interface UserNotificationsDao {
 
     @Query("SELECT * FROM UserNotificationsEntity WHERE userId = :userId and deviceId = :deviceId")
     suspend fun getNotifications(userId: Int, deviceId: String): List<UserNotificationsEntity>
+
+    @Query("DELETE FROM UserNotificationsEntity")
+    suspend fun deleteAllData()
 }

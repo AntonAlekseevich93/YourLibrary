@@ -24,9 +24,17 @@ class AdminInteractor(
         repository.clearReviewAndRatingDb()
     }
 
+    suspend fun clearAllDb() {
+        repository.clearAllDb()
+    }
+
     suspend fun parseSingleBook(url: String): DataResult<List<BookShortVo>, String> =
         repository.parseSingleBook(url)
 
     suspend fun approveParsedSingleBook(book: BookShortVo): String =
         repository.approveParsedSingleBook(book)
+
+    suspend fun sendTestNotificationForCurrentUser(title: String, body: String) {
+        repository.sendTestNotificationForCurrentUser(title, body)
+    }
 }

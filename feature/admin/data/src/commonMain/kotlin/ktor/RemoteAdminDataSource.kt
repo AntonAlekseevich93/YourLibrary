@@ -7,6 +7,9 @@ import HttpConstants.GET_ALL_NON_MODERATING_BOOKS
 import HttpConstants.PARSE_SINGLE_BOOK
 import HttpConstants.SET_BOOK_AS_APPROVED_WITHOUT_UPLOAD_IMAGE
 import HttpConstants.SET_DISCARDED_NON_MODERATING_BOOKS
+import HttpConstants.TEST_NOTIFICATIONS
+import HttpParams.NOTIFICATIONS_BODY
+import HttpParams.NOTIFICATIONS_TITLE
 import main_models.rest.ParsingBooksListRequest
 import main_models.rest.books.BookShortRemoteDto
 import main_models.rest.books.BookShortResponse
@@ -57,5 +60,16 @@ class RemoteAdminDataSource(
         bodyRequest = book,
         errorClass = String::class,
     )
+
+    suspend fun sendTestNotificationForCurrentUser(title: String, body: String) =
+        httpClient.get(
+            url = TEST_NOTIFICATIONS,
+            resultClass = String::class,
+            errorClass = String::class,
+            params = mapOf(
+                NOTIFICATIONS_TITLE to title,
+                NOTIFICATIONS_BODY to body
+            )
+        )
 
 }

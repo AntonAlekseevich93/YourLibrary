@@ -5,8 +5,11 @@ import BaseEvent
 import BaseEventScope
 import BooksListInfoViewModel
 import Strings
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -21,10 +24,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -38,6 +43,7 @@ import loader.LoadingProcessWithTitle
 import main_models.AuthorVo
 import main_models.BookValues
 import main_models.books.BookShortVo
+import models.BookCreatorEvents
 import text_fields.SearchTextField
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.ic_authors
@@ -97,10 +103,11 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
                             sendEvent(BookEditorEvents.ClearBookSearch)
                         } else if (authorIsSelected) {
                             sendEvent(BookEditorEvents.OnBookNameChanged(it.text))
+                        } else if (similarSearchAuthors.isNotEmpty()) {
+                            sendEvent(BookCreatorEvents.ClearAuthorSearch)
                         } else if (showSearchBookError && oldText != it.text) {
                             sendEvent(BookEditorEvents.HideSearchError)
                         }
-
                         bookValues.bookName.value = it
                     },
                     onClickSearch = {
@@ -121,13 +128,15 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
                     onTextChanged = {
                         val oldText = bookValues.authorName.value.text
                         bookValues.authorName.value = it
-
                         sendEvent(
                             BookEditorEvents.OnAuthorTextChanged(
                                 textFieldValue = it,
                                 textWasChanged = oldText != it.text
                             )
                         )
+                        if (bookValues.bookName.value.text.isNotEmpty()) {
+                            sendEvent(BookCreatorEvents.ClearBooksSearch)
+                        }
                     },
                     onClickSearch = {
                         keyboardController?.hide()
@@ -155,30 +164,6 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
             }
         }
 
-        item {
-            if (similarBooks.isNotEmpty()) {
-                Column(hazeModifier) {
-                    CenterBoxContainer {
-                        CreateBookButton(
-                            title = "Нет нужной книги",
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        ) {
-                            onClickManually()
-                        }
-                    }
-
-                    CenterBoxContainer {
-                        Text(
-                            text = Strings.searching_title_result.uppercase(),
-                            style = ApplicationTheme.typography.bodyBold,
-                            color = ApplicationTheme.colors.mainTextColor,
-                            modifier = Modifier.padding(bottom = 26.dp)
-                        )
-                    }
-                }
-            }
-        }
-
         items(uiState.bookList) {
             BookSelectorItem(
                 bookItem = it,
@@ -192,6 +177,30 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
                 hazeModifier = hazeModifier
             )
             Spacer(Modifier.padding(vertical = 12.dp))
+        }
+
+        item {
+            if (similarBooks.isNotEmpty()) {
+                Column(hazeModifier) {
+                    Column(
+                        modifier = Modifier.padding(top = 36.dp, bottom = 36.dp).fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Не нашли что искали?",
+                            style = ApplicationTheme.typography.title3Bold,
+                            color = ApplicationTheme.colors.screenColor.activeButtonColor,
+                            modifier = Modifier.padding(horizontal = 16.dp).clickable(
+                                MutableInteractionSource(), null
+                            ) {
+                                onClickManually()
+                            },
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            }
         }
 
         item {

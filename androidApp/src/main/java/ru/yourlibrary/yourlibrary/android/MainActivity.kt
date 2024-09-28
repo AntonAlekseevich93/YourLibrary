@@ -33,12 +33,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.arkivanov.decompose.defaultComponentContext
-import com.mmk.kmpnotifier.notification.NotifierManager
 import com.mmk.kmpnotifier.permission.permissionUtil
 import di.PlatformConfiguration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import main_models.TooltipItem
 import navigation.DefaultRootComponent
 import platform.Platform

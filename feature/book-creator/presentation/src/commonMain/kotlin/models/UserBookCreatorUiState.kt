@@ -50,8 +50,10 @@ data class UserBookCreatorUiState(
             ageRestrictions = selectedAge.value.takeIf { it != AGE_RESTRICTIONS.NON_SELECTED }?.value
                 ?: "",
             bookGenreId = genre.id,
-            startDateInString = DateUtils.getDateInStringFromMillis(startDate.value, Locale.ROOT),
-            endDateInString = DateUtils.getDateInStringFromMillis(endDate.value, Locale.ROOT),
+            startDateInString = startDate.value.takeIf { it > 0 }
+                ?.let { DateUtils.getDateInStringFromMillis(startDate.value, Locale.ROOT) },
+            endDateInString = endDate.value.takeIf { it > 0 }
+                ?.let { DateUtils.getDateInStringFromMillis(endDate.value, Locale.ROOT) },
             startDateInMillis = startDate.value,
             endDateInMillis = startDate.value,
             timestampOfCreating = 0,
@@ -67,7 +69,7 @@ data class UserBookCreatorUiState(
             reviewCount = 0,
             ratingSum = 0,
             bookForAllUsers = false,
-            originalMainBookId = bookId,
+            originalMainBookId = "",
             lang = selectedLang.value.value,
             publicationYear = publicationYear?.toString() ?: "",
             userId = userId

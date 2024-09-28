@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import buttons.MenuButton
 import components.AdminPanelAppBar
 import components.DatabaseScreen
+import components.NotificationsScreen
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
@@ -56,7 +57,13 @@ fun AdminPanelScreen(
                 showCloseButton = false,
                 onClose = {},
                 onBack = {
-                    navigationComponent.onBack()
+                    if (uiState.notificationsScreen.value || uiState.databaseMenuScreen.value) {
+                        uiState.notificationsScreen.value = false
+                        uiState.databaseMenuScreen.value = false
+                    } else {
+                        navigationComponent.onBack()
+                    }
+
                 }
             )
         },
@@ -130,6 +137,27 @@ fun AdminPanelScreen(
                                 },
                                 onClick = {
                                     viewModel.sendEvent(AdminEvents.OpenDatabaseMenuScreen)
+                                }
+                            )
+
+                            MenuButton(
+                                icon = Res.drawable.ic_moderation_menu,
+                                iconSize = 16.dp,
+                                iconModifier = Modifier.padding(start = 2.dp, end = 1.dp),
+                                iconColorFilter = ColorFilter.tint(
+                                    ApplicationTheme.colors.mainIconsColor.copy(
+                                        alpha = 0.8f
+                                    )
+                                ),
+                                invoke = {
+                                    Text(
+                                        text = "Уведомления",
+                                        style = ApplicationTheme.typography.headlineRegular,
+                                        color = ApplicationTheme.colors.mainTextColor,
+                                    )
+                                },
+                                onClick = {
+                                    uiState.notificationsScreen.value = true
                                 }
                             )
 
@@ -249,6 +277,24 @@ fun AdminPanelScreen(
                     }
                 }
             }
+        }
+
+        AnimatedVisibility(visible = uiState.notificationsScreen.value) {
+            var modifier: Modifier = Modifier
+            if (uiState.isHazeBlurEnabled.value) {
+                modifier = modifier.haze(
+                    state = hazeState,
+                    style = HazeStyle(
+                        tint = Color.Black.copy(alpha = .04f),
+                        blurRadius = 30.dp,
+                    )
+                )
+            }
+            viewModel.NotificationsScreen(
+                hazeModifier = modifier,
+                topPadding = it.calculateTopPadding(),
+                bottomPadding = it.calculateBottomPadding(),
+            )
         }
     }
 }

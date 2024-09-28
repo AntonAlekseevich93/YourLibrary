@@ -23,6 +23,7 @@ sealed class AdminEvents : BaseEvent {
     data object OnCancelChangeBookName : AdminEvents()
     data object OnDeleteChangeBookName : AdminEvents()
     data object ClearReviewAndRatingDb : AdminEvents()
+    data object ClearAllDb : AdminEvents()
     data object OpenDatabaseMenuScreen : AdminEvents()
     data class OnSaveChangeBookName(val newBookName: String) : AdminEvents()
     class OnParseSingleBook(val url: String) : AdminEvents()
@@ -30,4 +31,5 @@ sealed class AdminEvents : BaseEvent {
     data object OnApproveParsedSingleBook : AdminEvents()
     data object OnClearParsedSingleBookData : AdminEvents()
     data class OnBookSelected(val shortBook: BookShortVo) : AdminEvents()
+    data class SendTestNotification(val title: String, val body: String) : AdminEvents()
 }

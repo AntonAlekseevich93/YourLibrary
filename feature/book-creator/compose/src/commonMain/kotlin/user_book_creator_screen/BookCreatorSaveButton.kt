@@ -19,9 +19,11 @@ import yourlibrary.common.resources.generated.resources.create_book
 @Composable
 internal fun BookCreatorSaveButton(
     enabled: State<Boolean>,
+    onClick: () -> Unit,
 ) {
     Button(
         onClick = {
+            onClick()
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = ApplicationTheme.colors.screenColor.activeButtonColor,

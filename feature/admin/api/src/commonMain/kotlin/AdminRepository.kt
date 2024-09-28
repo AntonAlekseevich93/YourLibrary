@@ -14,6 +14,8 @@ interface AdminRepository {
     ): BookShortVo?
 
     suspend fun clearReviewAndRatingDb()
+    suspend fun clearAllDb()
     suspend fun parseSingleBook(url: String): DataResult<List<BookShortVo>, String>
     suspend fun approveParsedSingleBook(book: BookShortVo): String
+    suspend fun sendTestNotificationForCurrentUser(title: String, body: String)
 }

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CommonTextField(
     modifier: Modifier = Modifier,
-    labelText: String? = null,
+    label: String? = null,
     enabled: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -51,7 +51,7 @@ fun CommonTextField(
             textChangedListener?.invoke(it.text)
         },
         label = {
-            labelText?.let {
+            label?.let {
                 Text(text = it)
             }
         },

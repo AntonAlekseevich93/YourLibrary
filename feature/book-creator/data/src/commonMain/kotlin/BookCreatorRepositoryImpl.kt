@@ -19,7 +19,7 @@ class BookCreatorRepositoryImpl(
     private val remoteConfig: RemoteConfig,
 ) : BookCreatorRepository {
 
-    override suspend fun createBook(book: BookVo, author: AuthorVo) {
+    override suspend fun createBook(book: BookVo, author: AuthorVo, isServiceDevelopment: Boolean) {
         val userId = appConfig.userId
         val bookVo = localBookCreatorDataSource.createBook(
             book = book.toLocalDto(),
@@ -27,7 +27,8 @@ class BookCreatorRepositoryImpl(
         ).toVo(null)
         authorsRepository.createAuthorIfNotExist(author)
         val response = remoteBookCreatorDataSource.addNewUserBook(
-            userBook = bookVo.toRemoteDto()
+            userBook = bookVo.toRemoteDto(),
+            isServiceDevelopment = isServiceDevelopment
         )?.result
 
         val bookResponseVo = response?.book?.toVo()

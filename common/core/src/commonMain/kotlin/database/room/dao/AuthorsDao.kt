@@ -19,4 +19,7 @@ interface AuthorsDao {
 
     @Query("SELECT * FROM AuthorEntity WHERE timestampOfUpdating > :timestamp AND userId = :userId")
     suspend fun getNotSynchronizedAuthors(timestamp: Long, userId: Int): List<AuthorEntity>
+
+    @Query("DELETE FROM AuthorEntity")
+    suspend fun deleteAllData()
 }

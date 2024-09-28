@@ -58,7 +58,6 @@ import models.BookCreatorEvents
 import models.UserBookCreatorUiState
 import navigation.screen_components.UserBookCreatorScreenComponent
 import org.jetbrains.compose.resources.stringResource
-import reading_status.ReadingStatusSelectorDialog
 import user_book_creator_screen.BookCreatorAgeRestrictionsElement
 import user_book_creator_screen.BookCreatorAuthorElement
 import user_book_creator_screen.BookCreatorBookNameElement
@@ -90,10 +89,8 @@ fun UserBookCreatorScreen(
     val dataPickerState = rememberDatePickerState()
     val scrollState = rememberScrollState()
     var selectionGenreState by remember { mutableStateOf(false) }
-    val showSuccessAnimation = remember { mutableStateOf(false) }
     var serviceDevelopmentAnimationNotShowed by remember { mutableStateOf(true) }
     val showServiceDevelopmentAnimation = remember { mutableStateOf(false) }
-    var isServiceDevelopment by remember { mutableStateOf(false) }
     val requiredFieldsIsNotEmpty = remember { mutableStateOf(false) }
 
     var hazeModifier: Modifier = Modifier
@@ -109,7 +106,7 @@ fun UserBookCreatorScreen(
 
     checkRequiredFields(
         state = uiState.userBookCreatorUiState,
-        isServiceDevelopment = isServiceDevelopment,
+        isServiceDevelopment = uiState.isServiceDevelopment.value,
         callback = {
             requiredFieldsIsNotEmpty.value = it
         }
@@ -175,10 +172,10 @@ fun UserBookCreatorScreen(
                 }
 
                 BookCreatorServiceDevelopment(
-                    serviceDevelopment = isServiceDevelopment,
+                    serviceDevelopment = uiState.isServiceDevelopment.value,
                     serviceDevelopmentCallback = {
-                        isServiceDevelopment = !isServiceDevelopment
-                        if (isServiceDevelopment && serviceDevelopmentAnimationNotShowed) {
+                        uiState.isServiceDevelopment.value = !uiState.isServiceDevelopment.value
+                        if (uiState.isServiceDevelopment.value && serviceDevelopmentAnimationNotShowed) {
                             showServiceDevelopmentAnimation.value = true
                             serviceDevelopmentAnimationNotShowed = false
                         }
@@ -233,12 +230,12 @@ fun UserBookCreatorScreen(
 
                 BookCreatorImageUrlElement(
                     imageUrlTextFieldValue = uiState.userBookCreatorUiState.imageUrlTextFieldValue,
-                    isServiceDevelopment = isServiceDevelopment
+                    isServiceDevelopment = uiState.isServiceDevelopment.value
                 )
 
                 BookCreatorIsbnElement(
                     textState = uiState.userBookCreatorUiState.isbnTextState,
-                    isServiceDevelopment = isServiceDevelopment
+                    isServiceDevelopment = uiState.isServiceDevelopment.value
                 )
 
                 BookCreatorPublicationYearElement(
@@ -247,7 +244,7 @@ fun UserBookCreatorScreen(
 
                 BookCreatorAgeRestrictionsElement(
                     selectedAge = uiState.userBookCreatorUiState.selectedAge,
-                    isServiceDevelopment = isServiceDevelopment,
+                    isServiceDevelopment = uiState.isServiceDevelopment.value,
                     selectedAgeListener = {
                         uiState.userBookCreatorUiState.selectedAge.apply {
                             value = if (it == value) {
@@ -284,7 +281,9 @@ fun UserBookCreatorScreen(
                     endDate = uiState.userBookCreatorUiState.endDate,
                 )
 
-                BookCreatorSaveButton(enabled = requiredFieldsIsNotEmpty)
+                BookCreatorSaveButton(enabled = requiredFieldsIsNotEmpty) {
+                    viewModel.sendEvent(BookCreatorEvents.CreateManuallyBook)
+                }
             }
         }
 
@@ -324,18 +323,6 @@ fun UserBookCreatorScreen(
             )
         }
 
-        if (uiState.selectedBookByMenuClick.value != null) {
-            ReadingStatusSelectorDialog(
-                currentStatus = uiState.selectedBookByMenuClick.value?.bookVo?.readingStatus,
-                useDivider = false,
-                selectStatusListener = {
-                    showSuccessAnimation.value = true
-                    viewModel.sendEvent(BookCreatorEvents.ChangeBookReadingStatus(it))
-                },
-                dismiss = { viewModel.sendEvent(BookCreatorEvents.ClearSelectedBook) }
-            )
-        }
-
         if (uiState.showCommonAlertDialog) {
             uiState.alertDialogConfig?.let { config ->
                 CommonAlertDialog(
@@ -367,9 +354,10 @@ fun UserBookCreatorScreen(
         }
 
         SuccessAnimation(
-            show = showSuccessAnimation,
+            show = uiState.showCreatedManuallyBookAnimation,
             finishAnimation = {
-                showSuccessAnimation.value = false
+                uiState.showCreatedManuallyBookAnimation.value = false
+                navigationComponent.onBack()
             }
         )
 

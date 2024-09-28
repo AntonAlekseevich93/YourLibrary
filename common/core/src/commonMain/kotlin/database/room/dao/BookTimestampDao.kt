@@ -13,4 +13,7 @@ interface BookTimestampDao {
 
     @Query("SELECT * FROM BOOKTIMESTAMPENTITY WHERE userId = :userId")
     suspend fun getTimestamp(userId: Int): List<BookTimestampEntity>
+
+    @Query("DELETE FROM BOOKTIMESTAMPENTITY")
+    suspend fun deleteAllData()
 }

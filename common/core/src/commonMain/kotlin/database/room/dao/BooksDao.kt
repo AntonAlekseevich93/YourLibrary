@@ -12,6 +12,9 @@ interface BooksDao {
     @Insert
     suspend fun insertBook(book: BookEntity)
 
+    @Query("DELETE FROM BookEntity")
+    suspend fun deleteAllData()
+
     @Update
     suspend fun updateBook(book: BookEntity)
 

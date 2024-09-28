@@ -22,7 +22,6 @@ import models.BookCreatorUiState
 import models.SelectedBook
 import platform.PlatformInfoData
 import text_fields.DELAY_FOR_LISTENER_PROCESSING
-import java.util.UUID
 
 class BookCreatorViewModel(
     private val platformInfo: PlatformInfoData,
@@ -55,18 +54,6 @@ class BookCreatorViewModel(
                 updateUIState(uiStateValue.copy(needCreateNewAuthor = event.needCreate))
             }
 
-            is BookEditorEvents.OnShowAlertDialogDeleteBookCover -> {
-                updateUIState(
-                    uiStateValue.copy(
-                        showCommonAlertDialog = true,
-                        alertDialogConfig = event.config.copy(
-                            acceptEvent = BookCreatorEvents.SetBookCoverManually,
-                            dismissEvent = BookCreatorEvents.DismissCommonAlertDialog
-                        ),
-                    )
-                )
-            }
-
             is BookEditorEvents.OnSearchAuthorClick -> {
                 searchAuthor(event.name)
             }
@@ -86,13 +73,23 @@ class BookCreatorViewModel(
                 hideSearchError()
             }
 
-            is BookCreatorEvents.CreateBookEvent -> createBook()
             is BookCreatorEvents.ClearUrlEvent -> clearUrl()
 
             is BookCreatorEvents.OnFinishParsingUrl -> finishParsing()
 
             is BookCreatorEvents.ClearAllBookInfo -> {
                 clearAllBookInfo()
+            }
+
+            is BookCreatorEvents.ClearAuthorSearch -> {
+                uiStateValue.bookValues.clearAuthor()
+                updateUIState(uiStateValue.copy(similarSearchAuthors = emptyList()))
+            }
+
+            is BookCreatorEvents.ClearBooksSearch -> {
+                uiStateValue.bookValues.clearBook()
+                updateSimilarBooks(emptyList())
+                updateSimilarBooksCache(emptyList())
             }
 
             is BookCreatorEvents.OnShowDialogClearAllData -> {
@@ -117,21 +114,6 @@ class BookCreatorViewModel(
                 )
             }
 
-            is BookCreatorEvents.SetBookCoverManually -> {
-                uiStateValue.bookValues.clearCoverUrl()
-                updateUIState(
-                    uiStateValue.copy(
-                        isBookCoverManually = true,
-                        showCommonAlertDialog = false,
-                        alertDialogConfig = null
-                    )
-                )
-            }
-
-            is BookCreatorEvents.SetSelectedGenre -> {
-                uiStateValue.bookValues.genre.value = event.genre
-            }
-
             is BookCreatorEvents.SetSelectedBookByMenuClick -> {
                 setSelectedBookByMenuClick(event.bookId)
             }
@@ -142,6 +124,10 @@ class BookCreatorViewModel(
 
             is BookCreatorEvents.ChangeBookReadingStatus -> {
                 changeBookReadingStatusIfBookExistOrCreateBookWithNewStatus(event.newStatus)
+            }
+
+            is BookCreatorEvents.CreateManuallyBook -> {
+                createManuallyBook()
             }
 
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
@@ -160,19 +146,6 @@ class BookCreatorViewModel(
         updateUIState(
             BookCreatorUiState()
         )
-    }
-
-    private fun createBook() {
-        scope.launch(Dispatchers.IO) {
-            val newBook = if (uiStateValue.shortBookItem != null) {
-                createUserBookBasedOnShortBook(uiStateValue.shortBookItem!!)
-            } else {
-                createManuallyUserBook()
-            }
-            val author = getOrCreateAuthor(newBook)
-            interactor.createBook(newBook, author = author)
-            clearAllBookInfo()
-        }
     }
 
     private suspend fun getOrCreateAuthor(book: BookVo): AuthorVo {
@@ -249,7 +222,8 @@ class BookCreatorViewModel(
             uiStateValue.copy(
                 isSearchAuthorProcess = false,
                 similarSearchAuthors = emptyList(),
-                showSearchBookError = false
+                showSearchBookError = false,
+                isSearchBookProcess = false
             )
         )
         val uppercaseName = authorName.trim().uppercase()
@@ -260,7 +234,7 @@ class BookCreatorViewModel(
                 val response = interactor.searchInAuthorsNameWithRelates(uppercaseName)
                 if (response.isNotEmpty()) {
                     val list: MutableList<AuthorVo> = mutableListOf()
-                    list.addAll(response.sortedBy { it.name })
+                    list.addAll(response)
                     val exactMatchAuthor = list.find { it.uppercaseName == uppercaseName }
 
                     if (exactMatchAuthor == null) {
@@ -290,7 +264,13 @@ class BookCreatorViewModel(
 
     private fun searchBookName(bookName: String) {
         searchJob?.cancel()
-        updateUIState(uiStateValue.copy(isSearchBookProcess = false, showSearchBookError = false))
+        updateUIState(
+            uiStateValue.copy(
+                isSearchBookProcess = false,
+                showSearchBookError = false,
+                isSearchAuthorProcess = false
+            )
+        )
         if (uiStateValue.selectedAuthor != null) {
             findInSimilarBooks(bookName)
         } else {
@@ -394,9 +374,7 @@ class BookCreatorViewModel(
         uiStateValue.bookValues.clearAll()
         updateUIState(
             uiStateValue.copy(
-                urlFieldIsWork = true,
                 showClearButtonOfUrlElement = false,
-                showParsingResult = false,
                 showDialogClearAllData = false,
             )
         )
@@ -431,20 +409,9 @@ class BookCreatorViewModel(
                 uiStateValue.copy(
                     showClearButtonOfUrlElement = true,
                     showLoadingIndicator = false,
-                    showParsingResult = true
                 )
             )
         }
-    }
-
-    //todo старая логика открытия книги, где можно изменять параметры
-    private fun setSelectedBook(shortBook: BookShortVo) {
-        uiStateValue.bookValues.setShortBook(shortBook)
-        updateUIState(
-            uiStateValue.copy(
-                shortBookItem = shortBook,
-            )
-        )
     }
 
     private fun hideSearchError() {
@@ -462,18 +429,22 @@ class BookCreatorViewModel(
                 val shortBookWithNewStatus = shortBook?.copy(
                     localReadingStatus = newStatus
                 )
-                if (shortBookIndex != null) {
+                if (shortBookIndex != null && shortBookWithNewStatus != null) {
                     val oldBooksList =
-                        uiStateValue.similarBooks.map { if (it.bookId == shortBookWithNewStatus!!.bookId) shortBookWithNewStatus else it }
+                        uiStateValue.similarBooks.map { if (it.bookId == shortBookWithNewStatus.bookId) shortBookWithNewStatus else it }
 
                     updateUIState(uiStateValue.copy(similarBooks = oldBooksList))
 
                     if (selectedBookInfo.bookVo?.readingStatus?.id == null) {
                         val bookVo = createUserBookBasedOnShortBook(
-                            shortBookWithNewStatus!!
+                            shortBookWithNewStatus
                         )
                         val authorVo = getOrCreateAuthor(bookVo)
-                        interactor.createBook(bookVo, author = authorVo)
+                        interactor.createBook(
+                            bookVo,
+                            author = authorVo,
+                            isServiceDevelopment = false
+                        )
                     } else if (selectedBookInfo.bookVo.readingStatus.id != newStatus.id) {
                         interactor.changeUserBookReadingStatus(
                             book = selectedBookInfo.bookVo,
@@ -497,6 +468,35 @@ class BookCreatorViewModel(
         }
     }
 
+    private fun createManuallyBook() {
+        uiStateValue.userBookCreatorUiState.createUserBook(
+            originalAuthorId = uiStateValue.selectedAuthor?.id,
+            userId = appConfig.userId
+        )?.let { book ->
+            val author =
+                if (uiStateValue.selectedAuthor != null) uiStateValue.selectedAuthor!! else {
+                    AuthorVo(
+                        serverId = null,
+                        localId = null,
+                        id = book.originalAuthorId,
+                        name = book.originalAuthorName,
+                        uppercaseName = book.originalAuthorName.uppercase(),
+                        timestampOfCreating = 0,
+                        timestampOfUpdating = 0,
+                        isCreatedByUser = true
+                    )
+                }
+            scope.launch {
+                interactor.createBook(
+                    book, author, isServiceDevelopment = uiStateValue.isServiceDevelopment.value
+                )
+                withContext(Dispatchers.Main) {
+                    uiStateValue.showCreatedManuallyBookAnimation.value = true
+                }
+            }
+        }
+    }
+
     private fun createUserBookBasedOnShortBook(shortBook: BookShortVo): BookVo =
         BookVo(
             bookId = shortBook.bookId,
@@ -511,14 +511,13 @@ class BookCreatorViewModel(
             userCoverUrl = null,
             pageCount = shortBook.numbersOfPages,
             isbn = shortBook.isbn,
-            readingStatus = shortBook.localReadingStatus
-                ?: uiStateValue.bookValues.selectedStatus.value,
+            readingStatus = shortBook.localReadingStatus ?: ReadingStatus.PLANNED,
             ageRestrictions = shortBook.ageRestrictions,
             bookGenreId = shortBook.bookGenreId,
-            startDateInString = uiStateValue.bookValues.startDateInString.value,
-            endDateInString = uiStateValue.bookValues.endDateInString.value,
-            startDateInMillis = uiStateValue.bookValues.startDateInMillis.value,
-            endDateInMillis = uiStateValue.bookValues.endDateInMillis.value,
+            startDateInString = "",
+            endDateInString = "",
+            startDateInMillis = 0,
+            endDateInMillis = 0,
             timestampOfCreating = 0,
             timestampOfUpdating = 0,
             isRussian = shortBook.isRussian,
@@ -537,50 +536,4 @@ class BookCreatorViewModel(
             publicationYear = shortBook.publicationYear,
             userId = appConfig.userId
         )
-
-    private fun createManuallyUserBook(): BookVo {
-        val author = uiStateValue.selectedAuthor
-        var needFix: String? = null
-        uiStateValue.bookValues.apply {
-            val bookId = UUID.randomUUID().toString()
-            return BookVo(
-                bookId = bookId,
-                serverId = null,
-                localId = null,
-                originalAuthorId = author?.id ?: UUID.randomUUID().toString(),
-                bookName = bookName.value.text,
-                bookNameUppercase = bookName.value.text.uppercase(),
-                originalAuthorName = author?.name ?: authorName.value.text,
-                description = description.value.text,
-                userCoverUrl = coverUrl.value.text,
-                pageCount = numberOfPages.value.text.toInt(),
-                isbn = isbn.value.text,
-                readingStatus = selectedStatus.value,
-                ageRestrictions = null,
-                bookGenreId = uiStateValue.bookValues.genre.value?.id
-                    ?: throw Exception("BookCreatorViewModel.createManuallyUserBook genre is null"),
-                startDateInString = startDateInString.value,
-                endDateInString = endDateInString.value,
-                startDateInMillis = startDateInMillis.value,
-                endDateInMillis = endDateInMillis.value,
-                timestampOfCreating = 0,
-                timestampOfUpdating = 0,
-                isRussian = null,
-                imageName = null,
-                authorIsCreatedManually = author?.isCreatedByUser ?: true,
-                isLoadedToServer = false,
-                bookIsCreatedManually = true,
-                imageFolderId = null,
-                ratingValue = 0.0,
-                ratingCount = 0,
-                reviewCount = 0,
-                ratingSum = 0,
-                bookForAllUsers = false,
-                originalMainBookId = bookId,
-                lang = uiStateValue.userBookCreatorUiState.selectedLang.value.value,
-                publicationYear = needFix!!,
-                userId = appConfig.userId
-            )
-        }
-    }
 }

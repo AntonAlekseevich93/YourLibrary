@@ -39,6 +39,19 @@ fun BaseEventScope<BaseEvent>.DatabaseScreen(
                 color = ApplicationTheme.colors.mainTextColor
             )
         }
+
+        Button(
+            modifier = Modifier.padding(top = topPadding.plus(24.dp), start = 24.dp),
+            onClick = {
+                sendEvent(AdminEvents.ClearAllDb)
+            }
+        ) {
+            Text(
+                text = "Очистить всю базу данных",
+                style = ApplicationTheme.typography.footnoteBold,
+                color = ApplicationTheme.colors.mainTextColor
+            )
+        }
         Spacer(Modifier.padding(bottomPadding))
     }
 

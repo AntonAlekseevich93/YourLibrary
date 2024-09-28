@@ -124,6 +124,21 @@ class AdminViewModel(
                 }
             }
 
+            is AdminEvents.SendTestNotification -> {
+                scope.launch {
+                    interactor.sendTestNotificationForCurrentUser(
+                        title = event.title,
+                        body = event.body
+                    )
+                }
+            }
+
+            is AdminEvents.ClearAllDb -> {
+                scope.launch {
+                    interactor.clearAllDb()
+                }
+            }
+
             is AdminEvents.OnOpenModerationScreen -> {
                 applicationScope.openModerationScreen()
             }

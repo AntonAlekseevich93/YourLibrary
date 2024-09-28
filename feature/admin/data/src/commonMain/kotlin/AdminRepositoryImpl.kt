@@ -87,6 +87,10 @@ class AdminRepositoryImpl(
         localAdminDataSource.clearReviewAndRatingDb()
     }
 
+    override suspend fun clearAllDb() {
+        localAdminDataSource.clearAllDb()
+    }
+
     override suspend fun parseSingleBook(url: String): DataResult<List<BookShortVo>, String> {
         val response = remoteAdminDataSource.parseSingleBook(
             ParsingBooksListRequest(
@@ -106,5 +110,9 @@ class AdminRepositoryImpl(
         remoteAdminDataSource.approveParsedSingleBook(
             book.fromFakeToDto()
         )?.result ?: "AdminRepositoryImpl.Client error"
+
+    override suspend fun sendTestNotificationForCurrentUser(title: String, body: String) {
+        remoteAdminDataSource.sendTestNotificationForCurrentUser(title, body)
+    }
 
 }

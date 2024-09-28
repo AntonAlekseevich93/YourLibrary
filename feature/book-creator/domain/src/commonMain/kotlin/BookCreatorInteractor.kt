@@ -15,8 +15,8 @@ class BookCreatorInteractor(
         return response
     }
 
-    suspend fun createBook(book: BookVo, author: AuthorVo) {
-        repository.createBook(book, author = author)
+    suspend fun createBook(book: BookVo, author: AuthorVo, isServiceDevelopment: Boolean) {
+        repository.createBook(book, author = author, isServiceDevelopment = isServiceDevelopment)
     }
 
     suspend fun searchInBooks(uppercaseBookName: String): List<BookShortVo> =
