@@ -26,7 +26,7 @@ class AppConfig() {
         get() = authToken != DEFAULT_LOCAL_TOKEN
 
     val userId
-        get() = settings.getLong(key = currentUserEmail, defaultValue = -1)
+        get() = settings.getInt(key = currentUserEmail, defaultValue = DEFAULT_USER_ID)
 
     val useCustomHost
         get() = settings.getBoolean(key = NEED_USE_CUSTOM_HOST, defaultValue = false)
@@ -63,8 +63,8 @@ class AppConfig() {
         settings.putString(key = CURRENT_USER_EMAIL_KEY, value = email)
     }
 
-    fun saveUserId(userId: Long) {
-        settings.putLong(key = currentUserEmail, value = userId)
+    fun saveUserId(userId: Int) {
+        settings.putInt(key = currentUserEmail, value = userId)
     }
 
     fun changeUseCustomHost(isCustom: Boolean) {
@@ -109,5 +109,6 @@ class AppConfig() {
         private const val NON_MODERATION_END_RANGE = "NON_MODERATION_END_RANGE"
         private const val NEED_USE_CUSTOM_HOST = "NEED_USE_CUSTOM_HOST"
         private const val NEED_USE_NON_MODERATION_RANGE = "NEED_USE_NON_MODERATION_RANGE"
+        private const val DEFAULT_USER_ID = -101
     }
 }

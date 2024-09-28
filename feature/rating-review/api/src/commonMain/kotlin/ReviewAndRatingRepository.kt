@@ -3,12 +3,12 @@ import main_models.rating_review.ReviewAndRatingTimestampVo
 import main_models.rating_review.ReviewAndRatingVo
 
 interface ReviewAndRatingRepository {
-    suspend fun getNotSynchronizedReviewAndRating(userId: Long): List<ReviewAndRatingVo>
+    suspend fun getNotSynchronizedReviewAndRating(userId: Int): List<ReviewAndRatingVo>
 
-    suspend fun getReviewAndRatingTimestamp(userId: Long): ReviewAndRatingTimestampVo
+    suspend fun getReviewAndRatingTimestamp(userId: Int): ReviewAndRatingTimestampVo
     suspend fun addOrUpdateLocalReviewAndRatingWhenSync(
         reviewAndRating: List<ReviewAndRatingVo>,
-        userId: Long
+        userId: Int
     )
 
     suspend fun updateReviewAndRatingTimestamp(timestamp: ReviewAndRatingTimestampVo)

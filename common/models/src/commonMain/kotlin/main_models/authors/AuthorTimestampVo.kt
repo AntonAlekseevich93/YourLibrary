@@ -1,7 +1,7 @@
 package main_models.authors
 
 class AuthorTimestampVo(
-    val userId: Long,
+    val userId: Int,
     val otherDevicesTimestamp: Long,
     val thisDeviceTimestamp: Long,
 )

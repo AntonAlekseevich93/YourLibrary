@@ -14,6 +14,7 @@ object HttpConstants {
     const val ADD_NEW_BOOK_BY_USER = "books/users/add"
     const val UPDATE_USER_BOOK = "books/users/update"
     const val SYNCHRONIZE_USER_DATA = "sync/user/data"
+    const val UPDATE_NOTIFICATIONS_PUSH_TOKEN = "user/notifications"
 
     //----------REVIEW AND RATING
     const val ADD_OR_UPDATE_RATING_BY_BOOK = "books/rating/change"

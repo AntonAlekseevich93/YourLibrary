@@ -16,7 +16,7 @@ data class CacheReviewAndRatingEntity(
     val cacheReviewAndRating: ReviewAndRatingRemoteDto?,
     @SerialName("cacheMainBookId") val cacheMainBookId: String,
     @SerialName("cacheTimestamp") val cacheTimestamp: Long,
-    @SerialName("cacheUserId") val cacheUserId: Long,
+    @SerialName("cacheUserId") val cacheUserId: Int,
 )
 
 fun CacheReviewAndRatingEntity.toCacheVo(): CacheReviewAndRatingVo =

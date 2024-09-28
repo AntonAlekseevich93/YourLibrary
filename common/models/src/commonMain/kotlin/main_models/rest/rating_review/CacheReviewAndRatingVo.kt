@@ -8,7 +8,7 @@ data class CacheReviewAndRatingVo(
     val cacheReviewAndRating: ReviewAndRatingRemoteDto?,
     @SerialName("cacheMainBookId") val cacheMainBookId: String,
     @SerialName("cacheTimestamp") val cacheTimestamp: Long,
-    @SerialName("cacheUserId") val cacheUserId: Long,
+    @SerialName("cacheUserId") val cacheUserId: Int,
 )
 
 fun CacheReviewAndRatingVo.toRemoteDto(): ReviewAndRatingRemoteDto? {

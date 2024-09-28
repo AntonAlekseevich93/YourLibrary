@@ -13,13 +13,13 @@ interface CacheBooksByAuthorDao {
     @Query("SELECT * FROM CacheBookByAuthorEntity WHERE cacheAuthorId = :authorId and cacheUserId =:userId")
     suspend fun getCacheBooksByAuthor(
         authorId: String,
-        userId: Long,
+        userId: Int,
     ): List<CacheBookByAuthorEntity>
 
     @Query("DELETE FROM CacheBookByAuthorEntity WHERE cacheAuthorId =:authorId and cacheUserId =:userId")
     suspend fun deleteCacheByAuthor(
         authorId: String,
-        userId: Long
+        userId: Int
     )
 
     @Query("DELETE FROM CacheBookByAuthorEntity")

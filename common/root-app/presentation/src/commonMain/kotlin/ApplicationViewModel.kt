@@ -1,8 +1,10 @@
 import base.BaseMVIViewModel
+import com.mmk.kmpnotifier.notification.NotifierManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import main_app_bar.MainAppBarEvents
@@ -30,11 +32,11 @@ class ApplicationViewModel(
     lateinit var component: RootComponent
 
     init {
-
         uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
         scope.launch {
+            launch(Dispatchers.IO) { setNotificationListener() }
             launch(Dispatchers.IO) {
-                interactor.synchronizeBooksWithAuthors()
+                interactor.synchronizeUserData()
             }
 
             launch {
@@ -181,6 +183,26 @@ class ApplicationViewModel(
                 withContext(Dispatchers.Main) {
                     updateUIState(uiStateValue.copy(searchedBooks = emptyList()))
                 }
+            }
+        }
+    }
+
+    private suspend fun setNotificationListener() {
+        while (true) {
+            try {
+                NotifierManager.getPushNotifier().getToken()?.let { token ->
+                    interactor.updateNotificationPushToken(token)
+                }
+                NotifierManager.addListener(object : NotifierManager.Listener {
+                    override fun onNewToken(token: String) {
+                        scope.launch {
+                            interactor.updateNotificationPushToken(token)
+                        }
+                    }
+                })
+                break
+            } catch (e: Exception) {
+                delay(500) //NotifierManager не запущен в сервисе. Ждём
             }
         }
     }

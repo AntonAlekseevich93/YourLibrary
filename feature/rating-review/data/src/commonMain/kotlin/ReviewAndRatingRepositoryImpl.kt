@@ -22,16 +22,16 @@ class ReviewAndRatingRepositoryImpl(
     private val cacheManagerRepository: CacheManagerRepository,
 ) : ReviewAndRatingRepository {
 
-    override suspend fun getNotSynchronizedReviewAndRating(userId: Long) =
+    override suspend fun getNotSynchronizedReviewAndRating(userId: Int) =
         localReviewAndRatingDataSource.getNotSynchronizedReviewsAndRatings(userId)
             .mapNotNull { it.toVo() }
 
-    override suspend fun getReviewAndRatingTimestamp(userId: Long): ReviewAndRatingTimestampVo =
+    override suspend fun getReviewAndRatingTimestamp(userId: Int): ReviewAndRatingTimestampVo =
         localReviewAndRatingDataSource.getReviewAndRatingTimestamp(userId).toVo()
 
     override suspend fun addOrUpdateLocalReviewAndRatingWhenSync(
         reviewAndRating: List<ReviewAndRatingVo>,
-        userId: Long
+        userId: Int
     ) {
         val reviewAndRatingLocalDto =
             reviewAndRating.map { it.toLocalDto() }

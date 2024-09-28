@@ -28,6 +28,7 @@ class BookCreatorViewModel(
     private val platformInfo: PlatformInfoData,
     private val interactor: BookCreatorInteractor,
     private val applicationScope: ApplicationScope,
+    private val appConfig: AppConfig,
 ) : BaseMVIViewModel<BookCreatorUiState, BaseEvent>(BookCreatorUiState()) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
@@ -534,6 +535,7 @@ class BookCreatorViewModel(
             originalMainBookId = shortBook.getMainBookIdByShortBook(),
             lang = shortBook.lang,
             publicationYear = shortBook.publicationYear,
+            userId = appConfig.userId
         )
 
     private fun createManuallyUserBook(): BookVo {
@@ -576,7 +578,8 @@ class BookCreatorViewModel(
                 bookForAllUsers = false,
                 originalMainBookId = bookId,
                 lang = uiStateValue.userBookCreatorUiState.selectedLang.value.value,
-                publicationYear = needFix!!
+                publicationYear = needFix!!,
+                userId = appConfig.userId
             )
         }
     }

@@ -16,29 +16,29 @@ interface BooksDao {
     suspend fun updateBook(book: BookEntity)
 
     @Query("UPDATE BookEntity SET readingStatus = :readingStatus WHERE bookId = :bookId AND userId = :userId")
-    suspend fun updateBookReadingStatus(readingStatus: String, bookId: String, userId: Long)
+    suspend fun updateBookReadingStatus(readingStatus: String, bookId: String, userId: Int)
 
     @Query("SELECT * FROM BookEntity WHERE userId = :userId")
-    suspend fun getAllBooks(userId: Long): List<BookEntity>
+    suspend fun getAllBooks(userId: Int): List<BookEntity>
 
     @Query("SELECT * FROM BookEntity WHERE readingStatus = :status AND userId =:userId")
-    fun getAllBooksFlow(status: String, userId: Long): Flow<List<BookEntity>>
+    fun getAllBooksFlow(status: String, userId: Int): Flow<List<BookEntity>>
 
     @Query("SELECT * FROM BookEntity WHERE bookId = :bookId AND userId = :userId")
-    suspend fun getBookByBookId(bookId: String, userId: Long): List<BookEntity>
+    suspend fun getBookByBookId(bookId: String, userId: Int): List<BookEntity>
 
     @Query("SELECT * FROM BookEntity WHERE bookId = :bookId AND userId = :userId")
-    suspend fun getBookStatusByBookId(bookId: String, userId: Long): List<BookEntity>
+    suspend fun getBookStatusByBookId(bookId: String, userId: Int): List<BookEntity>
 
     @Query("SELECT * FROM BookEntity WHERE timestampOfUpdating > :timestamp AND userId = :userId")
-    suspend fun getNotSynchronizedBooks(timestamp: Long, userId: Long): List<BookEntity>
+    suspend fun getNotSynchronizedBooks(timestamp: Long, userId: Int): List<BookEntity>
 
     @Query("SELECT * FROM BookEntity WHERE bookNameUppercase LIKE '%' || :name || '%'")
     suspend fun searchBookByName(name: String): List<BookEntity>
 
     @Query("SELECT * FROM BookEntity WHERE localId = :bookLocalId and userId = :userId")
-    fun getLocalBookByLocalId(bookLocalId: Long, userId: Long): Flow<List<BookEntity>>
+    fun getLocalBookByLocalId(bookLocalId: Long, userId: Int): Flow<List<BookEntity>>
 
     @Query("SELECT * FROM BookEntity WHERE bookId = :bookId and userId = :userId")
-    fun getLocalBookById(bookId: String, userId: Long): Flow<List<BookEntity>>
+    fun getLocalBookById(bookId: String, userId: Int): Flow<List<BookEntity>>
 }

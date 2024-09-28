@@ -12,7 +12,7 @@ class LocalAuthorsDataSource(
     private val authorsDao = roomDb.authorsDao
     private val authorsTimestampDao = roomDb.authorsTimestampDao
 
-    suspend fun insertOrUpdateAuthor(author: AuthorEntity, userId: Long) {
+    suspend fun insertOrUpdateAuthor(author: AuthorEntity, userId: Int) {
         val authorFromDb = authorsDao.getAuthorByAuthorId(author.id, userId = userId).firstOrNull()
         if (authorFromDb == null) {
             authorsDao.insertAuthor(author)
@@ -22,7 +22,7 @@ class LocalAuthorsDataSource(
         }
     }
 
-    suspend fun getAuthorsTimestamp(userId: Long): AuthorsTimestampEntity {
+    suspend fun getAuthorsTimestamp(userId: Int): AuthorsTimestampEntity {
         val timestamp = authorsTimestampDao.getTimestamp(userId).firstOrNull()
         return timestamp ?: createEmptyTimestamp(userId)
     }
@@ -31,12 +31,12 @@ class LocalAuthorsDataSource(
         authorsTimestampDao.insertOrUpdateTimestamp(authorsTimestamp)
     }
 
-    suspend fun getNotSynchronizedAuthors(userId: Long): List<AuthorEntity> {
+    suspend fun getNotSynchronizedAuthors(userId: Int): List<AuthorEntity> {
         val timestamp = getAuthorsTimestamp(userId)
         return authorsDao.getNotSynchronizedAuthors(timestamp.thisDeviceTimestamp, userId = userId)
     }
 
-    suspend fun createAuthorIfNotExist(author: AuthorEntity, userId: Long) {
+    suspend fun createAuthorIfNotExist(author: AuthorEntity, userId: Int) {
         val isNotExist =
             authorsDao.getAuthorByAuthorId(authorId = author.id, userId = userId).isEmpty()
         val time = platformInfo.getCurrentTime().timeInMillis
@@ -50,10 +50,10 @@ class LocalAuthorsDataSource(
         }
     }
 
-    suspend fun getAuthorById(authorId: String, userId: Long) =
+    suspend fun getAuthorById(authorId: String, userId: Int) =
         authorsDao.getAuthorByAuthorId(authorId = authorId, userId = userId)
 
-    private suspend fun createEmptyTimestamp(userId: Long): AuthorsTimestampEntity {
+    private suspend fun createEmptyTimestamp(userId: Int): AuthorsTimestampEntity {
         val timestamp = AuthorsTimestampEntity(
             userId = userId,
             otherDevicesTimestamp = 0,

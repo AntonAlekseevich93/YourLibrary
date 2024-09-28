@@ -9,7 +9,7 @@ interface AuthorsRepository {
 
     suspend fun updateAuthorInLocalDb(author: AuthorVo)
     suspend fun insertOrUpdateAuthorsInLocalDb(authors: List<AuthorVo>)
-    suspend fun getAuthorsTimestamp(userId: Long): AuthorTimestampVo
+    suspend fun getAuthorsTimestamp(userId: Int): AuthorTimestampVo
     suspend fun getNotSynchronizedAuthors(): List<AuthorVo>
     suspend fun createAuthorIfNotExist(author: AuthorVo)
     suspend fun getLocalAuthorById(authorId: String): AuthorVo?

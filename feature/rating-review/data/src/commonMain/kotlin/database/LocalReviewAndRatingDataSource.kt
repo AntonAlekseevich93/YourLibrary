@@ -13,7 +13,7 @@ class LocalReviewAndRatingDataSource(
     private val reviewAndRatingDao = roomDb.reviewAndRatingDao
     private val reviewAndRatingTimestampDao = roomDb.reviewAndRatingTimestampDao
 
-    suspend fun getReviewAndRatingTimestamp(userId: Long) =
+    suspend fun getReviewAndRatingTimestamp(userId: Int) =
         reviewAndRatingTimestampDao.getTimestamp(userId).firstOrNull() ?: createEmptyTimestamp(
             userId
         )
@@ -22,7 +22,7 @@ class LocalReviewAndRatingDataSource(
         reviewAndRatingTimestampDao.insertOrUpdateTimestamp(timestamp)
     }
 
-    suspend fun getNotSynchronizedReviewsAndRatings(userId: Long): List<ReviewAndRatingEntity> {
+    suspend fun getNotSynchronizedReviewsAndRatings(userId: Int): List<ReviewAndRatingEntity> {
         val timestamp = getReviewAndRatingTimestamp(userId)
         return reviewAndRatingDao.getNotSynchronizedReviewAndRating(
             ratingTimestamp = timestamp.thisDeviceTimestampRating,
@@ -33,17 +33,17 @@ class LocalReviewAndRatingDataSource(
 
     suspend fun getCurrentUserReviewAndRatingByBookFlow(
         mainBookId: String,
-        userId: Long
+        userId: Int
     ): Flow<List<ReviewAndRatingEntity>> =
         reviewAndRatingDao.getCurrentUserReviewAndRatingByBookFlow(mainBookId, userId)
 
     suspend fun getCurrentUserReviewAndRatingByBook(
         mainBookId: String,
-        userId: Long
+        userId: Int
     ): List<ReviewAndRatingEntity> =
         reviewAndRatingDao.getCurrentUserReviewAndRatingByBook(mainBookId, userId)
 
-    private suspend fun createEmptyTimestamp(userId: Long): ReviewAndRatingTimestampEntity {
+    private suspend fun createEmptyTimestamp(userId: Int): ReviewAndRatingTimestampEntity {
         val timestamp = ReviewAndRatingTimestampEntity(
             userId = userId,
             otherDevicesTimestampRating = 0,
@@ -58,7 +58,7 @@ class LocalReviewAndRatingDataSource(
     /**do not use this function except for synchronization**/
     suspend fun addOrUpdateLocalReviewAndRatingWhenSync(
         reviewAndRating: List<ReviewAndRatingEntity>,
-        userId: Long
+        userId: Int
     ) {
         reviewAndRating.forEach { item ->
             val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(
@@ -75,7 +75,7 @@ class LocalReviewAndRatingDataSource(
 
     suspend fun addOrUpdateJustRating(
         reviewAndRating: ReviewAndRatingEntity,
-        userId: Long,
+        userId: Int,
     ): Long {
         val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(
             mainBookId = reviewAndRating.mainBookId,
@@ -95,7 +95,7 @@ class LocalReviewAndRatingDataSource(
 
     suspend fun addJustReview(
         reviewAndRating: ReviewAndRatingEntity,
-        userId: Long,
+        userId: Int,
     ): Long? {
         if (reviewAndRating.reviewText.isNullOrEmpty()) return null
         val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(
@@ -114,7 +114,7 @@ class LocalReviewAndRatingDataSource(
 
     suspend fun updateJustReview(
         reviewAndRating: ReviewAndRatingEntity,
-        userId: Long,
+        userId: Int,
     ): Long? {
         if (reviewAndRating.reviewText.isNullOrEmpty()) return null
         val existedReviewAndRating = reviewAndRatingDao.getReviewAndRatingByBookId(

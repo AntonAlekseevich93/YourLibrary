@@ -1,3 +1,4 @@
+import database.LocalSynchronizationDataSource
 import ktor.RemoteSynchronizationDataSource
 import org.kodein.di.DI
 import org.kodein.di.bind
@@ -13,11 +14,16 @@ val synchronizationModule = DI.Module("synchronizationModule") {
             instance(),
             instance(),
             instance(),
-            instance()
+            instance(),
+            instance(),
         )
     }
 
     bind<RemoteSynchronizationDataSource>() with provider {
         RemoteSynchronizationDataSource(instance())
+    }
+
+    bind<LocalSynchronizationDataSource>() with provider{
+        LocalSynchronizationDataSource(instance())
     }
 }

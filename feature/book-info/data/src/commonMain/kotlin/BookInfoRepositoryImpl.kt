@@ -51,7 +51,7 @@ class BookInfoRepositoryImpl(
     override suspend fun updateUserBook(book: BookVo) {
         val userId = appConfig.userId
         val bookVo = localBookInfoDataSource.updateBookAndTime(
-            book = book.toLocalDto(appConfig.userId),
+            book = book.toLocalDto(),
             userId = userId
         ).toVo(null)
         val response = remoteBookInfoDataSource.updateUserBook(
@@ -62,22 +62,22 @@ class BookInfoRepositoryImpl(
 
         bookResponseVo?.let {
             localBookInfoDataSource.updateBookWithoutUpdateTime(
-                it.toLocalDto(userId),
+                it.toLocalDto(),
                 userId = userId
             )
             updateBooksTimestamp(it.timestampOfUpdating)
         }
     }
 
-    override suspend fun getBookTimestamp(userId: Long) =
+    override suspend fun getBookTimestamp(userId: Int) =
         localBookInfoDataSource.getBookTimestamp(userId = userId).toVo()
 
     override suspend fun addOrUpdateLocalBooks(
         books: List<UserBookRemoteDto>,
-        userId: Long
+        userId: Int
     ) {
         val booksLocalDto =
-            books.mapNotNull { it.toVo()?.toLocalDto(userId) }
+            books.mapNotNull { it.toVo()?.toLocalDto() }
         localBookInfoDataSource.addOrUpdateBooks(
             booksLocalDto,
             userId = userId
@@ -88,7 +88,7 @@ class BookInfoRepositoryImpl(
         localBookInfoDataSource.updateBookTimestamp(lastTimestamp.toEntity())
     }
 
-    override suspend fun getNotSynchronizedBooks(userId: Long) =
+    override suspend fun getNotSynchronizedBooks(userId: Int) =
         localBookInfoDataSource.getNotSynchronizedBooks(userId).map { it.toVo(null).toRemoteDto() }
 
     private suspend fun updateBooksTimestamp(timestamp: Long) {

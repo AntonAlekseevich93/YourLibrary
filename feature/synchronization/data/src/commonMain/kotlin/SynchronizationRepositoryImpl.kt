@@ -1,3 +1,4 @@
+import database.LocalSynchronizationDataSource
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import ktor.RemoteSynchronizationDataSource
@@ -12,6 +13,7 @@ import main_models.rest.sync.SynchronizeUserDataRequest
 
 class SynchronizationRepositoryImpl(
     private val remoteSynchronizationDataSource: RemoteSynchronizationDataSource,
+    private val localSynchronizationDataSource: LocalSynchronizationDataSource,
     private val bookRepository: BookInfoRepository,
     private val authorsRepository: AuthorsRepository,
     private val reviewAndRatingRepository: ReviewAndRatingRepository,
@@ -25,6 +27,28 @@ class SynchronizationRepositoryImpl(
             synchronize()
         } else false
     }
+
+    override suspend fun updateNotificationPushToken(pushToken: String) {
+        if (appConfig.isAuth) {
+            val userId = appConfig.userId.toInt()
+            val deviceId = appConfig.deviceId
+            val notificationData = localSynchronizationDataSource.getNotificationData(
+                userId = userId,
+                deviceId = deviceId
+            )
+            if (notificationData == null || notificationData.pushToken != pushToken) {
+                remoteSynchronizationDataSource
+                    .updateNotificationPushToken(pushToken)?.result?.pushToken?.let { resultToken ->
+                        localSynchronizationDataSource.insertOrUpdate(
+                            userId = userId,
+                            deviceId = deviceId,
+                            pushToken = resultToken
+                        )
+                    }
+            }
+        }
+    }
+
 
     /**
      * У нас есть:
@@ -77,7 +101,7 @@ class SynchronizationRepositoryImpl(
 
     private suspend fun updateBooksWithAuthorsDataFromServer(
         result: MissingBooksAndAuthorsFromServer,
-        userId: Long
+        userId: Int
     ) {
         result.booksOtherDevices?.let { otherDevicesBooks ->
             val booksTimestamp = bookRepository.getBookTimestamp(userId = userId)
@@ -130,7 +154,7 @@ class SynchronizationRepositoryImpl(
 
     private suspend fun updateReviewAndRatingFromServer(
         response: SynchronizeReviewAndRatingContent,
-        userId: Long
+        userId: Int
     ): Boolean {
         var success = false
         response.missingReviewsAndRatingsFromServer?.let {
@@ -195,7 +219,7 @@ class SynchronizationRepositoryImpl(
 
     /**we don't need to send authors
      * because the server creates authors on its own from the data from the book**/
-    private suspend fun getSynchronizeBody(userId: Long): SynchronizeUserDataRequest {
+    private suspend fun getSynchronizeBody(userId: Int): SynchronizeUserDataRequest {
         val booksTimestamp = bookRepository.getBookTimestamp(userId = userId)
         val authorTimestampVo = authorsRepository.getAuthorsTimestamp(userId)
         val books =

@@ -7,7 +7,7 @@ import main_models.authors.AuthorTimestampVo
 @Entity
 data class AuthorsTimestampEntity(
     @PrimaryKey(autoGenerate = false)
-    val userId: Long,
+    val userId: Int,
     val otherDevicesTimestamp: Long,
     val thisDeviceTimestamp: Long,
 )

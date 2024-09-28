@@ -12,5 +12,5 @@ interface AuthorsTimestampDao {
     suspend fun insertOrUpdateTimestamp(timestampDto: AuthorsTimestampEntity)
 
     @Query("SELECT * FROM AUTHORSTIMESTAMPENTITY WHERE userId = :userId")
-    suspend fun getTimestamp(userId: Long): List<AuthorsTimestampEntity>
+    suspend fun getTimestamp(userId: Int): List<AuthorsTimestampEntity>
 }

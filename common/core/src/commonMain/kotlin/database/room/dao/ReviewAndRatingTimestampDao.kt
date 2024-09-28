@@ -12,5 +12,5 @@ interface ReviewAndRatingTimestampDao {
     suspend fun insertOrUpdateTimestamp(timestampDto: ReviewAndRatingTimestampEntity)
 
     @Query("SELECT * FROM ReviewAndRatingTimestampEntity WHERE userId = :userId")
-    suspend fun getTimestamp(userId: Long): List<ReviewAndRatingTimestampEntity>
+    suspend fun getTimestamp(userId: Int): List<ReviewAndRatingTimestampEntity>
 }

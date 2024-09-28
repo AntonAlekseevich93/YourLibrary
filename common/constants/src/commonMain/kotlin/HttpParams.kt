@@ -12,5 +12,5 @@ object HttpParams {
     const val RANGE_END = "rangeEnd"
     const val LANG = "lang"
     const val CHANGED_BOOK_NAME = "changedBookName"
-
+    const val NOTIFICATIONS_PUSH_TOKEN = "pushToken"
 }

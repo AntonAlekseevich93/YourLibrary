@@ -28,7 +28,7 @@ class UserInteractor(
             if (token.isNotEmpty() && response.result?.id != null) {
                 appConfig.updateAuthToken(token = token)
                 appConfig.setCurrentUserEmail(email)
-                appConfig.saveUserId(userId = response.result!!.id!!.toLong())
+                appConfig.saveUserId(userId = response.result!!.id!!)
                 repository.createOrUpdateUser(
                     id = response.result!!.id!!,
                     name = name,
@@ -59,7 +59,7 @@ class UserInteractor(
                 appConfig.setCurrentUserEmail(email)
                 response.result?.let {
                     it.id?.let { id ->
-                        appConfig.saveUserId(userId = id.toLong())
+                        appConfig.saveUserId(userId = id)
                     }
 
                     repository.createOrUpdateUser(

@@ -72,8 +72,12 @@ class ApplicationInteractor(
         null
     }
 
-    suspend fun synchronizeBooksWithAuthors() {
+    suspend fun synchronizeUserData() {
         synchronizationRepository.synchronizeUserData()
+    }
+
+    suspend fun updateNotificationPushToken(pushToken: String) {
+        synchronizationRepository.updateNotificationPushToken(pushToken)
     }
 
     suspend fun searchInLocalBooks(text: String): List<BookVo> =

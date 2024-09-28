@@ -7,7 +7,7 @@ import main_models.books.BookTimestampVo
 @Entity
 data class BookTimestampEntity(
     @PrimaryKey(autoGenerate = false)
-    val userId: Long,
+    val userId: Int,
     val otherDevicesTimestamp: Long,
     val thisDeviceTimestamp: Long,
 )

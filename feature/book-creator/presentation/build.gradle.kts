@@ -12,6 +12,7 @@ kotlin {
                 implementation(project(":common:arch"))
                 implementation(project(":common:scopes"))
                 implementation(project(":common:models"))
+                implementation(project(":common:app-config"))
                 implementation(project(":common:ui"))
                 implementation(project(":feature:book-creator:domain"))
             }

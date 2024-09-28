@@ -12,7 +12,7 @@ class LocalBookCreatorDataSource(
     private val booksDao = roomDb.booksDao
     private val bookTimestampDao = roomDb.bookTimestampDao
 
-    suspend fun getBookTimestamp(userId: Long): BookTimestampEntity {
+    suspend fun getBookTimestamp(userId: Int): BookTimestampEntity {
         val timestamp = bookTimestampDao.getTimestamp(userId).firstOrNull()
         return timestamp ?: createEmptyTimestamp(userId)
     }
@@ -21,7 +21,7 @@ class LocalBookCreatorDataSource(
         bookTimestampDao.insertOrUpdateTimestamp(bookTimestamp)
     }
 
-    suspend fun createBook(book: BookEntity, userId: Long): BookEntity {
+    suspend fun createBook(book: BookEntity, userId: Int): BookEntity {
         val time = platformInfo.getCurrentTime().timeInMillis
         val existedBook = booksDao.getBookByBookId(book.bookId, userId = userId).firstOrNull()
         if (existedBook == null) {
@@ -43,7 +43,7 @@ class LocalBookCreatorDataSource(
         return booksDao.getBookByBookId(book.bookId, userId = userId).first()
     }
 
-    suspend fun updateBookWithoutUpdateTime(book: BookEntity, userId: Long) {
+    suspend fun updateBookWithoutUpdateTime(book: BookEntity, userId: Int) {
         val localId = booksDao.getBookByBookId(book.bookId, userId = userId).firstOrNull()?.localId
         if (localId != null) {
             booksDao.updateBook(book.copy(localId = localId))
@@ -52,13 +52,13 @@ class LocalBookCreatorDataSource(
         }
     }
 
-    suspend fun getBookStatusByBookId(bookId: String, userId: Long): String? =
+    suspend fun getBookStatusByBookId(bookId: String, userId: Int): String? =
         booksDao.getBookStatusByBookId(bookId, userId = userId).firstOrNull()?.readingStatus
 
-    suspend fun getLocalBookById(bookId: String, userId: Long) =
+    suspend fun getLocalBookById(bookId: String, userId: Int) =
         booksDao.getBookByBookId(bookId, userId = userId).firstOrNull()
 
-    private suspend fun createEmptyTimestamp(userId: Long): BookTimestampEntity {
+    private suspend fun createEmptyTimestamp(userId: Int): BookTimestampEntity {
         val timestamp = BookTimestampEntity(
             userId = userId,
             otherDevicesTimestamp = 0,

@@ -13,13 +13,13 @@ interface CacheReviewAndRatingDao {
     @Query("SELECT * FROM CacheReviewAndRatingEntity WHERE cacheMainBookId = :mainBookId and cacheUserId =:userId")
     suspend fun getCacheReviewAndRatingByBook(
         mainBookId: String,
-        userId: Long,
+        userId: Int,
     ): List<CacheReviewAndRatingEntity>
 
     @Query("DELETE FROM CacheReviewAndRatingEntity WHERE cacheMainBookId =:mainBookId and cacheUserId =:userId")
     suspend fun deleteCacheReviewAndRatingByBook(
         mainBookId: String,
-        userId: Long
+        userId: Int
     )
 
     @Query("DELETE FROM CacheReviewAndRatingEntity")

@@ -13,26 +13,26 @@ class LocalBooksListInfoDataSource(
     private val booksDao = roomDb.booksDao
     private val bookTimestampDao = roomDb.bookTimestampDao
 
-    suspend fun getBookTimestamp(userId: Long) =
+    suspend fun getBookTimestamp(userId: Int) =
         bookTimestampDao.getTimestamp(userId).firstOrNull() ?: createEmptyTimestamp(userId)
 
     suspend fun updateBookTimestamp(bookTimestamp: BookTimestampEntity) {
         bookTimestampDao.insertOrUpdateTimestamp(bookTimestamp)
     }
 
-    suspend fun getLocalBookByLocalId(bookLocalId: Long, userId: Long): Flow<List<BookEntity>> =
+    suspend fun getLocalBookByLocalId(bookLocalId: Long, userId: Int): Flow<List<BookEntity>> =
         booksDao.getLocalBookByLocalId(bookLocalId = bookLocalId, userId = userId)
 
-    suspend fun getLocalBookByIdFlow(bookId: String, userId: Long): Flow<List<BookEntity>> =
+    suspend fun getLocalBookByIdFlow(bookId: String, userId: Int): Flow<List<BookEntity>> =
         booksDao.getLocalBookById(bookId = bookId, userId = userId)
 
-    suspend fun getLocalBookById(bookId: String, userId: Long): List<BookEntity> =
+    suspend fun getLocalBookById(bookId: String, userId: Int): List<BookEntity> =
         booksDao.getBookByBookId(bookId = bookId, userId = userId)
 
-    suspend fun getBookReadingStatus(bookId: String, userId: Long): String? =
+    suspend fun getBookReadingStatus(bookId: String, userId: Int): String? =
         booksDao.getBookStatusByBookId(bookId, userId = userId).firstOrNull()?.readingStatus
 
-    private suspend fun createEmptyTimestamp(userId: Long): BookTimestampEntity {
+    private suspend fun createEmptyTimestamp(userId: Int): BookTimestampEntity {
         val timestamp = BookTimestampEntity(
             userId = userId,
             otherDevicesTimestamp = 0,

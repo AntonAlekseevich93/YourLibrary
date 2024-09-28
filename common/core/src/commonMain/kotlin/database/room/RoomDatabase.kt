@@ -9,6 +9,7 @@ import database.room.dao.BookTimestampDao
 import database.room.dao.BooksDao
 import database.room.dao.ReviewAndRatingDao
 import database.room.dao.ReviewAndRatingTimestampDao
+import database.room.dao.UserNotificationsDao
 import database.room.dao.cache.CacheBooksByAuthorDao
 import database.room.dao.cache.CacheReviewAndRatingDao
 import database.room.entities.AuthorEntity
@@ -19,6 +20,7 @@ import database.room.entities.ReviewAndRatingEntity
 import database.room.entities.ReviewAndRatingTimestampEntity
 import database.room.entities.cache.CacheBookByAuthorEntity
 import database.room.entities.cache.CacheReviewAndRatingEntity
+import database.room.entities.notifications.UserNotificationsEntity
 
 @Database(
     entities = [
@@ -30,6 +32,7 @@ import database.room.entities.cache.CacheReviewAndRatingEntity
         ReviewAndRatingTimestampEntity::class,
         CacheBookByAuthorEntity::class,
         CacheReviewAndRatingEntity::class,
+        UserNotificationsEntity::class,
     ], version = 1
 )
 @ConstructedBy(AppDatabaseCtor::class)
@@ -42,4 +45,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun getReviewAndRatingTimestampDao(): ReviewAndRatingTimestampDao
     abstract fun getCacheBooksByAuthorDao(): CacheBooksByAuthorDao
     abstract fun getCacheReviewAndRatingDao(): CacheReviewAndRatingDao
+    abstract fun getUserNotificationsDao(): UserNotificationsDao
 }

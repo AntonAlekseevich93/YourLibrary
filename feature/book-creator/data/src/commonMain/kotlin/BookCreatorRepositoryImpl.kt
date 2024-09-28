@@ -22,7 +22,7 @@ class BookCreatorRepositoryImpl(
     override suspend fun createBook(book: BookVo, author: AuthorVo) {
         val userId = appConfig.userId
         val bookVo = localBookCreatorDataSource.createBook(
-            book = book.toLocalDto(userId = userId),
+            book = book.toLocalDto(),
             userId = userId
         ).toVo(null)
         authorsRepository.createAuthorIfNotExist(author)
@@ -35,7 +35,7 @@ class BookCreatorRepositoryImpl(
 
         bookResponseVo?.let {
             localBookCreatorDataSource.updateBookWithoutUpdateTime(
-                it.toLocalDto(userId),
+                it.toLocalDto(),
                 userId = userId
             )
             updateBooksTimestamp(it.timestampOfUpdating)

@@ -7,6 +7,7 @@ import database.room.dao.BookTimestampDao
 import database.room.dao.BooksDao
 import database.room.dao.ReviewAndRatingDao
 import database.room.dao.ReviewAndRatingTimestampDao
+import database.room.dao.UserNotificationsDao
 import database.room.dao.cache.CacheBooksByAuthorDao
 import database.room.dao.cache.CacheReviewAndRatingDao
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +50,10 @@ class RoomMainDataSource(
 
     val cacheReviewAndRatingDao: CacheReviewAndRatingDao by lazy {
         db.getCacheReviewAndRatingDao()
+    }
+
+    val userNotificationsDao: UserNotificationsDao by lazy {
+        db.getUserNotificationsDao()
     }
 
     private fun getRoomDatabase(

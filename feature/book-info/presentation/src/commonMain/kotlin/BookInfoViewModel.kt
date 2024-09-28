@@ -285,7 +285,7 @@ class BookInfoViewModel(
                 )
             } else if (uiState.value.shortBookItem.value != null) {
                 val bookVo =
-                    uiState.value.shortBookItem.value!!.createUserBookBasedOnShortBook(newStatus)
+                    uiState.value.shortBookItem.value!!.createUserBookBasedOnShortBook(newStatus, userId = appConfig.userId.toInt())
                 val authorVo = getOrCreateAuthor(bookVo)
                 interactor.createBook(bookVo, author = authorVo)
             }

@@ -19,24 +19,24 @@ interface ReviewAndRatingDao {
     suspend fun getNotSynchronizedReviewAndRating(
         ratingTimestamp: Long,
         reviewTimestamp: Long,
-        userId: Long
+        userId: Int
     ): List<ReviewAndRatingEntity>
 
     @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and mainBookId = :mainBookId")
     suspend fun getReviewAndRatingByBookId(
         mainBookId: String,
-        userId: Long
+        userId: Int
     ): List<ReviewAndRatingEntity>
 
     @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and mainBookId = :mainBookId")
     fun getCurrentUserReviewAndRatingByBookFlow(
         mainBookId: String,
-        userId: Long
+        userId: Int
     ): Flow<List<ReviewAndRatingEntity>>
 
     @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId and mainBookId = :mainBookId")
     suspend fun getCurrentUserReviewAndRatingByBook(
         mainBookId: String,
-        userId: Long
+        userId: Int
     ): List<ReviewAndRatingEntity>
 }

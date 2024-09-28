@@ -17,7 +17,7 @@ class CacheManagerDataSource(
 
     suspend fun getCacheAllAuthorBooks(
         authorId: String,
-        userId: Long
+        userId: Int
     ): List<CacheBookByAuthorEntity> {
         val cachedBooks = booksByAuthorDao.getCacheBooksByAuthor(
             authorId = authorId,
@@ -37,7 +37,7 @@ class CacheManagerDataSource(
 
     suspend fun saveAllAuthorsBooks(
         authorId: String,
-        userId: Long,
+        userId: Int,
         books: List<CacheBookByAuthorEntity>
     ) {
         booksByAuthorDao.deleteCacheByAuthor(authorId, userId)
@@ -48,7 +48,7 @@ class CacheManagerDataSource(
 
     suspend fun getCacheAllReviewsAndRatingsByBook(
         mainBookId: String,
-        userId: Long
+        userId: Int
     ): List<CacheReviewAndRatingEntity> {
         val cachedReviewAndRating = reviewAndRatingDao.getCacheReviewAndRatingByBook(
             mainBookId = mainBookId,
@@ -69,7 +69,7 @@ class CacheManagerDataSource(
 
     suspend fun saveAllReviewAndRatingByBook(
         mainBookId: String,
-        userId: Long,
+        userId: Int,
         reviewsAndRatings: List<CacheReviewAndRatingEntity>
     ) {
         reviewAndRatingDao.deleteCacheReviewAndRatingByBook(mainBookId, userId)

@@ -12,7 +12,7 @@ class LocalShelfDataSource(
     private val booksDao = roomDb.booksDao
     private val bookTimestampDao = roomDb.bookTimestampDao
 
-    suspend fun getAllBooks(readingStatus: String, userId: Long): Flow<List<BookEntity>> =
+    suspend fun getAllBooks(readingStatus: String, userId: Int): Flow<List<BookEntity>> =
         booksDao.getAllBooksFlow(readingStatus, userId = userId)
 
 

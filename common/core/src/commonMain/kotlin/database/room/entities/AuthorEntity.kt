@@ -15,10 +15,10 @@ data class AuthorEntity(
     @SerialName("timestampOfCreating") val timestampOfCreating: Long,
     @SerialName("timestampOfUpdating") val timestampOfUpdating: Long,
     @SerialName("isCreatedByUser") val isCreatedByUser: Boolean,
-    @SerialName("userId") val userId: Long,
+    @SerialName("userId") val userId: Int,
 )
 
-fun AuthorVo.toLocalDto(userId: Long) = AuthorEntity(
+fun AuthorVo.toLocalDto(userId: Int) = AuthorEntity(
     localId = localId,
     id = id,
     serverId = serverId,

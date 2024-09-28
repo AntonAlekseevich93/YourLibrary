@@ -7,7 +7,7 @@ import main_models.rating_review.ReviewAndRatingTimestampVo
 @Entity
 data class ReviewAndRatingTimestampEntity(
     @PrimaryKey(autoGenerate = false)
-    val userId: Long,
+    val userId: Int,
     val otherDevicesTimestampRating: Long,
     val thisDeviceTimestampRating: Long,
     val otherDevicesTimestampReview: Long,

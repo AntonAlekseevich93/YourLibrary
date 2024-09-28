@@ -47,7 +47,6 @@ import platform.PlatformInfoData
 
 class MainActivity : ComponentActivity() {
     private val scope = CoroutineScope(Dispatchers.IO)
-
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val permissionUtil by permissionUtil()
@@ -81,10 +80,6 @@ class MainActivity : ComponentActivity() {
             tooltipHandler = createTooltipHandler(desktopTooltip)
         )
 
-        //todo нужно обновить токен
-        scope.launch {
-            val token = NotifierManager.getPushNotifier().getToken()
-        }
         setContent {
             val platformDisplayHeight = LocalConfiguration.current.screenHeightDp.dp
             AppTheme {

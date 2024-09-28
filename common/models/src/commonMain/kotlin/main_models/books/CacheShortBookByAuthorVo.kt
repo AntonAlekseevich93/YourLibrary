@@ -8,7 +8,7 @@ data class CacheShortBookByAuthorVo(
     @SerialName("cacheBook") val cacheBook: BookShortRemoteDto?,
     @SerialName("cacheAuthorId") val cacheAuthorId: String,
     @SerialName("cacheTimestamp") val cacheTimestamp: Long,
-    @SerialName("cacheUserId") val cacheUserId: Long,
+    @SerialName("cacheUserId") val cacheUserId: Int,
 )
 
 fun CacheShortBookByAuthorVo.toRemoteDto(): BookShortRemoteDto? {

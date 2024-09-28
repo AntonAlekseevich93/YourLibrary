@@ -30,7 +30,7 @@ data class BookEntity(
     @SerialName("isRussian") val isRussian: Boolean?,
     @SerialName("imageName") val imageName: String?,
     @SerialName("description") val description: String,
-    @SerialName("userId") val userId: Long,
+    @SerialName("userId") val userId: Int,
     @SerialName("authorIsCreatedManually") val authorIsCreatedManually: Boolean,
     @SerialName("isLoadedToServer") val isLoadedToServer: Boolean,
     @SerialName("bookIsCreatedManually") val bookIsCreatedManually: Boolean,
@@ -45,7 +45,7 @@ data class BookEntity(
     @SerialName("publicationYear") val publicationYear: String,
 )
 
-fun BookVo.toLocalDto(userId: Long): BookEntity = BookEntity(
+fun BookVo.toLocalDto(): BookEntity = BookEntity(
     bookId = bookId,
     serverId = serverId,
     localId = localId,
@@ -118,7 +118,8 @@ fun BookEntity.toVo(remoteImageLink: String?): BookVo {
         bookForAllUsers = bookForAllUsers,
         originalMainBookId = originalMainBookId,
         lang = lang,
-        publicationYear = publicationYear
+        publicationYear = publicationYear,
+        userId = userId.toInt()
     )
     book.remoteImageLink = remoteImageLink
     return book

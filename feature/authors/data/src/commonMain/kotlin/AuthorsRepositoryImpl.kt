@@ -36,7 +36,7 @@ class AuthorsRepositoryImpl(
         }
     }
 
-    override suspend fun getAuthorsTimestamp(userId: Long) =
+    override suspend fun getAuthorsTimestamp(userId: Int) =
         localAuthorsDataSource.getAuthorsTimestamp(userId).toVo()
 
     override suspend fun getNotSynchronizedAuthors(): List<AuthorVo> =
