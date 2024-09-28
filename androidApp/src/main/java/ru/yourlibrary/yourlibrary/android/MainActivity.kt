@@ -4,6 +4,7 @@ import AppTheme
 import Application
 import PlatformSDK
 import TooltipHandler
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -32,7 +33,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.arkivanov.decompose.defaultComponentContext
+import com.mmk.kmpnotifier.notification.NotifierManager
+import com.mmk.kmpnotifier.permission.permissionUtil
 import di.PlatformConfiguration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import main_models.TooltipItem
 import navigation.DefaultRootComponent
 import platform.Platform
@@ -40,9 +46,14 @@ import platform.PlatformInfoData
 
 
 class MainActivity : ComponentActivity() {
+    private val scope = CoroutineScope(Dispatchers.IO)
+
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val permissionUtil by permissionUtil()
+        permissionUtil.askNotificationPermission()
         super.onCreate(savedInstanceState)
+        startService(Intent(this, NotificationService::class.java))
         val desktopTooltip = mutableStateOf(TooltipItem())
         window.navigationBarColor = ContextCompat.getColor(this, R.color.your_navigation_bar_color)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -70,6 +81,10 @@ class MainActivity : ComponentActivity() {
             tooltipHandler = createTooltipHandler(desktopTooltip)
         )
 
+        //todo нужно обновить токен
+        scope.launch {
+            val token = NotifierManager.getPushNotifier().getToken()
+        }
         setContent {
             val platformDisplayHeight = LocalConfiguration.current.screenHeightDp.dp
             AppTheme {

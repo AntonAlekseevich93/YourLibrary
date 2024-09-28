@@ -13,6 +13,7 @@ kotlin {
             dependencies {
                 api(deps.decomposeMain)
                 api(deps.decomposeCompose)
+                api("io.github.mirzemehdi:kmpnotifier:1.2.1")
                 implementation(project(":common:models"))
                 api(Dependencies.Kotlin.Serialization.serialization)
                 api(Dependencies.Kotlin.Coroutines.core)

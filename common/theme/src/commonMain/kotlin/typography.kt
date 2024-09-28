@@ -5,11 +5,11 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.Font
+import yourlibrary.common.resources.generated.resources.PatsySans
 import yourlibrary.common.resources.generated.resources.Raleway_Bold
 import yourlibrary.common.resources.generated.resources.Raleway_Medium
 import yourlibrary.common.resources.generated.resources.Raleway_Regular
 import yourlibrary.common.resources.generated.resources.Res
-import yourlibrary.common.resources.generated.resources.copilot
 
 data class AppTypography(
     val title1Regular: TextStyle,
@@ -60,7 +60,7 @@ fun MainTypography(): AppTypography {
 
     return AppTypography(
         appTitle = TextStyle(
-            fontFamily = FontFamily(Font(Res.font.copilot)),
+            fontFamily = FontFamily(Font(Res.font.PatsySans)),
             fontSize = 24.sp,
             letterSpacing = 0.15.sp,
             lineHeight = 32.sp,

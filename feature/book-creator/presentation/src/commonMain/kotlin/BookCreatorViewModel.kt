@@ -575,7 +575,7 @@ class BookCreatorViewModel(
                 ratingSum = 0,
                 bookForAllUsers = false,
                 originalMainBookId = bookId,
-                lang = needFix!!,
+                lang = uiStateValue.userBookCreatorUiState.selectedLang.value.value,
                 publicationYear = needFix!!
             )
         }

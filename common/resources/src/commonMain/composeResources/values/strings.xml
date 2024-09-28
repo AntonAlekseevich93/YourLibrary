@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Your Library</string>
+    <string name="app_name">Юлиб</string>
     <string name="list">Список</string>
     <string name="kanban">Доска</string>
     <string name="calendar">Календарь</string>
