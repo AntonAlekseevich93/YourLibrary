@@ -69,6 +69,7 @@ import user_book_creator_screen.BookCreatorImageUrlElement
 import user_book_creator_screen.BookCreatorIsbnElement
 import user_book_creator_screen.BookCreatorLangElement
 import user_book_creator_screen.BookCreatorPagesElement
+import user_book_creator_screen.BookCreatorPublicationYearElement
 import user_book_creator_screen.BookCreatorReadingStatusElement
 import user_book_creator_screen.BookCreatorSaveButton
 import user_book_creator_screen.BookCreatorServiceDevelopment
@@ -93,7 +94,7 @@ fun UserBookCreatorScreen(
     var serviceDevelopmentAnimationNotShowed by remember { mutableStateOf(true) }
     val showServiceDevelopmentAnimation = remember { mutableStateOf(false) }
     var isServiceDevelopment by remember { mutableStateOf(false) }
-    var requiredFieldsIsNotEmpty = remember { mutableStateOf(false) }
+    val requiredFieldsIsNotEmpty = remember { mutableStateOf(false) }
 
     var hazeModifier: Modifier = Modifier
     if (uiState.isHazeBlurEnabled.value) {
@@ -240,6 +241,10 @@ fun UserBookCreatorScreen(
                     isServiceDevelopment = isServiceDevelopment
                 )
 
+                BookCreatorPublicationYearElement(
+                    textState = uiState.userBookCreatorUiState.publicationYear
+                )
+
                 BookCreatorAgeRestrictionsElement(
                     selectedAge = uiState.userBookCreatorUiState.selectedAge,
                     isServiceDevelopment = isServiceDevelopment,
@@ -251,7 +256,6 @@ fun UserBookCreatorScreen(
                                 it
                             }
                         }
-
                     }
                 )
 
@@ -391,14 +395,17 @@ private fun checkRequiredFields(
     val genre = state.selectedGenre.value
     val isbn = state.isbnTextState.value.text
     val age = state.selectedAge.value
+    val publicationYear = state.publicationYear.value.text
     if (isServiceDevelopment && pages != null && bookName.isNotEmpty() && authorName.isNotEmpty() &&
         description.isNotEmpty() && imageUrl.isNotEmpty() && genre != null && isbn.isNotEmpty()
         && age != AGE_RESTRICTIONS.NON_SELECTED && (state.endDate.value == 0L || state.endDate.value > state.startDate.value)
+        && (publicationYear.isEmpty() || (publicationYear.toIntOrNull() != null && publicationYear.length == 4))
     ) {
         callback(true)
     } else if (!isServiceDevelopment && (pages != null) && bookName.isNotEmpty() &&
         authorName.isNotEmpty() && description.isNotEmpty() && genre != null
         && (state.endDate.value == 0L || state.endDate.value > state.startDate.value)
+        && (publicationYear.isEmpty() || (publicationYear.toIntOrNull() != null && publicationYear.length == 4))
     ) {
         callback(true)
     } else {

@@ -11,27 +11,26 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import text_fields.CommonTextField
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.publication_year
 
 @Composable
-internal fun BookCreatorAuthorElement(
-    isEnabled: Boolean,
+internal fun BookCreatorPublicationYearElement(
     textState: MutableState<TextFieldValue>,
 ) {
     CommonTextField(
         labelText = buildAnnotatedString {
             withStyle(style = SpanStyle(color = ApplicationTheme.colors.textFieldColor.unfocusedLabelColor)) {
-                append("Автор")
-            }
-
-            withStyle(style = SpanStyle(color = ApplicationTheme.colors.readingStatusesColor.readingStatusColor)) {
-                append("*")
+                append(stringResource(Res.string.publication_year))
             }
         },
         textState = textState,
         maxLines = 1,
-        enabled = isEnabled,
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp),
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
+        isError = (textState.value.text.isNotEmpty() && textState.value.text.toIntOrNull() == null) ||
+                (textState.value.text.isNotEmpty() && textState.value.text.length != 4),
         imeAction = ImeAction.Done,
     )
 }

@@ -162,4 +162,5 @@
     <string name="user_book_creator_screen_app_bar_title">Создание книги</string>
     <string name="required_fields_to_fill_in">Обязательные поля отмечены </string>
     <string name="select_genre">Выбрать жанр</string>
+    <string name="publication_year">Год выхода</string>
 </resources>

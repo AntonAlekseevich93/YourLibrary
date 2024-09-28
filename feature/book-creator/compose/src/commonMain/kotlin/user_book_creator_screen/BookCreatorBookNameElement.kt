@@ -7,6 +7,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,7 @@ internal fun BookCreatorBookNameElement(
         maxLines = 1,
         enabled = isEnabled,
         modifier = Modifier.padding(horizontal = 16.dp),
+        imeAction = ImeAction.Done,
     )
 
 }
