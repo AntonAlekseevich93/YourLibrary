@@ -41,6 +41,13 @@ internal fun BaseEventScope<BaseEvent>.BookCreatorAuthorElement(
     oldTypedAuthorNameText: MutableState<String>,
 ) {
     var isFocused by remember { mutableStateOf(false) }
+    var lastSelectedAuthorName by remember { mutableStateOf("") }
+
+    LaunchedEffect(exactMatchSearchedAuthor.value) {
+        exactMatchSearchedAuthor.value?.let {
+            lastSelectedAuthorName = textState.value.text
+        }
+    }
 
     LaunchedEffect(Unit) {
         oldTypedAuthorNameText.value = textState.value.text
@@ -67,7 +74,11 @@ internal fun BaseEventScope<BaseEvent>.BookCreatorAuthorElement(
         modifier = Modifier
             .onFocusChanged { focusState ->
                 isFocused = focusState.isFocused
-                if (isEnabled && !focusState.isFocused && oldTypedAuthorNameText.value != textState.value.text) {
+                if (isEnabled && !focusState.isFocused &&
+                    (oldTypedAuthorNameText.value != textState.value.text)
+                    || (exactMatchSearchedAuthor.value == null &&
+                            textState.value.text.uppercase() == lastSelectedAuthorName.uppercase())
+                ) {
                     oldTypedAuthorNameText.value = textState.value.text
                     sendEvent(BookCreatorEvents.StartUserBookSearchAuthor(textState.value.text))
                 }

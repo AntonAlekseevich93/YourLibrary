@@ -27,17 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import book_editor.elements.BookEditorEvents
-import book_editor.elements.CreateBookButton
-import book_editor.elements.authors_selector.AuthorsListSelector
-import containters.CenterBoxContainer
-import error.SearchError
+import elements.items.AuthorsWithBooksSearchError
 import kotlinx.coroutines.launch
 import loader.LoadingProcessWithTitle
 import main_models.AuthorVo
@@ -206,35 +200,11 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
 
         item {
             if (showError) {
-                SearchError(
-                    titleAnnotationString = buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = ApplicationTheme.colors.mainTextColor)) {
-                            append(Strings.search_is_empty)
-                            append(" ")
-                        }
-                        if (bookValues.authorName.value.text.isNotEmpty()) {
-                            withStyle(style = SpanStyle(color = ApplicationTheme.colors.titleColors.booksTitleInfoColor)) {
-                                append("\n")
-                                append(bookValues.authorName.value.text)
-                            }
-                        }
-                        if (bookValues.bookName.value.text.isNotEmpty()) {
-                            withStyle(style = SpanStyle(color = ApplicationTheme.colors.titleColors.secondaryBooksTitleInfoColor)) {
-                                append("\n")
-                                append(bookValues.bookName.value.text)
-                            }
-                        }
-                    },
-                    title = null
+                AuthorsWithBooksSearchError(
+                    bookName = bookValues.bookName.value.text,
+                    authorName = bookValues.authorName.value.text,
+                    onClickManually = onClickManually
                 )
-                CenterBoxContainer {
-                    CreateBookButton(
-                        title = "Создать новую книгу",
-                        modifier = Modifier.padding(top = 24.dp)
-                    ) {
-                        onClickManually()
-                    }
-                }
             }
         }
         item {

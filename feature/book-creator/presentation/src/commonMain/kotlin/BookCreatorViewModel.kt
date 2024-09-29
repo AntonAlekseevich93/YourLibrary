@@ -254,8 +254,13 @@ class BookCreatorViewModel(
             updateUIState(uiStateValue.copy(selectedAuthor = null))
         }
 
-        if (textWasChanged && uiStateValue.showSearchAuthorError) {
-            updateUIState(uiStateValue.copy(showSearchAuthorError = false))
+        if (textWasChanged && (uiStateValue.showSearchAuthorError || uiStateValue.showSearchBookError)) {
+            updateUIState(
+                uiStateValue.copy(
+                    showSearchAuthorError = false,
+                    showSearchBookError = false
+                )
+            )
         }
         if (textFieldValue.text.isEmpty()) {
             clearSearchAuthor()

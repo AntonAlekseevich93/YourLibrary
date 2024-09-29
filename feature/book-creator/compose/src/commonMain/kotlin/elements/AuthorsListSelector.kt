@@ -1,21 +1,16 @@
-package book_editor.elements.authors_selector
+package elements
 
-import ApplicationTheme
 import BaseEvent
 import BaseEventScope
-import Strings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import book_editor.elements.BookEditorEvents
 import book_editor.elements.authors_selector.elements.AuthorsListSelectorAuthorsList
-import error.SearchError
+import elements.items.AuthorsWithBooksSearchError
 import loader.LoadingProcessWithTitle
 import main_models.AuthorVo
 import main_models.BookValues
@@ -42,25 +37,10 @@ fun BaseEventScope<BaseEvent>.AuthorsListSelector(
         }
 
         if (showError) {
-            SearchError(
-                titleAnnotationString = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = ApplicationTheme.colors.mainTextColor)) {
-                        append(Strings.search_is_empty)
-                    }
-                    if (bookValues.authorName.value.text.isNotEmpty()) {
-                        withStyle(style = SpanStyle(color = ApplicationTheme.colors.titleColors.booksTitleInfoColor)) {
-                            append("\n")
-                            append(bookValues.authorName.value.text)
-                        }
-                    }
-                    if (bookValues.bookName.value.text.isNotEmpty()) {
-                        withStyle(style = SpanStyle(color = ApplicationTheme.colors.titleColors.secondaryBooksTitleInfoColor)) {
-                            append("\n")
-                            append(bookValues.bookName.value.text)
-                        }
-                    }
-                },
-                title = null
+            AuthorsWithBooksSearchError(
+                bookName = bookValues.bookName.value.text,
+                authorName = bookValues.authorName.value.text,
+                onClickManually = onClickManually
             )
         } else {
             AuthorsListSelectorAuthorsList(similarSearchAuthors,
