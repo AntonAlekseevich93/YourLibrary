@@ -106,6 +106,7 @@ fun BookCreatorScreen(
                 showSearchBookError = uiState.showSearchBookError,
                 onClickManually = {
                     uiState.updateUserBookCreatorUiState()
+                    viewModel.sendEvent(BookCreatorEvents.CheckIfAuthorIsMatchingAndSetOnCreatedUserScreen)
                     navigationComponent.openUserBookCreatorScreen()
                 },
                 changeBookReadingStatus = {

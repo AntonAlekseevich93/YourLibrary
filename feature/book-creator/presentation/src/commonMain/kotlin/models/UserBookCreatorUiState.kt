@@ -4,9 +4,11 @@ import DateUtils
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
+import main_models.AuthorVo
 import main_models.BookVo
 import main_models.ReadingStatus
 import main_models.books.AGE_RESTRICTIONS
+import main_models.books.BookShortVo
 import main_models.books.LANG
 import main_models.genre.Genre
 import java.util.Locale
@@ -26,6 +28,15 @@ data class UserBookCreatorUiState(
     val selectedAge: MutableState<AGE_RESTRICTIONS> = mutableStateOf(AGE_RESTRICTIONS.NON_SELECTED),
     val startDate: MutableState<Long> = mutableStateOf(0),
     val endDate: MutableState<Long> = mutableStateOf(0),
+    val showSearchAuthorLoader: MutableState<Boolean> = mutableStateOf(false),
+    val showSearchBooksLoader: MutableState<Boolean> = mutableStateOf(false),
+    val exactMatchSearchedAuthor: MutableState<AuthorVo?> = mutableStateOf(null),
+    val exactMatchSearchedBooks: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
+    val similarSearchedAuthors: MutableState<List<AuthorVo>> = mutableStateOf(emptyList()),
+    val similarSearchedBooksByAuthor: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
+    val oldTypedAuthorNameText: MutableState<String> = mutableStateOf(""),
+    val oldTypedBookNameText: MutableState<String> = mutableStateOf(""),
+    val selectedAuthorBooks: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
 ) {
     fun createUserBook(originalAuthorId: String?, userId: Int): BookVo? {
         val bookName = bookNameTextState.value.text.trim()

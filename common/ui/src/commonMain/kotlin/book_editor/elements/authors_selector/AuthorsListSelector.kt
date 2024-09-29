@@ -19,6 +19,10 @@ import error.SearchError
 import loader.LoadingProcessWithTitle
 import main_models.AuthorVo
 import main_models.BookValues
+import org.jetbrains.compose.resources.stringResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.searching_in_internet_loading_text
+import yourlibrary.common.resources.generated.resources.text_button_author_not_exist
 
 @Composable
 fun BaseEventScope<BaseEvent>.AuthorsListSelector(
@@ -27,11 +31,12 @@ fun BaseEventScope<BaseEvent>.AuthorsListSelector(
     showError: Boolean,
     bookValues: BookValues,
     hazeModifier: Modifier = Modifier,
+    onClickManually: () -> Unit,
 ) {
     Column(hazeModifier) {
         AnimatedVisibility(isSearchAuthorProcess) {
             LoadingProcessWithTitle(
-                text = "Ищем по всему интернету...",
+                text = stringResource(Res.string.searching_in_internet_loading_text),
                 modifier = Modifier.padding(top = 16.dp)
             )
         }
@@ -69,8 +74,9 @@ fun BaseEventScope<BaseEvent>.AuthorsListSelector(
                         )
                     )
                 },
-                createBookManuallyListener = {
-                    //todo
+                bottomButtonTitleRes = Res.string.text_button_author_not_exist,
+                bottomButtonClickListener = {
+                    onClickManually()
                 }
             )
         }

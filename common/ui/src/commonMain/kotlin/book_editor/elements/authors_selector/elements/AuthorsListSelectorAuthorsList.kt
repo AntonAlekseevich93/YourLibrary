@@ -14,12 +14,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import main_models.AuthorVo
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
-internal fun AuthorsListSelectorAuthorsList(
+fun AuthorsListSelectorAuthorsList(
     authors: List<AuthorVo>,
+    bottomButtonTitleRes: StringResource,
     authorClickListener: (AuthorVo) -> Unit,
-    createBookManuallyListener: () -> Unit,
+    bottomButtonClickListener: () -> Unit,
 ) {
     Column(modifier = Modifier.padding(end = 16.dp, start = 18.dp)) {
         authors.fastForEach { author ->
@@ -33,13 +36,13 @@ internal fun AuthorsListSelectorAuthorsList(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Нет нужного автора?",
+                    text = stringResource(bottomButtonTitleRes),
                     style = ApplicationTheme.typography.title3Bold,
                     color = ApplicationTheme.colors.screenColor.activeButtonColor,
                     modifier = Modifier.padding(horizontal = 16.dp).clickable(
                         MutableInteractionSource(), null
                     ) {
-                        createBookManuallyListener()
+                        bottomButtonClickListener()
                     },
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis

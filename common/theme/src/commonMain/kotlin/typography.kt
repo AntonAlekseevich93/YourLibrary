@@ -64,6 +64,7 @@ fun MainTypography(): AppTypography {
             fontSize = 24.sp,
             letterSpacing = 0.15.sp,
             lineHeight = 32.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         title1Regular = TextStyle(
             fontFamily = fontFamilyMain,
@@ -71,6 +72,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Normal,
             letterSpacing = 0.15.sp,
             lineHeight = 32.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         title1Medium = TextStyle(
             fontFamily = fontFamilyMain,
@@ -78,6 +80,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Medium,
             letterSpacing = 0.15.sp,
             lineHeight = 32.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         title1Bold = TextStyle(
             fontFamily = fontFamilyMain,
@@ -85,6 +88,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Bold,
             letterSpacing = 0.15.sp,
             lineHeight = 32.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         title2Regular = TextStyle(
             fontFamily = fontFamilyMain,
@@ -92,6 +96,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Normal,
             letterSpacing = 0.15.sp,
             lineHeight = 28.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         title2Medium = TextStyle(
             fontFamily = fontFamilyMain,
@@ -99,6 +104,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Medium,
             letterSpacing = 0.15.sp,
             lineHeight = 28.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         title2Bold = TextStyle(
             fontFamily = fontFamilyMain,
@@ -106,6 +112,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Bold,
             letterSpacing = 0.15.sp,
             lineHeight = 28.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         title3Regular = TextStyle(
             fontFamily = fontFamilyMain,
@@ -113,6 +120,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Normal,
             letterSpacing = 0.15.sp,
             lineHeight = 24.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         title3Medium = TextStyle(
             fontFamily = fontFamilyMain,
@@ -120,6 +128,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Medium,
             letterSpacing = 0.15.sp,
             lineHeight = 24.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         title3Bold = TextStyle(
             fontFamily = fontFamilyMain,
@@ -127,6 +136,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Bold,
             letterSpacing = 0.15.sp,
             lineHeight = 24.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         headlineRegular = TextStyle(
             fontFamily = fontFamilyMain,
@@ -134,6 +144,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Normal,
             letterSpacing = 0.30.sp,
             lineHeight = 22.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         headlineMedium = TextStyle(
             fontFamily = fontFamilyMain,
@@ -141,6 +152,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Medium,
             letterSpacing = 0.30.sp,
             lineHeight = 22.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         headlineBold = TextStyle(
             fontFamily = fontFamilyMain,
@@ -148,6 +160,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Bold,
             letterSpacing = 0.30.sp,
             lineHeight = 22.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         bodyRegular = TextStyle(
             fontFamily = fontFamilyMain,
@@ -155,6 +168,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Normal,
             letterSpacing = 0.25.sp,
             lineHeight = 20.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         bodyMedium = TextStyle(
             fontFamily = fontFamilyMain,
@@ -162,6 +176,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Medium,
             letterSpacing = 0.25.sp,
             lineHeight = 20.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         bodyBold = TextStyle(
             fontFamily = fontFamilyMain,
@@ -169,6 +184,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Bold,
             letterSpacing = 0.25.sp,
             lineHeight = 20.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         buttonRegular = TextStyle(
             fontFamily = fontFamilyMain,
@@ -176,6 +192,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Normal,
             letterSpacing = 1.25.sp,
             lineHeight = 20.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         buttonMain = TextStyle(
             fontFamily = fontFamilyMain,
@@ -183,6 +200,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Medium,
             letterSpacing = 1.25.sp,
             lineHeight = 20.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         buttonBold = TextStyle(
             fontFamily = fontFamilyMain,
@@ -190,6 +208,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.25.sp,
             lineHeight = 20.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         buttonSmall = TextStyle(
             fontFamily = fontFamilyMain,
@@ -197,6 +216,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Medium,
             letterSpacing = 0.4.sp,
             lineHeight = 16.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         footnoteRegularItalic = TextStyle(
             fontFamily = fontFamilyMain,
@@ -205,6 +225,7 @@ fun MainTypography(): AppTypography {
             fontStyle = FontStyle.Italic,
             letterSpacing = 0.4.sp,
             lineHeight = 16.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         footnoteRegular = TextStyle(
             fontFamily = fontFamilyMain,
@@ -212,6 +233,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Normal,
             letterSpacing = 0.4.sp,
             lineHeight = 16.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         footnoteMedium = TextStyle(
             fontFamily = fontFamilyMain,
@@ -219,6 +241,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Medium,
             letterSpacing = 0.4.sp,
             lineHeight = 16.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         footnoteBold = TextStyle(
             fontFamily = fontFamilyMain,
@@ -226,6 +249,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Bold,
             letterSpacing = 0.4.sp,
             lineHeight = 16.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         captionRegular = TextStyle(
             fontFamily = fontFamilyMain,
@@ -233,6 +257,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Normal,
             letterSpacing = 0.8.sp,
             lineHeight = 12.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         captionMedium = TextStyle(
             fontFamily = fontFamilyMain,
@@ -240,6 +265,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Medium,
             letterSpacing = 0.8.sp,
             lineHeight = 12.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         ),
         captionBold = TextStyle(
             fontFamily = fontFamilyMain,
@@ -247,6 +273,7 @@ fun MainTypography(): AppTypography {
             fontWeight = FontWeight.Bold,
             letterSpacing = 0.8.sp,
             lineHeight = 12.sp,
+            fontFeatureSettings = "'lnum'" //it is used to remove the font outline from the numbers
         )
     )
 }

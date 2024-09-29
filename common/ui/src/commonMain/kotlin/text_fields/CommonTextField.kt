@@ -55,6 +55,7 @@ fun CommonTextField(
                 Text(text = it)
             }
         },
+        singleLine = maxLines == 1,
         maxLines = maxLines,
         enabled = enabled,
         colors = textFieldColors,
@@ -99,6 +100,7 @@ fun CommonTextField(
             }
         },
         maxLines = maxLines,
+        singleLine = maxLines == 1,
         enabled = enabled,
         colors = textFieldColors,
         textStyle = ApplicationTheme.typography.headlineRegular,

@@ -26,11 +26,11 @@ import text_fields.DELAY_FOR_LISTENER_PROCESSING
 class BookCreatorViewModel(
     private val platformInfo: PlatformInfoData,
     private val interactor: BookCreatorInteractor,
-    private val applicationScope: ApplicationScope,
     private val appConfig: AppConfig,
 ) : BaseMVIViewModel<BookCreatorUiState, BaseEvent>(BookCreatorUiState()) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var searchJob: Job? = null
+    private var userBookSearchJob: Job? = null
 
     init {
         uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
@@ -130,6 +130,45 @@ class BookCreatorViewModel(
                 createManuallyBook()
             }
 
+            is BookCreatorEvents.StartUserBookSearchAuthor -> {
+                userBookCreatorSearchAuthor(event.searchedText)
+            }
+
+            is BookCreatorEvents.StartUserBookSearchInAuthorBooks -> {
+                searchInCachedAuthorsBooks(event.searchedText)
+            }
+
+            is BookCreatorEvents.CancelUserBookSearchAuthor -> {
+                cancelUserBookSearchAuthor()
+            }
+
+            is BookCreatorEvents.ClearMatchesBooksBySelectedAuthors -> {
+                uiStateValue.userBookCreatorUiState.apply {
+                    similarSearchedBooksByAuthor.value = emptyList()
+                    exactMatchSearchedBooks.value = emptyList()
+                }
+            }
+
+            is BookCreatorEvents.UserBookCreatorAuthorSelected -> {
+                uiStateValue.userBookCreatorUiState.apply {
+                    exactMatchSearchedAuthor.value = event.author
+                    similarSearchedAuthors.value = emptyList()
+                    authorNameTextState.value =
+                        TextFieldValue(event.author.name)
+                    oldTypedAuthorNameText.value = authorNameTextState.value.text
+                    if (bookNameTextState.value.text.isNotEmpty()) {
+                        userBookCreatorSearchBookInAuthor(
+                            bookName = bookNameTextState.value.text,
+                            selectedAuthor = event.author
+                        )
+                    }
+                }
+            }
+
+            is BookCreatorEvents.CheckIfAuthorIsMatchingAndSetOnCreatedUserScreen -> {
+                checkIfAuthorIsMatchingAndSetOnCreatedUserScreen()
+            }
+
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
             is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
             is DatePickerEvents.OnHideDatePicker -> {
@@ -139,6 +178,18 @@ class BookCreatorViewModel(
                     )
                 )
             }
+        }
+    }
+
+    private fun cancelUserBookSearchAuthor() {
+        userBookSearchJob?.cancel()
+        uiStateValue.userBookCreatorUiState.apply {
+            exactMatchSearchedAuthor.value = null
+            hideUserBookCreatorSearchAuthorLoader()
+            similarSearchedAuthors.value = emptyList()
+            selectedAuthorBooks.value = emptyList()
+            exactMatchSearchedBooks.value = emptyList()
+            similarSearchedBooksByAuthor.value = emptyList()
         }
     }
 
@@ -230,7 +281,6 @@ class BookCreatorViewModel(
         if (authorName.length >= 2) {
             updateUIState(uiStateValue.copy(isSearchAuthorProcess = true))
             searchJob = scope.launch {
-                delay(500)
                 val response = interactor.searchInAuthorsNameWithRelates(uppercaseName)
                 if (response.isNotEmpty()) {
                     val list: MutableList<AuthorVo> = mutableListOf()
@@ -260,6 +310,46 @@ class BookCreatorViewModel(
         } else {
             clearSearchAuthor()
         }
+    }
+
+    private fun userBookCreatorSearchAuthor(authorName: String) {
+        userBookSearchJob?.cancel()
+        uiStateValue.userBookCreatorUiState.exactMatchSearchedAuthor.value = null
+        hideUserBookCreatorSearchAuthorLoader()
+        val uppercaseName = authorName.trim().uppercase()
+        if (authorName.length >= 2) {
+            uiStateValue.userBookCreatorUiState.showSearchAuthorLoader.value = true
+            userBookSearchJob = scope.launch {
+                delay(500)
+                val response = interactor.searchInAuthorsNameWithRelates(uppercaseName)
+                if (response.isNotEmpty()) {
+                    val exactMatchAuthor = response.findMatchingAuthor(uppercaseName)
+                    if (exactMatchAuthor != null) {
+                        uiStateValue.userBookCreatorUiState.exactMatchSearchedAuthor.value =
+                            exactMatchAuthor
+                        if (uiStateValue.userBookCreatorUiState.bookNameTextState.value.text.isNotEmpty()) {
+                            userBookCreatorSearchBookInAuthor(
+                                bookName = uiStateValue.userBookCreatorUiState.bookNameTextState.value.text,
+                                selectedAuthor = exactMatchAuthor
+                            )
+                        }
+                    } else {
+                        uiStateValue.userBookCreatorUiState.similarSearchedAuthors.value = response
+                    }
+                }
+                hideUserBookCreatorSearchAuthorLoader()
+            }
+        } else {
+            hideUserBookCreatorSearchAuthorLoader()
+        }
+    }
+
+    private fun hideUserBookCreatorSearchAuthorLoader() {
+        uiStateValue.userBookCreatorUiState.showSearchAuthorLoader.value = false
+    }
+
+    private fun hideUserBookCreatorSearchBooksLoader() {
+        uiStateValue.userBookCreatorUiState.showSearchBooksLoader.value = false
     }
 
     private fun searchBookName(bookName: String) {
@@ -302,6 +392,56 @@ class BookCreatorViewModel(
                     }
                 }
             }
+        }
+    }
+
+    private fun userBookCreatorSearchBookInAuthor(bookName: String, selectedAuthor: AuthorVo) {
+        userBookSearchJob?.cancel()
+        uiStateValue.userBookCreatorUiState.exactMatchSearchedBooks.value = emptyList()
+        hideUserBookCreatorSearchBooksLoader()
+        val uppercaseBookName = bookName.trim().uppercase()
+        if (bookName.length >= 2) {
+            uiStateValue.userBookCreatorUiState.showSearchBooksLoader.value = true
+            userBookSearchJob = scope.launch {
+                delay(500)
+                val response = interactor.getAllBooksByAuthor(selectedAuthor.id)
+                if (response.isNotEmpty()) {
+                    uiStateValue.userBookCreatorUiState.selectedAuthorBooks.value =
+                        response
+                    val exactMatch = response.findExactMatchingBooks(uppercaseBookName)
+                    uiStateValue.userBookCreatorUiState.exactMatchSearchedBooks.value = exactMatch
+
+                    uiStateValue.userBookCreatorUiState.similarSearchedBooksByAuthor.value =
+                        response.filterBooksByQuery(uppercaseBookName)
+                            .filterNot { it in exactMatch }
+
+                }
+                hideUserBookCreatorSearchBooksLoader()
+            }
+        } else {
+            hideUserBookCreatorSearchBooksLoader()
+        }
+    }
+
+    private fun searchInCachedAuthorsBooks(searchedText: String) {
+        userBookSearchJob?.cancel()
+        uiStateValue.userBookCreatorUiState.exactMatchSearchedBooks.value = emptyList()
+        hideUserBookCreatorSearchBooksLoader()
+        val uppercaseBookName = searchedText.trim().uppercase()
+        if (uppercaseBookName.length >= 2) {
+            uiStateValue.userBookCreatorUiState.showSearchBooksLoader.value = true
+            userBookSearchJob = scope.launch {
+                val allBooks = uiStateValue.userBookCreatorUiState.selectedAuthorBooks.value
+                val exactMatch = allBooks.findExactMatchingBooks(uppercaseBookName)
+                uiStateValue.userBookCreatorUiState.exactMatchSearchedBooks.value = exactMatch
+
+                uiStateValue.userBookCreatorUiState.similarSearchedBooksByAuthor.value =
+                    allBooks.filterBooksByQuery(uppercaseBookName)
+                        .filterNot { it in exactMatch }
+                hideUserBookCreatorSearchBooksLoader()
+            }
+        } else {
+            hideUserBookCreatorSearchBooksLoader()
         }
     }
 
@@ -494,6 +634,59 @@ class BookCreatorViewModel(
                     uiStateValue.showCreatedManuallyBookAnimation.value = true
                 }
             }
+        }
+    }
+
+    private fun checkIfAuthorIsMatchingAndSetOnCreatedUserScreen() {
+        val matchAuthor =
+            if (uiStateValue.selectedAuthor != null) uiStateValue.selectedAuthor else {
+                uiStateValue.similarSearchAuthors.findMatchingAuthor(uiStateValue.bookValues.authorName.value.text)
+            }
+        if (matchAuthor != null) {
+            uiStateValue.userBookCreatorUiState.exactMatchSearchedAuthor.value = matchAuthor
+            val searchedBookName = uiStateValue.bookValues.bookName.value.text
+            if (searchedBookName.isNotEmpty()) {
+                userBookCreatorSearchBookInAuthor(
+                    bookName = searchedBookName,
+                    selectedAuthor = matchAuthor
+                )
+            } else {
+                scope.launch {
+                    val response = interactor.getAllBooksByAuthor(matchAuthor.id)
+                    if (response.isNotEmpty()) {
+                        uiStateValue.userBookCreatorUiState.selectedAuthorBooks.value =
+                            response
+                    }
+                }
+            }
+        }
+    }
+
+    private fun List<AuthorVo>.findMatchingAuthor(query: String): AuthorVo? {
+        val queryWords = query.uppercase().split(" ").sorted()
+        return this.filter { author ->
+            val authorWords = author.name.uppercase().split(" ").sorted()
+            authorWords == queryWords
+        }.firstOrNull()
+    }
+
+    private fun List<BookShortVo>.findExactMatchingBooks(query: String): List<BookShortVo> {
+        val queryWords = query.uppercase().split(" ").sorted()
+        return this.filter { book ->
+            val booksNames = book.bookName.uppercase().split(" ").sorted()
+            booksNames == queryWords
+        }
+    }
+
+    private fun List<BookShortVo>.filterBooksByQuery(query: String): List<BookShortVo> {
+        val uppercaseQuery = query.trim().uppercase()
+        val queryWords = uppercaseQuery.split(" ")
+            .map { it.uppercase() }
+            .filter { it.length >= 2 }
+
+        return this.filter { book ->
+            val bookNameWords = book.bookName.uppercase().split(" ")
+            queryWords.all { word -> bookNameWords.any { it.contains(word) } }
         }
     }
 

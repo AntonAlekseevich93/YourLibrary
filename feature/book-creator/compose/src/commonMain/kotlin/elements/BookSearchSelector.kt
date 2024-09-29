@@ -154,7 +154,8 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
                 showError = showSearchAuthorError,
                 similarSearchAuthors = similarSearchAuthors,
                 bookValues = bookValues,
-                hazeModifier = hazeModifier
+                hazeModifier = hazeModifier,
+                onClickManually = onClickManually
             )
         }
 

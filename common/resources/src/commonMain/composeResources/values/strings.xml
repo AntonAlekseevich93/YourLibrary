@@ -163,4 +163,14 @@
     <string name="required_fields_to_fill_in">Обязательные поля отмечены </string>
     <string name="select_genre">Выбрать жанр</string>
     <string name="publication_year">Год выхода</string>
+    <string name="text_button_author_not_exist">Нет нужного автора?</string>
+    <string name="text_button_user_book_creator_author_not_exist">Нет нужного автора</string>
+    <string name="possible_matches">Возможные совпадения</string>
+    <string name="author_exist_in_library">Автор из библиотеки</string>
+    <string name="searching_in_internet_loading_text">Ищем по всему интернету...</string>
+    <string name="exact_match">Точное совпадение</string>
+    <string name="nothing_fits">Ничего не подходит</string>
+    <string name="lock_author_field_tooltip">Автор зафиксирован и может быть изменен только через экран поиска</string>
+    <string name="lock_book_field_tooltip">Название книги зафиксировано и может быть изменено только через экран поиска</string>
+    <string name="book_title">Название книги</string>
 </resources>

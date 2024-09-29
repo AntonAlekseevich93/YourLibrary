@@ -1,7 +1,10 @@
 import alert_dialog.CommonAlertDialog
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,6 +54,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
+import elements.AuthorsWithBooksSelectorBottomSheet
 import genre.GenreSelector
 import main_models.DatePickerType
 import main_models.books.AGE_RESTRICTIONS
@@ -207,13 +211,18 @@ fun UserBookCreatorScreen(
                     )
                 }
 
-                BookCreatorBookNameElement(
+                viewModel.BookCreatorBookNameElement(
                     isEnabled = uiState.bookValues.bookName.value.text.isEmpty(),
                     textState = uiState.userBookCreatorUiState.bookNameTextState,
+                    showSearchBooksLoader = uiState.userBookCreatorUiState.showSearchBooksLoader,
+                    oldTypedBookNameText = uiState.userBookCreatorUiState.oldTypedBookNameText
                 )
-                BookCreatorAuthorElement(
+                viewModel.BookCreatorAuthorElement(
                     isEnabled = uiState.bookValues.authorName.value.text.isEmpty(),
                     textState = uiState.userBookCreatorUiState.authorNameTextState,
+                    showSearchAuthorLoader = uiState.userBookCreatorUiState.showSearchAuthorLoader,
+                    exactMatchSearchedAuthor = uiState.userBookCreatorUiState.exactMatchSearchedAuthor,
+                    oldTypedAuthorNameText = uiState.userBookCreatorUiState.oldTypedAuthorNameText
                 )
                 BookCreatorPagesElement(
                     textState = uiState.userBookCreatorUiState.pagesTextState,
@@ -367,6 +376,30 @@ fun UserBookCreatorScreen(
                 showServiceDevelopmentAnimation.value = false
             }
         )
+
+        AnimatedVisibility(
+            visible = (uiState.userBookCreatorUiState.similarSearchedAuthors.value.isNotEmpty() &&
+                    uiState.userBookCreatorUiState.exactMatchSearchedAuthor.value == null) ||
+                    uiState.userBookCreatorUiState.similarSearchedBooksByAuthor.value.isNotEmpty() ||
+                    uiState.userBookCreatorUiState.exactMatchSearchedBooks.value.isNotEmpty(),
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically(),
+        ) {
+            AuthorsWithBooksSelectorBottomSheet(
+                authors = uiState.userBookCreatorUiState.similarSearchedAuthors.value,
+                authorSelectedListener = {
+                    viewModel.sendEvent(BookCreatorEvents.UserBookCreatorAuthorSelected(it))
+                },
+                onDismissAuthors = {
+                    viewModel.sendEvent(BookCreatorEvents.CancelUserBookSearchAuthor)
+                },
+                onDismissBooks = {
+                    viewModel.sendEvent(BookCreatorEvents.ClearMatchesBooksBySelectedAuthors)
+                },
+                similarBooks = uiState.userBookCreatorUiState.similarSearchedBooksByAuthor.value,
+                exactMatchBooks = uiState.userBookCreatorUiState.exactMatchSearchedBooks.value
+            )
+        }
     }
 }
 
