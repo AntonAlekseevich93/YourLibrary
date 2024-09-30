@@ -14,6 +14,8 @@ class LocalAdminDataSource(
     private val cacheBooksByAuthorDao = roomDb.cacheBooksByAuthorDao
     private val cacheReviewAndRatingDao = roomDb.cacheReviewAndRatingDao
     private val userNotificationsDao = roomDb.userNotificationsDao
+    private val serviceDevelopmentBookTimestampDao = roomDb.userServiceDevelopmentBookTimestampDao
+    private val serviceDevelopmentBookDao = roomDb.userServiceDevelopmentBookDao
     suspend fun clearReviewAndRatingDb() {
         reviewAndRatingDao.deleteAllData()
         reviewAndRatingTimestampDao.deleteAllData()
@@ -28,6 +30,8 @@ class LocalAdminDataSource(
         userNotificationsDao.deleteAllData()
         cacheBooksByAuthorDao.clearAllCache()
         cacheReviewAndRatingDao.clearAllCache()
+        serviceDevelopmentBookTimestampDao.deleteAllData()
+        serviceDevelopmentBookDao.deleteAllData()
     }
 
 }

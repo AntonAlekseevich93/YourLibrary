@@ -14,7 +14,7 @@ data class SynchronizeReviewAndRatingRequest(
 )
 
 @Serializable
-data class SynchronizeReviewAndRatingContent(
+data class SynchronizeReviewAndRatingContentResponse(
     @SerialName("missingReviewsAndRatingsFromServer")
     val missingReviewsAndRatingsFromServer: MissingReviewsAndRatingsFromServer? = null,
     @SerialName("currentDeviceReviewsAndRatingsAddedToServer")

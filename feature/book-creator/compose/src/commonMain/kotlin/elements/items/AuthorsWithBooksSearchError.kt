@@ -18,6 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import containters.CenterBoxContainer
 import error.SearchError
+import org.jetbrains.compose.resources.stringResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.create_new_book_question
 
 @Composable
 fun AuthorsWithBooksSearchError(bookName: String, authorName: String, onClickManually: () -> Unit) {
@@ -52,7 +55,7 @@ fun AuthorsWithBooksSearchError(bookName: String, authorName: String, onClickMan
     )
     CenterBoxContainer {
         Text(
-            text = "Создать новую книгу?",
+            text = stringResource(Res.string.create_new_book_question),
             style = ApplicationTheme.typography.title3Bold,
             color = ApplicationTheme.colors.screenColor.activeButtonColor,
             modifier = Modifier.fillMaxWidth().padding(top = 36.dp).clickable(

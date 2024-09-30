@@ -32,6 +32,7 @@ kotlin {
                 implementation(project(":feature:main-screen:presentation"))
                 implementation(project(":feature:shelf:data")) //используется из-за модуля
                 implementation(project(":feature:search:data"))
+                implementation(project(":feature:service-development:data"))
                 implementation(project(":feature:book-info:data"))
                 implementation(project(":feature:book-info:domain"))
                 implementation(project(":feature:books-list-info:data"))

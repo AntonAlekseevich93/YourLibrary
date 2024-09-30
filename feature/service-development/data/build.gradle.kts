@@ -8,11 +8,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":feature:synchronization:api"))
-                api(project(":feature:book-info:api"))
-                api(project(":feature:authors:api"))
-                api(project(":feature:rating-review:api"))
-                api(project(":feature:service-development:api"))
+                implementation(project(":feature:service-development:api"))
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
                 implementation(project(":common:constants"))
@@ -24,5 +20,5 @@ kotlin {
 }
 
 android {
-    namespace = "ru.yourlibrary.yourlibrary.synchronization.data"
+    namespace = "ru.yourlibrary.yourlibrary.service_development.data"
 }

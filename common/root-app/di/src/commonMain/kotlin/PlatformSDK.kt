@@ -57,6 +57,7 @@ object PlatformSDK {
                     viewModelsModule,
                     reviewAndRatingModule,
                     synchronizationModule,
+                    serviceDevelopmentModule,
                     booksListInfoModule,
                     cacheManagerModule,
                 )

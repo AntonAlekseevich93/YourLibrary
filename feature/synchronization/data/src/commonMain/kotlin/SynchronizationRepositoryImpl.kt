@@ -3,13 +3,17 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import ktor.RemoteSynchronizationDataSource
 import main_models.rest.authors.toAuthorVo
+import main_models.rest.books.toVo
 import main_models.rest.rating_review.toRemoteDto
 import main_models.rest.rating_review.toVo
 import main_models.rest.sync.MissingBooksAndAuthorsFromServer
 import main_models.rest.sync.SynchronizeBooksWithAuthorsRequest
-import main_models.rest.sync.SynchronizeReviewAndRatingContent
+import main_models.rest.sync.SynchronizeReviewAndRatingContentResponse
 import main_models.rest.sync.SynchronizeReviewAndRatingRequest
+import main_models.rest.sync.SynchronizeServiceDevelopmentContentResponse
+import main_models.rest.sync.SynchronizeServiceDevelopmentRequest
 import main_models.rest.sync.SynchronizeUserDataRequest
+import main_models.service_development.toRemoteDto
 
 class SynchronizationRepositoryImpl(
     private val remoteSynchronizationDataSource: RemoteSynchronizationDataSource,
@@ -17,6 +21,7 @@ class SynchronizationRepositoryImpl(
     private val bookRepository: BookInfoRepository,
     private val authorsRepository: AuthorsRepository,
     private val reviewAndRatingRepository: ReviewAndRatingRepository,
+    private val serviceDevelopmentRepository: ServiceDevelopmentRepository,
     private val appConfig: AppConfig,
     private val remoteConfig: RemoteConfig,
 ) : SynchronizationRepository {
@@ -89,8 +94,15 @@ class SynchronizationRepositoryImpl(
                 )
             }
 
-            response?.result?.reviewAndRatingContent?.let {
+            response?.result?.reviewAndRatingResponse?.let {
                 updateReviewAndRatingFromServer(it, userId = userId).takeIf { !success }
+                    ?.let { isSuccess ->
+                        success = isSuccess
+                    }
+            }
+
+            response?.result?.serviceDevelopmentResponse?.let {
+                updateServiceDevelopmentFromServer(it, userId = userId).takeIf { !success }
                     ?.let { isSuccess ->
                         success = isSuccess
                     }
@@ -153,7 +165,7 @@ class SynchronizationRepositoryImpl(
     }
 
     private suspend fun updateReviewAndRatingFromServer(
-        response: SynchronizeReviewAndRatingContent,
+        response: SynchronizeReviewAndRatingContentResponse,
         userId: Int
     ): Boolean {
         var success = false
@@ -217,6 +229,68 @@ class SynchronizationRepositoryImpl(
         return success
     }
 
+    private suspend fun updateServiceDevelopmentFromServer(
+        response: SynchronizeServiceDevelopmentContentResponse,
+        userId: Int
+    ): Boolean {
+        var success = false
+        response.missingServiceDevelopmentBooksFromServer?.let {
+            it.serviceDevelopmentBooksCurrentDevice.let { currentDeviceBooks ->
+                if (currentDeviceBooks.isNotEmpty()) {
+                    serviceDevelopmentRepository.addOrUpdateLocalServiceDevelopmentBooksWhenSync(
+                        serviceDevelopmentBooks = currentDeviceBooks.mapNotNull { it.toVo() },
+                        userId = userId
+                    )
+                }
+            }
+
+            it.serviceDevelopmentBooksOtherDevices.mapNotNull { it.toVo() }
+                .let { othersDeviceBooks ->
+                    val booksTimestamp =
+                        serviceDevelopmentRepository.getServiceDevelopmentBooksTimestamp(userId = userId)
+                    val lastTimestampBooks = othersDeviceBooks.takeIf { it.isNotEmpty() }
+                        ?.maxBy { it.timestampOfUpdating }?.timestampOfUpdating
+                    if (othersDeviceBooks.isNotEmpty()) {
+                        serviceDevelopmentRepository.addOrUpdateLocalServiceDevelopmentBooksWhenSync(
+                            othersDeviceBooks,
+                            userId = userId
+                        )
+
+                        serviceDevelopmentRepository.updateServiceDevelopmentBooksTimestamp(
+                            booksTimestamp.copy(
+                                otherDevicesTimestamp = lastTimestampBooks
+                                    ?: booksTimestamp.otherDevicesTimestamp,
+                            )
+                        )
+                    }
+                }
+            success = true
+        }
+
+        response.currentDeviceServiceDevelopmentBooksAddedToServer?.let { result ->
+            val resultBooks = result.serviceDevelopmentBooks.mapNotNull { it.toVo() }
+            serviceDevelopmentRepository.addOrUpdateLocalServiceDevelopmentBooksWhenSync(
+                resultBooks,
+                userId = userId
+            )
+            success = true
+        }
+
+        if (response.currentDeviceServiceDevelopmentBooksLastTimestamp != null) {
+            val timestamp =
+                serviceDevelopmentRepository.getServiceDevelopmentBooksTimestamp(userId = userId)
+            serviceDevelopmentRepository.updateServiceDevelopmentBooksTimestamp(
+                timestamp.copy(
+                    thisDeviceTimestamp = response.currentDeviceServiceDevelopmentBooksLastTimestamp
+                        ?: timestamp.thisDeviceTimestamp,
+                )
+            )
+        }
+
+        return success
+    }
+
+
     /**we don't need to send authors
      * because the server creates authors on its own from the data from the book**/
     private suspend fun getSynchronizeBody(userId: Int): SynchronizeUserDataRequest {
@@ -227,6 +301,11 @@ class SynchronizationRepositoryImpl(
         val reviewAndRatingTimestamp = reviewAndRatingRepository.getReviewAndRatingTimestamp(userId)
         val reviewsAndRatings = reviewAndRatingRepository.getNotSynchronizedReviewAndRating(userId)
             .mapNotNull { it.toRemoteDto() }
+        val serviceDevelopmentBooksTimestamp =
+            serviceDevelopmentRepository.getServiceDevelopmentBooksTimestamp(userId)
+        val serviceDevelopmentBooks =
+            serviceDevelopmentRepository.getNotSynchronizedServiceDevelopmentBooks(userId)
+                .mapNotNull { it.toRemoteDto() }
         return SynchronizeUserDataRequest(
             booksWithAuthors = SynchronizeBooksWithAuthorsRequest(
                 booksThisDeviceTimestamp = booksTimestamp.thisDeviceTimestamp,
@@ -241,6 +320,11 @@ class SynchronizationRepositoryImpl(
                 ratingThisDeviceTimestamp = reviewAndRatingTimestamp.thisDeviceTimestampRating,
                 ratingOtherDevicesTimestamp = reviewAndRatingTimestamp.otherDevicesTimestampRating,
                 reviewAndRatings = reviewsAndRatings
+            ),
+            serviceDevelopment = SynchronizeServiceDevelopmentRequest(
+                serviceDevelopmentBooksThisDeviceTimestamp = serviceDevelopmentBooksTimestamp.thisDeviceTimestamp,
+                serviceDevelopmentBooksOtherDevicesTimestamp = serviceDevelopmentBooksTimestamp.otherDevicesTimestamp,
+                serviceDevelopmentBooks = serviceDevelopmentBooks
             )
         )
     }

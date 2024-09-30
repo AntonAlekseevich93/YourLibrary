@@ -173,4 +173,5 @@
     <string name="lock_author_field_tooltip">Автор зафиксирован и может быть изменен только через экран поиска</string>
     <string name="lock_book_field_tooltip">Название книги зафиксировано и может быть изменено только через экран поиска</string>
     <string name="book_title">Название книги</string>
+    <string name="create_new_book_question">Создать новую книгу?</string>
 </resources>
