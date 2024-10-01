@@ -5,11 +5,13 @@ import HttpAppClient
 import HttpConstants.CREATE_SINGLE_APPROVED_BOOK_IN_NON_MODERATION_TABLE
 import HttpConstants.GET_ALL_NON_MODERATING_BOOKS
 import HttpConstants.PARSE_SINGLE_BOOK
+import HttpConstants.SET_APPROVED_LIST_IDS_NON_MODERATING_BOOKS
 import HttpConstants.SET_BOOK_AS_APPROVED_WITHOUT_UPLOAD_IMAGE
 import HttpConstants.SET_DISCARDED_NON_MODERATING_BOOKS
 import HttpConstants.TEST_NOTIFICATIONS
 import HttpParams.NOTIFICATIONS_BODY
 import HttpParams.NOTIFICATIONS_TITLE
+import ktor.models.BooksIdsRequest
 import main_models.rest.ParsingBooksListRequest
 import main_models.rest.books.BookShortRemoteDto
 import main_models.rest.books.BookShortResponse
@@ -72,4 +74,11 @@ class RemoteAdminDataSource(
             )
         )
 
+    suspend fun approveAllBooksByIds(booksIdsRequest: BooksIdsRequest) =
+        httpClient.post(
+            url = SET_APPROVED_LIST_IDS_NON_MODERATING_BOOKS,
+            resultClass = String::class,
+            bodyRequest = booksIdsRequest,
+            errorClass = String::class,
+        )
 }

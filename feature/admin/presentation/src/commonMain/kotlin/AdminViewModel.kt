@@ -293,16 +293,11 @@ class AdminViewModel(
     private fun approveAllBooks() {
         updateUIState(uiStateValue.copy(isLoading = true))
         scope.launch(Dispatchers.IO) {
-            uiStateValue.moderationBookState.booksForModeration.toList().forEach { book ->
-                interactor.setBookAsApprovedWithoutUploadImage(
-                    book,
-                    changedName = uiStateValue.moderationBookState
-                        .moderationChangedName.value.takeIf { !it.isNullOrEmpty() && it != book.bookName })
-            }
+            val ids = uiStateValue.moderationBookState.booksForModeration.map { it.id }
+            interactor.approveAllBooksByIds(ids)
             withContext(Dispatchers.Main) {
                 updateUIState(uiStateValue.copy(isLoading = false))
                 uiStateValue.moderationBookState.booksForModeration.clear()
-
             }
         }
     }

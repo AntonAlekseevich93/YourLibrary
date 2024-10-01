@@ -11,6 +11,7 @@ object HttpConstants {
     const val GET_ALL_NON_MODERATING_BOOKS = "books/moderating"
     const val SET_DISCARDED_NON_MODERATING_BOOKS = "books/moderating/discard"
     const val SET_BOOK_AS_APPROVED_WITHOUT_UPLOAD_IMAGE = "books/moderating/approvewithouimage"
+    const val SET_APPROVED_LIST_IDS_NON_MODERATING_BOOKS = "/books/moderating/approveids"
     const val ADD_NEW_BOOK_BY_USER = "books/users/add"
     const val UPDATE_USER_BOOK = "books/users/update"
     const val SYNCHRONIZE_USER_DATA = "sync/user/data"

@@ -20,6 +20,10 @@ class AdminInteractor(
     ): BookShortVo? =
         repository.setBookAsApprovedWithoutUploadImage(book, changedName)
 
+    suspend fun approveAllBooksByIds(ids: List<Int>) {
+        repository.approveAllBooksByIds(ids)
+    }
+
     suspend fun clearReviewAndRatingDb() {
         repository.clearReviewAndRatingDb()
     }

@@ -1,9 +1,11 @@
+import HttpParams.BOOKS_COUNT
 import HttpParams.CHANGED_BOOK_NAME
 import HttpParams.LANG
 import HttpParams.RANGE_END
 import HttpParams.RANGE_START
 import database.LocalAdminDataSource
 import ktor.RemoteAdminDataSource
+import ktor.models.BooksIdsRequest
 import main_models.books.BookShortVo
 import main_models.books.LANG
 import main_models.rest.BackendErrors
@@ -32,6 +34,9 @@ class AdminRepositoryImpl(
             }
         }
         params[LANG] = lang.value
+        if(lang == main_models.books.LANG.ENGLISH){
+            params[BOOKS_COUNT] = (100).toString()
+        }
         val response = remoteAdminDataSource.getBooksForModeration(params)
         return if (response?.result?.books != null) {
             Response.Success(
@@ -113,6 +118,14 @@ class AdminRepositoryImpl(
 
     override suspend fun sendTestNotificationForCurrentUser(title: String, body: String) {
         remoteAdminDataSource.sendTestNotificationForCurrentUser(title, body)
+    }
+
+    override suspend fun approveAllBooksByIds(ids: List<Int>) {
+        remoteAdminDataSource.approveAllBooksByIds(
+            BooksIdsRequest(
+                booksIds = ids
+            )
+        )
     }
 
 }

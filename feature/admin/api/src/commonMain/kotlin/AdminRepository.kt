@@ -18,4 +18,5 @@ interface AdminRepository {
     suspend fun parseSingleBook(url: String): DataResult<List<BookShortVo>, String>
     suspend fun approveParsedSingleBook(book: BookShortVo): String
     suspend fun sendTestNotificationForCurrentUser(title: String, body: String)
+    suspend fun approveAllBooksByIds(ids: List<Int>)
 }

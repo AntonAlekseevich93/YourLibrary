@@ -11,7 +11,6 @@ import main_models.rest.sync.SynchronizeBooksWithAuthorsRequest
 import main_models.rest.sync.SynchronizeReviewAndRatingContentResponse
 import main_models.rest.sync.SynchronizeReviewAndRatingRequest
 import main_models.rest.sync.SynchronizeServiceDevelopmentContentResponse
-import main_models.rest.sync.SynchronizeServiceDevelopmentRequest
 import main_models.rest.sync.SynchronizeUserDataRequest
 import main_models.service_development.toRemoteDto
 
@@ -321,11 +320,12 @@ class SynchronizationRepositoryImpl(
                 ratingOtherDevicesTimestamp = reviewAndRatingTimestamp.otherDevicesTimestampRating,
                 reviewAndRatings = reviewsAndRatings
             ),
-            serviceDevelopment = SynchronizeServiceDevelopmentRequest(
-                serviceDevelopmentBooksThisDeviceTimestamp = serviceDevelopmentBooksTimestamp.thisDeviceTimestamp,
-                serviceDevelopmentBooksOtherDevicesTimestamp = serviceDevelopmentBooksTimestamp.otherDevicesTimestamp,
-                serviceDevelopmentBooks = serviceDevelopmentBooks
-            )
+            serviceDevelopment = null //todo разблокировать ниже
+//            serviceDevelopment = SynchronizeServiceDevelopmentRequest(
+//                serviceDevelopmentBooksThisDeviceTimestamp = serviceDevelopmentBooksTimestamp.thisDeviceTimestamp,
+//                serviceDevelopmentBooksOtherDevicesTimestamp = serviceDevelopmentBooksTimestamp.otherDevicesTimestamp,
+//                serviceDevelopmentBooks = serviceDevelopmentBooks
+//            )
         )
     }
 }

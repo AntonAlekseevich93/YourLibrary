@@ -21,7 +21,7 @@ interface UserServiceDevelopmentBookDao {
         userId: Int
     ): List<UserServiceDevelopmentBookEntity>
 
-    @Query("SELECT * FROM AuthorEntity WHERE timestampOfUpdating > :timestamp AND userId = :userId")
+    @Query("SELECT * FROM UserServiceDevelopmentBookEntity WHERE timestampOfUpdating > :timestamp AND userId = :userId")
     suspend fun getNotSynchronizedUserServiceDevelopmentBook(
         timestamp: Long,
         userId: Int
