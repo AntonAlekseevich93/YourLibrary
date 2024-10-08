@@ -16,6 +16,9 @@ data class AuthorEntity(
     @SerialName("timestampOfUpdating") val timestampOfUpdating: Long,
     @SerialName("isCreatedByUser") val isCreatedByUser: Boolean,
     @SerialName("userId") val userId: Int,
+    @SerialName("firstName") val firstName: String,
+    @SerialName("middleName") val middleName: String,
+    @SerialName("lastName") val lastName: String,
 )
 
 fun AuthorVo.toLocalDto(userId: Int) = AuthorEntity(
@@ -28,6 +31,9 @@ fun AuthorVo.toLocalDto(userId: Int) = AuthorEntity(
     timestampOfUpdating = timestampOfUpdating,
     isCreatedByUser = isCreatedByUser,
     userId = userId,
+    firstName = firstName,
+    middleName = middleName,
+    lastName = lastName,
 )
 
 fun AuthorEntity.toVo(): AuthorVo =
@@ -40,4 +46,7 @@ fun AuthorEntity.toVo(): AuthorVo =
         timestampOfCreating = timestampOfCreating,
         timestampOfUpdating = timestampOfUpdating,
         isCreatedByUser = isCreatedByUser,
+        firstName = firstName,
+        middleName = middleName,
+        lastName = lastName,
     )

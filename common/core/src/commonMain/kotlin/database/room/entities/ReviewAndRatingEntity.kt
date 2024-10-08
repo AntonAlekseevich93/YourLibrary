@@ -3,6 +3,7 @@ package database.room.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
+import main_models.books.toLang
 import main_models.rating_review.ReviewAndRatingVo
 
 @Entity
@@ -28,6 +29,9 @@ data class ReviewAndRatingEntity(
     @SerialName("isCreatedManuallyBook") val isCreatedManuallyBook: Boolean,
     @SerialName("bookForAllUsers") val bookForAllUsers: Boolean,
     @SerialName("mainBookId") val mainBookId: String,
+    @SerialName("fromParsing") val fromParsing: Boolean,
+    @SerialName("lang") val lang: String,
+    @SerialName("parsingSourceId") val parsingSourceId: Long,
 )
 
 fun ReviewAndRatingEntity.toVo(): ReviewAndRatingVo {
@@ -54,6 +58,9 @@ fun ReviewAndRatingEntity.toVo(): ReviewAndRatingVo {
         isCreatedManuallyBook = isCreatedManuallyBook,
         bookForAllUsers = bookForAllUsers,
         mainBookId = mainBookId,
+        fromParsing = fromParsing,
+        lang = lang.toLang(),
+        parsingSourceId = parsingSourceId,
     )
 }
 
@@ -79,6 +86,9 @@ fun ReviewAndRatingVo.toLocalDto(): ReviewAndRatingEntity {
         bookGenreId = bookGenreId,
         isCreatedManuallyBook = isCreatedManuallyBook,
         bookForAllUsers = bookForAllUsers,
-        mainBookId = mainBookId
+        mainBookId = mainBookId,
+        fromParsing = fromParsing,
+        lang = lang.value,
+        parsingSourceId = parsingSourceId,
     )
 }

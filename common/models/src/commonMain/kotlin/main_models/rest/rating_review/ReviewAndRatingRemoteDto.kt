@@ -2,6 +2,7 @@ package main_models.rest.rating_review
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import main_models.books.toLang
 import main_models.rating_review.ReviewAndRatingVo
 
 @Serializable
@@ -27,33 +28,10 @@ data class ReviewAndRatingRemoteDto(
     @SerialName("isCreatedManuallyBook") val isCreatedManuallyBook: Boolean,
     @SerialName("bookForAllUsers") val bookForAllUsers: Boolean,
     @SerialName("mainBookId") val mainBookId: String,
+    @SerialName("fromParsing") val fromParsing: Boolean,
+    @SerialName("lang") val lang: String,
+    @SerialName("parsingSourceId") val parsingSourceId: Long?,
 )
-
-fun ReviewAndRatingVo.toDto(): ReviewAndRatingRemoteDto {
-    return ReviewAndRatingRemoteDto(
-        id = id,
-        ratingScore = ratingScore,
-        reviewText = reviewText,
-        bookId = bookId,
-        bookAuthorId = bookAuthorId,
-        userId = userId,
-        userName = userName,
-        likesCount = likesCount,
-        dislikesCount = dislikesCount,
-        answersCount = answersCount,
-        isApprovedReview = isApprovedReview,
-        isDisapprovedReview = isDisapprovedReview,
-        timestampOfCreatingScore = timestampOfCreatingScore,
-        timestampOfUpdatingScore = timestampOfUpdatingScore,
-        timestampOfCreatingReview = timestampOfCreatingReview,
-        timestampOfUpdatingReview = timestampOfUpdatingReview,
-        updatedByDeviceId = updatedByDeviceId,
-        bookGenreId = bookGenreId,
-        isCreatedManuallyBook = isCreatedManuallyBook,
-        bookForAllUsers = bookForAllUsers,
-        mainBookId = mainBookId
-    )
-}
 
 fun ReviewAndRatingRemoteDto.toVo(): ReviewAndRatingVo? {
     return ReviewAndRatingVo(
@@ -78,11 +56,14 @@ fun ReviewAndRatingRemoteDto.toVo(): ReviewAndRatingVo? {
         bookGenreId = bookGenreId,
         isCreatedManuallyBook = isCreatedManuallyBook,
         bookForAllUsers = bookForAllUsers,
-        mainBookId = mainBookId
+        mainBookId = mainBookId,
+        lang = lang.toLang(),
+        fromParsing = fromParsing,
+        parsingSourceId = parsingSourceId ?: -1
     )
 }
 
-fun ReviewAndRatingVo.toRemoteDto(): ReviewAndRatingRemoteDto? {
+fun ReviewAndRatingVo.toRemoteDto(): ReviewAndRatingRemoteDto {
     return ReviewAndRatingRemoteDto(
         id = id,
         ratingScore = ratingScore,
@@ -104,6 +85,9 @@ fun ReviewAndRatingVo.toRemoteDto(): ReviewAndRatingRemoteDto? {
         bookGenreId = bookGenreId,
         isCreatedManuallyBook = isCreatedManuallyBook,
         bookForAllUsers = bookForAllUsers,
-        mainBookId = mainBookId
+        mainBookId = mainBookId,
+        fromParsing = fromParsing,
+        lang = lang.value,
+        parsingSourceId = parsingSourceId
     )
 }

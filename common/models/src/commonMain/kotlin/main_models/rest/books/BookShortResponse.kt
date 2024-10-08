@@ -34,6 +34,9 @@ data class BookShortRemoteDto(
     @SerialName("isMainBook") val isMainBook: Boolean,
     @SerialName("lang") val lang: String,
     @SerialName("publicationYear") val publicationYear: String?,
+    @SerialName("authorFirstName") val authorFirstName: String?,
+    @SerialName("authorMiddleName") val authorMiddleName: String?,
+    @SerialName("authorLastName") val authorLastName: String?,
 )
 
 fun BookShortRemoteDto.toVo(
@@ -64,6 +67,9 @@ fun BookShortRemoteDto.toVo(
         isMainBook = isMainBook,
         lang = lang,
         publicationYear = publicationYear,
+        authorFirstName = authorFirstName ?: "",
+        authorLastName = authorLastName ?: "",
+        authorMiddleName = authorMiddleName ?: "",
     )
 }
 
@@ -92,6 +98,9 @@ fun BookShortVo.toDto(): BookShortRemoteDto {
         isMainBook = isMainBook,
         lang = lang,
         publicationYear = publicationYear,
+        authorFirstName = authorFirstName,
+        authorLastName = authorLastName,
+        authorMiddleName = authorMiddleName,
     )
 }
 
@@ -122,6 +131,9 @@ fun BookShortRemoteDto.toFakeVo(
         isMainBook = isMainBook,
         lang = lang,
         publicationYear = publicationYear,
+        authorFirstName = authorFirstName ?: "",
+        authorLastName = authorLastName ?: "",
+        authorMiddleName = authorMiddleName ?: "",
     )
 }
 
@@ -151,5 +163,8 @@ fun BookShortVo.fromFakeToDto(
         isMainBook = isMainBook,
         lang = lang,
         publicationYear = publicationYear,
+        authorFirstName = authorFirstName,
+        authorLastName = authorLastName,
+        authorMiddleName = authorMiddleName,
     )
 }

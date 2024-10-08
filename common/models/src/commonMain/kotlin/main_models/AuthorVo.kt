@@ -11,6 +11,9 @@ data class AuthorVo(
     val timestampOfCreating: Long,
     val timestampOfUpdating: Long,
     val isCreatedByUser: Boolean,
+    val firstName: String,
+    val middleName: String,
+    val lastName: String,
 ) {
     companion object {
         fun generateId() = UUID.randomUUID().toString() //todo подумать над другой реализацией id
@@ -22,9 +25,8 @@ data class AuthorVo(
             "",
             0,
             0,
-
-
-            isCreatedByUser = false
+            isCreatedByUser = false,
+            "", "", ""
         )
     }
 }

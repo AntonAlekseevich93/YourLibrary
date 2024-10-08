@@ -9,12 +9,14 @@ class ReviewRemoteDto(
     @SerialName("reviewText") val reviewText: String,
     @SerialName("bookId") val bookId: String,
     @SerialName("mainBookId") val mainBookId: String,
+    @SerialName("lang") val lang: String,
 )
 
 fun ReviewAndRatingVo.toRemoteReview(): ReviewRemoteDto? {
     return ReviewRemoteDto(
         reviewText = reviewText ?: return null,
         bookId = bookId,
-        mainBookId = mainBookId
+        mainBookId = mainBookId,
+        lang = lang.value
     )
 }

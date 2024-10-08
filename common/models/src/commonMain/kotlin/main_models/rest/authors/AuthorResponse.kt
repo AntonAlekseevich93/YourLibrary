@@ -18,7 +18,10 @@ data class AuthorResponse(
     @SerialName("isApproved") val isApproved: Boolean? = null,
     @SerialName("timestampOfCreating") val timestampOfCreating: Long? = null,
     @SerialName("timestampOfUpdating") val timestampOfUpdating: Long? = null,
-    @SerialName("isCreatedByUser") val isCreatedByUser: Boolean? = null
+    @SerialName("isCreatedByUser") val isCreatedByUser: Boolean? = null,
+    @SerialName("firstName") val firstName: String?,
+    @SerialName("middleName") val middleName: String?,
+    @SerialName("lastName") val lastName: String?,
 )
 
 fun AuthorResponse.toAuthorVo(): AuthorVo? {
@@ -30,6 +33,9 @@ fun AuthorResponse.toAuthorVo(): AuthorVo? {
         uppercaseName = name.uppercase(),
         timestampOfCreating = timestampOfCreating ?: return null,
         timestampOfUpdating = timestampOfUpdating ?: return null,
-        isCreatedByUser = isCreatedByUser ?: return null
+        isCreatedByUser = isCreatedByUser ?: return null,
+        firstName = firstName ?: return null,
+        middleName = middleName ?: return null,
+        lastName = lastName ?: return null,
     )
 }

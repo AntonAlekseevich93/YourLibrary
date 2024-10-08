@@ -37,5 +37,8 @@ fun CacheShortBookByAuthorVo.toRemoteDto(): BookShortRemoteDto? {
         isMainBook = cacheBook.isMainBook,
         lang = cacheBook.lang,
         publicationYear = cacheBook.publicationYear,
+        authorFirstName = cacheBook.authorFirstName,
+        authorMiddleName = cacheBook.authorMiddleName,
+        authorLastName = cacheBook.authorLastName,
     )
 }

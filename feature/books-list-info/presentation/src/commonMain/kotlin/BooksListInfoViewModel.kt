@@ -144,6 +144,9 @@ class BooksListInfoViewModel(
             timestampOfCreating = 0,
             timestampOfUpdating = 0,
             isCreatedByUser = false,
+            firstName = shortBook.authorFirstName,
+            lastName = shortBook.authorLastName,
+            middleName = shortBook.authorMiddleName,
         )
     }
 

@@ -1,6 +1,7 @@
 package main_models.rating_review
 
 import kotlinx.serialization.Serializable
+import main_models.books.LANG
 
 @Serializable
 class ReviewAndRatingVo(
@@ -26,6 +27,9 @@ class ReviewAndRatingVo(
     val isCreatedManuallyBook: Boolean,
     val bookForAllUsers: Boolean,
     val mainBookId: String,
+    val fromParsing: Boolean,
+    val lang: LANG,
+    val parsingSourceId: Long,
 ) {
 
     companion object {
@@ -63,7 +67,10 @@ class ReviewAndRatingVo(
             bookGenreId = bookGenreId,
             isCreatedManuallyBook = isCreatedManuallyBook,
             bookForAllUsers = bookForAllUsers,
-            mainBookId = mainBookId
+            mainBookId = mainBookId,
+            lang = LANG.RUSSIAN,
+            fromParsing = false,
+            parsingSourceId = -1,
         )
     }
 }

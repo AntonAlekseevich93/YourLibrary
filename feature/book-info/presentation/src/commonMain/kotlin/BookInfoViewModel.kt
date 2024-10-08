@@ -151,7 +151,8 @@ class BookInfoViewModel(
                         val list = _uiState.value.reviewsAndRatings.value.toMutableList()
                         list.removeAll { it.userId == appConfig.userId.toInt() }
                         list.add(0, it)
-                        _uiState.value.reviewsAndRatings.value = list
+                        _uiState.value.reviewsAndRatings.value =
+                            list.sortedByDescending { it.timestampOfCreatingReview }
                         _uiState.value.reviewsCount.value = _uiState.value.reviewsCount.value + 1
                     }
                 }
@@ -165,7 +166,8 @@ class BookInfoViewModel(
             if (response.isNotEmpty()) {
                 val resultList = response.toMutableList()
                 resultList.removeAll { it.userId == appConfig.userId.toInt() }
-                _uiState.value.reviewsAndRatings.value = resultList
+                _uiState.value.reviewsAndRatings.value =
+                    resultList.sortedByDescending { it.timestampOfCreatingReview }
                 _uiState.value.reviewsCount.value = resultList.count { it.reviewText != null }
             }
         }
@@ -285,7 +287,10 @@ class BookInfoViewModel(
                 )
             } else if (uiState.value.shortBookItem.value != null) {
                 val bookVo =
-                    uiState.value.shortBookItem.value!!.createUserBookBasedOnShortBook(newStatus, userId = appConfig.userId.toInt())
+                    uiState.value.shortBookItem.value!!.createUserBookBasedOnShortBook(
+                        newStatus,
+                        userId = appConfig.userId
+                    )
                 val authorVo = getOrCreateAuthor(bookVo)
                 interactor.createBook(bookVo, author = authorVo)
             }
@@ -302,7 +307,10 @@ class BookInfoViewModel(
             uppercaseName = book.originalAuthorName.uppercase(),
             timestampOfCreating = 0,
             timestampOfUpdating = 0,
-            isCreatedByUser = false
+            isCreatedByUser = false,
+            firstName = book.authorFirstName,
+            lastName = book.authorLastName,
+            middleName = book.authorMiddleName,
         )
     }
 

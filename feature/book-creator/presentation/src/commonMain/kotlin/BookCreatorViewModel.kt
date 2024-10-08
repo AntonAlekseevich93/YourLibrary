@@ -215,6 +215,9 @@ class BookCreatorViewModel(
                     timestampOfCreating = 0,
                     timestampOfUpdating = 0,
                     isCreatedByUser = false,
+                    firstName = shortBook.authorFirstName,
+                    lastName = shortBook.authorLastName,
+                    middleName = shortBook.authorMiddleName,
                 )
             } else {
                 AuthorVo(
@@ -225,7 +228,10 @@ class BookCreatorViewModel(
                     uppercaseName = book.originalAuthorName.uppercase(),
                     timestampOfCreating = 0,
                     timestampOfUpdating = 0,
-                    isCreatedByUser = true
+                    isCreatedByUser = true,
+                    firstName = book.authorFirstName,
+                    lastName = book.authorLastName,
+                    middleName = book.authorMiddleName,
                 )
             }
     }
@@ -628,7 +634,10 @@ class BookCreatorViewModel(
                         uppercaseName = book.originalAuthorName.uppercase(),
                         timestampOfCreating = 0,
                         timestampOfUpdating = 0,
-                        isCreatedByUser = true
+                        isCreatedByUser = true,
+                        firstName = book.authorFirstName,
+                        lastName = book.authorLastName,
+                        middleName = book.authorMiddleName,
                     )
                 }
             scope.launch {
@@ -732,6 +741,9 @@ class BookCreatorViewModel(
             originalMainBookId = shortBook.getMainBookIdByShortBook(),
             lang = shortBook.lang,
             publicationYear = shortBook.publicationYear,
-            userId = appConfig.userId
+            userId = appConfig.userId,
+            authorFirstName = shortBook.authorFirstName,
+            authorLastName = shortBook.authorLastName,
+            authorMiddleName = shortBook.authorMiddleName,
         )
 }

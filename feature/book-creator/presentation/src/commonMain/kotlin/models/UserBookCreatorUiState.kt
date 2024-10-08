@@ -83,7 +83,10 @@ data class UserBookCreatorUiState(
             originalMainBookId = "",
             lang = selectedLang.value.value,
             publicationYear = publicationYear?.toString() ?: "",
-            userId = userId
+            userId = userId,
+            authorFirstName = "", //todo fix this
+            authorLastName = "", //todo fix this
+            authorMiddleName = "", //todo fix this
         )
     }
 }

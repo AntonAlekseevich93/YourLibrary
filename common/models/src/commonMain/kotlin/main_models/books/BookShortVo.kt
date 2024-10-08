@@ -33,6 +33,9 @@ data class BookShortVo(
     val isMainBook: Boolean,
     val lang: String,
     val publicationYear: String?,
+    val authorFirstName: String,
+    val authorMiddleName: String,
+    val authorLastName: String,
 ) {
     fun createUserBookBasedOnShortBook(readingStatus: ReadingStatus, userId: Int): BookVo =
         BookVo(
@@ -71,7 +74,10 @@ data class BookShortVo(
             originalMainBookId = getMainBookIdByShortBook(),
             lang = this.lang,
             publicationYear = this.publicationYear,
-            userId = userId
+            userId = userId,
+            authorFirstName = authorFirstName,
+            authorLastName = authorLastName,
+            authorMiddleName = authorMiddleName,
         )
 
     fun getMainBookIdByShortBook(): String = if (isMainBook) bookId else mainBookId

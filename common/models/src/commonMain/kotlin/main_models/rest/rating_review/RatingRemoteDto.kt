@@ -13,6 +13,7 @@ class RatingRemoteDto(
     @SerialName("isCreatedManuallyBook") val isCreatedManuallyBook: Boolean,
     @SerialName("bookForAllUsers") val bookForAllUsers: Boolean,
     @SerialName("mainBookId") val mainBookId: String,
+    @SerialName("lang") val lang: String,
 )
 
 fun ReviewAndRatingVo.toRemoteRating(): RatingRemoteDto =
@@ -23,5 +24,6 @@ fun ReviewAndRatingVo.toRemoteRating(): RatingRemoteDto =
         bookGenreId = bookGenreId,
         isCreatedManuallyBook = isCreatedManuallyBook,
         bookForAllUsers = bookForAllUsers,
-        mainBookId = mainBookId
+        mainBookId = mainBookId,
+        lang = lang.value
     )

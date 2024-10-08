@@ -43,6 +43,9 @@ data class BookEntity(
     @SerialName("originalMainBookId") val originalMainBookId: String,
     @SerialName("lang") val lang: String,
     @SerialName("publicationYear") val publicationYear: String,
+    @SerialName("authorFirstName") val authorFirstName: String,
+    @SerialName("authorMiddleName") val authorMiddleName: String,
+    @SerialName("authorLastName") val authorLastName: String,
 )
 
 fun BookVo.toLocalDto(): BookEntity = BookEntity(
@@ -80,7 +83,10 @@ fun BookVo.toLocalDto(): BookEntity = BookEntity(
     bookForAllUsers = bookForAllUsers,
     originalMainBookId = originalMainBookId,
     lang = lang,
-    publicationYear = publicationYear ?: ""
+    publicationYear = publicationYear ?: "",
+    authorFirstName = authorFirstName,
+    authorLastName = authorLastName,
+    authorMiddleName = authorMiddleName,
 )
 
 fun BookEntity.toVo(remoteImageLink: String?): BookVo {
@@ -119,7 +125,10 @@ fun BookEntity.toVo(remoteImageLink: String?): BookVo {
         originalMainBookId = originalMainBookId,
         lang = lang,
         publicationYear = publicationYear,
-        userId = userId.toInt()
+        userId = userId,
+        authorFirstName = authorFirstName,
+        authorLastName = authorLastName,
+        authorMiddleName = authorMiddleName,
     )
     book.remoteImageLink = remoteImageLink
     return book
