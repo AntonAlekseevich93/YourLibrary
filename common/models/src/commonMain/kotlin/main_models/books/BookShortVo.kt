@@ -70,7 +70,7 @@ data class BookShortVo(
             ratingCount = this.ratingCount,
             reviewCount = this.reviewCount,
             ratingSum = this.ratingSum,
-            bookForAllUsers = true,
+            isServiceDevelopmentBook = false,
             originalMainBookId = getMainBookIdByShortBook(),
             lang = this.lang,
             publicationYear = this.publicationYear,

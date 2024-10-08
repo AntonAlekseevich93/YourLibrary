@@ -24,7 +24,7 @@ interface ReviewAndRatingRepository {
         bookAuthorId: String,
         bookGenreId: Int,
         isCreatedManuallyBook: Boolean,
-        bookForAllUsers: Boolean,
+        isServiceDevelopmentBook: Boolean,
         mainBookId: String,
     )
 

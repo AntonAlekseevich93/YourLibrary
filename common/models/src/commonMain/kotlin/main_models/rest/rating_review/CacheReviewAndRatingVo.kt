@@ -33,7 +33,7 @@ fun CacheReviewAndRatingVo.toRemoteDto(): ReviewAndRatingRemoteDto? {
         updatedByDeviceId = cacheReviewAndRating.updatedByDeviceId,
         bookGenreId = cacheReviewAndRating.bookGenreId,
         isCreatedManuallyBook = cacheReviewAndRating.isCreatedManuallyBook,
-        bookForAllUsers = cacheReviewAndRating.bookForAllUsers,
+        isServiceDevelopmentBook = cacheReviewAndRating.isServiceDevelopmentBook,
         mainBookId = cacheReviewAndRating.mainBookId,
         lang = cacheReviewAndRating.lang,
         fromParsing = cacheReviewAndRating.fromParsing,

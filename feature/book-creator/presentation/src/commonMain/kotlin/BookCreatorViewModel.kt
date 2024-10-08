@@ -594,7 +594,6 @@ class BookCreatorViewModel(
                         interactor.createBook(
                             bookVo,
                             author = authorVo,
-                            isServiceDevelopment = false
                         )
                     } else if (selectedBookInfo.bookVo.readingStatus.id != newStatus.id) {
                         interactor.changeUserBookReadingStatus(
@@ -622,7 +621,8 @@ class BookCreatorViewModel(
     private fun createManuallyBook() {
         uiStateValue.userBookCreatorUiState.createUserBook(
             originalAuthorId = uiStateValue.selectedAuthor?.id,
-            userId = appConfig.userId
+            userId = appConfig.userId,
+            isServiceDevelopmentBook = uiStateValue.isServiceDevelopment.value
         )?.let { book ->
             val author =
                 if (uiStateValue.selectedAuthor != null) uiStateValue.selectedAuthor!! else {
@@ -641,9 +641,7 @@ class BookCreatorViewModel(
                     )
                 }
             scope.launch {
-                interactor.createBook(
-                    book, author, isServiceDevelopment = uiStateValue.isServiceDevelopment.value
-                )
+                interactor.createBook(book, author)
                 withContext(Dispatchers.Main) {
                     uiStateValue.showCreatedManuallyBookAnimation.value = true
                 }
@@ -737,7 +735,7 @@ class BookCreatorViewModel(
             ratingCount = shortBook.ratingCount,
             reviewCount = shortBook.reviewCount,
             ratingSum = shortBook.ratingSum,
-            bookForAllUsers = true,
+            isServiceDevelopmentBook = false,
             originalMainBookId = shortBook.getMainBookIdByShortBook(),
             lang = shortBook.lang,
             publicationYear = shortBook.publicationYear,

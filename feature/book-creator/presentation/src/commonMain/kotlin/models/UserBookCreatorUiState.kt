@@ -38,7 +38,7 @@ data class UserBookCreatorUiState(
     val oldTypedBookNameText: MutableState<String> = mutableStateOf(""),
     val selectedAuthorBooks: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
 ) {
-    fun createUserBook(originalAuthorId: String?, userId: Int): BookVo? {
+    fun createUserBook(originalAuthorId: String?, userId: Int, isServiceDevelopmentBook: Boolean): BookVo? {
         val bookName = bookNameTextState.value.text.trim()
         val bookId = UUID.randomUUID().toString()
         val authorName = authorNameTextState.value.text.trim()
@@ -79,7 +79,7 @@ data class UserBookCreatorUiState(
             ratingCount = 0,
             reviewCount = 0,
             ratingSum = 0,
-            bookForAllUsers = false,
+            isServiceDevelopmentBook = isServiceDevelopmentBook,
             originalMainBookId = "",
             lang = selectedLang.value.value,
             publicationYear = publicationYear?.toString() ?: "",

@@ -33,7 +33,7 @@ data class BookVo(
     val ratingCount: Int,
     val reviewCount: Int,
     val ratingSum: Int,
-    val bookForAllUsers: Boolean,
+    val isServiceDevelopmentBook: Boolean,
     val originalMainBookId: String,
     val lang: String,
     val publicationYear: String?,

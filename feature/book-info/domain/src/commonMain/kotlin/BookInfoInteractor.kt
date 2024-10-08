@@ -42,7 +42,7 @@ class BookInfoInteractor(
         bookAuthorId: String,
         bookGenreId: Int,
         isCreatedManuallyBook: Boolean,
-        bookForAllUsers: Boolean,
+        isServiceDevelopmentBook: Boolean,
         mainBookId: String,
     ) {
         reviewAndRatingRepository.addOrUpdateRatingByBookId(
@@ -51,7 +51,7 @@ class BookInfoInteractor(
             bookAuthorId = bookAuthorId,
             bookGenreId = bookGenreId,
             isCreatedManuallyBook = isCreatedManuallyBook,
-            bookForAllUsers = bookForAllUsers,
+            isServiceDevelopmentBook = isServiceDevelopmentBook,
             mainBookId = mainBookId
         )
     }
@@ -110,7 +110,7 @@ class BookInfoInteractor(
     }
 
     suspend fun createBook(book: BookVo, author: AuthorVo) {
-        bookCreatorRepository.createBook(book, author = author, isServiceDevelopment = false)
+        bookCreatorRepository.createBook(book, author = author)
     }
 
 }

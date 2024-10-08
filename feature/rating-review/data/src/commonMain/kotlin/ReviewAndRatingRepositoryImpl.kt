@@ -47,7 +47,7 @@ class ReviewAndRatingRepositoryImpl(
         bookAuthorId: String,
         bookGenreId: Int,
         isCreatedManuallyBook: Boolean,
-        bookForAllUsers: Boolean,
+        isServiceDevelopmentBook: Boolean,
         mainBookId: String,
     ) {
         val userId = appConfig.userId
@@ -66,7 +66,7 @@ class ReviewAndRatingRepositoryImpl(
                 bookAuthorId = bookAuthorId,
                 bookGenreId = bookGenreId,
                 isCreatedManuallyBook = isCreatedManuallyBook,
-                bookForAllUsers = bookForAllUsers,
+                isServiceDevelopmentBook = isServiceDevelopmentBook,
                 userId = userId.toInt(),
                 userName = "Антон Алексеевич", //todo fix this
                 deviceId = appConfig.deviceId,
