@@ -32,8 +32,6 @@ fun CacheReviewAndRatingVo.toRemoteDto(): ReviewAndRatingRemoteDto? {
         timestampOfUpdatingReview = cacheReviewAndRating.timestampOfUpdatingReview,
         updatedByDeviceId = cacheReviewAndRating.updatedByDeviceId,
         bookGenreId = cacheReviewAndRating.bookGenreId,
-        isCreatedManuallyBook = cacheReviewAndRating.isCreatedManuallyBook,
-        isServiceDevelopmentBook = cacheReviewAndRating.isServiceDevelopmentBook,
         mainBookId = cacheReviewAndRating.mainBookId,
         lang = cacheReviewAndRating.lang,
         fromParsing = cacheReviewAndRating.fromParsing,

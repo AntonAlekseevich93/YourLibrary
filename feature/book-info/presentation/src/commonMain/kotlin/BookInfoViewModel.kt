@@ -256,10 +256,6 @@ class BookInfoViewModel(
             val bookGenreId = _uiState.value.bookItem.value?.bookGenreId
                 ?: _uiState.value.shortBookItem.value?.bookGenreId
                 ?: return@launch
-            val bookIsCreatedManually = _uiState.value.bookItem.value?.bookIsCreatedManually
-                ?: false
-            val isServiceDevelopmentBook =
-                bookIsCreatedManually && _uiState.value.bookItem.value?.isServiceDevelopmentBook == true
             val mainBookId = _uiState.value.bookItem.value?.originalMainBookId
                 ?: _uiState.value.shortBookItem.value?.getMainBookIdByShortBook()
                 ?: return@launch
@@ -269,8 +265,6 @@ class BookInfoViewModel(
                 bookId = bookId,
                 bookAuthorId = bookAuthorId,
                 bookGenreId = bookGenreId,
-                isCreatedManuallyBook = bookIsCreatedManually,
-                isServiceDevelopmentBook = isServiceDevelopmentBook,
                 mainBookId = mainBookId
             )
         }

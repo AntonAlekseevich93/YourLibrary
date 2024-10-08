@@ -41,8 +41,6 @@ class BookInfoInteractor(
         bookId: String,
         bookAuthorId: String,
         bookGenreId: Int,
-        isCreatedManuallyBook: Boolean,
-        isServiceDevelopmentBook: Boolean,
         mainBookId: String,
     ) {
         reviewAndRatingRepository.addOrUpdateRatingByBookId(
@@ -50,8 +48,6 @@ class BookInfoInteractor(
             bookId = bookId,
             bookAuthorId = bookAuthorId,
             bookGenreId = bookGenreId,
-            isCreatedManuallyBook = isCreatedManuallyBook,
-            isServiceDevelopmentBook = isServiceDevelopmentBook,
             mainBookId = mainBookId
         )
     }
