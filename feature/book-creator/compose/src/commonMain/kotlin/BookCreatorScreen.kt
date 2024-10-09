@@ -18,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import animations.ConfettiAnimation
 import animations.SuccessAnimation
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
@@ -41,6 +42,7 @@ fun BookCreatorScreen(
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val showSuccessAnimation = remember { mutableStateOf(false) }
+    val showConfettiAnimation = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -127,21 +129,29 @@ fun BookCreatorScreen(
         }
 
         if (uiState.selectedBookByMenuClick.value != null) {
+            showSuccessAnimation.value = false
+            showConfettiAnimation.value = false
             ReadingStatusSelectorDialog(
                 currentStatus = uiState.selectedBookByMenuClick.value?.bookVo?.readingStatus,
                 useDivider = false,
                 selectStatusListener = {
                     showSuccessAnimation.value = true
+                    showConfettiAnimation.value = true
                     viewModel.sendEvent(BookCreatorEvents.ChangeBookReadingStatus(it))
                 },
                 dismiss = { viewModel.sendEvent(BookCreatorEvents.ClearSelectedBook) }
             )
         }
-
         SuccessAnimation(
             show = showSuccessAnimation,
             finishAnimation = {
                 showSuccessAnimation.value = false
+            }
+        )
+        ConfettiAnimation(
+            show = showConfettiAnimation,
+            finishAnimation = {
+                showConfettiAnimation.value = false
             }
         )
     }
