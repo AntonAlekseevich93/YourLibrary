@@ -10,5 +10,9 @@ interface ServiceDevelopmentRepository {
     )
 
     suspend fun updateServiceDevelopmentBooksTimestamp(timestamp: ServiceDevelopmentBooksTimestampVo)
+    suspend fun updateServiceDevelopmentBooksTimestamp(
+        thisDeviceTimestamp: Long?,
+        otherDevicesTimestamp: Long?,
+    )
 
 }

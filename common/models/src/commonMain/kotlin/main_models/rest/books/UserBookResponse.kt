@@ -10,6 +10,8 @@ import main_models.rest.authors.AuthorResponse
 data class UserBookResponse(
     @SerialName("book") val book: UserBookRemoteDto? = null,
     @SerialName("author") val author: AuthorResponse? = null,
+    @SerialName("serviceDevelopmentBook")
+    val serviceDevelopmentBook: UserServiceDevelopmentBookRemoteDto,
     @SerialName("error") val error: String? = null,
 )
 

@@ -17,6 +17,7 @@ class BookCreatorRepositoryImpl(
     private val appConfig: AppConfig,
     private val authorsRepository: AuthorsRepository,
     private val remoteConfig: RemoteConfig,
+    private val serviceDevelopmentRepository: ServiceDevelopmentRepository,
 ) : BookCreatorRepository {
 
     override suspend fun createBook(book: BookVo, author: AuthorVo) {
@@ -46,6 +47,17 @@ class BookCreatorRepositoryImpl(
             authorsRepository.updateAuthorsTimestamp(
                 thisDeviceTimestamp = it.timestampOfUpdating,
                 otherDeviceTimestamp = null
+            )
+        }
+
+        response?.serviceDevelopmentBook?.toVo()?.let {
+            serviceDevelopmentRepository.addOrUpdateLocalServiceDevelopmentBooksWhenSync(
+                serviceDevelopmentBooks = listOf(it),
+                userId = userId
+            )
+            serviceDevelopmentRepository.updateServiceDevelopmentBooksTimestamp(
+                thisDeviceTimestamp = it.timestampOfUpdating,
+                otherDevicesTimestamp = null
             )
         }
     }

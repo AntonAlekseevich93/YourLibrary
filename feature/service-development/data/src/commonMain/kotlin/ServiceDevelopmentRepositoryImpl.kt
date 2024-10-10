@@ -37,4 +37,17 @@ class ServiceDevelopmentRepositoryImpl(
         localServiceDevelopmentDataSource.updateServiceDevelopmentBooksTimestamp(timestamp.toEntity())
     }
 
+    override suspend fun updateServiceDevelopmentBooksTimestamp(
+        thisDeviceTimestamp: Long?,
+        otherDevicesTimestamp: Long?,
+    ) {
+        val userId = appConfig.userId
+        val timestamp = getServiceDevelopmentBooksTimestamp(userId)
+        val newTimestamp = timestamp.copy(
+            otherDevicesTimestamp = otherDevicesTimestamp ?: timestamp.otherDevicesTimestamp,
+            thisDeviceTimestamp = thisDeviceTimestamp ?: timestamp.otherDevicesTimestamp,
+        )
+        localServiceDevelopmentDataSource.updateServiceDevelopmentBooksTimestamp(newTimestamp.toEntity())
+    }
+
 }

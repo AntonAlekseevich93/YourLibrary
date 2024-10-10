@@ -28,7 +28,6 @@ class LocalServiceDevelopmentDataSource(
         serviceDevelopmentBooksTimestampDao.insertOrUpdateTimestamp(timestamp)
     }
 
-    /**do not use this function except for synchronization**/
     suspend fun addOrUpdateLocalServiceDevelopmentBooksWhenSync(
         serviceDevelopmentBooksEntities: List<UserServiceDevelopmentBookEntity>,
         userId: Int
