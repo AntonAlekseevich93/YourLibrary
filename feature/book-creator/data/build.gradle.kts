@@ -8,6 +8,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                api(project(":common:cache-manager:api"))
                 api(project(":feature:book-creator:api"))
                 api(project(":feature:authors:api"))
                 api(project(":feature:service-development:api"))

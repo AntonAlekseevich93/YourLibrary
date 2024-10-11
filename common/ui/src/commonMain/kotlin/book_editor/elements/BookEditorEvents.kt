@@ -13,7 +13,6 @@ sealed class BookEditorEvents : BaseEvent {
 
     class OnSuggestionAuthorClickEvent(val author: AuthorVo) : BookEditorEvents()
     class OnBookNameChanged(val bookName: String) : BookEditorEvents()
-    class OnChangeNeedCreateNewAuthor(val needCreate: Boolean) : BookEditorEvents()
     data class OnSearchAuthorClick(val name: String) : BookEditorEvents()
     data object ClearBookSearch : BookEditorEvents()
     data object HideSearchError : BookEditorEvents()

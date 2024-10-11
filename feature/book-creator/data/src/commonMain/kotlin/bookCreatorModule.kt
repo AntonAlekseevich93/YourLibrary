@@ -13,7 +13,8 @@ val bookCreatorModule = DI.Module("bookCreatorModule") {
             instance(),
             instance(),
             instance(),
-            instance()
+            instance(),
+            instance(),
         )
     }
 

@@ -38,18 +38,26 @@ data class UserBookCreatorUiState(
     val oldTypedBookNameText: MutableState<String> = mutableStateOf(""),
     val selectedAuthorBooks: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
 ) {
-    fun createUserBook(originalAuthorId: String?, userId: Int, isServiceDevelopmentBook: Boolean): BookVo? {
+    fun createUserBook(
+        selectedAuthor: AuthorVo?,
+        userId: Int,
+        isServiceDevelopmentBook: Boolean
+    ): BookVo? {
         val bookName = bookNameTextState.value.text.trim()
         val bookId = UUID.randomUUID().toString()
         val authorName = authorNameTextState.value.text.trim()
         val pageNumber = pagesTextState.value.text.toIntOrNull() ?: return null
         val genre = selectedGenre.value ?: return null
         val publicationYear = publicationYear.value.text.toIntOrNull()
+        val exactAuthor = exactMatchSearchedAuthor.value
+        val authorIsCreatedByUser =
+            selectedAuthor?.isCreatedByUser ?: exactAuthor?.isCreatedByUser ?: false
         return BookVo(
             bookId = bookId,
             serverId = null,
             localId = null,
-            originalAuthorId = originalAuthorId ?: UUID.randomUUID().toString(),
+            originalAuthorId = selectedAuthor?.id ?: exactAuthor?.id ?: UUID.randomUUID()
+                .toString(),
             bookName = bookName,
             bookNameUppercase = bookName.uppercase(),
             originalAuthorName = authorName,
@@ -71,7 +79,7 @@ data class UserBookCreatorUiState(
             timestampOfUpdating = 0,
             isRussian = null,
             imageName = null,
-            authorIsCreatedManually = originalAuthorId == null,
+            authorIsCreatedManually = authorIsCreatedByUser,
             isLoadedToServer = false, //todo что за поле?
             bookIsCreatedManually = true,
             imageFolderId = null,
@@ -84,9 +92,9 @@ data class UserBookCreatorUiState(
             lang = selectedLang.value.value,
             publicationYear = publicationYear?.toString() ?: "",
             userId = userId,
-            authorFirstName = "", //todo fix this
-            authorLastName = "", //todo fix this
-            authorMiddleName = "", //todo fix this
+            authorFirstName = selectedAuthor?.firstName ?: exactAuthor?.firstName.orEmpty(),
+            authorLastName = selectedAuthor?.lastName ?: exactAuthor?.lastName.orEmpty(),
+            authorMiddleName = selectedAuthor?.middleName ?: exactAuthor?.middleName.orEmpty(),
         )
     }
 }

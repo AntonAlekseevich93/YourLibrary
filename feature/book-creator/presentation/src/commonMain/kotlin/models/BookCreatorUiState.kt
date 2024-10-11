@@ -1,6 +1,5 @@
 package models
 
-import alert_dialog.CommonAlertDialogConfig
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -10,22 +9,12 @@ import main_models.AuthorVo
 import main_models.BookValues
 import main_models.BookVo
 import main_models.DatePickerType
-import main_models.ReadingStatus
 import main_models.books.BookShortVo
-import main_models.rest.LoadingStatus
 
 data class BookCreatorUiState(
-    val shortBookItem: BookShortVo? = null,
-    val showLoadingIndicator: Boolean = false,
-    val loadingStatus: LoadingStatus = LoadingStatus.LOADING,
-    val defaultStatus: ReadingStatus = ReadingStatus.PLANNED,
     val selectedAuthor: AuthorVo? = null,
     val similarSearchAuthors: List<AuthorVo> = listOf(),
     val bookValues: BookValues = BookValues(),
-    val needCreateNewAuthor: Boolean = false,
-    val bookWasNotFound: Boolean = false,
-    val authorWasNotFound: Boolean = false,
-    val showClearButtonOfUrlElement: Boolean = false,
     val showDialogClearAllData: Boolean = false,
     var datePickerType: MutableState<DatePickerType> = mutableStateOf(DatePickerType.StartDate),
     val showDatePicker: Boolean = false,
@@ -33,9 +22,6 @@ data class BookCreatorUiState(
     val similarBooksCache: List<BookShortVo> = listOf(),
     val isSearchBookProcess: Boolean = false,
     val isSearchAuthorProcess: Boolean = false,
-    val isBookCoverManually: Boolean = false,
-    val showCommonAlertDialog: Boolean = false,
-    val alertDialogConfig: CommonAlertDialogConfig? = null,
     val showSearchBookError: Boolean = false,
     val showSearchAuthorError: Boolean = false,
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
@@ -43,6 +29,7 @@ data class BookCreatorUiState(
     val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
     var userBookCreatorUiState: UserBookCreatorUiState = UserBookCreatorUiState(),
     var showCreatedManuallyBookAnimation: MutableState<Boolean> = mutableStateOf(false),
+    var showLoadingProcessAnimation: MutableState<Boolean> = mutableStateOf(false),
     var isServiceDevelopment: MutableState<Boolean> = mutableStateOf(false),
 ) : BaseUIState {
     fun updateUserBookCreatorUiState() {

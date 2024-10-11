@@ -280,6 +280,9 @@ class DefaultRootComponent(
             componentContext = componentContext,
             onBackListener = {
                 pop()
+            },
+            toMainListener = {
+                menuClick(MenuItem.MAIN)
             }
         )
 

@@ -16,7 +16,6 @@ import main_models.BookVo
 import main_models.DatePickerType
 import main_models.ReadingStatus
 import main_models.books.BookShortVo
-import main_models.rest.LoadingStatus
 import models.BookCreatorEvents
 import models.BookCreatorUiState
 import models.SelectedBook
@@ -50,10 +49,6 @@ class BookCreatorViewModel(
 
             is BookEditorEvents.OnSuggestionAuthorClickEvent -> onSuggestionAuthorClick(event.author)
 
-            is BookEditorEvents.OnChangeNeedCreateNewAuthor -> {
-                updateUIState(uiStateValue.copy(needCreateNewAuthor = event.needCreate))
-            }
-
             is BookEditorEvents.OnSearchAuthorClick -> {
                 searchAuthor(event.name)
             }
@@ -75,12 +70,6 @@ class BookCreatorViewModel(
 
             is BookCreatorEvents.ClearUrlEvent -> clearUrl()
 
-            is BookCreatorEvents.OnFinishParsingUrl -> finishParsing()
-
-            is BookCreatorEvents.ClearAllBookInfo -> {
-                clearAllBookInfo()
-            }
-
             is BookCreatorEvents.ClearAuthorSearch -> {
                 uiStateValue.bookValues.clearAuthor()
                 updateUIState(uiStateValue.copy(similarSearchAuthors = emptyList()))
@@ -94,24 +83,6 @@ class BookCreatorViewModel(
 
             is BookCreatorEvents.OnShowDialogClearAllData -> {
                 updateUIState(uiStateValue.copy(showDialogClearAllData = event.show))
-            }
-
-            is BookCreatorEvents.OnShowCommonAlertDialog -> {
-                updateUIState(
-                    uiStateValue.copy(
-                        showCommonAlertDialog = true,
-                        alertDialogConfig = event.config
-                    )
-                )
-            }
-
-            is BookCreatorEvents.DismissCommonAlertDialog -> {
-                updateUIState(
-                    uiStateValue.copy(
-                        showCommonAlertDialog = false,
-                        alertDialogConfig = null
-                    )
-                )
             }
 
             is BookCreatorEvents.SetSelectedBookByMenuClick -> {
@@ -193,32 +164,11 @@ class BookCreatorViewModel(
         }
     }
 
-    private fun clearAllBookInfo() {
-        updateUIState(
-            BookCreatorUiState()
-        )
-    }
-
     private suspend fun getOrCreateAuthor(book: BookVo): AuthorVo {
         val localAuthor = interactor.getLocalAuthorById(book.originalAuthorId)
         return localAuthor
             ?: if (uiStateValue.selectedAuthor != null) {
                 uiStateValue.selectedAuthor!!
-            } else if (uiStateValue.shortBookItem != null) {
-                val shortBook = uiStateValue.shortBookItem!!
-                AuthorVo(
-                    localId = null,
-                    serverId = null,
-                    id = shortBook.originalAuthorId,
-                    name = shortBook.originalAuthorName,
-                    uppercaseName = shortBook.originalAuthorName.uppercase(),
-                    timestampOfCreating = 0,
-                    timestampOfUpdating = 0,
-                    isCreatedByUser = false,
-                    firstName = shortBook.authorFirstName,
-                    lastName = shortBook.authorLastName,
-                    middleName = shortBook.authorMiddleName,
-                )
             } else {
                 AuthorVo(
                     serverId = null,
@@ -525,7 +475,6 @@ class BookCreatorViewModel(
         uiStateValue.bookValues.clearAll()
         updateUIState(
             uiStateValue.copy(
-                showClearButtonOfUrlElement = false,
                 showDialogClearAllData = false,
             )
         )
@@ -552,17 +501,6 @@ class BookCreatorViewModel(
                 showDatePicker = true
             )
         )
-    }
-
-    private fun finishParsing() {
-        if (uiStateValue.loadingStatus == LoadingStatus.SUCCESS) {
-            updateUIState(
-                uiStateValue.copy(
-                    showClearButtonOfUrlElement = true,
-                    showLoadingIndicator = false,
-                )
-            )
-        }
     }
 
     private fun hideSearchError() {
@@ -620,12 +558,15 @@ class BookCreatorViewModel(
 
     private fun createManuallyBook() {
         uiStateValue.userBookCreatorUiState.createUserBook(
-            originalAuthorId = uiStateValue.selectedAuthor?.id,
+            selectedAuthor = uiStateValue.selectedAuthor,
             userId = appConfig.userId,
             isServiceDevelopmentBook = uiStateValue.isServiceDevelopment.value
         )?.let { book ->
             val author =
-                if (uiStateValue.selectedAuthor != null) uiStateValue.selectedAuthor!! else {
+                if (uiStateValue.selectedAuthor != null) uiStateValue.selectedAuthor!!
+                else if (uiStateValue.userBookCreatorUiState.exactMatchSearchedAuthor.value != null) {
+                    uiStateValue.userBookCreatorUiState.exactMatchSearchedAuthor.value!!
+                } else {
                     AuthorVo(
                         serverId = null,
                         localId = null,
@@ -640,10 +581,18 @@ class BookCreatorViewModel(
                         middleName = book.authorMiddleName,
                     )
                 }
-            scope.launch {
+            scope.launch(Dispatchers.IO) {
+                withContext(Dispatchers.Main) {
+                    uiStateValue.showLoadingProcessAnimation.value = true
+                }
                 interactor.createBook(book, author)
                 withContext(Dispatchers.Main) {
                     uiStateValue.showCreatedManuallyBookAnimation.value = true
+                    uiStateValue.showLoadingProcessAnimation.value = false
+                }
+                launch {
+                    delay(1500)
+                    clearAllDataAfterCreatingBook()
                 }
             }
         }
@@ -700,6 +649,10 @@ class BookCreatorViewModel(
             val bookNameWords = book.bookName.uppercase().split(" ")
             queryWords.all { word -> bookNameWords.any { it.contains(word) } }
         }
+    }
+
+    private fun clearAllDataAfterCreatingBook() {
+        updateUIState(BookCreatorUiState())
     }
 
     private fun createUserBookBasedOnShortBook(shortBook: BookShortVo): BookVo =

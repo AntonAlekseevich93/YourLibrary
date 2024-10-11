@@ -83,6 +83,10 @@ class CacheManagerDataSource(
         reviewAndRatingDao.clearAllCache()
     }
 
+    suspend fun clearBooksByAuthorCache(authorId: String, userId: Int) {
+        booksByAuthorDao.deleteCacheByAuthor(authorId, userId)
+    }
+
     private fun isCacheValid(cachedTimestamp: Long): Boolean {
         val currentTimestamp = _currentTimestamp
         val differenceInMillis = currentTimestamp - cachedTimestamp

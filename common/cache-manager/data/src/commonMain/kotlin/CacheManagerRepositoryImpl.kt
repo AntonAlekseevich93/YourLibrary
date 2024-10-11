@@ -83,4 +83,8 @@ class CacheManagerRepositoryImpl(
         cacheManagerDataSource.clearAllCache()
     }
 
+    override suspend fun clearBooksByAuthorCache(authorId: String) {
+        cacheManagerDataSource.clearBooksByAuthorCache(authorId, userId = appConfig.userId)
+    }
+
 }

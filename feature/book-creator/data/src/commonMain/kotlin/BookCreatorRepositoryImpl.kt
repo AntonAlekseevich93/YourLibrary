@@ -18,6 +18,7 @@ class BookCreatorRepositoryImpl(
     private val authorsRepository: AuthorsRepository,
     private val remoteConfig: RemoteConfig,
     private val serviceDevelopmentRepository: ServiceDevelopmentRepository,
+    private val cacheManagerRepository: CacheManagerRepository,
 ) : BookCreatorRepository {
 
     override suspend fun createBook(book: BookVo, author: AuthorVo) {
@@ -27,6 +28,9 @@ class BookCreatorRepositoryImpl(
             userId = userId
         ).toVo(null)
         authorsRepository.createAuthorIfNotExist(author)
+        if (book.bookIsCreatedManually) {
+            cacheManagerRepository.clearBooksByAuthorCache(author.id)
+        }
         val response = remoteBookCreatorDataSource.addNewUserBook(
             userBook = bookVo.toRemoteDto(),
         )?.result

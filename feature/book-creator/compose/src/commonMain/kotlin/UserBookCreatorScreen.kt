@@ -1,4 +1,3 @@
-import alert_dialog.CommonAlertDialog
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -6,7 +5,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +33,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.BaselineShift
@@ -40,6 +43,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import animations.LoadingProcessAnimation
 import animations.SuccessAnimation
 import animations.ToggleServiceDevelopmentAnimation
 import com.github.panpf.sketch.AsyncImage
@@ -96,7 +100,7 @@ fun UserBookCreatorScreen(
     var serviceDevelopmentAnimationNotShowed by remember { mutableStateOf(true) }
     val showServiceDevelopmentAnimation = remember { mutableStateOf(false) }
     val requiredFieldsIsNotEmpty = remember { mutableStateOf(false) }
-
+    val keyboardController = LocalSoftwareKeyboardController.current
     var hazeModifier: Modifier = Modifier
     if (uiState.isHazeBlurEnabled.value) {
         hazeModifier = Modifier.haze(
@@ -290,7 +294,11 @@ fun UserBookCreatorScreen(
                     endDate = uiState.userBookCreatorUiState.endDate,
                 )
 
-                BookCreatorSaveButton(enabled = requiredFieldsIsNotEmpty) {
+                BookCreatorSaveButton(
+                    enabled = requiredFieldsIsNotEmpty.value &&
+                            !uiState.showLoadingProcessAnimation.value && !uiState.showCreatedManuallyBookAnimation.value
+                ) {
+                    keyboardController?.hide()
                     viewModel.sendEvent(BookCreatorEvents.CreateManuallyBook)
                 }
             }
@@ -332,20 +340,6 @@ fun UserBookCreatorScreen(
             )
         }
 
-        if (uiState.showCommonAlertDialog) {
-            uiState.alertDialogConfig?.let { config ->
-                CommonAlertDialog(
-                    config = config,
-                    acceptListener = {
-                        config.acceptEvent?.let { viewModel.sendEvent(it) }
-                    },
-                    onDismissRequest = {
-                        config.dismissEvent?.let { viewModel.sendEvent(it) }
-                    }
-                )
-            }
-        }
-
         AnimatedVisibility(selectionGenreState) {
             BasicAlertDialog(
                 modifier = Modifier.fillMaxSize(),
@@ -361,14 +355,6 @@ fun UserBookCreatorScreen(
                 }
             }
         }
-
-        SuccessAnimation(
-            show = uiState.showCreatedManuallyBookAnimation,
-            finishAnimation = {
-                uiState.showCreatedManuallyBookAnimation.value = false
-                navigationComponent.onBack()
-            }
-        )
 
         ToggleServiceDevelopmentAnimation(
             show = showServiceDevelopmentAnimation,
@@ -400,6 +386,30 @@ fun UserBookCreatorScreen(
                 exactMatchBooks = uiState.userBookCreatorUiState.exactMatchSearchedBooks.value
             )
         }
+
+        if (uiState.showCreatedManuallyBookAnimation.value || uiState.showLoadingProcessAnimation.value) {
+            Box(
+                Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f))
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onPress = {
+                            },
+                        )
+                    },
+            )
+        }
+
+        SuccessAnimation(
+            show = uiState.showCreatedManuallyBookAnimation,
+            finishAnimation = {
+                uiState.showCreatedManuallyBookAnimation.value = false
+                navigationComponent.toMain()
+            }
+        )
+
+        LoadingProcessAnimation(
+            show = uiState.showLoadingProcessAnimation,
+        )
     }
 }
 
