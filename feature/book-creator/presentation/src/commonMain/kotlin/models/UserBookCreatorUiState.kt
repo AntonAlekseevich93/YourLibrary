@@ -37,6 +37,7 @@ data class UserBookCreatorUiState(
     val oldTypedAuthorNameText: MutableState<String> = mutableStateOf(""),
     val oldTypedBookNameText: MutableState<String> = mutableStateOf(""),
     val selectedAuthorBooks: MutableState<List<BookShortVo>> = mutableStateOf(emptyList()),
+    var selectedBookByChangeReadingStatus: MutableState<BookShortVo?> = mutableStateOf(null),
 ) {
     fun createUserBook(
         selectedAuthor: AuthorVo?,

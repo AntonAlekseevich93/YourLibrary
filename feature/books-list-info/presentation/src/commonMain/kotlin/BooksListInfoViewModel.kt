@@ -78,7 +78,7 @@ class BooksListInfoViewModel(
                         )
                     } else if (localBook.readingStatus.id != newStatus.id) {
                         bookCreatorInteractor.changeUserBookReadingStatus(
-                            book = localBook,
+                            bookWithOldReadingStatus = localBook,
                             newStatus = newStatus
                         )
                     }

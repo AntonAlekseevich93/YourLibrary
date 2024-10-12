@@ -28,9 +28,12 @@ class BookCreatorInteractor(
     suspend fun getBookStatusByBookId(bookId: String): ReadingStatus? =
         repository.getBookStatusByBookId(bookId)
 
-    suspend fun changeUserBookReadingStatus(book: BookVo, newStatus: ReadingStatus) {
+    suspend fun changeUserBookReadingStatus(
+        bookWithOldReadingStatus: BookVo,
+        newStatus: ReadingStatus
+    ) {
         bookInfoRepository.updateUserBook(
-            book = book.copy(readingStatus = newStatus)
+            book = bookWithOldReadingStatus.copy(readingStatus = newStatus)
         )
     }
 

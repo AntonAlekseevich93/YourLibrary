@@ -10,4 +10,7 @@ class LocalSearchDataSource(
     suspend fun searchInBooks(bookName: String) =
         booksDao.searchBookByName(bookName.uppercase())
 
+    suspend fun getLocalReadingStatus(bookId: String, userId: Int): String? =
+        booksDao.getBookStatusByBookId(bookId, userId).firstOrNull()?.readingStatus
+
 }

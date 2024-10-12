@@ -2,7 +2,9 @@ package main_models.rest.books
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import main_models.ReadingStatus
 import main_models.books.BookShortVo
+import main_models.rating_review.ReviewAndRatingVo
 
 @Serializable
 data class BookShortResponse(
@@ -40,7 +42,9 @@ data class BookShortRemoteDto(
 )
 
 fun BookShortRemoteDto.toVo(
-    imageUrl: String?
+    imageUrl: String?,
+    localCurrentUserRating: ReviewAndRatingVo? = null,
+    localReadingStatus: ReadingStatus? = null,
 ): BookShortVo? {
     return BookShortVo(
         id = id ?: return null,
@@ -70,6 +74,8 @@ fun BookShortRemoteDto.toVo(
         authorFirstName = authorFirstName ?: "",
         authorLastName = authorLastName ?: "",
         authorMiddleName = authorMiddleName ?: "",
+        localCurrentUserRating = localCurrentUserRating,
+        localReadingStatus = localReadingStatus
     )
 }
 

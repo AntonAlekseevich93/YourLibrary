@@ -140,6 +140,19 @@ class BookCreatorViewModel(
                 checkIfAuthorIsMatchingAndSetOnCreatedUserScreen()
             }
 
+            is BookCreatorEvents.UserBookCreatorSetSelectedBook -> {
+                uiStateValue.userBookCreatorUiState.selectedBookByChangeReadingStatus.value =
+                    event.book
+            }
+
+            is BookCreatorEvents.UserBookCreatorClearSelectedBook -> {
+                uiStateValue.userBookCreatorUiState.selectedBookByChangeReadingStatus.value = null
+            }
+
+            is BookCreatorEvents.UserBookCreatorChangeReadingStatus -> {
+                changeBookReadingStatusIfBookExistOrCreateBookWithNewStatusForCreatedUserBook(event.newStatus)
+            }
+
             is DatePickerEvents.OnSelectedDate -> setSelectedDate(event.millis, event.text)
             is DatePickerEvents.OnShowDatePicker -> showDatePicker(event.type)
             is DatePickerEvents.OnHideDatePicker -> {
@@ -169,6 +182,8 @@ class BookCreatorViewModel(
         return localAuthor
             ?: if (uiStateValue.selectedAuthor != null) {
                 uiStateValue.selectedAuthor!!
+            } else if (uiStateValue.userBookCreatorUiState.exactMatchSearchedAuthor.value != null) {
+                uiStateValue.userBookCreatorUiState.exactMatchSearchedAuthor.value!!
             } else {
                 AuthorVo(
                     serverId = null,
@@ -535,9 +550,48 @@ class BookCreatorViewModel(
                         )
                     } else if (selectedBookInfo.bookVo.readingStatus.id != newStatus.id) {
                         interactor.changeUserBookReadingStatus(
-                            book = selectedBookInfo.bookVo,
+                            bookWithOldReadingStatus = selectedBookInfo.bookVo,
                             newStatus = newStatus
                         )
+                    }
+                }
+            }
+        }
+    }
+
+    //todo separate user book creation view model
+    private fun changeBookReadingStatusIfBookExistOrCreateBookWithNewStatusForCreatedUserBook(
+        newStatus: ReadingStatus
+    ) {
+        uiStateValue.userBookCreatorUiState.apply {
+            scope.launch(Dispatchers.IO) {
+                selectedBookByChangeReadingStatus.value?.let { selectedBookInfo ->
+                    selectedBookByChangeReadingStatus.value = null
+                    exactMatchSearchedBooks.value = emptyList()
+                    similarSearchedBooksByAuthor.value = emptyList()
+                    uiStateValue.showCreatedManuallyBookAnimation.value = true
+                    val localBook = interactor.getLocalBookById(selectedBookInfo.bookId)
+
+                    if (localBook == null) {
+                        val bookVo = createUserBookBasedOnShortBook(
+                            shortBook = selectedBookInfo.copy(
+                                localReadingStatus = newStatus
+                            )
+                        )
+                        val authorVo = getOrCreateAuthor(bookVo)
+                        interactor.createBook(
+                            bookVo,
+                            author = authorVo,
+                        )
+                    } else if (newStatus.id != localBook.readingStatus.id) {
+                        interactor.changeUserBookReadingStatus(
+                            bookWithOldReadingStatus = localBook,
+                            newStatus = newStatus
+                        )
+                    }
+                    launch {
+                        delay(1500)
+                        clearAllDataAfterCreatingBook()
                     }
                 }
             }

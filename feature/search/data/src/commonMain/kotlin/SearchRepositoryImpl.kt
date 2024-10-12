@@ -3,6 +3,8 @@ import database.room.entities.toVo
 import ktor.RemoteSearchDataSource
 import main_models.AuthorVo
 import main_models.BookVo
+import main_models.ReadingStatus
+import main_models.ReadingStatusUtils
 import main_models.books.BookShortVo
 import main_models.books.toRemoteDto
 import main_models.rest.authors.toAuthorVo
@@ -13,6 +15,8 @@ class SearchRepositoryImpl(
     private val remoteSearchDataSource: RemoteSearchDataSource,
     private val remoteConfig: RemoteConfig,
     private val cacheManagerRepository: CacheManagerRepository,
+    private val appConfig: AppConfig,
+    private val reviewAndRatingRepository: ReviewAndRatingRepository,
 ) : SearchRepository {
 
     override suspend fun searchInAuthorsName(searchedText: String): List<AuthorVo> {
@@ -27,18 +31,27 @@ class SearchRepositoryImpl(
     }
 
     override suspend fun searchInBooks(uppercaseBookName: String): List<BookShortVo> {
+        val userId = appConfig.userId
         val response =
             remoteSearchDataSource.getAllMatchesByBookName(searchedText = uppercaseBookName)
         return if (response?.result == null) {
             emptyList()
         } else {
             val books = response.result!!.books.mapNotNull {
+                val bookId = it.bookId.orEmpty()
                 it.toVo(
                     imageUrl = remoteConfig.getImageUrl(
                         imageName = it.imageName,
                         imageFolderId = it.imageFolderId,
                         bookServerId = it.id
                     ),
+                    localCurrentUserRating = reviewAndRatingRepository.getCurrentUserLocalReviewAndRatingByBook(
+                        bookId
+                    ),
+                    localReadingStatus = getLocalReadingStatusForBook(
+                        bookId = bookId,
+                        userId = userId
+                    )
                 )
             }
             sortBooks(books, sortedName = uppercaseBookName)
@@ -46,6 +59,7 @@ class SearchRepositoryImpl(
     }
 
     override suspend fun getAllBooksByAuthor(id: String): List<BookShortVo> {
+        val userId = appConfig.userId
         val cachedBooks = cacheManagerRepository.getCacheAllAuthorBooks(authorId = id)
         val books = if (cachedBooks.isEmpty()) {
             val remoteBooks = remoteSearchDataSource.getAllBooksByAuthor(id)?.result?.books
@@ -59,12 +73,20 @@ class SearchRepositoryImpl(
         }
 
         return books?.mapNotNull {
+            val bookId = it.bookId.orEmpty()
             it.toVo(
                 imageUrl = remoteConfig.getImageUrl(
                     imageName = it.imageName,
                     imageFolderId = it.imageFolderId,
                     bookServerId = it.id
                 ),
+                localCurrentUserRating = reviewAndRatingRepository.getCurrentUserLocalReviewAndRatingByBook(
+                    bookId
+                ),
+                localReadingStatus = getLocalReadingStatusForBook(
+                    bookId = bookId,
+                    userId = userId
+                )
             )
         } ?: emptyList()
     }
@@ -79,6 +101,12 @@ class SearchRepositoryImpl(
                 )
             )
         }
+
+    private suspend fun getLocalReadingStatusForBook(bookId: String, userId: Int): ReadingStatus? {
+        return localSearchDataSource.getLocalReadingStatus(bookId, userId = userId)?.let {
+            ReadingStatusUtils.textToReadingStatus(it)
+        }
+    }
 
     /** Если искомое слово "Стивен", вначале идут все которые первым словом содержат "Стивен",
      * Затем идут все (сортированные по алфавиту) которые вторым или третьим и.д. словом содержат "Стивен"

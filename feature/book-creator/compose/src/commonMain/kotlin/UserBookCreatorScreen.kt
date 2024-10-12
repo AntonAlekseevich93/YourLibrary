@@ -66,6 +66,7 @@ import models.BookCreatorEvents
 import models.UserBookCreatorUiState
 import navigation.screen_components.UserBookCreatorScreenComponent
 import org.jetbrains.compose.resources.stringResource
+import reading_status.ReadingStatusSelectorDialog
 import user_book_creator_screen.BookCreatorAgeRestrictionsElement
 import user_book_creator_screen.BookCreatorAuthorElement
 import user_book_creator_screen.BookCreatorBookNameElement
@@ -383,7 +384,10 @@ fun UserBookCreatorScreen(
                     viewModel.sendEvent(BookCreatorEvents.ClearMatchesBooksBySelectedAuthors)
                 },
                 similarBooks = uiState.userBookCreatorUiState.similarSearchedBooksByAuthor.value,
-                exactMatchBooks = uiState.userBookCreatorUiState.exactMatchSearchedBooks.value
+                exactMatchBooks = uiState.userBookCreatorUiState.exactMatchSearchedBooks.value,
+                setSelectedBook = {
+                    viewModel.sendEvent(BookCreatorEvents.UserBookCreatorSetSelectedBook(it))
+                }
             )
         }
 
@@ -396,6 +400,17 @@ fun UserBookCreatorScreen(
                             },
                         )
                     },
+            )
+        }
+
+        if (uiState.userBookCreatorUiState.selectedBookByChangeReadingStatus.value != null) {
+            ReadingStatusSelectorDialog(
+                currentStatus = uiState.userBookCreatorUiState.selectedBookByChangeReadingStatus.value?.localReadingStatus,
+                useDivider = false,
+                selectStatusListener = {
+                    viewModel.sendEvent(BookCreatorEvents.UserBookCreatorChangeReadingStatus(it))
+                },
+                dismiss = { viewModel.sendEvent(BookCreatorEvents.UserBookCreatorClearSelectedBook) }
             )
         }
 

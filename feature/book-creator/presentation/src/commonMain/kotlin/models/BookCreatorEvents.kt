@@ -3,6 +3,7 @@ package models
 import BaseEvent
 import main_models.AuthorVo
 import main_models.ReadingStatus
+import main_models.books.BookShortVo
 
 sealed class BookCreatorEvents : BaseEvent {
     data object ClearUrlEvent : BookCreatorEvents()
@@ -21,4 +22,8 @@ sealed class BookCreatorEvents : BaseEvent {
     data object CheckIfAuthorIsMatchingAndSetOnCreatedUserScreen : BookCreatorEvents()
     data object ClearMatchesBooksBySelectedAuthors : BookCreatorEvents()
     data class UserBookCreatorAuthorSelected(val author: AuthorVo) : BookCreatorEvents()
+    data class UserBookCreatorSetSelectedBook(val book: BookShortVo) : BookCreatorEvents()
+    data object UserBookCreatorClearSelectedBook : BookCreatorEvents()
+    data class UserBookCreatorChangeReadingStatus(val newStatus: ReadingStatus) :
+        BookCreatorEvents()
 }

@@ -41,6 +41,7 @@ fun AuthorsWithBooksSelectorBottomSheet(
     onDismissAuthors: () -> Unit,
     onDismissBooks: () -> Unit,
     authorSelectedListener: (AuthorVo) -> Unit,
+    setSelectedBook: (book: BookShortVo) -> Unit,
 ) {
     BasicAlertDialog({}, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Card(
@@ -69,7 +70,11 @@ fun AuthorsWithBooksSelectorBottomSheet(
                 }
 
                 itemsIndexed(exactMatchBooks) { index, item ->
-                    ExactMatchBookInfoItem(item, isLastItem = exactMatchBooks.size - 1 == index)
+                    ExactMatchBookInfoItem(
+                        item,
+                        isLastItem = exactMatchBooks.size - 1 == index,
+                        onClick = setSelectedBook
+                    )
                 }
 
                 item {
@@ -95,7 +100,11 @@ fun AuthorsWithBooksSelectorBottomSheet(
                 }
 
                 itemsIndexed(similarBooks) { index, item ->
-                    ExactMatchBookInfoItem(item, isLastItem = similarBooks.size - 1 == index)
+                    ExactMatchBookInfoItem(
+                        item,
+                        isLastItem = similarBooks.size - 1 == index,
+                        onClick = setSelectedBook
+                    )
                 }
 
                 item {

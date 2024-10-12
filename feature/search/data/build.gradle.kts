@@ -9,6 +9,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":feature:search:api"))
+                api(project(":feature:rating-review:api"))
                 api(project(":common:models"))
                 implementation(project(":common:constants"))
                 implementation(project(":common:core"))

@@ -8,7 +8,7 @@ import org.kodein.di.singleton
 
 val searchModule = DI.Module("searchModule") {
     bind<SearchRepository>() with singleton {
-        SearchRepositoryImpl(instance(), instance(), instance(), instance())
+        SearchRepositoryImpl(instance(), instance(), instance(), instance(), instance(), instance())
     }
 
     bind<LocalSearchDataSource>() with provider {
