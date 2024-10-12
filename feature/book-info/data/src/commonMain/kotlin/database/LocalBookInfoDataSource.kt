@@ -72,6 +72,8 @@ class LocalBookInfoDataSource(
         }
     }
 
+    suspend fun getAllBooks(userId: Int) = booksDao.getAllBooksFlow(userId)
+
     private suspend fun createEmptyTimestamp(userId: Int): BookTimestampEntity {
         val timestamp = BookTimestampEntity(
             userId = userId,

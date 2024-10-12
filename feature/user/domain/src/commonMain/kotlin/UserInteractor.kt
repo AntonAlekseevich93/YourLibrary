@@ -1,4 +1,5 @@
 import kotlinx.coroutines.flow.Flow
+import main_models.books.UserBooksStatistics
 import main_models.rest.users.AuthRegisterRequest
 import main_models.rest.users.AuthRequest
 import main_models.user.UserVo
@@ -7,6 +8,7 @@ class UserInteractor(
     private val repository: UserRepository,
     private val searchRepository: SearchRepository,
     private val appConfig: AppConfig,
+    private val booksRepository: BookInfoRepository,
 ) {
 
     suspend fun signUp(
@@ -84,5 +86,8 @@ class UserInteractor(
     suspend fun updateUserInfo() {
         repository.updateUserInfo()
     }
+
+    suspend fun getUserBooksStatistics(): Flow<UserBooksStatistics> =
+        booksRepository.getUserBooksStatistics()
 
 }

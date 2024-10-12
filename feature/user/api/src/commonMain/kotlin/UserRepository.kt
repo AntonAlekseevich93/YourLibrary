@@ -28,5 +28,4 @@ interface UserRepository {
     suspend fun getAuthorizedUser(): Flow<UserVo?>
     suspend fun logOut()
     suspend fun updateUserInfo()
-
 }

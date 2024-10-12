@@ -24,8 +24,11 @@ interface BooksDao {
     @Query("SELECT * FROM BookEntity WHERE userId = :userId")
     suspend fun getAllBooks(userId: Int): List<BookEntity>
 
+    @Query("SELECT * FROM BookEntity WHERE userId = :userId")
+    fun getAllBooksFlow(userId: Int): Flow<List<BookEntity>>
+
     @Query("SELECT * FROM BookEntity WHERE readingStatus = :status AND userId =:userId")
-    fun getAllBooksFlow(status: String, userId: Int): Flow<List<BookEntity>>
+    fun getAllBooksFlowByStatus(status: String, userId: Int): Flow<List<BookEntity>>
 
     @Query("SELECT * FROM BookEntity WHERE bookId = :bookId AND userId = :userId")
     suspend fun getBookByBookId(bookId: String, userId: Int): List<BookEntity>

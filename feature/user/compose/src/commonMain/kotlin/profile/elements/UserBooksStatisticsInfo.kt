@@ -30,7 +30,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import models.UserBooksStatistics
+import main_models.books.UserBooksStatistics
+import org.jetbrains.compose.resources.stringResource
+import yourlibrary.common.resources.generated.resources.Res
+import yourlibrary.common.resources.generated.resources.reading_status_deferred
+import yourlibrary.common.resources.generated.resources.reading_status_done
+import yourlibrary.common.resources.generated.resources.reading_status_is_reading
+import yourlibrary.common.resources.generated.resources.reading_status_planned
+import yourlibrary.common.resources.generated.resources.user_books_statistics_planned
 
 @Composable
 fun UserBooksStatisticsInfo(
@@ -39,30 +46,31 @@ fun UserBooksStatisticsInfo(
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             StatisticItem(
-                text = "Всего книг",
-                count = userBooksStatistics.value.allBooksCount,
+                text = stringResource(Res.string.reading_status_planned),
+                count = userBooksStatistics.value.plannedBooksCount,
                 modifier = Modifier.weight(1f)
             )
             StatisticItem(
-                text = "Читаю",
+                text = stringResource(Res.string.reading_status_is_reading),
                 count = userBooksStatistics.value.readingBooksCount,
                 modifier = Modifier.weight(1f)
             )
             StatisticItem(
-                text = "Прочитано",
+                text = stringResource(Res.string.reading_status_done),
                 count = userBooksStatistics.value.doneBooksCount,
                 modifier = Modifier.weight(1f)
             )
 
             StatisticItem(
-                text = "Отложено",
+                text = stringResource(Res.string.reading_status_deferred),
                 count = userBooksStatistics.value.deferredBooksCount,
                 modifier = Modifier.weight(1f)
             )
         }
         StatisticProgressIndicator(
             finishedBooks = userBooksStatistics.value.finishedThisYearBooks,
-            plannedBooks = userBooksStatistics.value.plannedThisYearBooks
+            plannedBooks = userBooksStatistics.value.plannedThisYearBooks,
+            year = userBooksStatistics.value.currentYear
         )
 
         StatisticItemClickable(
@@ -84,9 +92,14 @@ fun UserBooksStatisticsInfo(
 private fun StatisticProgressIndicator(
     finishedBooks: Int,
     plannedBooks: Int,
+    year: Int
 ) {
-    val progress = finishedBooks.toFloat() / plannedBooks.toFloat()
-    val progressPercent = (progress * 100).toInt()
+    val progress = if (finishedBooks > 0 && plannedBooks > 0) {
+        (finishedBooks.toFloat() / plannedBooks.toFloat())
+    } else {
+        0f
+    }
+    val progressPercent = if (progress > 0) (progress * 100).toInt() else 0
     val shape = RoundedCornerShape(12.dp)
     Card(
         modifier = Modifier
@@ -101,7 +114,12 @@ private fun StatisticProgressIndicator(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "2/4 книг запланированных на 2024",
+                text = stringResource(
+                    Res.string.user_books_statistics_planned,
+                    plannedBooks,
+                    finishedBooks,
+                    year
+                ),
                 style = ApplicationTheme.typography.footnoteRegular,
                 color = ApplicationTheme.colors.mainTextColor,
                 softWrap = true,

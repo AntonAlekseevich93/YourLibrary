@@ -174,4 +174,5 @@
     <string name="lock_book_field_tooltip">Название книги зафиксировано и может быть изменено только через экран поиска</string>
     <string name="book_title">Название книги</string>
     <string name="create_new_book_question">Создать новую книгу?</string>
+    <string name="user_books_statistics_planned">%1$d/%2$d книг запланированных на %3$dг.</string>
 </resources>

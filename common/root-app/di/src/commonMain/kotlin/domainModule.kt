@@ -29,7 +29,7 @@ val domainModule = DI.Module("domainModule") {
     }
 
     bind<UserInteractor>() with provider {
-        UserInteractor(instance(), instance(), instance())
+        UserInteractor(instance(), instance(), instance(), instance())
     }
 
     bind<SettingsInteractor>() with provider {

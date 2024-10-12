@@ -4,13 +4,17 @@ import database.room.entities.toEntity
 import database.room.entities.toLocalDto
 import database.room.entities.toVo
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import ktor.RemoteBookInfoDataSource
 import main_models.BookVo
+import main_models.ReadingStatus
 import main_models.books.BookTimestampVo
+import main_models.books.UserBooksStatistics
 import main_models.rest.books.UserBookRemoteDto
 import main_models.rest.books.toRemoteDto
 import main_models.rest.books.toVo
+import java.util.Calendar
 
 class BookInfoRepositoryImpl(
     private val localBookInfoDataSource: LocalBookInfoDataSource,
@@ -90,6 +94,23 @@ class BookInfoRepositoryImpl(
 
     override suspend fun getNotSynchronizedBooks(userId: Int) =
         localBookInfoDataSource.getNotSynchronizedBooks(userId).map { it.toVo(null).toRemoteDto() }
+
+    override suspend fun getUserBooksStatistics(): Flow<UserBooksStatistics> = flow {
+        localBookInfoDataSource.getAllBooks(appConfig.userId).collect { rawEntity ->
+            val books = rawEntity.map { it.toVo(null) }
+            val statistics = UserBooksStatistics(
+                allBooksCount = books.size,
+                plannedBooksCount = books.count { it.readingStatus == ReadingStatus.PLANNED },
+                readingBooksCount = books.count { it.readingStatus == ReadingStatus.READING },
+                doneBooksCount = books.count { it.readingStatus == ReadingStatus.DONE },
+                deferredBooksCount = books.count { it.readingStatus == ReadingStatus.DEFERRED },
+                plannedThisYearBooks = 0,
+                finishedThisYearBooks = 0,
+                currentYear = Calendar.getInstance().get(Calendar.YEAR)
+            )
+            emit(statistics)
+        }
+    }
 
     private suspend fun updateBooksTimestamp(timestamp: Long) {
         val lastTimestamp = localBookInfoDataSource.getBookTimestamp(appConfig.userId) //todo

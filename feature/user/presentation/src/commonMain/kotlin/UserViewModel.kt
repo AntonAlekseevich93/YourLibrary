@@ -6,6 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import models.UserEvents
 import models.UserUiState
 import platform.Platform
@@ -36,6 +37,13 @@ class UserViewModel(
             }
             launch {
                 uiStateValue.showAdminPanel.value = appConfig.isModerator
+            }
+            launch(Dispatchers.IO) {
+                interactor.getUserBooksStatistics().collect {
+                    withContext(Dispatchers.Main) {
+                        uiStateValue.userBooksStatistics.value = it
+                    }
+                }
             }
         }
     }

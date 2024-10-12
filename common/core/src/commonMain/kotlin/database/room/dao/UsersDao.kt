@@ -24,5 +24,4 @@ interface UsersDao {
 
     @Query("UPDATE UserEntity set isAuthorized = false")
     suspend fun setAllAsUnauthorized()
-
 }
