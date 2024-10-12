@@ -23,6 +23,7 @@ class UserViewModel(
     private var userRefreshJob: Job? = null
 
     init {
+        uiStateValue.showAdminPanel.value = appConfig.isModerator
         scope.launch {
             launch {
                 interactor.getAuthorizedUser().collect { user ->

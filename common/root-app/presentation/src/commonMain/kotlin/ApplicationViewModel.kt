@@ -57,7 +57,7 @@ class ApplicationViewModel(
             }
 
             launch {
-                userInteractor.checkIfUserTokenExistAndLogOutIfNot()
+                userInteractor.getUserInfo()
             }
         }
     }

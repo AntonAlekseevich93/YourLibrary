@@ -83,11 +83,12 @@ class UserInteractor(
         repository.logOut()
     }
 
-    suspend fun checkIfUserTokenExistAndLogOutIfNot() {
-        repository.isTokenExist()?.let { isTokenExist ->
-            if (!isTokenExist) {
+    suspend fun getUserInfo() {
+        repository.getUserInfo()?.let { userInfo ->
+            if (!userInfo.tokenExist) {
                 repository.logOut()
             }
+            appConfig.changeUserModeratorStatus(userInfo.isModerator)
         }
     }
 

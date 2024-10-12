@@ -1,20 +1,18 @@
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import buttons.MenuButton
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
@@ -23,8 +21,6 @@ import navigation.screen_components.ProfileScreenComponent
 import org.jetbrains.compose.resources.stringResource
 import profile.ProfileContent
 import yourlibrary.common.resources.generated.resources.Res
-import yourlibrary.common.resources.generated.resources.administration_panel
-import yourlibrary.common.resources.generated.resources.ic_moderation_menu
 import yourlibrary.common.resources.generated.resources.profile
 
 @Composable
@@ -72,23 +68,13 @@ fun ProfileScreen(
                 modifier = hazeModifier.fillMaxSize()
                     .padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())
             ) {
-                viewModel.ProfileContent(uiState.userInfo)
-
-                MenuButton(
-                    icon = Res.drawable.ic_moderation_menu,
-                    iconColorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
-                    invoke = {
-                        Text(
-                            text = stringResource(Res.string.administration_panel),
-                            style = ApplicationTheme.typography.headlineRegular,
-                            color = ApplicationTheme.colors.mainTextColor,
-
-                            )
-                    },
-                    onClick = {
+                viewModel.ProfileContent(
+                    uiState = uiState,
+                    onAdminPanelClick = {
                         navigationComponent.openAdminPanel()
                     }
                 )
+                Spacer(Modifier.padding(64.dp))
 
             }
         }

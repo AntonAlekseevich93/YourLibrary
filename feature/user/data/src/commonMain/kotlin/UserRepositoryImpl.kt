@@ -8,6 +8,8 @@ import main_models.rest.base.BaseResponse
 import main_models.rest.users.AuthRegisterRequest
 import main_models.rest.users.AuthRequest
 import main_models.rest.users.AuthResponse
+import main_models.rest.users.UserInfoVo
+import main_models.rest.users.toVo
 import main_models.user.UserVo
 
 class UserRepositoryImpl(
@@ -27,7 +29,7 @@ class UserRepositoryImpl(
         request = request
     )
 
-    override suspend fun isTokenExist(): Boolean? = remoteUserDataSource.isTokenExist()
+    override suspend fun getUserInfo(): UserInfoVo? = remoteUserDataSource.getUserInfo()?.toVo()
 
     override fun createOrUpdateUser(
         id: Int,

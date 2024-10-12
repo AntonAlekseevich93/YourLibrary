@@ -28,6 +28,9 @@ class AppConfig() {
     val userId
         get() = settings.getInt(key = currentUserEmail, defaultValue = DEFAULT_USER_ID)
 
+    val isModerator
+        get() = settings.getBoolean(key = IS_MODERATOR_KEY, defaultValue = false)
+
     val useCustomHost
         get() = settings.getBoolean(key = NEED_USE_CUSTOM_HOST, defaultValue = false)
 
@@ -97,6 +100,10 @@ class AppConfig() {
         return IntRange(start, end)
     }
 
+    fun changeUserModeratorStatus(isModerator: Boolean) {
+        settings.putBoolean(IS_MODERATOR_KEY, isModerator)
+    }
+
     companion object {
         private const val AUTH_TOKEN_KEY = "auth_token_key"
         private const val DEVICE_ID_KEY = "device_id_key"
@@ -109,6 +116,7 @@ class AppConfig() {
         private const val NON_MODERATION_END_RANGE = "NON_MODERATION_END_RANGE"
         private const val NEED_USE_CUSTOM_HOST = "NEED_USE_CUSTOM_HOST"
         private const val NEED_USE_NON_MODERATION_RANGE = "NEED_USE_NON_MODERATION_RANGE"
+        private const val IS_MODERATOR_KEY = "IS_MODERATOR_KEY"
         private const val DEFAULT_USER_ID = -101
     }
 }

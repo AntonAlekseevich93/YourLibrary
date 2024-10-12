@@ -3,10 +3,11 @@ import main_models.rest.base.BaseResponse
 import main_models.rest.users.AuthRegisterRequest
 import main_models.rest.users.AuthRequest
 import main_models.rest.users.AuthResponse
+import main_models.rest.users.UserInfoVo
 import main_models.user.UserVo
 
 interface UserRepository {
-    suspend fun isTokenExist(): Boolean?
+    suspend fun getUserInfo(): UserInfoVo?
 
     suspend fun signUp(
         request: AuthRegisterRequest
