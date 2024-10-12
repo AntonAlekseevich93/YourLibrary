@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import auth.AuthScreen
 import book_info.BookInfoScreen
 import bottom_app_bar.CustomBottomBar
 import com.arkivanov.decompose.ExperimentalDecomposeApi
@@ -31,12 +32,12 @@ import dev.chrisbanes.haze.haze
 import di.Inject
 import main_app_bar.MainAppBar
 import main_models.TooltipItem
+import models.UserState
 import moderations_books_covers_screen.ModerationBooksCoversScreen
 import navigation.RootComponent
 import navigation.isBookCreatorScreen
 import navigation.isMainScreen
 import navigation.isProfileScreen
-import navigation.isSettingsScreen
 import platform.Platform
 import platform.isMobile
 
@@ -108,7 +109,7 @@ fun Application(
                 showMainAppBar = component.isMainScreen()
                 showBottomBar =
                     component.isMainScreen() || component.isBookCreatorScreen()
-                            || component.isProfileScreen() || component.isSettingsScreen()
+                            || component.isProfileScreen()
 
                 when (val screen = it.instance) {
                     is RootComponent.Screen.MainScreen -> {
@@ -158,7 +159,24 @@ fun Application(
                     }
 
                     is RootComponent.Screen.ProfileScreen -> {
-                        ProfileScreen()
+                        when (uiState.userState.value) {
+                            UserState.IS_AUTHORIZED -> {
+                                ProfileScreen(
+                                    hazeState = hazeBlurState,
+                                    navigationComponent = screen.component,
+                                    isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
+                                )
+                            }
+
+                            UserState.IS_NOT_AUTHORIZED -> {
+                                AuthScreen(
+                                    hazeState = hazeBlurState,
+                                    navigationComponent = screen.component,
+                                    isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
+                                )
+                            }
+                        }
+
                     }
 
                     is RootComponent.Screen.SettingsScreen -> {

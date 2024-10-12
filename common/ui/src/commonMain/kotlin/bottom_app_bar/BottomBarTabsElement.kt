@@ -124,10 +124,6 @@ fun CustomBottomBar(
                         is BottomBarTab.Home -> {
                             navigationComponent.menuClick(MenuItem.MAIN)
                         }
-
-                        is BottomBarTab.Settings -> {
-                            navigationComponent.menuClick(MenuItem.SETTINGS)
-                        }
                     }
                 }
             )

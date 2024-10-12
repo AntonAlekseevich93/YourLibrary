@@ -289,13 +289,12 @@ class DefaultRootComponent(
     private fun itemProfileScreen(componentContext: ComponentContext): ProfileScreenComponent =
         DefaultProfileScreenComponent(
             componentContext = componentContext,
-        )
-
-    private fun itemSettingsScreen(componentContext: ComponentContext): SettingsScreenComponent =
-        DefaultSettingsScreenComponent(
-            componentContext = componentContext,
-            onBackListener = {
-                pop()
+            onSettingsClickListener = {
+                val id = getNextStackKey
+                push(
+                    id = id,
+                    config = Config.SettingsConfig(id)
+                )
             },
             onOpenAdminPanelListener = {
                 val id = getNextStackKey
@@ -304,6 +303,14 @@ class DefaultRootComponent(
                     config = Config.AdminConfig(id)
                 )
             }
+        )
+
+    private fun itemSettingsScreen(componentContext: ComponentContext): SettingsScreenComponent =
+        DefaultSettingsScreenComponent(
+            componentContext = componentContext,
+            onBackListener = {
+                pop()
+            },
         )
 
     private fun itemBooksListInfoScreen(

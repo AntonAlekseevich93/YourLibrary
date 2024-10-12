@@ -24,11 +24,9 @@ import models.SettingsEvents
 import navigation.screen_components.SettingsScreenComponent
 import org.jetbrains.compose.resources.stringResource
 import yourlibrary.common.resources.generated.resources.Res
-import yourlibrary.common.resources.generated.resources.administration_panel
 import yourlibrary.common.resources.generated.resources.clear_all_cache
 import yourlibrary.common.resources.generated.resources.clear_cache_bottom_sheet_info
 import yourlibrary.common.resources.generated.resources.dont_clear
-import yourlibrary.common.resources.generated.resources.ic_moderation_menu
 import yourlibrary.common.resources.generated.resources.ic_storage_menu
 import yourlibrary.common.resources.generated.resources.settings
 
@@ -48,7 +46,6 @@ fun SettingsScreen(
                 hazeBlurState = hazeState,
                 isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
                 title = stringResource(Res.string.settings),
-                showBackButton = false,
                 onClose = {},
                 onBack = {
                     navigationComponent.onBack()
@@ -73,22 +70,6 @@ fun SettingsScreen(
                             top = it.calculateTopPadding().plus(24.dp), bottom = 24.dp
                         )
                     ) {
-                        MenuButton(
-                            icon = Res.drawable.ic_moderation_menu,
-                            iconColorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
-                            invoke = {
-                                Text(
-                                    text = stringResource(Res.string.administration_panel),
-                                    style = ApplicationTheme.typography.headlineRegular,
-                                    color = ApplicationTheme.colors.mainTextColor,
-
-                                    )
-                            },
-                            onClick = {
-                                viewModel.sendEvent(SettingsEvents.OnOpenAdminPanel)
-                            }
-                        )
-
                         MenuButton(
                             icon = Res.drawable.ic_storage_menu,
                             iconColorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),

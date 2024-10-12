@@ -11,6 +11,7 @@ import main_app_bar.MainAppBarEvents
 import main_models.TooltipItem
 import main_models.books.BookShortVo
 import models.ApplicationUiState
+import models.UserState
 import navigation.RootComponent
 import navigation.activeScreenAsBookInfoOrNull
 import navigation_drawer.contents.models.DrawerEvents
@@ -23,6 +24,7 @@ class ApplicationViewModel(
     private val tooltipHandler: TooltipHandler,
     private val userInteractor: UserInteractor,
     private val platformInfo: PlatformInfoData,
+    private val appConfig: AppConfig
 ) : BaseMVIViewModel<ApplicationUiState, BaseEvent>(ApplicationUiState()),
     ApplicationScope, DrawerScope {
 
@@ -32,6 +34,11 @@ class ApplicationViewModel(
     lateinit var component: RootComponent
 
     init {
+        if (appConfig.isAuth) {
+            uiStateValue.userState.value = UserState.IS_AUTHORIZED
+        } else {
+            uiStateValue.userState.value = UserState.IS_NOT_AUTHORIZED
+        }
         uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
         scope.launch {
             launch(Dispatchers.IO) { setNotificationListener() }
@@ -139,12 +146,6 @@ class ApplicationViewModel(
     override fun openAdminParsingBooksScreen() {
         (component.screenStack.value.active.instance as? RootComponent.Screen.AdminScreen)?.let {
             it.component.openParsingScreen()
-        }
-    }
-
-    override fun openAdminPanel() {
-        (component.screenStack.value.active.instance as? RootComponent.Screen.SettingsScreen)?.let {
-            it.component.openAdminPanel()
         }
     }
 

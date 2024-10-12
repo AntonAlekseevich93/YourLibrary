@@ -9,7 +9,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(deps.hazeBlur)
-
                 implementation(project(":common:core"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:ui"))

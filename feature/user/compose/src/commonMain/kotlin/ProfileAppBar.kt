@@ -1,6 +1,3 @@
-package elements
-
-import ApplicationTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +11,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -30,11 +28,12 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeChild
 
 @Composable
-fun SettingsAppBar(
+fun ProfileAppBar(
     hazeBlurState: HazeState,
     isHazeBlurEnabled: Boolean,
     title: String,
-    onClose: () -> Unit,
+    showBackButton: Boolean,
+    onSettings: () -> Unit,
     onBack: () -> Unit,
 ) {
     val shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 8.dp)
@@ -57,7 +56,8 @@ fun SettingsAppBar(
     ) {
         AppBarComponent(
             title = title,
-            onClose = onClose,
+            showBackButton = showBackButton,
+            onSettings = onSettings,
             onBack = onBack,
         )
 
@@ -68,8 +68,9 @@ fun SettingsAppBar(
 @Composable
 internal fun AppBarComponent(
     title: String,
+    showBackButton: Boolean,
     onBack: () -> Unit,
-    onClose: () -> Unit,
+    onSettings: () -> Unit,
 ) {
     CompositionLocalProvider(
         LocalContentColor provides Color.White
@@ -95,20 +96,36 @@ internal fun AppBarComponent(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
+                    if (showBackButton) {
+                        IconButton(
+                            onClick = {
+                                onBack.invoke()
+                            },
+                            modifier = Modifier
+                        ) {
+
+                            Icon(
+                                imageVector = Icons.Rounded.ArrowBackIosNew,
+                                contentDescription = null,
+                            )
+                        }
+                    } else {
+                        Spacer(Modifier.padding(end = 46.dp))
+                    }
+                },
+                actions = {
                     IconButton(
                         onClick = {
-                            onBack.invoke()
+                            onSettings.invoke()
                         },
                         modifier = Modifier
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.ArrowBackIosNew,
+                            imageVector = Icons.Rounded.Settings,
                             contentDescription = null,
+                            tint = ApplicationTheme.colors.mainIconsColor
                         )
                     }
-                },
-                actions = {
-                    Spacer(Modifier.padding(end = 36.dp))
                 }
             )
         }

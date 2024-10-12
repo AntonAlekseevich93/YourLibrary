@@ -8,5 +8,4 @@ interface ApplicationScope {
     fun openModerationBooksScreen()
     fun openModerationBooksCoversScreen()
     fun openAdminParsingBooksScreen()
-    fun openAdminPanel()
 }

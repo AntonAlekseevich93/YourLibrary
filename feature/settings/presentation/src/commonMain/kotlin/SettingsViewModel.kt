@@ -16,10 +16,6 @@ class SettingsViewModel(
 
     override fun sendEvent(event: BaseEvent) {
         when (event) {
-            is SettingsEvents.OnOpenAdminPanel -> {
-                applicationScope.openAdminPanel()
-            }
-
             is SettingsEvents.ClearAllCache -> {
                 scope.launch {
                     interactor.clearAllCache()

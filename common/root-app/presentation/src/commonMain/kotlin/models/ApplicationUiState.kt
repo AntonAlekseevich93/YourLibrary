@@ -15,6 +15,7 @@ import main_models.path.PathInfoVo
 data class ApplicationUiState(
     val searchedBooks: List<BookVo> = emptyList(),
     val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
+    val userState: MutableState<UserState> = mutableStateOf(UserState.IS_NOT_AUTHORIZED)
 ) : BaseUIState {
     val pathInfoList: SnapshotStateList<PathInfoVo> =
         mutableStateListOf()
@@ -58,4 +59,10 @@ data class ApplicationUiState(
         }
         return map
     }
+}
+
+enum class UserState {
+    IS_AUTHORIZED,
+    IS_NOT_AUTHORIZED
+    //    NON_VERIFICATION,
 }
