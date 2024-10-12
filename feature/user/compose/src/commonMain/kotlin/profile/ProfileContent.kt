@@ -15,7 +15,10 @@ fun BaseEventScope<BaseEvent>.ProfileContent(
     onSignOut: () -> Unit,
 ) {
     AvatarWithName(uiState.userInfo.value.name)
-    UserBooksStatisticsInfo(uiState.userBooksStatistics)
+    UserBooksStatisticsInfo(
+        userBooksStatistics = uiState.userBooksStatistics,
+        userReviews = uiState.userReviews
+    )
     AccountMenu(
         onAdminPanelClick = onAdminPanelClick,
         showAdminPanelMenu = uiState.showAdminPanel.value,

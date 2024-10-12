@@ -1,7 +1,7 @@
 import kotlinx.coroutines.flow.Flow
 import main_models.BookVo
 import main_models.books.BookTimestampVo
-import main_models.books.UserBooksStatistics
+import main_models.books.UserBooksStatisticsData
 import main_models.rest.books.UserBookRemoteDto
 
 interface BookInfoRepository {
@@ -16,5 +16,5 @@ interface BookInfoRepository {
 
     suspend fun updateBookTimestamp(lastTimestamp: BookTimestampVo)
     suspend fun getNotSynchronizedBooks(userId: Int): List<UserBookRemoteDto>
-    suspend fun getUserBooksStatistics(): Flow<UserBooksStatistics>
+    suspend fun getUserBooksStatistics(): Flow<UserBooksStatisticsData>
 }

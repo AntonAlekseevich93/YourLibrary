@@ -39,4 +39,9 @@ interface ReviewAndRatingDao {
         mainBookId: String,
         userId: Int
     ): List<ReviewAndRatingEntity>
+
+    @Query("SELECT * FROM ReviewAndRatingEntity WHERE userId = :userId")
+    fun getCurrentUserAllReviewsAndRatings(
+        userId: Int
+    ): Flow<List<ReviewAndRatingEntity>>
 }

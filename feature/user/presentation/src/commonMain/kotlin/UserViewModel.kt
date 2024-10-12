@@ -23,29 +23,7 @@ class UserViewModel(
     private var userRefreshJob: Job? = null
 
     init {
-        scope.launch {
-            launch {
-                interactor.getAuthorizedUser().collect { user ->
-                    user?.let {
-                        updateUIState(
-                            uiStateValue.copy(
-                                userInfo = mutableStateOf(user),
-                            )
-                        )
-                    }
-                }
-            }
-            launch {
-                uiStateValue.showAdminPanel.value = appConfig.isModerator
-            }
-            launch(Dispatchers.IO) {
-                interactor.getUserBooksStatistics().collect {
-                    withContext(Dispatchers.Main) {
-                        uiStateValue.userBooksStatistics.value = it
-                    }
-                }
-            }
-        }
+        getUserInfo()
     }
 
     override fun sendEvent(event: BaseEvent) {
@@ -90,6 +68,39 @@ class UserViewModel(
         userRefreshJob = scope.launch {
             delay(1000)
             interactor.updateUserInfo()
+        }
+    }
+
+    private fun getUserInfo() {
+        uiStateValue.showAdminPanel.value = appConfig.isModerator
+        scope.launch(Dispatchers.IO) {
+            launch {
+                interactor.getAuthorizedUser().collect { user ->
+                    user?.let {
+                        withContext(Dispatchers.Main) {
+                            updateUIState(
+                                uiStateValue.copy(
+                                    userInfo = mutableStateOf(user),
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+            launch {
+                interactor.getUserBooksStatistics().collect {
+                    withContext(Dispatchers.Main) {
+                        uiStateValue.userBooksStatistics.value = it
+                    }
+                }
+            }
+            launch {
+                interactor.getUserReviews().collect {
+                    withContext(Dispatchers.Main) {
+                        uiStateValue.userReviews.value = it
+                    }
+                }
+            }
         }
     }
 

@@ -30,4 +30,6 @@ interface ReviewAndRatingRepository {
         reviewText: String,
         mainBookId: String,
     )
+
+    suspend fun getAllCurrentUserReviews(): Flow<List<ReviewAndRatingVo>>
 }

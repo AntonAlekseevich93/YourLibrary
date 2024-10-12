@@ -1,6 +1,8 @@
 package main_models.books
 
-data class UserBooksStatistics(
+import main_models.BookVo
+
+data class UserBooksStatisticsData(
     val allBooksCount: Int = 0,
     val plannedBooksCount: Int = 0,
     val readingBooksCount: Int = 0,
@@ -8,5 +10,6 @@ data class UserBooksStatistics(
     val deferredBooksCount: Int = 0,
     val plannedThisYearBooks: Int = 0,
     val finishedThisYearBooks: Int = 0,
+    val serviceDevelopmentBooks: List<BookVo> = emptyList(),
     val currentYear: Int = 0
 )

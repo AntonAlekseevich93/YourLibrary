@@ -10,7 +10,7 @@ import ktor.RemoteBookInfoDataSource
 import main_models.BookVo
 import main_models.ReadingStatus
 import main_models.books.BookTimestampVo
-import main_models.books.UserBooksStatistics
+import main_models.books.UserBooksStatisticsData
 import main_models.rest.books.UserBookRemoteDto
 import main_models.rest.books.toRemoteDto
 import main_models.rest.books.toVo
@@ -95,10 +95,10 @@ class BookInfoRepositoryImpl(
     override suspend fun getNotSynchronizedBooks(userId: Int) =
         localBookInfoDataSource.getNotSynchronizedBooks(userId).map { it.toVo(null).toRemoteDto() }
 
-    override suspend fun getUserBooksStatistics(): Flow<UserBooksStatistics> = flow {
+    override suspend fun getUserBooksStatistics(): Flow<UserBooksStatisticsData> = flow {
         localBookInfoDataSource.getAllBooks(appConfig.userId).collect { rawEntity ->
             val books = rawEntity.map { it.toVo(null) }
-            val statistics = UserBooksStatistics(
+            val statistics = UserBooksStatisticsData(
                 allBooksCount = books.size,
                 plannedBooksCount = books.count { it.readingStatus == ReadingStatus.PLANNED },
                 readingBooksCount = books.count { it.readingStatus == ReadingStatus.READING },
@@ -106,6 +106,7 @@ class BookInfoRepositoryImpl(
                 deferredBooksCount = books.count { it.readingStatus == ReadingStatus.DEFERRED },
                 plannedThisYearBooks = 0,
                 finishedThisYearBooks = 0,
+                serviceDevelopmentBooks = books.filter { it.isServiceDevelopmentBook },
                 currentYear = Calendar.getInstance().get(Calendar.YEAR)
             )
             emit(statistics)

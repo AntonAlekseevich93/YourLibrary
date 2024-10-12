@@ -180,4 +180,8 @@ class ReviewAndRatingRepositoryImpl(
         return reviewsAndRatings?.mapNotNull { it.toVo() }.orEmpty()
     }
 
+    override suspend fun getAllCurrentUserReviews(): Flow<List<ReviewAndRatingVo>> =
+        localReviewAndRatingDataSource.getCurrentUserAllReviewsAndRating(appConfig.userId)
+            .map { it.map { it.toVo() } }
+
 }

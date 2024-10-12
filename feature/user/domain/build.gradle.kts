@@ -13,6 +13,7 @@ kotlin {
                 implementation(project(":feature:user:api"))
                 implementation(project(":feature:book-info:api"))
                 implementation(project(":feature:search:api"))
+                implementation(project(":feature:rating-review:api"))
             }
         }
     }

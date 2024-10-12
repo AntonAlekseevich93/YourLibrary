@@ -129,4 +129,7 @@ class LocalReviewAndRatingDataSource(
         }
         return null
     }
+
+    suspend fun getCurrentUserAllReviewsAndRating(userId: Int) =
+        reviewAndRatingDao.getCurrentUserAllReviewsAndRatings(userId)
 }

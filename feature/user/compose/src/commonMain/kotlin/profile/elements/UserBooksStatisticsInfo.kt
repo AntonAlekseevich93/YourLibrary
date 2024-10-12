@@ -30,7 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import main_models.books.UserBooksStatistics
+import main_models.books.UserBooksStatisticsData
+import main_models.rating_review.ReviewAndRatingVo
 import org.jetbrains.compose.resources.stringResource
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.reading_status_deferred
@@ -41,7 +42,8 @@ import yourlibrary.common.resources.generated.resources.user_books_statistics_pl
 
 @Composable
 fun UserBooksStatisticsInfo(
-    userBooksStatistics: State<UserBooksStatistics>
+    userBooksStatistics: State<UserBooksStatisticsData>,
+    userReviews: State<List<ReviewAndRatingVo>>,
 ) {
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -75,13 +77,13 @@ fun UserBooksStatisticsInfo(
 
         StatisticItemClickable(
             text = "Отзывов",
-            count = 4,
+            count = userReviews.value.size,
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 16.dp),
         )
 
         StatisticItemClickable(
             text = "Улучений сервиса",
-            count = 2,
+            count = userBooksStatistics.value.serviceDevelopmentBooks.size,
             modifier = Modifier.fillMaxWidth()
         )
 

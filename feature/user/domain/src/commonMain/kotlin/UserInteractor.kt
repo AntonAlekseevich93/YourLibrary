@@ -1,5 +1,6 @@
 import kotlinx.coroutines.flow.Flow
-import main_models.books.UserBooksStatistics
+import main_models.books.UserBooksStatisticsData
+import main_models.rating_review.ReviewAndRatingVo
 import main_models.rest.users.AuthRegisterRequest
 import main_models.rest.users.AuthRequest
 import main_models.user.UserVo
@@ -9,6 +10,7 @@ class UserInteractor(
     private val searchRepository: SearchRepository,
     private val appConfig: AppConfig,
     private val booksRepository: BookInfoRepository,
+    private val reviewAndRatingRepository: ReviewAndRatingRepository
 ) {
 
     suspend fun signUp(
@@ -87,7 +89,10 @@ class UserInteractor(
         repository.updateUserInfo()
     }
 
-    suspend fun getUserBooksStatistics(): Flow<UserBooksStatistics> =
+    suspend fun getUserBooksStatistics(): Flow<UserBooksStatisticsData> =
         booksRepository.getUserBooksStatistics()
+
+    suspend fun getUserReviews(): Flow<List<ReviewAndRatingVo>> =
+        reviewAndRatingRepository.getAllCurrentUserReviews()
 
 }
