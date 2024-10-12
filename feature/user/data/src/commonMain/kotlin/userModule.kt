@@ -11,6 +11,10 @@ val userModule = DI.Module("userModule") {
         UserRepositoryImpl(instance(), instance())
     }
 
+    bind<UserInfoProvider>() with singleton {
+        UserInfoProviderImpl(instance())
+    }
+
     bind<LocalUserDataSource>() with provider {
         LocalUserDataSource(instance())
     }

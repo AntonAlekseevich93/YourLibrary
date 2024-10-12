@@ -10,7 +10,7 @@ import main_models.rest.base.BaseResponse
 import main_models.rest.users.AuthRegisterRequest
 import main_models.rest.users.AuthRequest
 import main_models.rest.users.AuthResponse
-import main_models.rest.users.UserInfoDto
+import main_models.rest.users.UserStatusDto
 
 class RemoteUserDataSource(private val httpClient: HttpAppClient) {
 
@@ -29,9 +29,9 @@ class RemoteUserDataSource(private val httpClient: HttpAppClient) {
         errorClass = String::class
     )
 
-    suspend fun getUserInfo(): UserInfoDto? = httpClient.get(
+    suspend fun getUserStatus(): UserStatusDto? = httpClient.get(
         url = USER_STATUS_REQUEST,
-        resultClass = UserInfoDto::class,
+        resultClass = UserStatusDto::class,
         errorClass = String::class
     )?.result
 

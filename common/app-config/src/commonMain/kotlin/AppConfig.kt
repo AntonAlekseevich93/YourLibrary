@@ -3,11 +3,31 @@ import AppConstants.BASE_HTTP_URL
 import AppConstants.SHEME_HTTP
 import AppConstants.SHEME_HTTPS
 import com.russhwolf.settings.Settings
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import main_models.user.UserVo
 import java.util.UUID
 
-class AppConfig() {
+class AppConfig(
+    private val userInfoProvider: UserInfoProvider
+) {
+    private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private val settings = Settings()
     private val isCustomHost = useCustomHost
+    private var userInfo: UserVo? = null
+
+    init {
+        scope.launch {
+            userInfoProvider.getAuthorizedUser().collect {
+                userInfo = it
+                if (it == null) {
+                    setDefaultAuthToken()
+                }
+            }
+        }
+    }
 
     val customUrl = settings.getString(CUSTOM_URL, "")
     val useHttp = settings.getBoolean(USE_HTTP, false)
@@ -18,15 +38,14 @@ class AppConfig() {
         if (isCustomHost) "$SHEME_HTTPS$customUrl/" else BASE_HTTPS_URL
     }
 
-
     val authToken
         get() = settings.getString(key = AUTH_TOKEN_KEY, defaultValue = DEFAULT_LOCAL_TOKEN)
 
     val isAuth
-        get() = authToken != DEFAULT_LOCAL_TOKEN
+        get() = userInfo?.isAuth ?: false
 
     val userId
-        get() = settings.getInt(key = currentUserEmail, defaultValue = DEFAULT_USER_ID)
+        get() = userInfo?.id ?: -1
 
     val isModerator
         get() = settings.getBoolean(key = IS_MODERATOR_KEY, defaultValue = false)
@@ -43,9 +62,6 @@ class AppConfig() {
     val endNonModerationRange
         get() = settings.getString(NON_MODERATION_END_RANGE, defaultValue = "")
 
-    private val currentUserEmail
-        get() = settings.getString(key = CURRENT_USER_EMAIL_KEY, defaultValue = DEFAULT_LOCAL_EMAIL)
-
     val deviceId: String
         get() {
             val id = settings.getStringOrNull(DEVICE_ID_KEY)
@@ -60,14 +76,6 @@ class AppConfig() {
 
     fun updateAuthToken(token: String) {
         settings.putString(key = AUTH_TOKEN_KEY, value = token)
-    }
-
-    fun setCurrentUserEmail(email: String) {
-        settings.putString(key = CURRENT_USER_EMAIL_KEY, value = email)
-    }
-
-    fun saveUserId(userId: Int) {
-        settings.putInt(key = currentUserEmail, value = userId)
     }
 
     fun changeUseCustomHost(isCustom: Boolean) {
@@ -102,6 +110,10 @@ class AppConfig() {
 
     fun changeUserModeratorStatus(isModerator: Boolean) {
         settings.putBoolean(IS_MODERATOR_KEY, isModerator)
+    }
+
+    private fun setDefaultAuthToken() {
+        settings.putString(key = AUTH_TOKEN_KEY, value = DEFAULT_LOCAL_TOKEN)
     }
 
     companion object {

@@ -10,6 +10,7 @@ import database.room.dao.ReviewAndRatingTimestampDao
 import database.room.dao.UserNotificationsDao
 import database.room.dao.UserServiceDevelopmentBookDao
 import database.room.dao.UserServiceDevelopmentBookTimestampDao
+import database.room.dao.UsersDao
 import database.room.dao.cache.CacheBooksByAuthorDao
 import database.room.dao.cache.CacheReviewAndRatingDao
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,10 @@ class RoomMainDataSource(
 ) {
     private val driver = roomDbBuilder.createRoomBuilder()
     private val db = getRoomDatabase(driver)
+
+    val usersDao: UsersDao by lazy {
+        db.getUsersDao()
+    }
 
     val booksDao: BooksDao by lazy {
         db.getBooksDao()

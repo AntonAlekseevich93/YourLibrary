@@ -34,13 +34,19 @@ class ApplicationViewModel(
     lateinit var component: RootComponent
 
     init {
-        if (appConfig.isAuth) {
-            uiStateValue.userState.value = UserState.IS_AUTHORIZED
-        } else {
-            uiStateValue.userState.value = UserState.IS_NOT_AUTHORIZED
-        }
         uiState.value.isHazeBlurEnabled.value = platformInfo.isHazeBlurEnabled
         scope.launch {
+            launch(Dispatchers.IO) {
+                userInteractor.getAuthorizedUser().collect { user ->
+                    withContext(Dispatchers.Main){
+                        if (appConfig.isAuth && user != null) {
+                            uiStateValue.userState.value = UserState.IS_AUTHORIZED
+                        } else {
+                            uiStateValue.userState.value = UserState.IS_NOT_AUTHORIZED
+                        }
+                    }
+                }
+            }
             launch(Dispatchers.IO) { setNotificationListener() }
             launch(Dispatchers.IO) {
                 interactor.synchronizeUserData()
@@ -57,7 +63,7 @@ class ApplicationViewModel(
             }
 
             launch {
-                userInteractor.getUserInfo()
+                userInteractor.updateUserStatus()
             }
         }
     }

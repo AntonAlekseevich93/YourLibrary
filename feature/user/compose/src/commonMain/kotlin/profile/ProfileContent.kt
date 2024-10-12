@@ -12,11 +12,13 @@ import profile.elements.UserBooksStatisticsInfo
 fun BaseEventScope<BaseEvent>.ProfileContent(
     uiState: UserUiState,
     onAdminPanelClick: () -> Unit,
+    onSignOut: () -> Unit,
 ) {
     AvatarWithName(uiState.userInfo.value.name)
     UserBooksStatisticsInfo(uiState.userBooksStatistics)
     AccountMenu(
         onAdminPanelClick = onAdminPanelClick,
-        showAdminPanelMenu = uiState.showAdminPanel.value
+        showAdminPanelMenu = uiState.showAdminPanel.value,
+        onSignOut = onSignOut
     )
 }

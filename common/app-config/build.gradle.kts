@@ -15,6 +15,7 @@ kotlin {
                 implementation(project(":common:models"))
                 implementation(project(":common:constants"))
                 implementation(project(":common:core"))
+                implementation(project(":feature:user:api"))
             }
         }
     }

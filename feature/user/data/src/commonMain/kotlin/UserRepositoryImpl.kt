@@ -1,14 +1,14 @@
 import database.LocalUserDataSource
+import database.room.entities.toVo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ktor.RemoteUserDataSource
 import ktor.models.toVo
-import main_models.local_models.toVo
 import main_models.rest.base.BaseResponse
 import main_models.rest.users.AuthRegisterRequest
 import main_models.rest.users.AuthRequest
 import main_models.rest.users.AuthResponse
-import main_models.rest.users.UserInfoVo
+import main_models.rest.users.UserStatusVo
 import main_models.rest.users.toVo
 import main_models.user.UserVo
 
@@ -29,9 +29,10 @@ class UserRepositoryImpl(
         request = request
     )
 
-    override suspend fun getUserInfo(): UserInfoVo? = remoteUserDataSource.getUserInfo()?.toVo()
+    override suspend fun getUserStatus(): UserStatusVo? =
+        remoteUserDataSource.getUserStatus()?.toVo()
 
-    override fun createOrUpdateUser(
+    override suspend fun createOrUpdateUser(
         id: Int,
         name: String,
         email: String,
@@ -42,17 +43,15 @@ class UserRepositoryImpl(
             id = id,
             name = name,
             email = email,
-            isVerified = if (isVerified) 0 else 1,
-            isAuthorized = if (isAuthorized) 0 else 1
+            isVerified = isVerified,
+            isAuthorized = isAuthorized
         )
     }
 
     override suspend fun getAuthorizedUser(): Flow<UserVo?> =
-        localUserDataSource.getAuthorizedUser().map {
-            it?.toVo()
-        }
+        localUserDataSource.getAuthorizedUser().map { it?.toVo() }
 
-    override fun logOut() {
+    override suspend fun logOut() {
         localUserDataSource.logOut()
     }
 
@@ -62,8 +61,8 @@ class UserRepositoryImpl(
                 id = it.id.toInt(),
                 name = it.name,
                 email = it.email,
-                isVerified = if (it.isVerified) 0 else 1,
-                isAuthorized = 0
+                isVerified = it.isVerified,
+                isAuthorized = true
             )
         }
     }

@@ -1,55 +1,56 @@
 package database
 
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
-import kotlinx.coroutines.Dispatchers
+import database.room.RoomMainDataSource
+import database.room.entities.UserEntity
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import main_models.local_models.UserLocalDto
+import kotlinx.coroutines.flow.flow
 
 class LocalUserDataSource(
-    private val db: SqlDelightDataSource
+    roomDb: RoomMainDataSource,
 ) {
-    fun createOrUpdateUser(
+    private val usersDao = roomDb.usersDao
+
+    suspend fun createOrUpdateUser(
         id: Int,
         name: String,
         email: String,
-        isVerified: Int,
-        isAuthorized: Int,
+        isVerified: Boolean,
+        isAuthorized: Boolean,
     ) {
-        if (db.appQuery.getUserByEmail(email).executeAsOneOrNull() == null) {
-            db.appQuery.createUser(
-                id = id.toLong(),
-                name = name,
-                email = email,
-                isVerified = isVerified.toLong(),
-                isAuthorized = isAuthorized.toLong()
+        val user = usersDao.getUserByEmail(email).firstOrNull()
+        if (user == null) {
+            usersDao.insertUser(
+                UserEntity(
+                    id = id,
+                    name = name,
+                    email = email,
+                    isVerified = isVerified,
+                    isAuthorized = isAuthorized
+                )
             )
         } else {
-            db.appQuery.updateUserByEmail(
-                id = id.toLong(),
+            val updatedUser = user.copy(
                 name = name,
-                email = email,
-                isVerified = isVerified.toLong(),
-                isAuthorized = isAuthorized.toLong()
+                isVerified = isVerified,
+                isAuthorized = isAuthorized
             )
+            usersDao.updateUser(updatedUser)
         }
     }
 
-    suspend fun getAuthorizedUser(): Flow<UserLocalDto?> {
-        return db.appQuery.getAuthorizedUser().asFlow().mapToList(Dispatchers.IO).map {
-            val table = it.firstOrNull()
-            UserLocalDto(
-                id = table?.id,
-                name = table?.name,
-                email = table?.email,
-                isVerified = table?.isVerified
-            )
+    suspend fun getAuthorizedUser(): Flow<UserEntity?> = flow {
+        usersDao.getAuthorizedUser().collect {
+            val users = it.filter { it.isAuthorized }
+            if (users.size > 1) {
+                usersDao.setAllAsUnauthorized()
+            } else {
+                emit(users.firstOrNull())
+            }
         }
     }
 
-    fun logOut() {
-        db.appQuery.logOut()
+    suspend fun logOut() {
+        usersDao.setAllAsUnauthorized()
     }
 
 }

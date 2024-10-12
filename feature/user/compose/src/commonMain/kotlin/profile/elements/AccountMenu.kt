@@ -19,7 +19,8 @@ import yourlibrary.common.resources.generated.resources.logout_from_account
 @Composable
 internal fun AccountMenu(
     showAdminPanelMenu: Boolean,
-    onAdminPanelClick: () -> Unit
+    onAdminPanelClick: () -> Unit,
+    onSignOut: () -> Unit,
 ) {
     Column {
         Text(
@@ -56,7 +57,7 @@ internal fun AccountMenu(
                     )
             },
             showDivider = false,
-            onClick = {}
+            onClick = onSignOut
         )
     }
 }

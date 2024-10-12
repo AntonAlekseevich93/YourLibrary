@@ -4,18 +4,18 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class UserInfoDto(
+class UserStatusDto(
     @SerialName("tokenExists") val tokenExist: Boolean?,
     @SerialName("isModerator") val isModerator: Boolean?,
 )
 
-class UserInfoVo(
+class UserStatusVo(
     val tokenExist: Boolean,
     val isModerator: Boolean,
 )
 
-fun UserInfoDto.toVo(): UserInfoVo? {
-    return UserInfoVo(
+fun UserStatusDto.toVo(): UserStatusVo? {
+    return UserStatusVo(
         tokenExist = tokenExist ?: return null,
         isModerator = isModerator ?: return null
     )

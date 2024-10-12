@@ -16,7 +16,7 @@ val applicationModule = DI.Module("applicationModule") {
     }
 
     bind<AppConfig>() with singleton {
-        AppConfig()
+        AppConfig(instance())
     }
 
     bind<RemoteConfig>() with singleton {

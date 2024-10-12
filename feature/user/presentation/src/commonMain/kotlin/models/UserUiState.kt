@@ -9,8 +9,7 @@ import main_models.user.UserVo
 data class UserUiState(
     private val appConfig: AppConfig,
     val isSignUnState: MutableState<Boolean> = mutableStateOf(false),
-    val isAuthorized: MutableState<Boolean> = mutableStateOf(false),
-    val userInfo: MutableState<UserVo> = mutableStateOf(UserVo(0L, "", "", false)),
+    val userInfo: MutableState<UserVo> = mutableStateOf(UserVo(0, "", "", false, false)),
     val userBooksStatistics: MutableState<UserBooksStatistics> = mutableStateOf(
         UserBooksStatistics(
             30, 4, 6, 19, 1, 8, 5

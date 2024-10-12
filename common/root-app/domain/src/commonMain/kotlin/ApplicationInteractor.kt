@@ -9,7 +9,6 @@ import java.nio.file.StandardCopyOption
 
 class ApplicationInteractor(
     private val repository: ApplicationRepository,
-    private val bookInfoRepository: BookInfoRepository,
     private val searchRepository: SearchRepository,
     private val synchronizationRepository: SynchronizationRepository,
 ) {
@@ -82,5 +81,4 @@ class ApplicationInteractor(
 
     suspend fun searchInLocalBooks(text: String): List<BookVo> =
         searchRepository.searchInLocalBooks(text)
-
 }

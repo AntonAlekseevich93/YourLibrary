@@ -17,6 +17,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
+import models.UserEvents
 import navigation.screen_components.ProfileScreenComponent
 import org.jetbrains.compose.resources.stringResource
 import profile.ProfileContent
@@ -72,6 +73,9 @@ fun ProfileScreen(
                     uiState = uiState,
                     onAdminPanelClick = {
                         navigationComponent.openAdminPanel()
+                    },
+                    onSignOut = {
+                        viewModel.sendEvent(UserEvents.OnSignOut)
                     }
                 )
                 Spacer(Modifier.padding(64.dp))

@@ -68,7 +68,7 @@ fun UserBooksStatisticsInfo(
         StatisticItemClickable(
             text = "Отзывов",
             count = 4,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 16.dp)
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 16.dp),
         )
 
         StatisticItemClickable(
