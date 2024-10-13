@@ -33,6 +33,8 @@ kotlin {
                 implementation(project(":feature:user:presentation"))
                 implementation(project(":feature:user:data"))
                 implementation(project(":feature:user:domain"))
+                implementation(project(":feature:rating-review:presentation"))
+                implementation(project(":feature:rating-review:domain"))
                 implementation(project(":common:core"))
                 implementation(project(":common:app-config"))
                 implementation(project(":common:scopes"))

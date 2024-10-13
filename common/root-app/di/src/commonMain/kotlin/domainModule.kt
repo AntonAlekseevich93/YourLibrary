@@ -36,4 +36,8 @@ val domainModule = DI.Module("domainModule") {
         SettingsInteractor(instance(), instance())
     }
 
+    bind<ReviewAndRatingInteractor>() with provider {
+        ReviewAndRatingInteractor(instance())
+    }
+
 }

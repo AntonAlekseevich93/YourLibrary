@@ -56,4 +56,8 @@ val viewModelsModule = DI.Module("viewModelsModule") {
             instance(),
         )
     }
+
+    bind<ReviewAndRatingViewModel>() with singleton {
+        ReviewAndRatingViewModel(instance(), instance(), instance())
+    }
 }

@@ -50,6 +50,7 @@ kotlin {
                 implementation(project(":feature:user:data"))
                 implementation(project(":feature:user:domain"))
                 implementation(project(":feature:rating-review:data"))
+                implementation(project(":feature:rating-review:domain"))
                 implementation(project(":feature:synchronization:data"))
                 implementation(project(":feature:settings:data"))
                 implementation(project(":feature:settings:domain"))
