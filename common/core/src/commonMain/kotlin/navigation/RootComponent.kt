@@ -12,6 +12,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import kotlinx.serialization.Serializable
 import main_models.books.BookShortVo
+import main_models.rating_review.ReviewAndRatingVo
 import navigation.screen_components.AdminScreenComponent
 import navigation.screen_components.BookCreatorScreenComponent
 import navigation.screen_components.BookInfoComponent
@@ -156,7 +157,7 @@ class DefaultRootComponent(
             )
 
             is Config.ReviewsAndRatingsConfig -> RootComponent.Screen.ReviewsAndRatingsScreen(
-                itemReviewsAndRatingsScreen(componentContext)
+                itemReviewsAndRatingsScreen(componentContext, config = config)
             )
 
             is Config.UserDevelopmentServiceConfig -> RootComponent.Screen.UserDevelopmentServiceScreen(
@@ -242,6 +243,17 @@ class DefaultRootComponent(
                 )
             },
             bookId = config.bookId,
+            openReviewsListener = { reviews, scrollToReviewId ->
+                val id = getNextStackKey
+                push(
+                    id = id,
+                    config = Config.ReviewsAndRatingsConfig(
+                        id,
+                        reviewsAndRatings = reviews,
+                        scrollToReviewId = scrollToReviewId
+                    )
+                )
+            },
             onCloseScreen = {
                 popUntilStackIdFindOrFirstScreen(bookInfoFirstScreenId)
                 bookInfoFirstScreenId = DEFAULT_SCREEN_ID
@@ -328,12 +340,17 @@ class DefaultRootComponent(
             }
         )
 
-    private fun itemReviewsAndRatingsScreen(componentContext: ComponentContext): ReviewsAndRatingsScreenComponent =
+    private fun itemReviewsAndRatingsScreen(
+        componentContext: ComponentContext,
+        config: Config.ReviewsAndRatingsConfig
+    ): ReviewsAndRatingsScreenComponent =
         DefaultReviewsAndRatingsScreenComponent(
             componentContext = componentContext,
+            reviews = config.reviewsAndRatings,
             onBackListener = {
                 pop()
-            }
+            },
+            scrollToReviewId = config.scrollToReviewId
         )
 
     private fun itemUserDevelopmentServiceScreen(componentContext: ComponentContext): UserDevelopmentServiceScreenComponent =
@@ -581,7 +598,11 @@ class DefaultRootComponent(
         data class ProfileConfig(val ids: Int) : Config(ids)
 
         @Serializable
-        data class ReviewsAndRatingsConfig(val ids: Int) : Config(ids)
+        data class ReviewsAndRatingsConfig(
+            val ids: Int,
+            val reviewsAndRatings: List<ReviewAndRatingVo>,
+            val scrollToReviewId: Int?
+        ) : Config(ids)
 
         @Serializable
         data class UserDevelopmentServiceConfig(val ids: Int) : Config(ids)

@@ -71,6 +71,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
     reviewButtonPosition: (position: Int) -> Unit,
     scrollToReviewButtonListener: () -> Unit,
     showDateSelectorDialog: () -> Unit,
+    onShowAllReviews: (scrollToReviewId: Int?) -> Unit,
 ) {
     val hazeState = remember { HazeState() }
     val height = remember { 520.dp }
@@ -318,7 +319,8 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                 onWriteReviewListener = {
                     showWriteReviewBottomSheet = true
                 },
-                showDateSelectorDialog = showDateSelectorDialog
+                showDateSelectorDialog = showDateSelectorDialog,
+                onShowAllReviews = onShowAllReviews
             )
         }
     }

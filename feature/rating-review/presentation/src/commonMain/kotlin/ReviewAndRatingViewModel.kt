@@ -2,6 +2,7 @@ import base.BaseMVIViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import models.ReviewAndRatingEvents
 import models.ReviewAndRatingUiState
 import platform.Platform
 
@@ -14,7 +15,9 @@ class ReviewAndRatingViewModel(
 
     override fun sendEvent(event: BaseEvent) {
         when (event) {
-
+            is ReviewAndRatingEvents.SetReviews -> {
+                uiStateValue.reviews.value = event.reviews
+            }
         }
     }
 

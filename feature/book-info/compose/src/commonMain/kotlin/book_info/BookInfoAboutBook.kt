@@ -64,6 +64,7 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
     onWriteReviewListener: () -> Unit,
     scrollToReviewButtonListener: () -> Unit,
     showDateSelectorDialog: () -> Unit,
+    onShowAllReviews: (scrollToReviewId: Int?) -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
 
@@ -206,6 +207,9 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
                         text = "Все ${reviewsCount.value}",
                         style = ApplicationTheme.typography.headlineBold,
                         color = ApplicationTheme.colors.screenColor.activeLinkColor,
+                        modifier = Modifier.clickable(MutableInteractionSource(), null) {
+                            onShowAllReviews(null)
+                        }
                     )
                 }
             }
@@ -214,9 +218,7 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
                 reviews = reviewsAndRatings,
                 modifier = Modifier.padding(top = 16.dp),
                 allReviewCount = reviewsAndRatings.value.size,
-                showAllReviewListener = {
-
-                }
+                onShowAllReviews = onShowAllReviews
             )
         }
 
@@ -246,7 +248,7 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
                 allBooksCount = otherBooksByAuthor.value.size, //todo fix
                 modifier = Modifier.padding(top = 10.dp, bottom = 16.dp),
                 showAllBooksListener = {
-
+                    sendEvent(BookScreenEvents.ShowFullAuthorBooksScreen)
                 }
             )
         }

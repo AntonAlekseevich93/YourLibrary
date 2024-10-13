@@ -38,7 +38,9 @@ fun ExpandableText(
     style: TextStyle = ApplicationTheme.typography.headlineRegular,
     color: Color = ApplicationTheme.colors.mainTextColor,
     textAlign: TextAlign? = null,
-    disableOnClick: Boolean = false
+    disableOnClick: Boolean = false,
+    showMoreOrShowLessAsNewLine: Boolean = false,
+    onClick: (() -> Unit)? = null,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var clickable by remember { mutableStateOf(false) }
@@ -52,6 +54,7 @@ fun ExpandableText(
             if (!disableOnClick) {
                 isExpanded = !isExpanded
             }
+            onClick?.invoke()
         }
         .then(modifier)
     ) {
@@ -66,11 +69,17 @@ fun ExpandableText(
                         append("... ")
                         withStyle(style = showLessStyle) { append(showLessText) }
                     } else {
-                        val adjustText = text.substring(startIndex = 0, endIndex = lastCharIndex)
+                        val adjustText = text.substring(
+                            startIndex = 0,
+                            endIndex = minOf(lastCharIndex, text.length)
+                        )
                             .dropLast(showMoreText.length)
                             .dropLastWhile { Character.isWhitespace(it) || it == '.' }
                         append(adjustText)
                         append("... ")
+                        if (showMoreOrShowLessAsNewLine) {
+                            append("\n")
+                        }
                         withStyle(style = showMoreStyle) { append(showMoreText) }
                     }
                 } else {

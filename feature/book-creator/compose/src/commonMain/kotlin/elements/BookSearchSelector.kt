@@ -14,15 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +29,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import book_editor.elements.BookEditorEvents
 import elements.items.AuthorsWithBooksSearchError
-import kotlinx.coroutines.launch
 import loader.LoadingProcessWithTitle
 import main_models.AuthorVo
 import main_models.BookValues
@@ -63,22 +59,10 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
     onClickManually: () -> Unit,
     changeBookReadingStatus: (bookId: String) -> Unit,
 ) {
-    val state = rememberLazyListState()
-    val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
     val uiState by booksListInfoViewModel.uiState.collectAsState()
     val authorIsSelected by remember(key1 = selectedAuthor) { mutableStateOf(selectedAuthor != null) }
     var lastSearchBookName by remember { mutableStateOf("") }
-
-    LaunchedEffect(key1 = similarBooks) {
-        booksListInfoViewModel.setBookList(similarBooks)
-    }
-
-    LaunchedEffect(similarBooks) {
-        scope.launch {
-            state.scrollToItem(0)
-        }
-    }
 
     LazyColumn(
         state = lazyListState
@@ -159,7 +143,7 @@ fun BaseEventScope<BaseEvent>.BookSearchSelector(
             }
         }
 
-        items(uiState.bookList) {
+        items(similarBooks) {
             BookSelectorItem(
                 bookItem = it,
                 modifier = Modifier.padding(end = 16.dp),

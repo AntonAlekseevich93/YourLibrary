@@ -4,13 +4,15 @@ import ApplicationTheme
 import BaseEvent
 import BaseEventScope
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -26,7 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEachIndexed
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.error
@@ -48,6 +49,7 @@ fun BaseEventScope<BaseEvent>.BooksHorizontalSlider(
     showAllBooksListener: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val lazyState = rememberLazyListState()
     val with = remember { 125.dp }
     val height = remember { 200.dp }
     val imageModifier = Modifier
@@ -58,22 +60,24 @@ fun BaseEventScope<BaseEvent>.BooksHorizontalSlider(
             maxWidth = with
         )
     Row(
-        modifier = modifier.horizontalScroll(scrollState).padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         verticalAlignment = Alignment.Top
     ) {
-        books.value.fastForEachIndexed { index, book ->
-            if (index + 1 > maxBooks) {
-                return@fastForEachIndexed
-            }
-            HorizontalSliderBookItem(
-                book,
-                modifier = modifier.padding(end = 20.dp),
-                imageModifier = imageModifier,
-                with = with,
-                onClick = {
-                    sendEvent(BookScreenEvents.OpenShortBook(book))
+
+        LazyRow(state = lazyState) {
+            itemsIndexed(books.value) { index, book ->
+                if (index + 1 < maxBooks) {
+                    HorizontalSliderBookItem(
+                        book,
+                        modifier = modifier.padding(end = 20.dp),
+                        imageModifier = imageModifier,
+                        with = with,
+                        onClick = {
+                            sendEvent(BookScreenEvents.OpenShortBook(book))
+                        }
+                    )
                 }
-            )
+            }
         }
         if (allBooksCount > maxBooks) {
             Column(

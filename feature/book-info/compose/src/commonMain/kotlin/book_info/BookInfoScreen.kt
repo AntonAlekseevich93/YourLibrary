@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -61,6 +62,7 @@ fun BookInfoScreen(
     var reviewButtonPosition by remember { mutableStateOf(0) }
     var showDateSelectorDialog by remember { mutableStateOf(false) }
     var modifier = Modifier.fillMaxSize().background(Color.Transparent)
+    val currentScrollPosition = rememberSaveable { mutableStateOf(0) }
 
     if (uiState.isHazeBlurEnabled.value) {
         modifier = modifier.haze(
@@ -91,9 +93,6 @@ fun BookInfoScreen(
             bookShortVo?.let {
                 viewModel.setShortBook(it)
             }
-        }
-        scope.launch {
-            scrollState.animateScrollTo(navigationComponent.getSavedScrollPosition())
         }
     }
 
@@ -128,6 +127,12 @@ fun BookInfoScreen(
                     },
                     showDateSelectorDialog = {
                         showDateSelectorDialog = true
+                    },
+                    onShowAllReviews = { scrollToReviewId ->
+                        navigationComponent.openReviews(
+                            uiState.reviewsAndRatings.value,
+                            scrollToReviewId = scrollToReviewId
+                        )
                     }
                 )
 
@@ -167,5 +172,12 @@ fun BookInfoScreen(
                 }
             }
         }
+    }
+    LaunchedEffect(Unit) {
+        scrollState.animateScrollTo(currentScrollPosition.value)
+    }
+
+    LaunchedEffect(scrollState.value) {
+        currentScrollPosition.value = scrollState.value
     }
 }
