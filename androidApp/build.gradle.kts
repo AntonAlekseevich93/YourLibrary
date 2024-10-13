@@ -39,6 +39,7 @@ dependencies {
     implementation(project(":common:theme"))
     implementation(project(":common:scopes"))
     implementation(project(":common:models"))
+    implementation(project(":common:navigation"))
     implementation(project(":feature:user:compose"))
     implementation(project(":feature:user:presentation"))
     implementation("androidx.compose.ui:ui:1.5.4")

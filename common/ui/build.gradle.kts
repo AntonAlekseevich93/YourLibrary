@@ -13,6 +13,7 @@ kotlin {
                 implementation(deps.compottie)
                 implementation(deps.compottie.resources)
                 api(project(":common:core"))
+                api(project(":common:navigation")) //todo это не правильно что мы видим модуль
                 implementation(project(":common:utils:date"))
                 implementation(project(":common:models"))
                 implementation(project(":common:theme"))

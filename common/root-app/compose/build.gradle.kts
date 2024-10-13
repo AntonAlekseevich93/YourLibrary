@@ -16,6 +16,7 @@ kotlin {
                 implementation(project(":common:root-app:api"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:models"))
+                implementation(project(":common:navigation"))
                 implementation(project(":common:scopes"))
                 implementation(project(":common:ui"))
                 implementation(project(":common:resources:drawable"))

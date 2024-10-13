@@ -10,6 +10,7 @@ kotlin {
             dependencies {
                 implementation(deps.bundles.sketchImageLoader)
                 implementation(project(":common:core"))
+                implementation(project(":common:navigation"))
                 implementation(project(":common:theme"))
                 implementation(project(":common:models"))
                 implementation(project(":common:scopes"))
