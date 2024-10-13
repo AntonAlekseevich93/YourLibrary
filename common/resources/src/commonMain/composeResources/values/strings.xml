@@ -175,4 +175,13 @@
     <string name="book_title">Название книги</string>
     <string name="create_new_book_question">Создать новую книгу?</string>
     <string name="user_books_statistics_planned">%1$d/%2$d книг запланированных на %3$dг.</string>
+    <string name="service_development">Развитие сервиса</string>
+    <string name="user_service_development_empty_screen_description">Здесь будут отображаться все книги созданные с функционалом "Участвовать в развитии сервиса".\n\nСоздавайте книги которых еще нет в приложении и вносите свой вклад в развитие сервиса</string>
+    <string name="user_service_development_empty_screen_title">У вас пока нет созданных книг</string>
+    <string name="await_moderation">Ожидает модерации</string>
+    <string name="approved">Одобрено</string>
+    <string name="discard">Отказано</string>
+    <string name="change_name">Изменить имя</string>
+    <string name="change_password">Изменить пароль</string>
+    <string name="write_to_email">Написать нам на e-mail</string>
 </resources>

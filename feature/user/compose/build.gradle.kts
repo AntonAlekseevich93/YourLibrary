@@ -8,6 +8,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(deps.bundles.sketchImageLoader)
                 implementation(deps.hazeBlur)
                 implementation(project(":common:core"))
                 implementation(project(":common:theme"))

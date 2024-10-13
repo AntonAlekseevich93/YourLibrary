@@ -1,7 +1,5 @@
 package profile
 
-import BaseEvent
-import BaseEventScope
 import androidx.compose.runtime.Composable
 import models.UserUiState
 import profile.elements.AccountMenu
@@ -9,15 +7,17 @@ import profile.elements.AvatarWithName
 import profile.elements.UserBooksStatisticsInfo
 
 @Composable
-fun BaseEventScope<BaseEvent>.ProfileContent(
+fun ProfileContent(
     uiState: UserUiState,
     onAdminPanelClick: () -> Unit,
     onSignOut: () -> Unit,
+    onServiceDevelopmentClick: () -> Unit,
 ) {
     AvatarWithName(uiState.userInfo.value.name)
     UserBooksStatisticsInfo(
         userBooksStatistics = uiState.userBooksStatistics,
-        userReviews = uiState.userReviews
+        userReviews = uiState.userReviews,
+        onServiceDevelopmentClick = onServiceDevelopmentClick
     )
     AccountMenu(
         onAdminPanelClick = onAdminPanelClick,

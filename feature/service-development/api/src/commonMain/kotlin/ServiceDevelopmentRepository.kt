@@ -1,3 +1,5 @@
+import main_models.BookVo
+import main_models.service_development.BookWithServiceDevelopment
 import main_models.service_development.ServiceDevelopmentBooksTimestampVo
 import main_models.service_development.UserServiceDevelopmentBookVo
 
@@ -15,4 +17,5 @@ interface ServiceDevelopmentRepository {
         otherDevicesTimestamp: Long?,
     )
 
+    suspend fun getBookWithServiceDevelopment(book: BookVo): BookWithServiceDevelopment?
 }

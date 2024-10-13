@@ -1,6 +1,5 @@
 package models
 
-import AppConfig
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import base.BaseUIState
@@ -9,7 +8,6 @@ import main_models.rating_review.ReviewAndRatingVo
 import main_models.user.UserVo
 
 data class UserUiState(
-    private val appConfig: AppConfig,
     val isSignUnState: MutableState<Boolean> = mutableStateOf(false),
     val userInfo: MutableState<UserVo> = mutableStateOf(UserVo(0, "", "", false, false)),
     val userBooksStatistics: MutableState<UserBooksStatisticsData> = mutableStateOf(
@@ -18,3 +16,24 @@ data class UserUiState(
     val showAdminPanel: MutableState<Boolean> = mutableStateOf(false),
     val userReviews: MutableState<List<ReviewAndRatingVo>> = mutableStateOf(emptyList())
 ) : BaseUIState
+
+//todo move to mock file
+fun getUserUiStateMock(): UserUiState {
+    return UserUiState(
+        userInfo = mutableStateOf(
+            UserVo(
+                0,
+                "Антон Алексеевич",
+                email = "anton.alex@gmail.com",
+                isVerified = false,
+                isAuth = true
+            )
+        ),
+        userBooksStatistics = mutableStateOf(
+            UserBooksStatisticsData(
+                24, 10, 1, 12, 13, 20, 6, emptyList(), 2014
+            )
+        ),
+        showAdminPanel = mutableStateOf(true)
+    )
+}

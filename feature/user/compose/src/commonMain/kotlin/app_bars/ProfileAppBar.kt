@@ -1,3 +1,6 @@
+package app_bars
+
+import ApplicationTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +32,7 @@ import dev.chrisbanes.haze.hazeChild
 
 @Composable
 fun ProfileAppBar(
-    hazeBlurState: HazeState,
+    hazeBlurState: HazeState?,
     isHazeBlurEnabled: Boolean,
     title: String,
     showBackButton: Boolean,
@@ -41,7 +44,7 @@ fun ProfileAppBar(
         .fillMaxWidth()
         .sizeIn(minHeight = 85.dp)
 
-    modifier = if (isHazeBlurEnabled) {
+    modifier = if (isHazeBlurEnabled && hazeBlurState != null) {
         modifier.hazeChild(
             state = hazeBlurState,
             shape = shape

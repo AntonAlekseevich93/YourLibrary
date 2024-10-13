@@ -235,6 +235,14 @@ fun Application(
                             navigationComponent = screen.component,
                         )
                     }
+
+                    is RootComponent.Screen.UserDevelopmentServiceScreen -> {
+                        UserServiceDevelopmentScreen(
+                            hazeState = hazeBlurState,
+                            isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
+                            navigationComponent = screen.component,
+                        )
+                    }
                 }
             }
         }

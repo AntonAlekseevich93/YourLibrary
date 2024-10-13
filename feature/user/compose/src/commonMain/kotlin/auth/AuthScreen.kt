@@ -1,7 +1,6 @@
 package auth
 
 import ApplicationTheme
-import ProfileAppBar
 import UserViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import app_bars.ProfileAppBar
 import auth.elements.ButtonSwitcher
 import auth.elements.SignInFields
 import auth.elements.SignUpFields

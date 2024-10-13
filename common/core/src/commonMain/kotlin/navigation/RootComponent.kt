@@ -29,6 +29,7 @@ import navigation.screen_components.DefaultProfileScreenComponent
 import navigation.screen_components.DefaultSettingsScreenComponent
 import navigation.screen_components.DefaultSingleBookParsingScreenComponent
 import navigation.screen_components.DefaultUserBookCreatorScreenComponent
+import navigation.screen_components.DefaultUserDevelopmentServiceScreenComponent
 import navigation.screen_components.MainScreenComponent
 import navigation.screen_components.ModerationBooksCoversScreenComponent
 import navigation.screen_components.ModerationBooksScreenComponent
@@ -38,6 +39,7 @@ import navigation.screen_components.ProfileScreenComponent
 import navigation.screen_components.SettingsScreenComponent
 import navigation.screen_components.SingleBookParsingScreenComponent
 import navigation.screen_components.UserBookCreatorScreenComponent
+import navigation.screen_components.UserDevelopmentServiceScreenComponent
 
 interface RootComponent : BackHandlerOwner {
 
@@ -55,6 +57,9 @@ interface RootComponent : BackHandlerOwner {
         class BookCreatorScreen(val component: BookCreatorScreenComponent) : Screen()
         class UserBookCreatorScreen(val component: UserBookCreatorScreenComponent) : Screen()
         class ProfileScreen(val component: ProfileScreenComponent) : Screen()
+        class UserDevelopmentServiceScreen(val component: UserDevelopmentServiceScreenComponent) :
+            Screen()
+
         class SettingsScreen(val component: SettingsScreenComponent) : Screen()
         class BooksListInfoScreen(val component: BooksListInfoScreenComponent) : Screen()
         class ModerationScreen(val component: ModerationScreenComponent) : Screen()
@@ -145,6 +150,10 @@ class DefaultRootComponent(
 
             is Config.ProfileConfig -> RootComponent.Screen.ProfileScreen(
                 itemProfileScreen(componentContext)
+            )
+
+            is Config.UserDevelopmentServiceConfig -> RootComponent.Screen.UserDevelopmentServiceScreen(
+                itemUserDevelopmentServiceScreen(componentContext)
             )
 
             is Config.SettingsConfig -> RootComponent.Screen.SettingsScreen(
@@ -302,6 +311,35 @@ class DefaultRootComponent(
                     id = id,
                     config = Config.AdminConfig(id)
                 )
+            },
+            onOpenServiceDevelopmentScreenListener = {
+                val id = getNextStackKey
+                push(
+                    id = id,
+                    config = Config.UserDevelopmentServiceConfig(id)
+                )
+            }
+        )
+
+    private fun itemUserDevelopmentServiceScreen(componentContext: ComponentContext): UserDevelopmentServiceScreenComponent =
+        DefaultUserDevelopmentServiceScreenComponent(
+            componentContext = componentContext,
+            bookInfoScreenListener = { localId ->
+                bookInfoFirstScreenId = getCurrentStackKey
+                val id = getNextStackKey
+                push(
+                    id = id,
+                    config = Config.BookInfoConfig(
+                        id,
+                        bookId = localId,
+                        shortVo = null,
+                        previousScreenIsBookInfo = false
+                    )
+                )
+            },
+            serviceDevelopmentBookEditScreen = {},
+            onBackClicked = {
+                pop()
             }
         )
 
@@ -526,6 +564,9 @@ class DefaultRootComponent(
 
         @Serializable
         data class ProfileConfig(val ids: Int) : Config(ids)
+
+        @Serializable
+        data class UserDevelopmentServiceConfig(val ids: Int) : Config(ids)
 
         @Serializable
         data class SettingsConfig(val ids: Int) : Config(ids)

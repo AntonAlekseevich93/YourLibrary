@@ -22,6 +22,7 @@ class BookInfoRepositoryImpl(
     private val authorsRepository: AuthorsRepository,
     private val appConfig: AppConfig,
     private val remoteConfig: RemoteConfig,
+    private val serviceDevelopment: ServiceDevelopmentRepository
 ) : BookInfoRepository {
 
     override suspend fun getLocalBookByLocalId(bookLocalId: Long): Flow<BookVo?> =
@@ -106,7 +107,9 @@ class BookInfoRepositoryImpl(
                 deferredBooksCount = books.count { it.readingStatus == ReadingStatus.DEFERRED },
                 plannedThisYearBooks = 0,
                 finishedThisYearBooks = 0,
-                serviceDevelopmentBooks = books.filter { it.isServiceDevelopmentBook },
+                serviceDevelopmentBooks = books.filter { it.isServiceDevelopmentBook }.mapNotNull {
+                    serviceDevelopment.getBookWithServiceDevelopment(it)
+                },
                 currentYear = Calendar.getInstance().get(Calendar.YEAR)
             )
             emit(statistics)

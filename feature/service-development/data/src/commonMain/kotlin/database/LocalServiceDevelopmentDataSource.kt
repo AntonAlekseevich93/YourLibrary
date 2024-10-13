@@ -45,6 +45,15 @@ class LocalServiceDevelopmentDataSource(
         }
     }
 
+    suspend fun getServiceDevelopmentByBookId(
+        bookId: String,
+        userId: Int
+    ): UserServiceDevelopmentBookEntity? =
+        serviceDevelopmentBookDao.getUserServiceDevelopmentBook(
+            userBookId = bookId,
+            userId = userId
+        ).firstOrNull()
+
     private suspend fun createEmptyTimestamp(userId: Int): UserServiceDevelopmentBookTimestampEntity {
         val timestamp = UserServiceDevelopmentBookTimestampEntity(
             userId = userId,

@@ -2,6 +2,8 @@ import database.LocalServiceDevelopmentDataSource
 import database.room.entities.toEntity
 import database.room.entities.toVo
 import ktor.RemoteServiceDevelopmentDataSource
+import main_models.BookVo
+import main_models.service_development.BookWithServiceDevelopment
 import main_models.service_development.ServiceDevelopmentBooksTimestampVo
 import main_models.service_development.UserServiceDevelopmentBookVo
 import platform.PlatformInfoData
@@ -48,6 +50,19 @@ class ServiceDevelopmentRepositoryImpl(
             thisDeviceTimestamp = thisDeviceTimestamp ?: timestamp.otherDevicesTimestamp,
         )
         localServiceDevelopmentDataSource.updateServiceDevelopmentBooksTimestamp(newTimestamp.toEntity())
+    }
+
+    override suspend fun getBookWithServiceDevelopment(book: BookVo): BookWithServiceDevelopment? {
+        localServiceDevelopmentDataSource.getServiceDevelopmentByBookId(
+            bookId = book.bookId,
+            userId = appConfig.userId
+        )?.let {
+            return BookWithServiceDevelopment(
+                book = book,
+                serviceDevelopmentBookVo = it.toVo()
+            )
+        }
+        return null
     }
 
 }

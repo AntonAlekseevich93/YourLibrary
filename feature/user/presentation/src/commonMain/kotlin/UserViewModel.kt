@@ -18,7 +18,7 @@ class UserViewModel(
     private val tooltipHandler: TooltipHandler,
     private val drawerScope: DrawerScope,
     private val appConfig: AppConfig,
-) : BaseMVIViewModel<UserUiState, BaseEvent>(UserUiState(appConfig = appConfig)) {
+) : BaseMVIViewModel<UserUiState, BaseEvent>(UserUiState()) {
     private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
     private var userRefreshJob: Job? = null
 

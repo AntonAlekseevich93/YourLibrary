@@ -44,6 +44,7 @@ import yourlibrary.common.resources.generated.resources.user_books_statistics_pl
 fun UserBooksStatisticsInfo(
     userBooksStatistics: State<UserBooksStatisticsData>,
     userReviews: State<List<ReviewAndRatingVo>>,
+    onServiceDevelopmentClick: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -79,12 +80,15 @@ fun UserBooksStatisticsInfo(
             text = "Отзывов",
             count = userReviews.value.size,
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 16.dp),
+            onClick = {}
         )
 
         StatisticItemClickable(
             text = "Улучений сервиса",
             count = userBooksStatistics.value.serviceDevelopmentBooks.size,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onServiceDevelopmentClick
+
         )
 
     }
@@ -182,14 +186,15 @@ private fun StatisticItem(text: String, count: Int, modifier: Modifier = Modifie
 private fun StatisticItemClickable(
     text: String,
     count: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(12.dp)
     Card(
         modifier = modifier
             .clip(shape)
             .clickable(MutableInteractionSource(), rememberRipple()) {
-
+                onClick()
             },
         colors = CardDefaults.cardColors(containerColor = ApplicationTheme.colors.mainBackgroundColor),
         shape = shape

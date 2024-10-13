@@ -58,7 +58,7 @@ fun UserServiceDevelopmentBookEntity.toRemoteDto(): UserServiceDevelopmentBookRe
     )
 }
 
-fun UserServiceDevelopmentBookEntity.toVo(): UserServiceDevelopmentBookVo? {
+fun UserServiceDevelopmentBookEntity.toVo(): UserServiceDevelopmentBookVo {
     return UserServiceDevelopmentBookVo(
         id = id,
         userId = userId,

@@ -46,6 +46,7 @@ data class AppColors(
     val titleColors: TitleColors,
     val screenColor: ScreenColor,
     val textFieldColor: TextFieldColor,
+    val serviceDevelopmentStatusColor: ServiceDevelopmentStatusColor,
 )
 
 class ReadingStatusesColor(
@@ -89,6 +90,12 @@ class TextFieldColor(
     val disabledIndicatorColor: Color,
     val errorIndicatorColor: Color,
     val cursorColor: Color,
+)
+
+class ServiceDevelopmentStatusColor(
+    val approvedColor: Color,
+    val discardColor: Color,
+    val awaitColor: Color,
 )
 
 val lightPaletteTheme = AppColors(
@@ -172,6 +179,11 @@ val lightPaletteTheme = AppColors(
         disabledIndicatorColor = Color(0xFF414141),
         errorIndicatorColor = Color(0xFFf85441),
     ),
+    serviceDevelopmentStatusColor = ServiceDevelopmentStatusColor(
+        approvedColor = Color(0xFF16db65),
+        discardColor = Color(0xFFd00000),
+        awaitColor = Color(0xFFffbe0b),
+    ),
 )
 
 val darkPaletteTheme = AppColors(
@@ -254,5 +266,10 @@ val darkPaletteTheme = AppColors(
         unfocusedIndicatorColor = Color(0xFF414141),
         disabledIndicatorColor = Color(0xFF414141),
         errorIndicatorColor = Color(0xFFf85441),
+    ),
+    serviceDevelopmentStatusColor = ServiceDevelopmentStatusColor(
+        approvedColor = Color(0xFF16db65),
+        discardColor = Color(0xFFd00000),
+        awaitColor = Color(0xFFffbe0b),
     ),
 )
