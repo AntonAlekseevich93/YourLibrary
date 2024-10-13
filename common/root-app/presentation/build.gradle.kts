@@ -11,6 +11,7 @@ kotlin {
                 implementation(deps.bundles.sketchImageLoader)
                 implementation(project(":common:app-config"))
                 implementation(project(":common:core"))
+                implementation(project(":common:navigation"))//todo удалить
                 implementation(project(":common:ui"))
                 implementation(project(":common:models"))
                 implementation(project(":common:arch"))

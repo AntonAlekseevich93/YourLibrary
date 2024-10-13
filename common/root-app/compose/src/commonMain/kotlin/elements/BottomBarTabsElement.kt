@@ -1,4 +1,4 @@
-package bottom_app_bar
+package elements
 
 import ApplicationTheme
 import androidx.compose.animation.animateColorAsState
@@ -55,6 +55,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bottom_app_bar.BottomBarTab
+import bottom_app_bar.bottomBarTabs
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeChild
 import navigation.MenuItem

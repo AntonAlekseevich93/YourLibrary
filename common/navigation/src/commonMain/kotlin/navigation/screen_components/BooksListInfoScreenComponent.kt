@@ -1,6 +1,8 @@
 package navigation.screen_components
 
+import BooksListInfoViewModel
 import com.arkivanov.decompose.ComponentContext
+import di.Inject
 import main_models.books.BookShortVo
 
 interface BooksListInfoScreenComponent {
@@ -10,6 +12,7 @@ interface BooksListInfoScreenComponent {
     fun onBack()
     fun onCloseScreen()
     fun openBookInfo(bookId: Long?, shortBook: BookShortVo?)
+    fun getBooksListInfoViewModel(): BooksListInfoViewModel
 }
 
 class DefaultBooksListInfoScreenComponent(
@@ -21,6 +24,13 @@ class DefaultBooksListInfoScreenComponent(
     val onCloseListener: () -> Unit,
     val openBookInfoScreen: (bookId: Long?, shortBook: BookShortVo?) -> Unit,
 ) : BooksListInfoScreenComponent, ComponentContext by componentContext {
+    val viewModel = Inject.instance<BooksListInfoViewModel>()
+
+    init {
+        viewModel.setBookList(books)
+    }
+
+    override fun getBooksListInfoViewModel() = viewModel
 
     override fun onBack() {
         onBackListener()

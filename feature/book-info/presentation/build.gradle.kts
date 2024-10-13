@@ -10,6 +10,7 @@ kotlin {
             dependencies {
                 implementation(project(":common:app-config"))
                 implementation(project(":common:core"))
+                implementation(project(":common:navigation")) //todo удалить зависимость
                 implementation(project(":common:models"))
                 implementation(project(":common:scopes"))
                 implementation(project(":common:ui"))

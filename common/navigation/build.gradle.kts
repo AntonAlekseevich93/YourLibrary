@@ -10,7 +10,10 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":common:core"))
+                implementation(project(":common:scopes"))
                 implementation(project(":common:models"))
+
+                implementation(project(":feature:books-list-info:presentation"))
             }
         }
     }

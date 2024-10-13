@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import auth.AuthScreen
 import book_info.BookInfoScreen
-import bottom_app_bar.CustomBottomBar
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
@@ -30,6 +29,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import di.Inject
+import elements.CustomBottomBar
 import main_app_bar.MainAppBar
 import main_models.TooltipItem
 import models.UserState

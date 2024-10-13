@@ -10,7 +10,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +22,6 @@ import animations.SuccessAnimation
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
-import di.Inject
 import elements.BookSelectorItem
 import kotlinx.coroutines.launch
 import models.BooksListInfoScreenEvents
@@ -36,15 +34,11 @@ fun BooksListInfoScreen(
     isHazeBlurEnabled: Boolean,
     navigationComponent: BooksListInfoScreenComponent,
 ) {
-    val viewModel = remember { Inject.instance<BooksListInfoViewModel>() }
+    val viewModel = remember { navigationComponent.getBooksListInfoViewModel() }
     val uiState by viewModel.uiState.collectAsState()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val showSuccessAnimation = remember { mutableStateOf(false) }
-
-    LaunchedEffect(key1 = Unit) {
-        viewModel.setBookList(navigationComponent.books)
-    }
 
     Scaffold(
         topBar = {
