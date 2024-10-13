@@ -2,7 +2,6 @@ package book_info
 
 import ApplicationTheme
 import BookCreatorAppBar
-import BookInfoViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -32,10 +30,8 @@ import date.DatePickerEvents
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
-import di.Inject
 import kotlinx.coroutines.launch
 import main_models.DatePickerType
-import main_models.books.BookShortVo
 import models.BookScreenEvents
 import navigation.screen_components.BookInfoComponent
 import org.jetbrains.compose.resources.stringResource
@@ -48,12 +44,8 @@ import yourlibrary.common.resources.generated.resources.start_date
 fun BookInfoScreen(
     navigationComponent: BookInfoComponent
 ) {
-    val bookShortVo: BookShortVo? by remember { mutableStateOf(navigationComponent.shortBook) }
-    val bookItemId by remember { mutableStateOf(navigationComponent.getBookIdOrNull()) }
-    val viewModel = remember { Inject.instance<BookInfoViewModel>() }
-    LaunchedEffect(Unit) {
-        viewModel.component = navigationComponent
-    }
+    val viewModel = remember { navigationComponent.getBookInfoViewModel() }
+    navigationComponent.initializeViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val appBarHazeState = remember { HazeState() }
@@ -62,7 +54,6 @@ fun BookInfoScreen(
     var reviewButtonPosition by remember { mutableStateOf(0) }
     var showDateSelectorDialog by remember { mutableStateOf(false) }
     var modifier = Modifier.fillMaxSize().background(Color.Transparent)
-    val currentScrollPosition = rememberSaveable { mutableStateOf(0) }
 
     if (uiState.isHazeBlurEnabled.value) {
         modifier = modifier.haze(
@@ -76,22 +67,10 @@ fun BookInfoScreen(
 
     LaunchedEffect(scrollState) {
         snapshotFlow { scrollState.value }.collect { scrollOffset ->
-            uiState.scrollPosition.value = scrollOffset
             if (scrollOffset > 220 && isTransparentAppbar.value) {
                 isTransparentAppbar.value = false
             } else if (scrollOffset < 220 && !isTransparentAppbar.value) {
                 isTransparentAppbar.value = true
-            }
-        }
-    }
-
-    LaunchedEffect(key1 = bookItemId, key2 = bookShortVo) {
-        if (viewModel.uiState.value.shortBookItem.value == null && viewModel.uiState.value.bookItem.value == null) {
-            bookItemId?.let {
-                viewModel.getBookByLocalId(it)
-            }
-            bookShortVo?.let {
-                viewModel.setShortBook(it)
             }
         }
     }
@@ -133,6 +112,20 @@ fun BookInfoScreen(
                             uiState.reviewsAndRatings.value,
                             scrollToReviewId = scrollToReviewId
                         )
+                    },
+                    onShowFullAuthorBooksScreen = {
+                        val bookAuthorId = uiState.bookItem.value?.originalAuthorId
+                            ?: uiState.shortBookItem.value?.originalAuthorId
+                        val authorName = uiState.bookItem.value?.originalAuthorName
+                            ?: uiState.shortBookItem.value?.originalAuthorName
+                        if (bookAuthorId != null && authorName != null) {
+                            navigationComponent.openAuthorsBooks(
+                                screenTitle = authorName,
+                                authorId = bookAuthorId,
+                                books = uiState.otherBooksByAuthor.value,
+                                needSaveScreenId = !navigationComponent.previousScreenIsBookInfo
+                            )
+                        }
                     }
                 )
 
@@ -172,12 +165,5 @@ fun BookInfoScreen(
                 }
             }
         }
-    }
-    LaunchedEffect(Unit) {
-        scrollState.animateScrollTo(currentScrollPosition.value)
-    }
-
-    LaunchedEffect(scrollState.value) {
-        currentScrollPosition.value = scrollState.value
     }
 }

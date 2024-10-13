@@ -10,7 +10,7 @@ sealed class BookScreenEvents : BaseEvent {
     data object SaveBookAfterEditing : BookScreenEvents()
     class ChangeReadingStatusEvent(val selectedStatus: ReadingStatus, bookId: String) :
         BookScreenEvents()
+
     class OpenShortBook(val shortBook: BookShortVo) : BookScreenEvents()
     class ShowDateSelector(val datePickerType: DatePickerType) : BookScreenEvents()
-    data object ShowFullAuthorBooksScreen : BookScreenEvents()
 }

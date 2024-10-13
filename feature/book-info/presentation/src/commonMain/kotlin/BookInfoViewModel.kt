@@ -8,6 +8,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import main_models.AuthorVo
 import main_models.BookVo
 import main_models.DatePickerType
@@ -16,7 +17,6 @@ import main_models.books.BookShortVo
 import models.BookInfoScope
 import models.BookInfoUiState
 import models.BookScreenEvents
-import navigation.screen_components.BookInfoComponent
 import platform.PlatformInfoData
 import tooltip_area.TooltipEvents
 
@@ -36,7 +36,6 @@ class BookInfoViewModel(
     private val _uiState: MutableStateFlow<BookInfoUiState> = MutableStateFlow(BookInfoUiState())
     val uiState = _uiState.asStateFlow()
 
-    lateinit var component: BookInfoComponent
 
     init {
         uiState.value.currentDateInMillis.value = platformInfo.getCurrentTime().timeInMillis
@@ -62,7 +61,6 @@ class BookInfoViewModel(
             }
 
             is BookScreenEvents.OpenShortBook -> {
-                component.updateScrollPosition(uiState.value.scrollPosition.value)
                 applicationScope.openBookInfoScreen(
                     bookId = null,
                     shortBook = event.shortBook,
@@ -73,10 +71,6 @@ class BookInfoViewModel(
             is BookScreenEvents.ShowDateSelector -> {
                 uiState.value.datePickerType.value = event.datePickerType
                 uiState.value.showDatePicker.value = true
-            }
-
-            is BookScreenEvents.ShowFullAuthorBooksScreen -> {
-                openAuthorBooks()
             }
 
             is ReviewAndRatingEvents.ChangeBookRating -> {
@@ -115,6 +109,7 @@ class BookInfoViewModel(
         }
     }
 
+    //todo The method is highly complex. You need to make async calls to make it work faster
     fun setShortBook(shortBook: BookShortVo) {
         shortBookJob?.cancel()
         reviewAndRatingJob?.cancel()
@@ -133,7 +128,6 @@ class BookInfoViewModel(
         bookJob = scope.launch(Dispatchers.IO) {
             interactor.getLocalBookById(bookId).collect { response ->
                 response?.let { book ->
-//                    shortBookJob?.cancel()
                     _uiState.value.shortBookItem.value = null
                     _uiState.value.bookItem.value = book
                     getCurrentUserReviewAndRatingByBook(mainBookId = book.originalMainBookId)
@@ -164,11 +158,15 @@ class BookInfoViewModel(
         reviewAndRatingJob = scope.launch(Dispatchers.IO) {
             val response = interactor.getAllRemoteReviewsAndRatingsByBookId(mainBookId)
             if (response.isNotEmpty()) {
-                val resultList = response.toMutableList()
-                resultList.removeAll { it.userId == appConfig.userId.toInt() }
-                _uiState.value.reviewsAndRatings.value =
-                    resultList.sortedByDescending { it.timestampOfCreatingReview }
-                _uiState.value.reviewsCount.value = resultList.count { it.reviewText != null }
+                val userId = appConfig.userId
+                val resultList = response.asSequence().filter {
+                    it.userId != userId
+                }.sortedByDescending { it.timestampOfCreatingReview }.toList()
+
+                withContext(Dispatchers.Main) {
+                    _uiState.value.reviewsAndRatings.value = resultList
+                    _uiState.value.reviewsCount.value = resultList.count { it.reviewText != null }
+                }
             }
         }
     }
@@ -317,21 +315,6 @@ class BookInfoViewModel(
             interactor.addReview(
                 reviewText = reviewText,
                 mainBookId = mainBookId
-            )
-        }
-    }
-
-    private fun openAuthorBooks() {
-        val bookAuthorId = _uiState.value.bookItem.value?.originalAuthorId
-            ?: _uiState.value.shortBookItem.value?.originalAuthorId
-        val authorName = _uiState.value.bookItem.value?.originalAuthorName
-            ?: _uiState.value.shortBookItem.value?.originalAuthorName
-        if (bookAuthorId != null && authorName != null) {
-            component.openAuthorsBooks(
-                screenTitle = authorName,
-                authorId = bookAuthorId,
-                books = uiState.value.otherBooksByAuthor.value,
-                needSaveScreenId = !component.previousScreenIsBookInfo
             )
         }
     }

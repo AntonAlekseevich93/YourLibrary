@@ -29,7 +29,6 @@ import book_info.elements.BookInfoCommonItem
 import book_info.elements.BookMenu
 import main_models.books.BookShortVo
 import main_models.rating_review.ReviewAndRatingVo
-import models.BookScreenEvents
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import rating.elements.BookRatingMiniBlock
@@ -65,6 +64,7 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
     scrollToReviewButtonListener: () -> Unit,
     showDateSelectorDialog: () -> Unit,
     onShowAllReviews: (scrollToReviewId: Int?) -> Unit,
+    onShowFullAuthorBooksScreen: () -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
 
@@ -238,7 +238,7 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
                     style = ApplicationTheme.typography.headlineBold,
                     color = ApplicationTheme.colors.screenColor.activeLinkColor,
                     modifier = Modifier.clickable(MutableInteractionSource(), null) {
-                        sendEvent(BookScreenEvents.ShowFullAuthorBooksScreen)
+                        onShowFullAuthorBooksScreen()
                     }
                 )
             }
@@ -248,7 +248,7 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
                 allBooksCount = otherBooksByAuthor.value.size, //todo fix
                 modifier = Modifier.padding(top = 10.dp, bottom = 16.dp),
                 showAllBooksListener = {
-                    sendEvent(BookScreenEvents.ShowFullAuthorBooksScreen)
+                    onShowFullAuthorBooksScreen()
                 }
             )
         }

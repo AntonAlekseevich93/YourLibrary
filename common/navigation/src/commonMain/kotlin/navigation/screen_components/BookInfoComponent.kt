@@ -1,6 +1,8 @@
 package navigation.screen_components
 
+import BookInfoViewModel
 import com.arkivanov.decompose.ComponentContext
+import di.Inject
 import main_models.books.BookShortVo
 import main_models.rating_review.ReviewAndRatingVo
 
@@ -10,9 +12,6 @@ interface BookInfoComponent {
     fun onBackClicked()
     fun onCloseClicked()
     fun openBookInfo(shortVo: BookShortVo?, bookId: Long?)
-    fun getBookIdOrNull(): Long?
-    fun getSavedScrollPosition(): Int
-    fun updateScrollPosition(newPosition: Int)
     fun openAuthorsBooks(
         screenTitle: String,
         authorId: String,
@@ -21,6 +20,8 @@ interface BookInfoComponent {
     )
 
     fun openReviews(reviews: List<ReviewAndRatingVo>, scrollToReviewId: Int?)
+    fun getBookInfoViewModel(): BookInfoViewModel
+    fun initializeViewModel()
 }
 
 class DefaultBookInfoComponent(
@@ -34,8 +35,23 @@ class DefaultBookInfoComponent(
     private val openReviewsListener: (reviews: List<ReviewAndRatingVo>, scrollToReviewId: Int?) -> Unit,
     private val onCloseScreen: () -> Unit,
 ) : BookInfoComponent, ComponentContext by componentContext {
-    private var savedScrollPosition: Int = 0
-    override fun getBookIdOrNull(): Long? = bookId
+
+    val viewModel = Inject.instance<BookInfoViewModel>()
+    private var firstLaunch = true
+
+    override fun initializeViewModel() {
+        if (firstLaunch) {
+            firstLaunch = false
+            bookId?.let {
+                viewModel.getBookByLocalId(it)
+            }
+            shortBook?.let {
+                viewModel.setShortBook(it)
+            }
+        }
+    }
+
+    override fun getBookInfoViewModel() = viewModel
 
     override fun onBackClicked() {
         onBack()
@@ -56,11 +72,6 @@ class DefaultBookInfoComponent(
         needSaveScreenId: Boolean,
     ) {
         openAuthorsBooksScreen(screenTitle, authorId, books, needSaveScreenId)
-    }
-
-    override fun getSavedScrollPosition(): Int = savedScrollPosition
-    override fun updateScrollPosition(newPosition: Int) {
-        savedScrollPosition = newPosition
     }
 
     override fun openReviews(reviews: List<ReviewAndRatingVo>, scrollToReviewId: Int?) {
