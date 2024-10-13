@@ -34,6 +34,7 @@ kotlin {
                 implementation(project(":feature:authors:compose"))
                 implementation(project(":feature:admin:compose"))
                 implementation(project(":feature:user:compose"))
+                implementation(project(":feature:rating-review:compose"))
             }
         }
     }

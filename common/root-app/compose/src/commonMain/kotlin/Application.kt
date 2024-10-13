@@ -243,6 +243,14 @@ fun Application(
                             navigationComponent = screen.component,
                         )
                     }
+
+                    is RootComponent.Screen.ReviewsAndRatingsScreen -> {
+                        ReviewsAndRatingsScreen(
+                            hazeState = hazeBlurState,
+                            isHazeBlurEnabled = uiState.isHazeBlurEnabled.value,
+                            navigationComponent = screen.component,
+                        )
+                    }
                 }
             }
         }

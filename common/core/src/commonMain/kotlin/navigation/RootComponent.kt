@@ -26,6 +26,7 @@ import navigation.screen_components.DefaultModerationBooksScreenComponent
 import navigation.screen_components.DefaultModerationScreenComponent
 import navigation.screen_components.DefaultParsingScreenComponent
 import navigation.screen_components.DefaultProfileScreenComponent
+import navigation.screen_components.DefaultReviewsAndRatingsScreenComponent
 import navigation.screen_components.DefaultSettingsScreenComponent
 import navigation.screen_components.DefaultSingleBookParsingScreenComponent
 import navigation.screen_components.DefaultUserBookCreatorScreenComponent
@@ -36,6 +37,7 @@ import navigation.screen_components.ModerationBooksScreenComponent
 import navigation.screen_components.ModerationScreenComponent
 import navigation.screen_components.ParsingScreenComponent
 import navigation.screen_components.ProfileScreenComponent
+import navigation.screen_components.ReviewsAndRatingsScreenComponent
 import navigation.screen_components.SettingsScreenComponent
 import navigation.screen_components.SingleBookParsingScreenComponent
 import navigation.screen_components.UserBookCreatorScreenComponent
@@ -57,6 +59,7 @@ interface RootComponent : BackHandlerOwner {
         class BookCreatorScreen(val component: BookCreatorScreenComponent) : Screen()
         class UserBookCreatorScreen(val component: UserBookCreatorScreenComponent) : Screen()
         class ProfileScreen(val component: ProfileScreenComponent) : Screen()
+        class ReviewsAndRatingsScreen(val component: ReviewsAndRatingsScreenComponent) : Screen()
         class UserDevelopmentServiceScreen(val component: UserDevelopmentServiceScreenComponent) :
             Screen()
 
@@ -150,6 +153,10 @@ class DefaultRootComponent(
 
             is Config.ProfileConfig -> RootComponent.Screen.ProfileScreen(
                 itemProfileScreen(componentContext)
+            )
+
+            is Config.ReviewsAndRatingsConfig -> RootComponent.Screen.ReviewsAndRatingsScreen(
+                itemReviewsAndRatingsScreen(componentContext)
             )
 
             is Config.UserDevelopmentServiceConfig -> RootComponent.Screen.UserDevelopmentServiceScreen(
@@ -318,6 +325,14 @@ class DefaultRootComponent(
                     id = id,
                     config = Config.UserDevelopmentServiceConfig(id)
                 )
+            }
+        )
+
+    private fun itemReviewsAndRatingsScreen(componentContext: ComponentContext): ReviewsAndRatingsScreenComponent =
+        DefaultReviewsAndRatingsScreenComponent(
+            componentContext = componentContext,
+            onBackListener = {
+                pop()
             }
         )
 
@@ -564,6 +579,9 @@ class DefaultRootComponent(
 
         @Serializable
         data class ProfileConfig(val ids: Int) : Config(ids)
+
+        @Serializable
+        data class ReviewsAndRatingsConfig(val ids: Int) : Config(ids)
 
         @Serializable
         data class UserDevelopmentServiceConfig(val ids: Int) : Config(ids)
