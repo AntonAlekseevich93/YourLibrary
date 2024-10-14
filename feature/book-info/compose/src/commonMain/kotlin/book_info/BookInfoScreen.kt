@@ -45,7 +45,6 @@ fun BookInfoScreen(
     navigationComponent: BookInfoComponent
 ) {
     val viewModel = remember { navigationComponent.getBookInfoViewModel() }
-    navigationComponent.initializeViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val appBarHazeState = remember { HazeState() }
@@ -54,6 +53,10 @@ fun BookInfoScreen(
     var reviewButtonPosition by remember { mutableStateOf(0) }
     var showDateSelectorDialog by remember { mutableStateOf(false) }
     var modifier = Modifier.fillMaxSize().background(Color.Transparent)
+
+    LaunchedEffect(Unit){
+        navigationComponent.initializeViewModel()
+    }
 
     if (uiState.isHazeBlurEnabled.value) {
         modifier = modifier.haze(

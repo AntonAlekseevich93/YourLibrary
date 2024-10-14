@@ -152,7 +152,7 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
 
         ExpandableText(
             text = description,
-            collapsedMaxLine = 5,
+            collapsedMaxLine = 8,
             modifier = Modifier.padding(horizontal = 16.dp),
             showMoreStyle = SpanStyle(color = Color(0xFFedf6f9), fontWeight = FontWeight.Bold),
             style = ApplicationTheme.typography.headlineRegular.copy(
@@ -246,7 +246,7 @@ fun BaseEventScope<BaseEvent>.BookInfoAboutBook(
             BooksHorizontalSlider(
                 books = otherBooksByAuthor,
                 allBooksCount = otherBooksByAuthor.value.size, //todo fix
-                modifier = Modifier.padding(top = 10.dp, bottom = 16.dp),
+                itemModifier = Modifier.padding(top = 10.dp, bottom = 16.dp),
                 showAllBooksListener = {
                     onShowFullAuthorBooksScreen()
                 }

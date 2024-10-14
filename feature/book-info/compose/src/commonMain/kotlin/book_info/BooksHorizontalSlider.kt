@@ -7,13 +7,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -44,11 +42,10 @@ import yourlibrary.common.resources.generated.resources.show_all_books_with_new_
 fun BaseEventScope<BaseEvent>.BooksHorizontalSlider(
     books: State<List<BookShortVo>>,
     allBooksCount: Int,
-    modifier: Modifier = Modifier,
-    maxBooks: Int = 10,
+    itemModifier: Modifier = Modifier,
+    maxBooks: Int = 8,
     showAllBooksListener: () -> Unit,
 ) {
-    val scrollState = rememberScrollState()
     val lazyState = rememberLazyListState()
     val with = remember { 125.dp }
     val height = remember { 200.dp }
@@ -59,40 +56,39 @@ fun BaseEventScope<BaseEvent>.BooksHorizontalSlider(
             maxHeight = height,
             maxWidth = with
         )
-    Row(
-        modifier = modifier.padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.Top
-    ) {
 
-        LazyRow(state = lazyState) {
-            itemsIndexed(books.value) { index, book ->
-                if (index + 1 < maxBooks) {
-                    HorizontalSliderBookItem(
-                        book,
-                        modifier = modifier.padding(end = 20.dp),
-                        imageModifier = imageModifier,
-                        with = with,
-                        onClick = {
-                            sendEvent(BookScreenEvents.OpenShortBook(book))
-                        }
+    LazyRow(state = lazyState, verticalAlignment = Alignment.Top) {
+        itemsIndexed(books.value.take(maxBooks)) { index, book ->
+            HorizontalSliderBookItem(
+                book,
+                modifier = itemModifier.padding(
+                    end = 20.dp,
+                    start = if (index == 0) 16.dp else 0.dp
+                ),
+                imageModifier = imageModifier,
+                with = with,
+                onClick = {
+                    sendEvent(BookScreenEvents.OpenShortBook(book))
+                }
+            )
+        }
+
+        item {
+            if (allBooksCount > maxBooks) {
+                Column(
+                    modifier = Modifier.sizeIn(minHeight = height + 18.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringResource(Res.string.show_all_books_with_new_line),
+                        style = ApplicationTheme.typography.footnoteBold,
+                        color = ApplicationTheme.colors.mainTextColor,
+                        modifier = Modifier.padding(start = 26.dp, end = 20.dp)
+                            .clickable(interactionSource = MutableInteractionSource(), null) {
+                                showAllBooksListener()
+                            }
                     )
                 }
-            }
-        }
-        if (allBooksCount > maxBooks) {
-            Column(
-                modifier = Modifier.sizeIn(minHeight = height + 18.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringResource(Res.string.show_all_books_with_new_line),
-                    style = ApplicationTheme.typography.footnoteBold,
-                    color = ApplicationTheme.colors.mainTextColor,
-                    modifier = Modifier.padding(start = 26.dp, end = 20.dp)
-                        .clickable(interactionSource = MutableInteractionSource(), null) {
-                            showAllBooksListener()
-                        }
-                )
             }
         }
     }

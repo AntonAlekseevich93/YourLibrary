@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,10 +43,21 @@ fun ExpandableText(
     disableOnClick: Boolean = false,
     showMoreOrShowLessAsNewLine: Boolean = false,
     onClick: (() -> Unit)? = null,
+    expandWhenIndex: State<Int> = mutableStateOf(-1),
+    index: Int = -2
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var clickable by remember { mutableStateOf(false) }
     var lastCharIndex by remember { mutableStateOf(0) }
+    var isFirstDraw by remember() { mutableStateOf(true) }
+
+    LaunchedEffect(key1 = isExpanded) {
+        if (isFirstDraw && expandWhenIndex.value == index && clickable) {
+            isFirstDraw = false
+            isExpanded = true
+        }
+    }
+
     Box(modifier = Modifier
         .clickable(
             interactionSource = MutableInteractionSource(),

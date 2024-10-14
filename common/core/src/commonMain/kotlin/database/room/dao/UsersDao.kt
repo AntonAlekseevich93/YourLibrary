@@ -22,6 +22,6 @@ interface UsersDao {
     @Query("SELECT * FROM UserEntity WHERE email = :email")
     suspend fun getUserByEmail(email: String): List<UserEntity>
 
-    @Query("UPDATE UserEntity set isAuthorized = false")
+    @Query("UPDATE UserEntity set isAuthorized = 0")
     suspend fun setAllAsUnauthorized()
 }

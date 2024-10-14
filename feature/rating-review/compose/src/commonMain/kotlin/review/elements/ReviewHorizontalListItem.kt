@@ -18,6 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.style.Hyphens
+import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import main_models.rating_review.ReviewAndRatingVo
 import org.jetbrains.compose.resources.painterResource
@@ -37,9 +41,9 @@ internal fun ReviewHorizontalListItem(
     Card(
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = ApplicationTheme.colors.cardBackgroundLight),
-        modifier = modifier.height(260.dp).width(320.dp)
+        modifier = modifier.height(250.dp).width(320.dp)
     ) {
-        Column(Modifier.padding(24.dp)) {
+        Column(Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.padding(bottom = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -62,7 +66,14 @@ internal fun ReviewHorizontalListItem(
                 collapsedMaxLine = 6,
                 onClick = {
                     showAllReview(review.id)
-                }
+                },
+                style = ApplicationTheme.typography.headlineRegular.copy(
+                    textDirection = TextDirection.Content,
+                    hyphens = Hyphens.Auto,
+                    lineBreak = LineBreak.Paragraph
+                ),
+                textAlign = TextAlign.Justify,
+                showMoreOrShowLessAsNewLine = true
             )
 
             Row(
@@ -72,7 +83,7 @@ internal fun ReviewHorizontalListItem(
                 Image(
                     painter = painterResource(Res.drawable.ic_like),
                     contentDescription = null,
-                    modifier = Modifier.padding(end = 10.dp).size(24.dp),
+                    modifier = Modifier.padding(end = 10.dp).size(20.dp),
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                 )
                 Text(
@@ -85,7 +96,7 @@ internal fun ReviewHorizontalListItem(
                 Image(
                     painter = painterResource(Res.drawable.ic_dislike),
                     contentDescription = null,
-                    modifier = Modifier.padding(end = 10.dp).size(24.dp),
+                    modifier = Modifier.padding(end = 10.dp).size(20.dp),
                     colorFilter = ColorFilter.tint(ApplicationTheme.colors.mainIconsColor),
                 )
 
