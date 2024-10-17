@@ -12,12 +12,15 @@ fun ProfileContent(
     onAdminPanelClick: () -> Unit,
     onSignOut: () -> Unit,
     onServiceDevelopmentClick: () -> Unit,
+    onReadingGoalsClick: () -> Unit,
 ) {
     AvatarWithName(uiState.userInfo.value.name)
     UserBooksStatisticsInfo(
         userBooksStatistics = uiState.userBooksStatistics,
         userReviews = uiState.userReviews,
-        onServiceDevelopmentClick = onServiceDevelopmentClick
+        onServiceDevelopmentClick = onServiceDevelopmentClick,
+        userGoalsInYears = uiState.userInfo.value.userReadingGoalsInYears,
+        readingGoalsClicked = onReadingGoalsClick
     )
     AccountMenu(
         onAdminPanelClick = onAdminPanelClick,

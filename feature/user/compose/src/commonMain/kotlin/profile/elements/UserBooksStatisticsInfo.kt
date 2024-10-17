@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import main_models.books.UserBooksStatisticsData
 import main_models.rating_review.ReviewAndRatingVo
+import main_models.user.UserReadingGoalsInYearsVo
 import org.jetbrains.compose.resources.stringResource
 import yourlibrary.common.resources.generated.resources.Res
 import yourlibrary.common.resources.generated.resources.reading_status_deferred
@@ -44,7 +45,9 @@ import yourlibrary.common.resources.generated.resources.user_books_statistics_pl
 fun UserBooksStatisticsInfo(
     userBooksStatistics: State<UserBooksStatisticsData>,
     userReviews: State<List<ReviewAndRatingVo>>,
+    userGoalsInYears: UserReadingGoalsInYearsVo?,
     onServiceDevelopmentClick: () -> Unit,
+    readingGoalsClicked: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -72,8 +75,9 @@ fun UserBooksStatisticsInfo(
         }
         StatisticProgressIndicator(
             finishedBooks = userBooksStatistics.value.finishedThisYearBooks,
-            plannedBooks = userBooksStatistics.value.plannedThisYearBooks,
-            year = userBooksStatistics.value.currentYear
+            plannedBooks = userGoalsInYears?.goals?.lastOrNull()?.booksGoal ?: 0,
+            year = userBooksStatistics.value.currentYear,
+            onClick = readingGoalsClicked
         )
 
         StatisticItemClickable(
@@ -98,7 +102,8 @@ fun UserBooksStatisticsInfo(
 private fun StatisticProgressIndicator(
     finishedBooks: Int,
     plannedBooks: Int,
-    year: Int
+    year: Int,
+    onClick: () -> Unit
 ) {
     val progress = if (finishedBooks > 0 && plannedBooks > 0) {
         (finishedBooks.toFloat() / plannedBooks.toFloat())
@@ -113,7 +118,7 @@ private fun StatisticProgressIndicator(
             .padding(top = 26.dp)
             .clip(shape)
             .clickable(MutableInteractionSource(), rememberRipple()) {
-
+                onClick()
             },
         colors = CardDefaults.cardColors(containerColor = ApplicationTheme.colors.mainBackgroundColor),
         shape = shape
@@ -122,8 +127,8 @@ private fun StatisticProgressIndicator(
             Text(
                 text = stringResource(
                     Res.string.user_books_statistics_planned,
-                    plannedBooks,
                     finishedBooks,
+                    plannedBooks,
                     year
                 ),
                 style = ApplicationTheme.typography.footnoteRegular,

@@ -1,7 +1,6 @@
 import database.LocalUserDataSource
-import database.room.entities.toVo
+import database.room.entities.user.toEntity
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import ktor.RemoteUserDataSource
 import ktor.models.toVo
 import main_models.rest.base.BaseResponse
@@ -15,6 +14,7 @@ import main_models.user.UserVo
 class UserRepositoryImpl(
     private val remoteUserDataSource: RemoteUserDataSource,
     private val localUserDataSource: LocalUserDataSource,
+    private val appConfig: AppConfig,
 ) : UserRepository {
 
     override suspend fun signUp(
@@ -44,12 +44,13 @@ class UserRepositoryImpl(
             name = name,
             email = email,
             isVerified = isVerified,
-            isAuthorized = isAuthorized
+            isAuthorized = isAuthorized,
+            timestamp = 0//todo fix
         )
     }
 
     override suspend fun getAuthorizedUser(): Flow<UserVo?> =
-        localUserDataSource.getAuthorizedUser().map { it?.toVo() }
+        localUserDataSource.getAuthorizedUser()
 
     override suspend fun logOut() {
         localUserDataSource.logOut()
@@ -62,8 +63,19 @@ class UserRepositoryImpl(
                 name = it.name,
                 email = it.email,
                 isVerified = it.isVerified,
-                isAuthorized = true
+                isAuthorized = true,
+                timestamp = 0//todo fix
             )
+        }
+    }
+
+    override suspend fun updateUserReadingGoalsInCurrentYear(goal: Int) {
+        remoteUserDataSource.updateUserBooksGoal(goal)?.toVo()?.let {
+            val userId = appConfig.userId
+            localUserDataSource.updateUser(it.toEntity())
+            it.userReadingGoalsInYears?.goals?.let { goals ->
+                localUserDataSource.updateUserReadingGoals(goals.map { it.toEntity(userId) })
+            }
         }
     }
 

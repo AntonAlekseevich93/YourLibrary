@@ -9,10 +9,11 @@ import database.room.dao.BookTimestampDao
 import database.room.dao.BooksDao
 import database.room.dao.ReviewAndRatingDao
 import database.room.dao.ReviewAndRatingTimestampDao
-import database.room.dao.UserNotificationsDao
-import database.room.dao.UserServiceDevelopmentBookDao
-import database.room.dao.UserServiceDevelopmentBookTimestampDao
-import database.room.dao.UsersDao
+import database.room.dao.user.UserGoalsInYearsDao
+import database.room.dao.user.UserNotificationsDao
+import database.room.dao.user.UserServiceDevelopmentBookDao
+import database.room.dao.user.UserServiceDevelopmentBookTimestampDao
+import database.room.dao.user.UsersDao
 import database.room.dao.cache.CacheBooksByAuthorDao
 import database.room.dao.cache.CacheReviewAndRatingDao
 import database.room.entities.AuthorEntity
@@ -21,12 +22,13 @@ import database.room.entities.BookEntity
 import database.room.entities.BookTimestampEntity
 import database.room.entities.ReviewAndRatingEntity
 import database.room.entities.ReviewAndRatingTimestampEntity
-import database.room.entities.UserEntity
+import database.room.entities.user.UserEntity
 import database.room.entities.UserServiceDevelopmentBookEntity
 import database.room.entities.UserServiceDevelopmentBookTimestampEntity
 import database.room.entities.cache.CacheBookByAuthorEntity
 import database.room.entities.cache.CacheReviewAndRatingEntity
 import database.room.entities.notifications.UserNotificationsEntity
+import database.room.entities.user.UserGoalInYearEntity
 
 @Database(
     entities = [
@@ -42,6 +44,7 @@ import database.room.entities.notifications.UserNotificationsEntity
         UserNotificationsEntity::class,
         UserServiceDevelopmentBookEntity::class,
         UserServiceDevelopmentBookTimestampEntity::class,
+        UserGoalInYearEntity::class,
     ], version = 1
 )
 @ConstructedBy(AppDatabaseCtor::class)
@@ -58,4 +61,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun getUserNotificationsDao(): UserNotificationsDao
     abstract fun getUserServiceDevelopmentBookDao(): UserServiceDevelopmentBookDao
     abstract fun getUserServiceDevelopmentBookTimestampDao(): UserServiceDevelopmentBookTimestampDao
+    abstract fun getUserGoalInYearDao(): UserGoalsInYearsDao
 }

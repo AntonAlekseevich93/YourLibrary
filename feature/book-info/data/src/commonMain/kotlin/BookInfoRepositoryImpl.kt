@@ -105,7 +105,6 @@ class BookInfoRepositoryImpl(
                 readingBooksCount = books.count { it.readingStatus == ReadingStatus.READING },
                 doneBooksCount = books.count { it.readingStatus == ReadingStatus.DONE },
                 deferredBooksCount = books.count { it.readingStatus == ReadingStatus.DEFERRED },
-                plannedThisYearBooks = 0,
                 finishedThisYearBooks = 0,
                 serviceDevelopmentBooks = books.filter { it.isServiceDevelopmentBook }.mapNotNull {
                     serviceDevelopment.getBookWithServiceDevelopment(it)

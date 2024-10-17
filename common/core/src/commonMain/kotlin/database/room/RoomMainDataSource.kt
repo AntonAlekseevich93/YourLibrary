@@ -7,12 +7,13 @@ import database.room.dao.BookTimestampDao
 import database.room.dao.BooksDao
 import database.room.dao.ReviewAndRatingDao
 import database.room.dao.ReviewAndRatingTimestampDao
-import database.room.dao.UserNotificationsDao
-import database.room.dao.UserServiceDevelopmentBookDao
-import database.room.dao.UserServiceDevelopmentBookTimestampDao
-import database.room.dao.UsersDao
 import database.room.dao.cache.CacheBooksByAuthorDao
 import database.room.dao.cache.CacheReviewAndRatingDao
+import database.room.dao.user.UserGoalsInYearsDao
+import database.room.dao.user.UserNotificationsDao
+import database.room.dao.user.UserServiceDevelopmentBookDao
+import database.room.dao.user.UserServiceDevelopmentBookTimestampDao
+import database.room.dao.user.UsersDao
 import kotlinx.coroutines.Dispatchers
 import platform.Platform
 
@@ -69,6 +70,10 @@ class RoomMainDataSource(
 
     val userServiceDevelopmentBookTimestampDao: UserServiceDevelopmentBookTimestampDao by lazy {
         db.getUserServiceDevelopmentBookTimestampDao()
+    }
+
+    val userGoalInYearDao: UserGoalsInYearsDao by lazy {
+        db.getUserGoalInYearDao()
     }
 
     private fun getRoomDatabase(

@@ -82,6 +82,8 @@ fun ProfileScreen(
                     },
                     onServiceDevelopmentClick = {
                         navigationComponent?.openServiceDevelopmentScreen()
+                    },
+                    onReadingGoalsClick = {
                     }
                 )
                 Spacer(Modifier.padding(64.dp))
@@ -107,7 +109,7 @@ fun ProfileScreenPreview() {
 
                     },
                     onBack = {
-                    }
+                    },
                 )
             },
             containerColor = ApplicationTheme.colors.cardBackgroundDark,
@@ -125,7 +127,7 @@ fun ProfileScreenPreview() {
                             bottom = it.calculateBottomPadding()
                         )
                 ) {
-                    ProfileContent(uiState = getUserUiStateMock(), {}, {}, {})
+                    ProfileContent(uiState = getUserUiStateMock(), {}, {}, {}, {})
                 }
             }
         }

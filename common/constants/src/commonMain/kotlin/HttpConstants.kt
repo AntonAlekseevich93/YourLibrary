@@ -3,6 +3,7 @@ object HttpConstants {
     const val USER_SIGN_IN_REQUEST = "user/signin"
     const val USER_SIGN_UP_REQUEST = "user/signup"
     const val USER_INFO_REQUEST = "user/info"
+    const val USER_UPDATE_GOALS = "/user/update/goals"
 
     const val AUTHORS_SEARCH_REQUEST = "authors/search"
 

@@ -104,4 +104,10 @@ class UserViewModel(
         }
     }
 
+    fun updateUserReadingGoalsInCurrentYear(newGoal: Int) {
+        scope.launch {
+            interactor.updateUserReadingGoalsInCurrentYear(newGoal)
+        }
+    }
+
 }

@@ -8,7 +8,7 @@ import org.kodein.di.singleton
 
 val userModule = DI.Module("userModule") {
     bind<UserRepository>() with singleton {
-        UserRepositoryImpl(instance(), instance())
+        UserRepositoryImpl(instance(), instance(), instance())
     }
 
     bind<UserInfoProvider>() with singleton {
@@ -16,7 +16,7 @@ val userModule = DI.Module("userModule") {
     }
 
     bind<LocalUserDataSource>() with provider {
-        LocalUserDataSource(instance())
+        LocalUserDataSource(instance(), instance())
     }
 
     bind<RemoteUserDataSource>() with provider {

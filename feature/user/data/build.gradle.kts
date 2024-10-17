@@ -11,6 +11,7 @@ kotlin {
             dependencies {
                 implementation(Dependencies.Ktor.serialization)
                 api(project(":feature:user:api"))
+                implementation(project(":common:app-config"))
                 implementation(project(":common:constants"))
                 implementation(project(":common:core"))
                 implementation(project(":common:http-client"))

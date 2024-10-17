@@ -1,4 +1,4 @@
-package database.room.dao
+package database.room.dao.user
 
 import androidx.room.Dao
 import androidx.room.Insert

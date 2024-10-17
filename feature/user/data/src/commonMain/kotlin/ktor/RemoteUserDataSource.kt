@@ -5,6 +5,8 @@ import HttpConstants.USER_INFO_REQUEST
 import HttpConstants.USER_SIGN_IN_REQUEST
 import HttpConstants.USER_SIGN_UP_REQUEST
 import HttpConstants.USER_STATUS_REQUEST
+import HttpConstants.USER_UPDATE_GOALS
+import HttpParams.USER_BOOKS_GOAL
 import ktor.models.UserRemoteDto
 import main_models.rest.base.BaseResponse
 import main_models.rest.users.AuthRegisterRequest
@@ -39,6 +41,13 @@ class RemoteUserDataSource(private val httpClient: HttpAppClient) {
         url = USER_INFO_REQUEST,
         resultClass = UserRemoteDto::class,
         errorClass = String::class
+    )?.result
+
+    suspend fun updateUserBooksGoal(goal: Int) = httpClient.get(
+        url = USER_UPDATE_GOALS,
+        resultClass = UserRemoteDto::class,
+        errorClass = String::class,
+        params = mapOf(USER_BOOKS_GOAL to goal.toString())
     )?.result
 
 }

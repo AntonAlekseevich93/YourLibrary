@@ -16,4 +16,5 @@ object HttpParams {
     const val NOTIFICATIONS_TITLE = "notificationTitle"
     const val NOTIFICATIONS_BODY = "notificationBody"
     const val BOOKS_COUNT = "booksCount"
+    const val USER_BOOKS_GOAL = "userBooksGoal"
 }

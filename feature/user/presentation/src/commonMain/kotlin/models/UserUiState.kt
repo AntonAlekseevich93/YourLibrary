@@ -9,7 +9,17 @@ import main_models.user.UserVo
 
 data class UserUiState(
     val isSignUnState: MutableState<Boolean> = mutableStateOf(false),
-    val userInfo: MutableState<UserVo> = mutableStateOf(UserVo(0, "", "", false, false)),
+    val userInfo: MutableState<UserVo> = mutableStateOf(
+        UserVo(
+            0,
+            "",
+            "",
+            false,
+            false,
+            timestampOfUpdating = 0L,
+            null,
+        )
+    ),
     val userBooksStatistics: MutableState<UserBooksStatisticsData> = mutableStateOf(
         UserBooksStatisticsData()
     ),
@@ -26,12 +36,14 @@ fun getUserUiStateMock(): UserUiState {
                 "Антон Алексеевич",
                 email = "anton.alex@gmail.com",
                 isVerified = false,
-                isAuth = true
+                isAuth = true,
+                timestampOfUpdating = 0L,
+                null
             )
         ),
         userBooksStatistics = mutableStateOf(
             UserBooksStatisticsData(
-                24, 10, 1, 12, 13, 20, 6, emptyList(), 2014
+                24, 10, 1, 12, 13, 20, emptyList(), 2014
             )
         ),
         showAdminPanel = mutableStateOf(true)

@@ -95,4 +95,8 @@ class UserInteractor(
     suspend fun getUserReviews(): Flow<List<ReviewAndRatingVo>> =
         reviewAndRatingRepository.getAllCurrentUserReviews()
 
+    suspend fun updateUserReadingGoalsInCurrentYear(goal: Int) {
+        repository.updateUserReadingGoalsInCurrentYear(goal)
+    }
+
 }
