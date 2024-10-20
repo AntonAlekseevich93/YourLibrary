@@ -94,6 +94,15 @@ class UserViewModel(
                     }
                 }
             }
+
+            launch {
+                interactor.getFinishedThisYearCountBooks().collect {
+                    withContext(Dispatchers.Main) {
+                        uiStateValue.finishedThisYearBooksCount.value = it
+                    }
+                }
+            }
+
             launch {
                 interactor.getUserReviews().collect {
                     withContext(Dispatchers.Main) {

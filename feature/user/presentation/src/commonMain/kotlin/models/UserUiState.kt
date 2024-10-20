@@ -24,7 +24,8 @@ data class UserUiState(
         UserBooksStatisticsData()
     ),
     val showAdminPanel: MutableState<Boolean> = mutableStateOf(false),
-    val userReviews: MutableState<List<ReviewAndRatingVo>> = mutableStateOf(emptyList())
+    val userReviews: MutableState<List<ReviewAndRatingVo>> = mutableStateOf(emptyList()),
+    val finishedThisYearBooksCount: MutableState<Int> = mutableStateOf(0),
 ) : BaseUIState
 
 //todo move to mock file
@@ -43,7 +44,7 @@ fun getUserUiStateMock(): UserUiState {
         ),
         userBooksStatistics = mutableStateOf(
             UserBooksStatisticsData(
-                24, 10, 1, 12, 13, 20, emptyList(), 2014
+                24, 10, 1, 12, 20, emptyList(), 2014,
             )
         ),
         showAdminPanel = mutableStateOf(true)

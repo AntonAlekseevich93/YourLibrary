@@ -46,6 +46,7 @@ fun UserBooksStatisticsInfo(
     userBooksStatistics: State<UserBooksStatisticsData>,
     userReviews: State<List<ReviewAndRatingVo>>,
     userGoalsInYears: UserReadingGoalsInYearsVo?,
+    finishedThisYearBooksCount: State<Int>,
     onServiceDevelopmentClick: () -> Unit,
     readingGoalsClicked: () -> Unit,
 ) {
@@ -74,7 +75,7 @@ fun UserBooksStatisticsInfo(
             )
         }
         StatisticProgressIndicator(
-            finishedBooks = userBooksStatistics.value.finishedThisYearBooks,
+            finishedBooks = finishedThisYearBooksCount.value,
             plannedBooks = userGoalsInYears?.goals?.lastOrNull()?.booksGoal ?: 0,
             year = userBooksStatistics.value.currentYear,
             onClick = readingGoalsClicked
@@ -127,7 +128,7 @@ private fun StatisticProgressIndicator(
             Text(
                 text = stringResource(
                     Res.string.user_books_statistics_planned,
-                    finishedBooks,
+                    finishedBooks.takeIf { plannedBooks > 0 } ?: 0,
                     plannedBooks,
                     year
                 ),

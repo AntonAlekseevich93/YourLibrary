@@ -8,7 +8,6 @@ data class UserBooksStatisticsData(
     val readingBooksCount: Int = 0,
     val doneBooksCount: Int = 0,
     val deferredBooksCount: Int = 0,
-    val finishedThisYearBooks: Int = 0,
     val serviceDevelopmentBooks: List<BookWithServiceDevelopment> = emptyList(),
     val currentYear: Int = 0
 )

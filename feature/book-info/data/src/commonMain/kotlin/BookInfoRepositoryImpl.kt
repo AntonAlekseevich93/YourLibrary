@@ -15,6 +15,8 @@ import main_models.rest.books.UserBookRemoteDto
 import main_models.rest.books.toRemoteDto
 import main_models.rest.books.toVo
 import platform.PlatformInfoData
+import java.time.Instant
+import java.time.ZoneId
 import java.util.Calendar
 
 class BookInfoRepositoryImpl(
@@ -115,13 +117,24 @@ class BookInfoRepositoryImpl(
                 readingBooksCount = books.count { it.readingStatus == ReadingStatus.READING },
                 doneBooksCount = books.count { it.readingStatus == ReadingStatus.DONE },
                 deferredBooksCount = books.count { it.readingStatus == ReadingStatus.DEFERRED },
-                finishedThisYearBooks = 0,
                 serviceDevelopmentBooks = books.filter { it.isServiceDevelopmentBook }.mapNotNull {
                     serviceDevelopment.getBookWithServiceDevelopment(it)
                 },
                 currentYear = Calendar.getInstance().get(Calendar.YEAR)
             )
             emit(statistics)
+        }
+    }
+
+    override suspend fun getFinishedThisYearCountBooks(): Flow<Int> = flow {
+        val year = Calendar.getInstance().get(Calendar.YEAR)
+        localBookInfoDataSource.getAllBooksWithDoneStatus(appConfig.userId).collect { books ->
+            val finishedBooksCount = books.count {
+                it.timestampOfReadingDone > 0 && Instant.ofEpochMilli(it.timestampOfReadingDone)
+                    .atZone(ZoneId.systemDefault())
+                    .year == year
+            }
+            emit(finishedBooksCount)
         }
     }
 

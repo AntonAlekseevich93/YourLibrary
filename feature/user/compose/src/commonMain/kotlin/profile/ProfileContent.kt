@@ -20,7 +20,8 @@ fun ProfileContent(
         userReviews = uiState.userReviews,
         onServiceDevelopmentClick = onServiceDevelopmentClick,
         userGoalsInYears = uiState.userInfo.value.userReadingGoalsInYears,
-        readingGoalsClicked = onReadingGoalsClick
+        readingGoalsClicked = onReadingGoalsClick,
+        finishedThisYearBooksCount = uiState.finishedThisYearBooksCount
     )
     AccountMenu(
         onAdminPanelClick = onAdminPanelClick,

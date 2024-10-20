@@ -4,6 +4,7 @@ import database.room.RoomMainDataSource
 import database.room.entities.BookEntity
 import database.room.entities.BookTimestampEntity
 import kotlinx.coroutines.flow.Flow
+import main_models.ReadingStatus
 import platform.PlatformInfoData
 
 class LocalBookInfoDataSource(
@@ -73,6 +74,8 @@ class LocalBookInfoDataSource(
     }
 
     suspend fun getAllBooks(userId: Int) = booksDao.getAllBooksFlow(userId)
+    suspend fun getAllBooksWithDoneStatus(userId: Int) =
+        booksDao.getAllBooksWithStatus(userId, readingStatus = ReadingStatus.DONE.id)
 
     private suspend fun createEmptyTimestamp(userId: Int): BookTimestampEntity {
         val timestamp = BookTimestampEntity(

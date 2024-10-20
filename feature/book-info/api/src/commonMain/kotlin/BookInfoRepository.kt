@@ -17,4 +17,5 @@ interface BookInfoRepository {
     suspend fun updateBookTimestamp(lastTimestamp: BookTimestampVo)
     suspend fun getNotSynchronizedBooks(userId: Int): List<UserBookRemoteDto>
     suspend fun getUserBooksStatistics(): Flow<UserBooksStatisticsData>
+    suspend fun getFinishedThisYearCountBooks(): Flow<Int>
 }

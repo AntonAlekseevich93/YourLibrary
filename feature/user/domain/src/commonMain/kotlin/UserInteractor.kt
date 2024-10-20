@@ -92,6 +92,9 @@ class UserInteractor(
     suspend fun getUserBooksStatistics(): Flow<UserBooksStatisticsData> =
         booksRepository.getUserBooksStatistics()
 
+    suspend fun getFinishedThisYearCountBooks(): Flow<Int> =
+        booksRepository.getFinishedThisYearCountBooks()
+
     suspend fun getUserReviews(): Flow<List<ReviewAndRatingVo>> =
         reviewAndRatingRepository.getAllCurrentUserReviews()
 
