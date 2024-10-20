@@ -78,6 +78,7 @@ data class BookShortVo(
             authorFirstName = authorFirstName,
             authorLastName = authorLastName,
             authorMiddleName = authorMiddleName,
+            timestampOfReadingDone = 0
         )
 
     fun getMainBookIdByShortBook(): String = if (isMainBook) bookId else mainBookId

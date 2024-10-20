@@ -30,4 +30,18 @@ fun UserGoalInYearDto.toVo(): UserGoalInYearVo? {
     )
 }
 
+fun UserReadingGoalsInYearsVo.toDto(): UserReadingGoalsInYearsDto? {
+    return UserReadingGoalsInYearsDto(
+        goals = goals.map { it.toDto() }.takeIf { it.isNotEmpty() }
+            ?: return null
+    )
+}
+
+fun UserGoalInYearVo.toDto(): UserGoalInYearDto {
+    return UserGoalInYearDto(
+        year = year,
+        booksGoal = booksGoal,
+    )
+}
+
 

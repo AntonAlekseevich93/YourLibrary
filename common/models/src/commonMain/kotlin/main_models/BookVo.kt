@@ -41,6 +41,7 @@ data class BookVo(
     val authorFirstName: String,
     val authorMiddleName: String,
     val authorLastName: String,
+    val timestampOfReadingDone: Long,
 ) {
     var remoteImageLink: String? = null
 

@@ -614,7 +614,8 @@ class BookCreatorViewModel(
         uiStateValue.userBookCreatorUiState.createUserBook(
             selectedAuthor = uiStateValue.selectedAuthor,
             userId = appConfig.userId,
-            isServiceDevelopmentBook = uiStateValue.isServiceDevelopment.value
+            isServiceDevelopmentBook = uiStateValue.isServiceDevelopment.value,
+            currentTimeInMillis = platformInfo.getCurrentTime().timeInMillis,
         )?.let { book ->
             val author =
                 if (uiStateValue.selectedAuthor != null) uiStateValue.selectedAuthor!!
@@ -709,8 +710,9 @@ class BookCreatorViewModel(
         updateUIState(BookCreatorUiState())
     }
 
-    private fun createUserBookBasedOnShortBook(shortBook: BookShortVo): BookVo =
-        BookVo(
+    private fun createUserBookBasedOnShortBook(shortBook: BookShortVo): BookVo {
+        val readingStatus = shortBook.localReadingStatus ?: ReadingStatus.PLANNED
+        return BookVo(
             bookId = shortBook.bookId,
             serverId = shortBook.id,
             localId = null,
@@ -723,7 +725,7 @@ class BookCreatorViewModel(
             userCoverUrl = null,
             pageCount = shortBook.numbersOfPages,
             isbn = shortBook.isbn,
-            readingStatus = shortBook.localReadingStatus ?: ReadingStatus.PLANNED,
+            readingStatus = readingStatus,
             ageRestrictions = shortBook.ageRestrictions,
             bookGenreId = shortBook.bookGenreId,
             startDateInString = "",
@@ -750,5 +752,9 @@ class BookCreatorViewModel(
             authorFirstName = shortBook.authorFirstName,
             authorLastName = shortBook.authorLastName,
             authorMiddleName = shortBook.authorMiddleName,
+            timestampOfReadingDone = if (readingStatus == ReadingStatus.DONE) {
+                platformInfo.getCurrentTime().timeInMillis
+            } else 0
         )
+    }
 }

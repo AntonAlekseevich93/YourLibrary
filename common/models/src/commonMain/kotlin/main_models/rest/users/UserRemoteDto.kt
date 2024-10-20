@@ -1,9 +1,7 @@
-package ktor.models
+package main_models.rest.users
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import main_models.rest.users.UserReadingGoalsInYearsDto
-import main_models.rest.users.toVo
 import main_models.user.UserVo
 
 @Serializable
@@ -25,5 +23,16 @@ fun UserRemoteDto.toVo(): UserVo? {
         isAuth = true,
         timestampOfUpdating = timestampOfUpdating,
         userReadingGoalsInYears = userReadingGoalsInYears?.toVo()
+    )
+}
+
+fun UserVo.toDto(): UserRemoteDto {
+    return UserRemoteDto(
+        id = id,
+        name = name,
+        email = email,
+        isVerified = isVerified,
+        timestampOfUpdating = timestampOfUpdating,
+        userReadingGoalsInYears = userReadingGoalsInYears?.toDto()
     )
 }

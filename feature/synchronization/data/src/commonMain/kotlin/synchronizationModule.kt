@@ -17,6 +17,7 @@ val synchronizationModule = DI.Module("synchronizationModule") {
             instance(),
             instance(),
             instance(),
+            instance(),
         )
     }
 

@@ -8,6 +8,7 @@ data class SynchronizeUserDataRequest(
     @SerialName("booksWithAuthors") val booksWithAuthors: SynchronizeBooksWithAuthorsRequest?,
     @SerialName("reviewsAndRatings") val reviewsAndRatings: SynchronizeReviewAndRatingRequest?,
     @SerialName("serviceDevelopment") val serviceDevelopment: SynchronizeServiceDevelopmentRequest?,
+    @SerialName("user_info") val userInfo: SynchronizeUserInfoRequest?,
 )
 
 @Serializable
@@ -18,4 +19,6 @@ data class SynchronizeUserDataContent(
     val reviewAndRatingResponse: SynchronizeReviewAndRatingContentResponse? = null,
     @SerialName("service_development_content")
     val serviceDevelopmentResponse: SynchronizeServiceDevelopmentContentResponse? = null,
+    @SerialName("user_info_content")
+    val userInfoResponse: SynchronizeUserContentResponse? = null,
 )

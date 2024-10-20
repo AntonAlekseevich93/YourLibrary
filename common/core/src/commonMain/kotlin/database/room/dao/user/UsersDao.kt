@@ -30,4 +30,10 @@ interface UsersDao {
     @Transaction
     @Query("SELECT * FROM UserEntity")
     fun getUsersWithGoals(): List<UserWithGoals>
+
+    @Query("SELECT * FROM UserEntity WHERE timestampOfUpdating > :timestamp AND userId = :userId")
+    suspend fun getNotSynchronizedUser(
+        timestamp: Long,
+        userId: Int
+    ): List<UserWithGoals>
 }

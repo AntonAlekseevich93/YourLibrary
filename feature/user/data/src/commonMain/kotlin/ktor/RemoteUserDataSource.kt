@@ -7,7 +7,7 @@ import HttpConstants.USER_SIGN_UP_REQUEST
 import HttpConstants.USER_STATUS_REQUEST
 import HttpConstants.USER_UPDATE_GOALS
 import HttpParams.USER_BOOKS_GOAL
-import ktor.models.UserRemoteDto
+import main_models.rest.users.UserRemoteDto
 import main_models.rest.base.BaseResponse
 import main_models.rest.users.AuthRegisterRequest
 import main_models.rest.users.AuthRequest

@@ -15,6 +15,7 @@ val bookInfoModule = DI.Module("bookInfoModule") {
             instance(),
             instance(),
             instance(),
+            instance(),
         )
     }
 

@@ -14,6 +14,7 @@ import main_models.books.UserBooksStatisticsData
 import main_models.rest.books.UserBookRemoteDto
 import main_models.rest.books.toRemoteDto
 import main_models.rest.books.toVo
+import platform.PlatformInfoData
 import java.util.Calendar
 
 class BookInfoRepositoryImpl(
@@ -22,7 +23,8 @@ class BookInfoRepositoryImpl(
     private val authorsRepository: AuthorsRepository,
     private val appConfig: AppConfig,
     private val remoteConfig: RemoteConfig,
-    private val serviceDevelopment: ServiceDevelopmentRepository
+    private val serviceDevelopment: ServiceDevelopmentRepository,
+    private val platformInfo: PlatformInfoData,
 ) : BookInfoRepository {
 
     override suspend fun getLocalBookByLocalId(bookLocalId: Long): Flow<BookVo?> =
@@ -55,8 +57,16 @@ class BookInfoRepositoryImpl(
 
     override suspend fun updateUserBook(book: BookVo) {
         val userId = appConfig.userId
+
+        val bookResult =
+            if (book.readingStatus == ReadingStatus.DONE && book.timestampOfReadingDone == 0L) {
+                book.copy(timestampOfReadingDone = platformInfo.getCurrentTime().timeInMillis)
+            } else {
+                book
+            }
+
         val bookVo = localBookInfoDataSource.updateBookAndTime(
-            book = book.toLocalDto(),
+            book = bookResult.toLocalDto(),
             userId = userId
         ).toVo(null)
         val response = remoteBookInfoDataSource.updateUserBook(

@@ -13,6 +13,7 @@ import database.room.dao.user.UserGoalsInYearsDao
 import database.room.dao.user.UserNotificationsDao
 import database.room.dao.user.UserServiceDevelopmentBookDao
 import database.room.dao.user.UserServiceDevelopmentBookTimestampDao
+import database.room.dao.user.UserTimestampDao
 import database.room.dao.user.UsersDao
 import kotlinx.coroutines.Dispatchers
 import platform.Platform
@@ -26,6 +27,10 @@ class RoomMainDataSource(
 
     val usersDao: UsersDao by lazy {
         db.getUsersDao()
+    }
+
+    val userTimestampDao: UserTimestampDao by lazy {
+        db.getUserTimestampDao()
     }
 
     val booksDao: BooksDao by lazy {

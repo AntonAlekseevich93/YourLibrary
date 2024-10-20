@@ -12,8 +12,13 @@ import main_models.rest.sync.SynchronizeReviewAndRatingContentResponse
 import main_models.rest.sync.SynchronizeReviewAndRatingRequest
 import main_models.rest.sync.SynchronizeServiceDevelopmentContentResponse
 import main_models.rest.sync.SynchronizeServiceDevelopmentRequest
+import main_models.rest.sync.SynchronizeUserContentResponse
 import main_models.rest.sync.SynchronizeUserDataRequest
+import main_models.rest.sync.SynchronizeUserInfoRequest
+import main_models.rest.users.toDto
+import main_models.rest.users.toVo
 import main_models.service_development.toRemoteDto
+import main_models.user.UserTimestampVo
 
 class SynchronizationRepositoryImpl(
     private val remoteSynchronizationDataSource: RemoteSynchronizationDataSource,
@@ -24,6 +29,7 @@ class SynchronizationRepositoryImpl(
     private val serviceDevelopmentRepository: ServiceDevelopmentRepository,
     private val appConfig: AppConfig,
     private val remoteConfig: RemoteConfig,
+    private val userRepository: UserRepository,
 ) : SynchronizationRepository {
     private val mutex = Mutex()
 
@@ -107,6 +113,11 @@ class SynchronizationRepositoryImpl(
                         success = isSuccess
                     }
             }
+
+            response?.result?.userInfoResponse?.let {
+                updateUserFromServer(it)
+            }
+
             return@withLock success
         }
     }
@@ -290,6 +301,30 @@ class SynchronizationRepositoryImpl(
         return success
     }
 
+    private suspend fun updateUserFromServer(
+        response: SynchronizeUserContentResponse,
+    ): Boolean {
+        var success = false
+        val userTimestamp = userRepository.getUserTimestamp()
+        response.apply {
+            if (userInfo != null && currentDeviceUserLastTimestamp != null && otherDeviceUserLastTimestamp != null) {
+                val newTimestamp: UserTimestampVo = if (currentDeviceUserLastTimestamp!! > 0) {
+                    userTimestamp.copy(thisDeviceTimestamp = currentDeviceUserLastTimestamp!!)
+                } else if (otherDeviceUserLastTimestamp!! > 0) {
+                    userTimestamp.copy(otherDevicesTimestamp = otherDeviceUserLastTimestamp!!)
+                } else {
+                    userTimestamp
+                }
+                userRepository.updateUserTimestamp(newTimestamp)
+                userInfo!!.toVo()?.let {
+                    success = true
+                    userRepository.updateUserInfo(it)
+                }
+            }
+        }
+        return success
+    }
+
 
     /**we don't need to send authors
      * because the server creates authors on its own from the data from the book**/
@@ -306,6 +341,8 @@ class SynchronizationRepositoryImpl(
         val serviceDevelopmentBooks =
             serviceDevelopmentRepository.getNotSynchronizedServiceDevelopmentBooks(userId)
                 .mapNotNull { it.toRemoteDto() }
+        val userTimestamp = userRepository.getUserTimestamp()
+        val user = userRepository.getNotSynchronizedUser()?.toDto()
         return SynchronizeUserDataRequest(
             booksWithAuthors = SynchronizeBooksWithAuthorsRequest(
                 booksThisDeviceTimestamp = booksTimestamp.thisDeviceTimestamp,
@@ -325,6 +362,11 @@ class SynchronizationRepositoryImpl(
                 serviceDevelopmentBooksThisDeviceTimestamp = serviceDevelopmentBooksTimestamp.thisDeviceTimestamp,
                 serviceDevelopmentBooksOtherDevicesTimestamp = serviceDevelopmentBooksTimestamp.otherDevicesTimestamp,
                 serviceDevelopmentBooks = serviceDevelopmentBooks
+            ),
+            userInfo = SynchronizeUserInfoRequest(
+                userInfoThisDeviceTimestamp = userTimestamp.thisDeviceTimestamp,
+                userInfoOtherDevicesTimestamp = userTimestamp.otherDevicesTimestamp,
+                userInfo = user
             )
         )
     }

@@ -42,7 +42,8 @@ data class UserBookCreatorUiState(
     fun createUserBook(
         selectedAuthor: AuthorVo?,
         userId: Int,
-        isServiceDevelopmentBook: Boolean
+        isServiceDevelopmentBook: Boolean,
+        currentTimeInMillis: Long,
     ): BookVo? {
         val bookName = bookNameTextState.value.text.trim()
         val bookId = UUID.randomUUID().toString()
@@ -96,6 +97,9 @@ data class UserBookCreatorUiState(
             authorFirstName = selectedAuthor?.firstName ?: exactAuthor?.firstName.orEmpty(),
             authorLastName = selectedAuthor?.lastName ?: exactAuthor?.lastName.orEmpty(),
             authorMiddleName = selectedAuthor?.middleName ?: exactAuthor?.middleName.orEmpty(),
+            timestampOfReadingDone = if (readingStatus.value == ReadingStatus.DONE) {
+                currentTimeInMillis
+            } else 0
         )
     }
 }

@@ -16,6 +16,7 @@ import database.room.dao.user.UserServiceDevelopmentBookTimestampDao
 import database.room.dao.user.UsersDao
 import database.room.dao.cache.CacheBooksByAuthorDao
 import database.room.dao.cache.CacheReviewAndRatingDao
+import database.room.dao.user.UserTimestampDao
 import database.room.entities.AuthorEntity
 import database.room.entities.AuthorsTimestampEntity
 import database.room.entities.BookEntity
@@ -29,6 +30,7 @@ import database.room.entities.cache.CacheBookByAuthorEntity
 import database.room.entities.cache.CacheReviewAndRatingEntity
 import database.room.entities.notifications.UserNotificationsEntity
 import database.room.entities.user.UserGoalInYearEntity
+import database.room.entities.user.UserTimestampEntity
 
 @Database(
     entities = [
@@ -36,6 +38,7 @@ import database.room.entities.user.UserGoalInYearEntity
         BookTimestampEntity::class,
         AuthorEntity::class,
         UserEntity::class,
+        UserTimestampEntity::class,
         AuthorsTimestampEntity::class,
         ReviewAndRatingEntity::class,
         ReviewAndRatingTimestampEntity::class,
@@ -50,6 +53,7 @@ import database.room.entities.user.UserGoalInYearEntity
 @ConstructedBy(AppDatabaseCtor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getUsersDao(): UsersDao
+    abstract fun getUserTimestampDao(): UserTimestampDao
     abstract fun getBooksDao(): BooksDao
     abstract fun getBooksTimestampDao(): BookTimestampDao
     abstract fun getAuthorsDao(): AuthorsDao

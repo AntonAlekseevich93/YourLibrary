@@ -97,6 +97,7 @@ object BooksMock {
             authorFirstName = "Тестовый",
             authorLastName = "Автор",
             authorMiddleName = "",
+            timestampOfReadingDone = 0
         ).apply { remoteImageLink = "https://cdn1.ozone.ru/s3/multimedia-w/6010125140.jpg" }
     }
 

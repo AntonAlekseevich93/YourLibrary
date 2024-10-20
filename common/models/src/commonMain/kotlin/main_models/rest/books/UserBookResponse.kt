@@ -52,6 +52,7 @@ data class UserBookRemoteDto(
     @SerialName("authorFirstName") val authorFirstName: String?,
     @SerialName("authorMiddleName") val authorMiddleName: String?,
     @SerialName("authorLastName") val authorLastName: String?,
+    @SerialName("timestampOfReadingDone") val timestampOfReadingDone: Long?,
 )
 
 fun BookVo.toRemoteDto(): UserBookRemoteDto = UserBookRemoteDto(
@@ -90,6 +91,7 @@ fun BookVo.toRemoteDto(): UserBookRemoteDto = UserBookRemoteDto(
     authorFirstName = authorFirstName,
     authorLastName = authorLastName,
     authorMiddleName = authorMiddleName,
+    timestampOfReadingDone = timestampOfReadingDone
 )
 
 fun UserBookRemoteDto.toVo(): BookVo? {
@@ -133,5 +135,6 @@ fun UserBookRemoteDto.toVo(): BookVo? {
         authorFirstName = authorFirstName ?: "",
         authorLastName = authorLastName ?: "",
         authorMiddleName = authorMiddleName ?: "",
+        timestampOfReadingDone = timestampOfReadingDone ?: 0
     )
 }

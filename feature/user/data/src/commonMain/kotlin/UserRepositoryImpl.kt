@@ -1,14 +1,15 @@
 import database.LocalUserDataSource
 import database.room.entities.user.toEntity
+import database.room.entities.user.toVo
 import kotlinx.coroutines.flow.Flow
 import ktor.RemoteUserDataSource
-import ktor.models.toVo
 import main_models.rest.base.BaseResponse
 import main_models.rest.users.AuthRegisterRequest
 import main_models.rest.users.AuthRequest
 import main_models.rest.users.AuthResponse
 import main_models.rest.users.UserStatusVo
 import main_models.rest.users.toVo
+import main_models.user.UserTimestampVo
 import main_models.user.UserVo
 
 class UserRepositoryImpl(
@@ -16,6 +17,16 @@ class UserRepositoryImpl(
     private val localUserDataSource: LocalUserDataSource,
     private val appConfig: AppConfig,
 ) : UserRepository {
+
+    override suspend fun getUserTimestamp(): UserTimestampVo =
+        localUserDataSource.getUserTimestamp(appConfig.userId).toVo()
+
+    override suspend fun updateUserTimestamp(userTimestampVo: UserTimestampVo) {
+        localUserDataSource.updateUserTimestamp(userTimestampVo.toEntity())
+    }
+
+    override suspend fun getNotSynchronizedUser() =
+        localUserDataSource.getNotSynchronizedUser(appConfig.userId)
 
     override suspend fun signUp(
         request: AuthRegisterRequest
@@ -57,6 +68,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun updateUserInfo() {
+        val userId = appConfig.userId
         remoteUserDataSource.getUser()?.toVo()?.let {
             localUserDataSource.createOrUpdateUser(
                 id = it.id.toInt(),
@@ -64,8 +76,27 @@ class UserRepositoryImpl(
                 email = it.email,
                 isVerified = it.isVerified,
                 isAuthorized = true,
-                timestamp = 0//todo fix
+                timestamp = it.timestampOfUpdating,
             )
+
+            it.userReadingGoalsInYears?.goals?.map { it.toEntity(userId) }?.let {
+                localUserDataSource.updateUserReadingGoals(it)
+            }
+        }
+    }
+
+    override suspend fun updateUserInfo(userVo: UserVo) {
+        val userId = appConfig.userId
+        localUserDataSource.createOrUpdateUser(
+            id = userVo.id.toInt(),
+            name = userVo.name,
+            email = userVo.email,
+            isVerified = userVo.isVerified,
+            isAuthorized = true,
+            timestamp = userVo.timestampOfUpdating
+        )
+        userVo.userReadingGoalsInYears?.goals?.map { it.toEntity(userId) }?.let {
+            localUserDataSource.updateUserReadingGoals(it)
         }
     }
 
