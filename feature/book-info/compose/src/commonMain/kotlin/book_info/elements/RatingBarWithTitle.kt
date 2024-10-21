@@ -49,7 +49,7 @@ internal fun BaseEventScope<BaseEvent>.AboutRating(
         AddNewReviewButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 26.dp, start = 26.dp, end = 26.dp)
+                .padding(top = 26.dp, start = 16.dp, end = 16.dp)
                 .onGloballyPositioned { layoutCoordinates ->
                     reviewButtonPosition(layoutCoordinates.positionInParent().y.toInt())
                 },

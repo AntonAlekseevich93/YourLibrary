@@ -14,4 +14,7 @@ interface CacheManagerRepository {
 
     suspend fun clearAllCache()
     suspend fun clearBooksByAuthorCache(authorId: String)
+    fun saveReviewText(text: String, bookId: String)
+    fun getReviewText(bookId: String): String
+    fun clearReviewText(bookId: String)
 }

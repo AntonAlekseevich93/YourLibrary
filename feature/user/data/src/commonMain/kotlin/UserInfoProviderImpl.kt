@@ -6,5 +6,5 @@ class UserInfoProviderImpl(
     private val localUserDataSource: LocalUserDataSource
 ) : UserInfoProvider {
     override suspend fun getAuthorizedUser(): Flow<UserVo?> =
-        localUserDataSource.getAuthorizedUser()
+        localUserDataSource.getAuthorizedUserFlow()
 }

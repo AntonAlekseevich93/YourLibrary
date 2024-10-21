@@ -11,6 +11,7 @@ data class UserRemoteDto(
     @SerialName("email") val email: String?,
     @SerialName("verified") val isVerified: Boolean?,
     @SerialName("timestampOfUpdating") val timestampOfUpdating: Long,
+    @SerialName("isModerator") val isModerator: Boolean,
     @SerialName("userReadingGoalsInYears") val userReadingGoalsInYears: UserReadingGoalsInYearsDto? = null,
 )
 
@@ -21,6 +22,7 @@ fun UserRemoteDto.toVo(): UserVo? {
         email = email ?: return null,
         isVerified = isVerified ?: return null,
         isAuth = true,
+        isModerator = isModerator,
         timestampOfUpdating = timestampOfUpdating,
         userReadingGoalsInYears = userReadingGoalsInYears?.toVo()
     )
@@ -32,6 +34,7 @@ fun UserVo.toDto(): UserRemoteDto {
         name = name,
         email = email,
         isVerified = isVerified,
+        isModerator = isModerator,
         timestampOfUpdating = timestampOfUpdating,
         userReadingGoalsInYears = userReadingGoalsInYears?.toDto()
     )

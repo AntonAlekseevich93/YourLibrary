@@ -6,6 +6,7 @@ data class UserVo(
     val email: String,
     val isVerified: Boolean,
     val isAuth: Boolean,
+    val isModerator: Boolean,
     val timestampOfUpdating: Long,
     val userReadingGoalsInYears: UserReadingGoalsInYearsVo?,
 )

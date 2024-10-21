@@ -16,6 +16,7 @@ data class UserUiState(
             "",
             false,
             false,
+            true,
             timestampOfUpdating = 0L,
             null,
         )
@@ -38,6 +39,7 @@ fun getUserUiStateMock(): UserUiState {
                 email = "anton.alex@gmail.com",
                 isVerified = false,
                 isAuth = true,
+                true,
                 timestampOfUpdating = 0L,
                 null
             )

@@ -48,7 +48,8 @@ class UserRepositoryImpl(
         name: String,
         email: String,
         isVerified: Boolean,
-        isAuthorized: Boolean
+        isAuthorized: Boolean,
+        isModerator: Boolean,
     ) {
         localUserDataSource.createOrUpdateUser(
             id = id,
@@ -56,12 +57,13 @@ class UserRepositoryImpl(
             email = email,
             isVerified = isVerified,
             isAuthorized = isAuthorized,
+            isModerator = isModerator,
             timestamp = 0//todo fix
         )
     }
 
-    override suspend fun getAuthorizedUser(): Flow<UserVo?> =
-        localUserDataSource.getAuthorizedUser()
+    override suspend fun getAuthorizedUserFlow(): Flow<UserVo?> =
+        localUserDataSource.getAuthorizedUserFlow()
 
     override suspend fun logOut() {
         localUserDataSource.logOut()
@@ -77,6 +79,7 @@ class UserRepositoryImpl(
                 isVerified = it.isVerified,
                 isAuthorized = true,
                 timestamp = it.timestampOfUpdating,
+                isModerator = it.isModerator
             )
 
             it.userReadingGoalsInYears?.goals?.map { it.toEntity(userId) }?.let {
@@ -93,6 +96,7 @@ class UserRepositoryImpl(
             email = userVo.email,
             isVerified = userVo.isVerified,
             isAuthorized = true,
+            isModerator = userVo.isModerator,
             timestamp = userVo.timestampOfUpdating
         )
         userVo.userReadingGoalsInYears?.goals?.map { it.toEntity(userId) }?.let {

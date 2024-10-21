@@ -27,6 +27,7 @@ data class BookInfoUiState(
     val currentDateInMillis: MutableState<Long> = mutableStateOf(0),
     val isHazeBlurEnabled: MutableState<Boolean> = mutableStateOf(true),
     val isCanUseModifierBlur: MutableState<Boolean> = mutableStateOf(true),
+    val cachedReviewText: MutableState<String> = mutableStateOf(""),
 ) {
 
 

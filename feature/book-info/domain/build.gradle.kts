@@ -14,6 +14,7 @@ kotlin {
                 implementation(project(":feature:authors:api"))
                 implementation(project(":feature:search:api"))
                 implementation(project(":feature:rating-review:api"))
+                implementation(project(":common:cache-manager:api"))
             }
         }
     }

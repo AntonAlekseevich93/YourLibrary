@@ -1,3 +1,4 @@
+
 plugins {
     id("multiplatform-compose-setup")
     id("android-setup")
@@ -9,6 +10,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":common:cache-manager:api"))
+                implementation(Dependencies.LocalSettings.settings)
                 implementation(project(":common:core"))
                 implementation(project(":common:models"))
                 implementation(project(":common:app-config"))

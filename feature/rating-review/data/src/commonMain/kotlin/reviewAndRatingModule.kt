@@ -14,7 +14,8 @@ val reviewAndRatingModule = DI.Module("reviewAndRatingModule") {
             instance(),
             instance(),
             instance(),
-            instance()
+            instance(),
+            instance(),
         )
     }
 

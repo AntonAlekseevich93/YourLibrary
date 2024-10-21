@@ -25,10 +25,11 @@ interface UserRepository {
         name: String,
         email: String,
         isVerified: Boolean,
-        isAuthorized: Boolean
+        isAuthorized: Boolean,
+        isModerator: Boolean,
     )
 
-    suspend fun getAuthorizedUser(): Flow<UserVo?>
+    suspend fun getAuthorizedUserFlow(): Flow<UserVo?>
     suspend fun logOut()
     suspend fun updateUserInfo()
     suspend fun updateUserInfo(userVo: UserVo)

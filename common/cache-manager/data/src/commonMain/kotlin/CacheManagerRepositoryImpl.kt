@@ -1,3 +1,4 @@
+import com.russhwolf.settings.Settings
 import database.CacheManagerDataSource
 import database.room.entities.cache.CacheBookByAuthorEntity
 import database.room.entities.cache.CacheReviewAndRatingEntity
@@ -14,6 +15,9 @@ class CacheManagerRepositoryImpl(
     private val remoteConfig: RemoteConfig,
     private val platformInfo: PlatformInfoData,
 ) : CacheManagerRepository {
+
+    private val localStorage = Settings()
+
     override suspend fun getCacheAllAuthorBooks(
         authorId: String,
     ): List<CacheShortBookByAuthorVo> =
@@ -85,6 +89,18 @@ class CacheManagerRepositoryImpl(
 
     override suspend fun clearBooksByAuthorCache(authorId: String) {
         cacheManagerDataSource.clearBooksByAuthorCache(authorId, userId = appConfig.userId)
+    }
+
+    override fun saveReviewText(text: String, bookId: String) {
+        localStorage.putString(key = bookId, value = text)
+    }
+
+    override fun getReviewText(bookId: String): String {
+        return localStorage.getString(key = bookId, defaultValue = "")
+    }
+
+    override fun clearReviewText(bookId: String) {
+        localStorage.putString(key = bookId, value = "")
     }
 
 }

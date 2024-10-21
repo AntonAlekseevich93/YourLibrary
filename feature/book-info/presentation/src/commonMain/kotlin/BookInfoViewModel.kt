@@ -81,6 +81,16 @@ class BookInfoViewModel(
                 addReview(event.reviewText)
             }
 
+            is ReviewAndRatingEvents.TextReviewWasChanged -> {
+                interactor.saveUserReviewText(event.newText, event.mainBookId)
+            }
+
+            is ReviewAndRatingEvents.GetLastCachedReviewText -> {
+                _uiState.value.cachedReviewText.value =
+                    interactor.getLastUserReviewText(event.mainBookId)
+            }
+
+
             is BookEditorEvents.OnAuthorTextChanged -> {
                 //todo
             }

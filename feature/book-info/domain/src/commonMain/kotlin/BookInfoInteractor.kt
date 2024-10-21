@@ -10,6 +10,7 @@ class BookInfoInteractor(
     private val authorRepository: AuthorsRepository,
     private val searchRepository: SearchRepository,
     private val reviewAndRatingRepository: ReviewAndRatingRepository,
+    private val cacheManagerRepository: CacheManagerRepository,
 ) {
 
     suspend fun getLocalBookByLocalId(localBookId: Long): Flow<BookVo?> =
@@ -53,6 +54,7 @@ class BookInfoInteractor(
     }
 
     suspend fun addReview(reviewText: String, mainBookId: String) {
+        cacheManagerRepository.clearReviewText(mainBookId)
         reviewAndRatingRepository.addReviewByBookId(
             reviewText = reviewText,
             mainBookId = mainBookId
@@ -108,5 +110,11 @@ class BookInfoInteractor(
     suspend fun createBook(book: BookVo, author: AuthorVo) {
         bookCreatorRepository.createBook(book, author = author)
     }
+
+    fun saveUserReviewText(newText: String, mainBookId: String) {
+        cacheManagerRepository.saveReviewText(text = newText, bookId = mainBookId)
+    }
+
+    fun getLastUserReviewText(mainBookId: String) = cacheManagerRepository.getReviewText(mainBookId)
 
 }

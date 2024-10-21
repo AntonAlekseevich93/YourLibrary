@@ -45,6 +45,7 @@ fun AddNewReviewButton(
                 text = stringResource(Res.string.add_review_title),
                 style = ApplicationTheme.typography.headlineBold,
                 color = ApplicationTheme.colors.mainTextColor,
+                modifier = Modifier.padding(vertical = 6.dp)
             )
         }
     }

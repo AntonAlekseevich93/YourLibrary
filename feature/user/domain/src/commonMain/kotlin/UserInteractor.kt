@@ -34,7 +34,8 @@ class UserInteractor(
                     name = name,
                     email = email,
                     isVerified = response.result?.isVerified ?: false,
-                    isAuthorized = true
+                    isAuthorized = true,
+                    isModerator = false,
                 )
             }
         }
@@ -61,7 +62,8 @@ class UserInteractor(
                             name = it.name!!,
                             email = email,
                             isVerified = response.result?.isVerified ?: false,
-                            isAuthorized = true
+                            isAuthorized = true,
+                            isModerator = it.isModerator ?: false,
                         )
                     }
                 }
@@ -70,7 +72,7 @@ class UserInteractor(
     }
 
     suspend fun getAuthorizedUser(): Flow<UserVo?> =
-        repository.getAuthorizedUser()
+        repository.getAuthorizedUserFlow()
 
     suspend fun logOut() {
         repository.logOut()

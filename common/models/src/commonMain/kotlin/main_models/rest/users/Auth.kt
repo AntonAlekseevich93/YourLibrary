@@ -22,4 +22,5 @@ class AuthResponse(
     @SerialName("name") val name: String?,
     @SerialName("token") val token: String?,
     @SerialName("verified") val isVerified: Boolean?,
+    @SerialName("isModerator") val isModerator: Boolean?,
 )

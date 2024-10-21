@@ -353,7 +353,10 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                 WriteReviewScreen(
                     bookName = bookName,
                     userRating = uiState.currentBookUserReviewAndRating.value?.ratingScore,
-                    modifier = Modifier
+                    modifier = Modifier,
+                    mainBookId = uiState.bookItem.value?.originalMainBookId
+                        ?: uiState.shortBookItem.value?.mainBookId ?: "",
+                    cachedReviewText = uiState.cachedReviewText.value
                 )
             }
         }

@@ -27,6 +27,7 @@ class LocalUserDataSource(
         email: String,
         isVerified: Boolean,
         isAuthorized: Boolean,
+        isModerator: Boolean,
         timestamp: Long,
     ) {
         val user = usersDao.getUserByEmail(email).firstOrNull()
@@ -38,6 +39,7 @@ class LocalUserDataSource(
                     email = email,
                     isVerified = isVerified,
                     isAuthorized = isAuthorized,
+                    isModerator = isModerator,
                     timestampOfUpdating = timestamp
                 )
             )
@@ -60,7 +62,7 @@ class LocalUserDataSource(
         }
     }
 
-    suspend fun getAuthorizedUser(): Flow<UserVo?> = flow {
+    suspend fun getAuthorizedUserFlow(): Flow<UserVo?> = flow {
         val year = platformInfo.getCurrentTime().get(Calendar.YEAR)
         usersDao.getAuthorizedUser().collect {
             val users = it.mapToUsersVo(year).filter { it.isAuth }

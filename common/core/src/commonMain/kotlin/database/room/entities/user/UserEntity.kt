@@ -13,6 +13,7 @@ data class UserEntity(
     @SerialName("name") val name: String,
     @SerialName("isVerified") val isVerified: Boolean,
     @SerialName("isAuthorized") val isAuthorized: Boolean,
+    @SerialName("isModerator") val isModerator: Boolean,
     @SerialName("timestampOfUpdating") val timestampOfUpdating: Long,
 )
 
@@ -24,7 +25,8 @@ fun UserEntity.toVo(): UserVo {
         isVerified = isVerified,
         isAuth = isAuthorized,
         timestampOfUpdating = timestampOfUpdating,
-        userReadingGoalsInYears = null
+        userReadingGoalsInYears = null,
+        isModerator = isModerator,
     )
 }
 
@@ -36,5 +38,6 @@ fun UserVo.toEntity(): UserEntity {
         isVerified = isVerified,
         isAuthorized = isAuth,
         timestampOfUpdating = timestampOfUpdating,
+        isModerator = isModerator,
     )
 }

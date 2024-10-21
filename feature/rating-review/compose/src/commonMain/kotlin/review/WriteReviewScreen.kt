@@ -21,6 +21,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,16 +47,28 @@ import yourlibrary.common.resources.generated.resources.review_text_field_hint
 fun BaseEventScope<BaseEvent>.WriteReviewScreen(
     bookName: String,
     userRating: Int?,
+    mainBookId: String,
+    cachedReviewText: String,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
-    var textState by remember { mutableStateOf(TextFieldValue()) }
+    var textState by remember(key1 = cachedReviewText) {
+        mutableStateOf(
+            TextFieldValue(
+                cachedReviewText
+            )
+        )
+    }
     val charCount = remember { mutableStateOf(textState.text.length) }
     val minTextLength = remember { 120 }
     val charCountText = remember { mutableStateOf("${charCount.value}/$minTextLength") }
     val isActiveButton by remember(key1 = charCount.value) { mutableStateOf(charCount.value >= minTextLength) }
     val userRatingExist by remember(key1 = userRating) {
         mutableStateOf(userRating != null && userRating > 0)
+    }
+
+    LaunchedEffect(Unit) {
+        sendEvent(ReviewAndRatingEvents.GetLastCachedReviewText(mainBookId))
     }
 
     Column(
@@ -96,6 +109,12 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
             onTextChanged = {
                 textState = it
                 val trimText = it.text.trim()
+                sendEvent(
+                    ReviewAndRatingEvents.TextReviewWasChanged(
+                        newText = trimText,
+                        mainBookId = mainBookId
+                    )
+                )
                 val length = trimText.length
                 charCount.value = length
                 charCountText.value = "$length/$minTextLength"
@@ -157,7 +176,7 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
                 backgroundColor = ApplicationTheme.colors.screenColor.activeLinkColor,
                 disabledBackgroundColor = ApplicationTheme.colors.pointerIsActiveCardColor
             ),
-            modifier = modifier.fillMaxWidth().padding(start = 32.dp, end = 32.dp, top = 24.dp),
+            modifier = modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 24.dp),
             shape = RoundedCornerShape(12.dp)
         ) {
             Row(
@@ -168,6 +187,7 @@ fun BaseEventScope<BaseEvent>.WriteReviewScreen(
                     text = stringResource(Res.string.add_review_title),
                     style = ApplicationTheme.typography.headlineBold,
                     color = ApplicationTheme.colors.mainTextColor,
+                    modifier = Modifier.padding(vertical = 6.dp)
                 )
             }
         }

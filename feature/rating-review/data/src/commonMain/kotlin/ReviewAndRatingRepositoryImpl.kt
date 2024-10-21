@@ -2,8 +2,12 @@ import database.LocalReviewAndRatingDataSource
 import database.room.entities.toEntity
 import database.room.entities.toLocalDto
 import database.room.entities.toVo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import ktor.RemoteReviewAndRatingDataSource
 import main_models.rating_review.ReviewAndRatingTimestampVo
 import main_models.rating_review.ReviewAndRatingVo
@@ -11,6 +15,7 @@ import main_models.rest.rating_review.toRemoteDto
 import main_models.rest.rating_review.toRemoteRating
 import main_models.rest.rating_review.toRemoteReview
 import main_models.rest.rating_review.toVo
+import main_models.user.UserVo
 import platform.PlatformInfoData
 
 class ReviewAndRatingRepositoryImpl(
@@ -20,7 +25,18 @@ class ReviewAndRatingRepositoryImpl(
     private val remoteConfig: RemoteConfig,
     private val platformInfo: PlatformInfoData,
     private val cacheManagerRepository: CacheManagerRepository,
+    private val userRepository: UserRepository,
 ) : ReviewAndRatingRepository {
+    private var scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + SupervisorJob())
+    private var authorizedUser: UserVo? = null
+
+    init {
+        scope.launch {
+            userRepository.getAuthorizedUserFlow().collect {
+                authorizedUser = it
+            }
+        }
+    }
 
     override suspend fun getNotSynchronizedReviewAndRating(userId: Int) =
         localReviewAndRatingDataSource.getNotSynchronizedReviewsAndRatings(userId)
@@ -49,51 +65,56 @@ class ReviewAndRatingRepositoryImpl(
         mainBookId: String,
     ) {
         val userId = appConfig.userId
-        val existedRating = localReviewAndRatingDataSource.getCurrentUserReviewAndRatingByBook(
-            mainBookId = mainBookId,
-            userId = userId
-        ).firstOrNull()
-        val currentLocalTimestamp =
-            localReviewAndRatingDataSource.getReviewAndRatingTimestamp(userId)
-        var resultReviewAndRatingVo: ReviewAndRatingVo? = null
-        val timestamp = platformInfo.getCurrentTime().timeInMillis
-        if (existedRating == null) {
-            resultReviewAndRatingVo = ReviewAndRatingVo.createEmptyRating(
-                rating = newRating,
-                bookId = bookId,
-                bookAuthorId = bookAuthorId,
-                bookGenreId = bookGenreId,
-                userId = userId.toInt(),
-                userName = "Антон Алексеевич", //todo fix this
-                deviceId = appConfig.deviceId,
-                timestamp = timestamp,
-                mainBookId = mainBookId
-            )
-        } else {
-            resultReviewAndRatingVo = existedRating.copy(
-                ratingScore = newRating,
-                timestampOfUpdatingScore = timestamp
-            ).toVo()
-        }
+        authorizedUser?.let { userInfo ->
+            if (authorizedUser?.id == userId) {
+                val existedRating =
+                    localReviewAndRatingDataSource.getCurrentUserReviewAndRatingByBook(
+                        mainBookId = mainBookId,
+                        userId = userId
+                    ).firstOrNull()
+                val currentLocalTimestamp =
+                    localReviewAndRatingDataSource.getReviewAndRatingTimestamp(userId)
+                var resultReviewAndRatingVo: ReviewAndRatingVo? = null
+                val timestamp = platformInfo.getCurrentTime().timeInMillis
+                if (existedRating == null) {
+                    resultReviewAndRatingVo = ReviewAndRatingVo.createEmptyRating(
+                        rating = newRating,
+                        bookId = bookId,
+                        bookAuthorId = bookAuthorId,
+                        bookGenreId = bookGenreId,
+                        userId = userId.toInt(),
+                        userName = userInfo.name,
+                        deviceId = appConfig.deviceId,
+                        timestamp = timestamp,
+                        mainBookId = mainBookId
+                    )
+                } else {
+                    resultReviewAndRatingVo = existedRating.copy(
+                        ratingScore = newRating,
+                        timestampOfUpdatingScore = timestamp
+                    ).toVo()
+                }
 
-        val id = localReviewAndRatingDataSource.addOrUpdateJustRating(
-            resultReviewAndRatingVo.toLocalDto(),
-            userId = userId
-        )
-
-        remoteReviewAndRatingDataSource.addOrUpdateRating(
-            ratingRemoteDto = resultReviewAndRatingVo.toRemoteRating()
-        )?.result?.reviewAndRating?.let { response ->
-            response.toVo()?.toLocalDto()?.let { localRating ->
-                localReviewAndRatingDataSource.addOrUpdateJustRating(
-                    reviewAndRating = localRating.copy(localId = id),
+                val id = localReviewAndRatingDataSource.addOrUpdateJustRating(
+                    resultReviewAndRatingVo.toLocalDto(),
                     userId = userId
                 )
-                localReviewAndRatingDataSource.updateReviewAndRatingTimestamp(
-                    currentLocalTimestamp.copy(
-                        thisDeviceTimestampRating = localRating.timestampOfUpdatingScore
-                    )
-                )
+
+                remoteReviewAndRatingDataSource.addOrUpdateRating(
+                    ratingRemoteDto = resultReviewAndRatingVo.toRemoteRating()
+                )?.result?.reviewAndRating?.let { response ->
+                    response.toVo()?.toLocalDto()?.let { localRating ->
+                        localReviewAndRatingDataSource.addOrUpdateJustRating(
+                            reviewAndRating = localRating.copy(localId = id),
+                            userId = userId
+                        )
+                        localReviewAndRatingDataSource.updateReviewAndRatingTimestamp(
+                            currentLocalTimestamp.copy(
+                                thisDeviceTimestampRating = localRating.timestampOfUpdatingScore
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -182,6 +203,6 @@ class ReviewAndRatingRepositoryImpl(
 
     override suspend fun getAllCurrentUserReviews(): Flow<List<ReviewAndRatingVo>> =
         localReviewAndRatingDataSource.getCurrentUserAllReviewsAndRating(appConfig.userId)
-            .map { it.map { it.toVo() } }
+            .map { it.map { it.toVo() }.filter { !it.reviewText.isNullOrEmpty() } }
 
 }
