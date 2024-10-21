@@ -16,7 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
@@ -118,7 +118,7 @@ private fun StatisticProgressIndicator(
             .fillMaxWidth()
             .padding(top = 26.dp)
             .clip(shape)
-            .clickable(MutableInteractionSource(), rememberRipple()) {
+            .clickable(MutableInteractionSource(), ripple()) {
                 onClick()
             },
         colors = CardDefaults.cardColors(containerColor = ApplicationTheme.colors.mainBackgroundColor),
@@ -199,7 +199,7 @@ private fun StatisticItemClickable(
     Card(
         modifier = modifier
             .clip(shape)
-            .clickable(MutableInteractionSource(), rememberRipple()) {
+            .clickable(MutableInteractionSource(), ripple()) {
                 onClick()
             },
         colors = CardDefaults.cardColors(containerColor = ApplicationTheme.colors.mainBackgroundColor),

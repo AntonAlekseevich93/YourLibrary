@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,12 +29,13 @@ import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ActionBottomSheet(
+fun WarningActionBottomSheet(
     successTitle: StringResource,
     dismissTitle: StringResource,
     infoText: StringResource,
     onAccept: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    content: @Composable (() -> Unit)? = null,
 ) {
     val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
@@ -54,7 +54,7 @@ fun ActionBottomSheet(
     ) {
         ModalBottomSheet(
             sheetState = sheetState,
-            windowInsets = WindowInsets(top = 58.dp),
+            modifier = Modifier.padding(top = 58.dp),
             containerColor = ApplicationTheme.colors.cardBackgroundLight,
             onDismissRequest = {
                 closeBottomSheet()
@@ -91,6 +91,8 @@ fun ActionBottomSheet(
                         },
                     textAlign = TextAlign.Center
                 )
+
+                content?.invoke()
 
                 Button(
                     onClick = {

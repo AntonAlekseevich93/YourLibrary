@@ -1,5 +1,6 @@
 package components
 
+import ApplicationTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -7,10 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +39,7 @@ internal fun ParsingBookDialog(
                     .fillMaxWidth()
                     .clickable(
                         interactionSource = MutableInteractionSource(),
-                        indication = rememberRipple()
+                        indication = ripple()
                     ) {
                         onApprove()
                     }) {
@@ -56,7 +57,7 @@ internal fun ParsingBookDialog(
                     .fillMaxWidth()
                     .clickable(
                         interactionSource = MutableInteractionSource(),
-                        indication = rememberRipple()
+                        indication = ripple()
                     ) {
                         onDelete()
                     }) {

@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -87,7 +87,7 @@ fun DateChangeSelectorDialog(
                         color = ApplicationTheme.colors.mainTextColor,
                         modifier = Modifier.padding(end = 24.dp).clickable(
                             interactionSource = MutableInteractionSource(),
-                            indication = rememberRipple()
+                            indication = ripple()
                         ) {
                             deletingDateType?.let {
                                 onDeleteDateListener(it)
@@ -101,7 +101,7 @@ fun DateChangeSelectorDialog(
                         color = ApplicationTheme.colors.mainTextColor,
                         modifier = Modifier.padding(end = 16.dp).clickable(
                             interactionSource = MutableInteractionSource(),
-                            indication = rememberRipple()
+                            indication = ripple()
                         ) {
                             dismiss()
                         }
@@ -119,7 +119,7 @@ fun DateChangeSelectorDialog(
                         .fillMaxWidth()
                         .clickable(
                             interactionSource = MutableInteractionSource(),
-                            indication = rememberRipple()
+                            indication = ripple()
                         ) {
                             selectDateTypeListener(DatePickerType.StartDate)
                         }.padding(horizontal = 16.dp, vertical = 16.dp)
@@ -136,7 +136,7 @@ fun DateChangeSelectorDialog(
                         .fillMaxWidth()
                         .clickable(
                             interactionSource = MutableInteractionSource(),
-                            indication = rememberRipple()
+                            indication = ripple()
                         ) {
                             selectDateTypeListener(DatePickerType.EndDate)
                         }.padding(horizontal = 16.dp, vertical = 16.dp)
@@ -157,7 +157,7 @@ fun DateChangeSelectorDialog(
                             .fillMaxWidth()
                             .clickable(
                                 interactionSource = MutableInteractionSource(),
-                                indication = rememberRipple()
+                                indication = ripple()
                             ) {
                                 showDeleteConfirmDialog = true
                                 deletingDateType = DatePickerType.StartDate
@@ -175,7 +175,7 @@ fun DateChangeSelectorDialog(
                             .fillMaxWidth()
                             .clickable(
                                 interactionSource = MutableInteractionSource(),
-                                indication = rememberRipple()
+                                indication = ripple()
                             ) {
                                 showDeleteConfirmDialog = true
                                 deletingDateType = DatePickerType.EndDate

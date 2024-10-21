@@ -12,4 +12,5 @@ sealed class UserEvents : BaseEvent {
 
     data object OnSignOut : UserEvents()
     data object GetUserIfVerified : UserEvents()
+    data class ChangeBooksGoal(val goal: Int) : UserEvents()
 }

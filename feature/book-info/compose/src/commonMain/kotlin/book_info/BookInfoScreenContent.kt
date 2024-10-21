@@ -10,7 +10,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -255,7 +254,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                     .clip(RoundedCornerShape(16.dp))
                     .clickable(
                         interactionSource = MutableInteractionSource(),
-                        indication = rememberRipple()
+                        indication = ripple()
                     ) {
                         showDialog = true
                     }
@@ -278,7 +277,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
                 ),
                 modifier = Modifier.clip(RoundedCornerShape(16.dp)).clickable(
                     interactionSource = MutableInteractionSource(),
-                    indication = rememberRipple()
+                    indication = ripple()
                 ) {
                     showDialog = true
                 }
@@ -331,7 +330,7 @@ internal fun BaseEventScope<BaseEvent>.BookInfoScreenContent(
         Column(modifier = Modifier.fillMaxSize()) {
             ModalBottomSheet(
                 sheetState = sheetState,
-                windowInsets = WindowInsets(top = 58.dp),
+                modifier = Modifier.padding(top = 58.dp),
                 containerColor = ApplicationTheme.colors.cardBackgroundLight,
                 onDismissRequest = {
                     scope.launch { sheetState.hide() }.invokeOnCompletion {

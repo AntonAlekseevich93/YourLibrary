@@ -42,6 +42,7 @@ class UserViewModel(
             is UserEvents.OnSignInConfirmClick -> signIn(event.email, event.password)
             is UserEvents.OnSignOut -> signOut()
             is UserEvents.GetUserIfVerified -> getUserIfVerified()
+            is UserEvents.ChangeBooksGoal -> updateUserReadingGoalsInCurrentYear(event.goal)
         }
     }
 
@@ -113,7 +114,7 @@ class UserViewModel(
         }
     }
 
-    fun updateUserReadingGoalsInCurrentYear(newGoal: Int) {
+    private fun updateUserReadingGoalsInCurrentYear(newGoal: Int) {
         scope.launch {
             interactor.updateUserReadingGoalsInCurrentYear(newGoal)
         }

@@ -33,4 +33,12 @@
         <item quantity="many">Смотреть все\n%1$d отзывов</item>
         <item quantity="other">Смотреть все\n%1$d отзывов</item>
     </plurals>
+
+    <plurals name="days_in_read">
+        <item quantity="one">(приблизительно %1$d день на книгу)</item>
+        <item quantity="few">(приблизительно %1$d дня на книгу)</item>
+        <item quantity="many">(приблизительно %1$d дней на книгу)</item>
+        <item quantity="other">(приблизительно %1$d дней на книгу)</item>
+    </plurals>
+
 </resources>

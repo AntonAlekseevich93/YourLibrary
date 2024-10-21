@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import animations.SuccessAnimation
-import bottom_sheets.ActionBottomSheet
+import bottom_sheets.WarningActionBottomSheet
 import buttons.MenuButton
 import dev.chrisbanes.haze.HazeState
 import di.Inject
@@ -91,7 +91,7 @@ fun SettingsScreen(
         }
 
         if (showClearCacheBottomSheet) {
-            ActionBottomSheet(
+            WarningActionBottomSheet(
                 infoText = Res.string.clear_cache_bottom_sheet_info,
                 successTitle = Res.string.clear_all_cache,
                 dismissTitle = Res.string.dont_clear,
